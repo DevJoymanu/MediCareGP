@@ -46,7 +46,7 @@
       <h2>Sign in</h2>
       <p>Enter your credentials to access the CRM</p>
 
-      {% if form.errors %}
+      {% if form.non_field_errors %}
       <div class="alert alert-error">
         <i class="bi bi-exclamation-circle"></i>
         Invalid username or password. Please try again.
@@ -57,11 +57,21 @@
         {% csrf_token %}
         <div class="form-group">
           <label>Username</label>
-          <input type="text" name="username" class="crm-input" autofocus placeholder="Enter your username">
+          <input type="text" name="username" value="{{ form.username.value|default:'' }}"
+                 class="crm-input{% if form.username.errors %} input-error{% endif %}"
+                 autofocus placeholder="Enter your username">
+          {% if form.username.errors %}
+          <div class="field-error"><i class="bi bi-exclamation-circle"></i> {{ form.username.errors.0 }}</div>
+          {% endif %}
         </div>
         <div class="form-group" style="margin-bottom:24px;">
           <label>Password</label>
-          <input type="password" name="password" class="crm-input" placeholder="Enter your password">
+          <input type="password" name="password"
+                 class="crm-input{% if form.password.errors %} input-error{% endif %}"
+                 placeholder="Enter your password">
+          {% if form.password.errors %}
+          <div class="field-error"><i class="bi bi-exclamation-circle"></i> {{ form.password.errors.0 }}</div>
+          {% endif %}
         </div>
         <input type="hidden" name="next" value="{{ next }}">
         <button type="submit" class="btn-primary" style="width:100%;padding:12px;font-size:14px;justify-content:center;">
