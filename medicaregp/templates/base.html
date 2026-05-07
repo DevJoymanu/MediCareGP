@@ -76,9 +76,9 @@
 
     <div class="sidebar-footer">
       <div style="display:flex;align-items:center;gap:10px;">
-        <div class="avatar av-40 av-1">SM</div>
+        <div class="avatar av-40 av-1">TC</div>
         <div>
-          <div style="color:#fff;font-weight:600;font-size:12.5px;">Dr. Sarah Malan</div>
+          <div style="color:#fff;font-weight:600;font-size:12.5px;">Dr. T. Chivonivoni</div>
           <div style="color:rgba(255,255,255,0.35);font-size:11px;">General Practitioner</div>
         </div>
         <a href="{% url 'logout' %}" style="margin-left:auto;color:rgba(255,255,255,0.3);font-size:16px;" title="Logout">
@@ -88,10 +88,13 @@
     </div>
   </aside>
 
+  <!-- ── Sidebar overlay (mobile) ─────────────────────────────────────── -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
   <!-- ── Main area ────────────────────────────────────────────────────── -->
   <div class="app-main">
     <header class="topbar">
-      <button id="sidebarToggle" style="display:none;background:none;border:none;font-size:20px;color:var(--text-2);margin-right:4px;" aria-label="Menu">
+      <button id="sidebarToggle" style="background:none;border:none;font-size:22px;color:var(--text-2);margin-right:4px;padding:6px;line-height:1;" aria-label="Menu">
         <i class="bi bi-list"></i>
       </button>
       <div>
@@ -114,13 +117,13 @@
           <span class="topbar-notif">{{ pending_tasks_count }}</span>
           {% endif %}
         </a>
-        <div class="avatar av-36 av-1" style="cursor:pointer;">SM</div>
+        <div class="avatar av-36 av-1" style="cursor:pointer;">TC</div>
       </div>
     </header>
 
     <main class="main-content">
       {% if messages %}
-        <div style="padding:16px 28px 0;">
+        <div style="padding:16px 16px 0;">
           {% for message in messages %}
             <div class="alert alert-{% if message.tags == 'error' %}error{% else %}{{ message.tags|default:'info' }}{% endif %}">
               <i class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
@@ -132,20 +135,62 @@
       {% block content %}{% endblock %}
     </main>
   </div>
+
+  <!-- ── Bottom navigation (mobile) ───────────────────────────────────── -->
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <div class="bottom-nav-inner">
+      <a href="{% url 'dashboard' %}" class="bottom-nav-item {% if request.path == '/' %}active{% endif %}">
+        <i class="bi bi-house-door"></i>
+        <span>Home</span>
+      </a>
+      <a href="{% url 'patient_list' %}" class="bottom-nav-item {% if '/patients/' in request.path %}active{% endif %}">
+        <i class="bi bi-people"></i>
+        <span>Patients</span>
+      </a>
+      <a href="{% url 'appointment_list' %}" class="bottom-nav-item {% if '/appointments/' in request.path %}active{% endif %}">
+        <i class="bi bi-calendar3"></i>
+        <span>Schedule</span>
+      </a>
+      <a href="{% url 'invoice_list' %}" class="bottom-nav-item {% if '/billing/' in request.path %}active{% endif %}">
+        <i class="bi bi-receipt"></i>
+        <span>Billing</span>
+        {% if overdue_invoices_count %}
+        <span class="bottom-nav-badge">{{ overdue_invoices_count }}</span>
+        {% endif %}
+      </a>
+      <a href="{% url 'task_list' %}" class="bottom-nav-item {% if '/tasks/' in request.path %}active{% endif %}">
+        <i class="bi bi-check2-square"></i>
+        <span>Tasks</span>
+        {% if pending_tasks_count %}
+        <span class="bottom-nav-badge">{{ pending_tasks_count }}</span>
+        {% endif %}
+      </a>
+    </div>
+  </nav>
 </div>
 
 <script>
 (function () {
   const toggle = document.getElementById('sidebarToggle');
   const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
   if (toggle) {
-    toggle.style.display = 'block';
-    toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
-    document.addEventListener('click', e => {
-      if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== toggle) {
-        sidebar.classList.remove('open');
-      }
+    toggle.addEventListener('click', () => {
+      const opening = !sidebar.classList.contains('open');
+      sidebar.classList.toggle('open');
+      if (overlay) overlay.classList.toggle('active');
+      document.body.style.overflow = opening ? 'hidden' : '';
     });
+  }
+  if (overlay) {
+    overlay.addEventListener('click', closeSidebar);
   }
 
   // Count-up animation for stat numbers

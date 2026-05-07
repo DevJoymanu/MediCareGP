@@ -8,7 +8,7 @@
   <!-- Greeting -->
   <div style="margin-bottom:28px;">
     <h1 class="brand-heading" style="margin:0 0 5px;font-size:26px;font-weight:800;color:var(--text-1);">
-      Good morning, Dr. Malan
+      Good morning, Dr. Chivonivoni
     </h1>
     <p style="margin:0;color:var(--text-3);font-size:14px;">
       {% if scheduled_today %}
@@ -160,7 +160,7 @@
       <div class="card-title">Recent Patients</div>
       <a href="{% url 'patient_list' %}" class="link-btn">View all <i class="bi bi-arrow-right"></i></a>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+    <div class="grid-4" style="gap:12px;">
       {% for p in recent_patients %}
       <a href="{% url 'patient_detail' p.pk %}" style="padding:16px;border-radius:12px;border:1px solid #f1f5f9;background:#fafafa;text-align:center;display:block;text-decoration:none;transition:background 0.14s;">
         <div style="display:flex;justify-content:center;margin-bottom:10px;">
