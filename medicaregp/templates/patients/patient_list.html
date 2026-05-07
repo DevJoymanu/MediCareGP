@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Patients | G.P CRM{% endblock %}
+{% block page_title %}Patients{% endblock %}
+{% block page_sub %}Manage patient records and profiles{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div class="page-header">
+    <div>
+      <h1>Patient Directory</h1>
+      <p>{{ patients|length }} registered patients</p>
+    </div>
+    <a href="{% url 'patient_create' %}" class="btn-primary"><i class="bi bi-plus-lg"></i> New Patient</a>
+  </div>
+
+  <!-- Search bar -->
+  <div class="card" style="padding:13px 16px;margin-bottom:18px;">
+    <form method="get" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+      <div style="flex:1;position:relative;min-width:200px;">
+        <i class="bi bi-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-4);font-size:13px;pointer-events:none;"></i>
+        <input name="q" value="{{ q }}" placeholder="Search by name, phone, ID, medical aid or condition…" class="crm-input" style="padding-left:36px;">
+      </div>
+      <button type="submit" class="btn-ghost"><i class="bi bi-funnel"></i> Filter</button>
+      {% if q %}<a href="{% url 'patient_list' %}" class="btn-ghost">Clear</a>{% endif %}
+      <span style="font-size:13px;color:var(--text-4);white-space:nowrap;">{{ patients|length }} result{{ patients|length|pluralize }}</span>
+    </form>
+  </div>
+
+  <!-- Table -->
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="crm-table">
+      <thead>
+        <tr>
+          <th>Patient</th>
+          <th>Age / Gender</th>
+          <th>Contact</th>
+          <th>Medical Aid</th>
+          <th>Conditions &amp; Alerts</th>
+          <th>Registered</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in patients %}
+        <tr onclick="window.location='{% url 'patient_detail' p.pk %}'">
+          <td>
+            <div style="display:flex;gap:11px;align-items:center;">
+              <div class="avatar av-36 av-{{ forloop.counter }}">
+                {{ p.first_name|first|upper }}{{ p.last_name|first|upper }}
+              </div>
+              <div>
+                <div style="font-weight:600;font-size:14px;">{{ p }}</div>
+                <div style="font-size:11px;color:var(--text-4);">ID {{ p.id_number|slice:":6" }}···</div>
+              </div>
+            </div>
+          </td>
+          <td style="color:var(--text-2);white-space:nowrap;">{{ p.get_age }} yrs &middot; {{ p.get_gender_display }}</td>
+          <td>
+            <div style="font-size:13px;">{{ p.phone }}</div>
+            {% if p.email %}<div style="font-size:11px;color:var(--text-4);">{{ p.email }}</div>{% endif %}
+          </td>
+          <td style="font-size:13px;color:{% if p.medical_aid_name %}var(--text-2){% else %}var(--text-4){% endif %};">
+            {{ p.medical_aid_name|default:"None" }}
+          </td>
+          <td>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;">
+              {% for a in p.allergies_list %}
+                {% if forloop.first %}<span class="tag tag-allergy">⚠ {{ a }}</span>{% endif %}
+              {% endfor %}
+              {% for c in p.chronic_list %}
+                {% if forloop.first %}<span class="tag tag-chronic">{{ c }}</span>{% endif %}
+              {% endfor %}
+              {% if not p.allergies and not p.chronic_conditions %}
+                <span style="font-size:12px;color:#d1d5db;">None</span>
+              {% endif %}
+            </div>
+          </td>
+          <td style="font-size:13px;color:var(--text-3);white-space:nowrap;">{{ p.date_registered|date:"j M Y" }}</td>
+          <td>
+            <a href="{% url 'patient_detail' p.pk %}" class="btn-ghost" style="font-size:12px;padding:6px 12px;" onclick="event.stopPropagation();">
+              Open <i class="bi bi-arrow-right"></i>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7">
+            <div class="empty-state"><i class="bi bi-people"></i><p>No patients match your search.</p></div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

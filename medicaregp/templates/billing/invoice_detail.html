@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}{{ invoice.invoice_number }} | G.P CRM{% endblock %}
+{% block page_title %}Invoice{% endblock %}
+{% block page_sub %}{{ invoice.invoice_number }} — {{ invoice.patient }}{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div style="max-width:800px;margin:0 auto;">
+    <div class="page-header">
+      <div><h1>{{ invoice.invoice_number }}</h1></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="{% url 'invoice_send_email' invoice.pk %}" class="btn-primary"><i class="bi bi-envelope"></i> Send Email</a>
+        <a href="{% url 'invoice_print' invoice.pk %}" class="btn-ghost"><i class="bi bi-printer"></i> Print</a>
+        <a href="{% url 'invoice_edit' invoice.pk %}" class="btn-ghost"><i class="bi bi-pencil"></i> Edit</a>
+        <a href="{% url 'invoice_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+      </div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="card" style="margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Status</div>
+        <span class="badge" style="
+          font-size:13px;padding:5px 14px;
+          background:{% if invoice.status == 'Paid' %}#f0fdf4{% elif invoice.status == 'Overdue' %}#fef2f2{% elif invoice.status == 'Sent' %}#eff6ff{% elif invoice.status == 'Cancelled' %}#f8fafc{% else %}#f1f5f9{% endif %};
+          color:{% if invoice.status == 'Paid' %}#15803d{% elif invoice.status == 'Overdue' %}#b91c1c{% elif invoice.status == 'Sent' %}#1d4ed8{% elif invoice.status == 'Cancelled' %}#6b7280{% else %}#475569{% endif %};">
+          {{ invoice.status }}
+        </span>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Total Due</div>
+        <div style="font-size:22px;font-weight:800;font-family:'Bricolage Grotesque',sans-serif;">R {{ invoice.total|floatformat:2 }}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Due Date</div>
+        <div style="font-size:14px;font-weight:600;color:{% if invoice.status == 'Overdue' %}#dc2626{% else %}var(--text-1){% endif %};">{{ invoice.due_date|date:"j F Y" }}</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;">
+        {% if invoice.status != 'Paid' and invoice.status != 'Cancelled' %}
+        <form method="post" action="{% url 'invoice_mark_paid' invoice.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn-ghost" style="color:#15803d;border-color:#bbf7d0;">
+            <i class="bi bi-check-circle"></i> Mark Paid
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Patient + practice -->
+    <div class="card" style="margin-bottom:18px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <div>
+          <div class="section-label" style="margin-bottom:10px;">Bill To</div>
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px;">
+            <div class="avatar av-44 av-1">
+              {{ invoice.patient.first_name|first|upper }}{{ invoice.patient.last_name|first|upper }}
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:15px;">{{ invoice.patient }}</div>
+              <div style="font-size:12px;color:var(--text-3);">{{ invoice.patient.phone }}</div>
+              {% if invoice.patient.email %}<div style="font-size:12px;color:var(--text-3);">{{ invoice.patient.email }}</div>{% endif %}
+            </div>
+          </div>
+          {% if invoice.patient.medical_aid_name %}
+          <div style="font-size:12px;color:var(--text-3);">
+            <i class="bi bi-shield-check" style="margin-right:4px;"></i>{{ invoice.patient.medical_aid_name }} — {{ invoice.patient.medical_aid_number }}
+          </div>
+          {% endif %}
+        </div>
+        <div>
+          <div class="section-label" style="margin-bottom:10px;">From</div>
+          <div style="font-weight:700;font-size:15px;">{{ invoice.issued_by }}</div>
+          <div style="font-size:12px;color:var(--text-3);margin-top:2px;">General Practitioner</div>
+          <div style="font-size:12px;color:var(--text-3);margin-top:8px;">Issued: {{ invoice.date_issued|date:"j F Y" }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Line items -->
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;">
+      <table class="crm-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th style="text-align:right;">Qty</th>
+            <th style="text-align:right;">Unit Price</th>
+            <th style="text-align:right;">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in invoice.items.all %}
+          <tr style="cursor:default;">
+            <td>{{ item.description }}</td>
+            <td style="text-align:right;color:var(--text-3);">{{ item.quantity }}</td>
+            <td style="text-align:right;color:var(--text-3);">R {{ item.unit_price|floatformat:2 }}</td>
+            <td style="text-align:right;font-weight:600;">R {{ item.line_total|floatformat:2 }}</td>
+          </tr>
+          {% empty %}
+          <tr style="cursor:default;"><td colspan="4" class="empty-state">No line items.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Totals -->
+      <div style="padding:16px 20px;border-top:1px solid #f1f5f9;">
+        <div style="display:flex;justify-content:flex-end;">
+          <div style="min-width:260px;">
+            <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
+              <span style="color:var(--text-3);">Subtotal</span>
+              <span style="font-weight:600;">R {{ invoice.subtotal|floatformat:2 }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
+              <span style="color:var(--text-3);">VAT (15%)</span>
+              <span style="font-weight:600;">R {{ invoice.vat_amount|floatformat:2 }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0 0;font-size:18px;font-weight:800;border-top:2px solid var(--border);margin-top:6px;">
+              <span>Total</span>
+              <span style="color:var(--accent);">R {{ invoice.total|floatformat:2 }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if invoice.notes %}
+    <div class="card" style="margin-bottom:18px;background:#fafafa;">
+      <div class="section-label" style="margin-bottom:8px;">Notes</div>
+      <p style="font-size:13px;color:var(--text-2);margin:0;white-space:pre-line;">{{ invoice.notes }}</p>
+    </div>
+    {% endif %}
+
+    <div style="display:flex;gap:10px;">
+      <a href="{% url 'invoice_send_email' invoice.pk %}" class="btn-primary"><i class="bi bi-envelope"></i> Send Email</a>
+      <a href="{% url 'invoice_print' invoice.pk %}" class="btn-ghost"><i class="bi bi-printer"></i> Print PDF</a>
+      <a href="{% url 'invoice_delete' invoice.pk %}" class="btn-ghost" style="color:#ef4444;margin-left:auto;"><i class="bi bi-trash"></i> Delete</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

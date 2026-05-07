@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Appointment - MediCare GP{% endblock %}
+{% block header %}<h4 class="mb-0">Appointment Detail</h4>{% endblock %}
+{% block content %}
+<div class="card stat-card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Patient:</strong> <a href="{% url 'patients:detail' appointment.patient.pk %}">{{ appointment.patient }}</a><br>
+                <strong>Date:</strong> {{ appointment.date|date:"d M Y" }}<br>
+                <strong>Time:</strong> {{ appointment.time|time:"H:i" }}<br>
+                <strong>Reason:</strong> {{ appointment.reason }}<br>
+                <strong>Status:</strong> <span class="badge bg-{% if appointment.status == 'scheduled' %}primary{% elif appointment.status == 'completed' %}success{% elif appointment.status == 'cancelled' %}secondary{% else %}warning{% endif %}">{{ appointment.get_status_display }}</span></p>
+                {% if appointment.notes %}<p><strong>Notes:</strong><br>{{ appointment.notes|linebreaks }}</p>{% endif %}
+            </div>
+        </div>
+        <div class="mt-3">
+            <a href="{% url 'appointments:edit' appointment.pk %}" class="btn btn-outline-primary me-2">Edit</a>
+            {% if appointment.status == 'scheduled' %}
+            <a href="{% url 'appointments:cancel' appointment.pk %}" class="btn btn-outline-danger me-2">Cancel</a>
+            <a href="{% url 'consultations:create' %}?appointment={{ appointment.pk }}" class="btn btn-success">Start Consultation</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

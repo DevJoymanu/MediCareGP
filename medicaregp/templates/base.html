@@ -1,0 +1,322 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}G.P CRM{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M9 2v14M2 9h14" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="9" cy="9" r="7.5" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-heading" style="color:#fff;font-weight:800;font-size:14.5px;line-height:1.2;">G.P CRM</div>
+        <div style="color:rgba(255,255,255,0.35);font-size:10.5px;margin-top:1px;letter-spacing:0.04em;">Practice Manager</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="{% url 'dashboard' %}" class="sidebar-item {% if request.path == '/' %}active{% endif %}">
+        <i class="bi bi-house-door" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Dashboard</span>
+      </a>
+      <a href="{% url 'patient_list' %}" class="sidebar-item {% if '/patients/' in request.path %}active{% endif %}">
+        <i class="bi bi-people" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Patients</span>
+      </a>
+      <a href="{% url 'appointment_list' %}" class="sidebar-item {% if '/appointments/' in request.path %}active{% endif %}">
+        <i class="bi bi-calendar3" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Appointments</span>
+      </a>
+      <a href="{% url 'consultation_list' %}" class="sidebar-item {% if '/consultations/' in request.path %}active{% endif %}">
+        <i class="bi bi-clipboard2-pulse" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Consultations</span>
+      </a>
+      <a href="{% url 'document_list' %}" class="sidebar-item {% if '/documents/' in request.path %}active{% endif %}">
+        <i class="bi bi-file-earmark-text" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Documents</span>
+      </a>
+
+      <a href="{% url 'invoice_list' %}" class="sidebar-item {% if '/billing/' in request.path %}active{% endif %}">
+        <i class="bi bi-receipt" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Billing</span>
+        {% if overdue_invoices_count %}
+        <span class="sidebar-badge">{{ overdue_invoices_count }}</span>
+        {% endif %}
+      </a>
+
+      <div class="sidebar-divider"></div>
+
+      <a href="{% url 'task_list' %}" class="sidebar-item {% if '/tasks/' in request.path %}active{% endif %}">
+        <i class="bi bi-check2-square" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Tasks &amp; Reminders</span>
+        {% if pending_tasks_count %}
+        <span class="sidebar-badge">{{ pending_tasks_count }}</span>
+        {% endif %}
+      </a>
+      <a href="{% url 'analytics' %}" class="sidebar-item {% if request.path == '/analytics/' %}active{% endif %}">
+        <i class="bi bi-bar-chart-line" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Analytics</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="avatar av-40 av-1">SM</div>
+        <div>
+          <div style="color:#fff;font-weight:600;font-size:12.5px;">Dr. Sarah Malan</div>
+          <div style="color:rgba(255,255,255,0.35);font-size:11px;">General Practitioner</div>
+        </div>
+        <a href="{% url 'logout' %}" style="margin-left:auto;color:rgba(255,255,255,0.3);font-size:16px;" title="Logout">
+          <i class="bi bi-box-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main area ────────────────────────────────────────────────────── -->
+  <div class="app-main">
+    <header class="topbar">
+      <button id="sidebarToggle" style="display:none;background:none;border:none;font-size:20px;color:var(--text-2);margin-right:4px;" aria-label="Menu">
+        <i class="bi bi-list"></i>
+      </button>
+      <div>
+        <div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
+        <div class="topbar-sub">{% block page_sub %}{% endblock %}</div>
+      </div>
+
+      <form class="topbar-search-wrap" method="get" action="{% url 'patient_list' %}">
+        <i class="bi bi-search topbar-search-icon"></i>
+        <input class="topbar-search" type="text" name="q" placeholder="Search patients, appointments…">
+      </form>
+
+      <div class="topbar-actions">
+        <a href="{% url 'appointment_list' %}" class="topbar-btn" title="Appointments today">
+          <i class="bi bi-calendar3"></i>
+        </a>
+        <a href="{% url 'task_list' %}" class="topbar-btn" title="Tasks">
+          <i class="bi bi-bell"></i>
+          {% if pending_tasks_count %}
+          <span class="topbar-notif">{{ pending_tasks_count }}</span>
+          {% endif %}
+        </a>
+        <div class="avatar av-36 av-1" style="cursor:pointer;">SM</div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      {% if messages %}
+        <div style="padding:16px 28px 0;">
+          {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}error{% else %}{{ message.tags|default:'info' }}{% endif %}">
+              <i class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  const toggle = document.getElementById('sidebarToggle');
+  const sidebar = document.getElementById('sidebar');
+  if (toggle) {
+    toggle.style.display = 'block';
+    toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    document.addEventListener('click', e => {
+      if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== toggle) {
+        sidebar.classList.remove('open');
+      }
+    });
+  }
+
+  // Count-up animation for stat numbers
+  document.querySelectorAll('[data-countup]').forEach(el => {
+    const target = parseInt(el.getAttribute('data-countup'), 10);
+    if (isNaN(target)) return;
+    let count = 0;
+    const step = Math.max(Math.ceil(target / 30), 1);
+    const timer = setInterval(() => {
+      count = Math.min(count + step, target);
+      el.textContent = count;
+      if (count >= target) clearInterval(timer);
+    }, 30);
+  });
+
+  function normalise(text) {
+    return (text || '').toLowerCase().trim();
+  }
+
+  function makeSearchableSelect(select) {
+    if (select.multiple || select.dataset.typeaheadReady === 'true') return;
+
+    const options = Array.from(select.options).filter(option => !option.disabled);
+    if (!options.length) return;
+
+    select.dataset.typeaheadReady = 'true';
+    select.classList.add('typeahead-native-select');
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'typeahead-select';
+    const inputWrap = document.createElement('div');
+    inputWrap.className = 'typeahead-input-wrap';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'crm-input typeahead-input';
+    input.autocomplete = 'off';
+    input.placeholder = select.dataset.placeholder || 'Search options...';
+    input.setAttribute('aria-label', select.getAttribute('aria-label') || select.name || 'Search options');
+    const menu = document.createElement('div');
+    menu.className = 'typeahead-menu';
+
+    select.parentNode.insertBefore(wrapper, select);
+    wrapper.appendChild(select);
+    wrapper.appendChild(inputWrap);
+    inputWrap.appendChild(input);
+    wrapper.appendChild(menu);
+
+    const selectedOption = () => select.options[select.selectedIndex];
+    const blankOption = () => Array.from(select.options).find(option => option.value === '');
+    const syncInput = () => {
+      const current = selectedOption();
+      input.value = current && current.value ? current.text.trim() : '';
+    };
+
+    function closeMenu() {
+      wrapper.classList.remove('is-open');
+      menu.innerHTML = '';
+    }
+
+    function setValue(option) {
+      select.value = option.value;
+      input.value = option.value ? option.text.trim() : '';
+      input.setCustomValidity('');
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      closeMenu();
+    }
+
+    function renderOptions() {
+      const query = normalise(input.value);
+      const matches = options.filter(option => {
+        const label = normalise(option.text);
+        return !query || label.includes(query);
+      }).slice(0, 50);
+
+      menu.innerHTML = '';
+      if (!matches.length) {
+        const empty = document.createElement('div');
+        empty.className = 'typeahead-empty';
+        empty.textContent = 'No matching options';
+        menu.appendChild(empty);
+        wrapper.classList.add('is-open');
+        return;
+      }
+
+      matches.forEach(option => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'typeahead-option';
+        if (option.value === select.value) button.classList.add('is-selected');
+        button.textContent = option.value ? option.text.trim() : option.text.trim() || 'Clear selection';
+        button.addEventListener('mousedown', event => event.preventDefault());
+        button.addEventListener('click', () => setValue(option));
+        menu.appendChild(button);
+      });
+      wrapper.classList.add('is-open');
+    }
+
+    function chooseExactOrReset() {
+      const query = normalise(input.value);
+      if (!query) {
+        const blank = blankOption();
+        if (blank) setValue(blank);
+        else syncInput();
+        return;
+      }
+
+      const exact = options.find(option => normalise(option.text) === query);
+      if (exact) setValue(exact);
+      else syncInput();
+    }
+
+    input.addEventListener('focus', renderOptions);
+    input.addEventListener('input', renderOptions);
+    input.addEventListener('blur', () => window.setTimeout(() => {
+      chooseExactOrReset();
+      closeMenu();
+    }, 120));
+    input.addEventListener('keydown', event => {
+      const items = Array.from(menu.querySelectorAll('.typeahead-option'));
+      const activeIndex = items.findIndex(item => item.classList.contains('is-active'));
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        const next = items[Math.min(activeIndex + 1, items.length - 1)] || items[0];
+        items.forEach(item => item.classList.remove('is-active'));
+        next?.classList.add('is-active');
+        next?.scrollIntoView({ block: 'nearest' });
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        const previous = items[Math.max(activeIndex - 1, 0)] || items[items.length - 1];
+        items.forEach(item => item.classList.remove('is-active'));
+        previous?.classList.add('is-active');
+        previous?.scrollIntoView({ block: 'nearest' });
+      } else if (event.key === 'Enter' && wrapper.classList.contains('is-open')) {
+        const active = menu.querySelector('.typeahead-option.is-active') || menu.querySelector('.typeahead-option');
+        if (active) {
+          event.preventDefault();
+          active.click();
+        }
+      } else if (event.key === 'Escape') {
+        closeMenu();
+        syncInput();
+      }
+    });
+
+    select.addEventListener('change', syncInput);
+    select.addEventListener('invalid', event => {
+      event.preventDefault();
+      input.setCustomValidity(select.validationMessage);
+      input.reportValidity();
+    });
+    input.addEventListener('input', () => input.setCustomValidity(''));
+    syncInput();
+  }
+
+  document.querySelectorAll('select').forEach(makeSearchableSelect);
+
+  document.querySelectorAll('.js-task-toggle-form').forEach(form => {
+    form.addEventListener('submit', event => {
+      const row = form.closest('.task-row');
+      if (!row || form.dataset.submitting === 'true') return;
+
+      event.preventDefault();
+      form.dataset.submitting = 'true';
+      row.classList.add(form.dataset.taskTransition === 'restore' ? 'is-restoring' : 'is-completing');
+      form.querySelector('button')?.setAttribute('disabled', 'disabled');
+
+      window.setTimeout(() => form.submit(), 260);
+    });
+  });
+})();
+</script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

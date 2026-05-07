@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | G.P CRM{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_sub %}Your daily practice overview{% endblock %}
+{% block content %}
+<div class="page-body">
+
+  <!-- Greeting -->
+  <div style="margin-bottom:28px;">
+    <h1 class="brand-heading" style="margin:0 0 5px;font-size:26px;font-weight:800;color:var(--text-1);">
+      Good morning, Dr. Malan
+    </h1>
+    <p style="margin:0;color:var(--text-3);font-size:14px;">
+      {% if scheduled_today %}
+        <strong style="color:var(--text-1);">{{ scheduled_today }} appointment{{ scheduled_today|pluralize }}</strong> remaining today
+        &middot; <strong style="color:var(--text-1);">{{ pending_tasks_count }} task{{ pending_tasks_count|pluralize }}</strong> pending
+      {% else %}
+        No more appointments scheduled for today &middot; {{ today|date:"l, d F Y" }}
+      {% endif %}
+    </p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid">
+    <a href="{% url 'patient_list' %}" class="stat-card clickable-card">
+      <div class="stat-icon indigo"><i class="bi bi-people"></i></div>
+      <div>
+        <div class="stat-number" data-countup="{{ total_patients }}">{{ total_patients }}</div>
+        <div class="stat-label">Total Patients</div>
+        <div class="stat-sub">Active records</div>
+      </div>
+    </a>
+    <a href="{% url 'appointment_list' %}?date={{ today|date:'Y-m-d' }}" class="stat-card clickable-card">
+      <div class="stat-icon teal"><i class="bi bi-calendar-check"></i></div>
+      <div>
+        <div class="stat-number" data-countup="{{ todays_count }}">{{ todays_count }}</div>
+        <div class="stat-label">Today's Appointments</div>
+        <div class="stat-sub">{{ todays_appointments|length|add:0 }} total</div>
+      </div>
+    </a>
+    <a href="{% url 'task_list' %}" class="stat-card clickable-card">
+      <div class="stat-icon amber"><i class="bi bi-check2-square"></i></div>
+      <div>
+        <div class="stat-number" data-countup="{{ pending_tasks_count }}">{{ pending_tasks_count }}</div>
+        <div class="stat-label">Pending Tasks</div>
+        <div class="stat-sub">Action required</div>
+      </div>
+    </a>
+    <a href="{% url 'consultation_list' %}" class="stat-card clickable-card">
+      <div class="stat-icon rose"><i class="bi bi-arrow-clockwise"></i></div>
+      <div>
+        <div class="stat-number" data-countup="{{ follow_ups|length }}">{{ follow_ups|length }}</div>
+        <div class="stat-label">Upcoming Follow-ups</div>
+        <div class="stat-sub">Next 30 days</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Two-column -->
+  <div class="dash-grid">
+    <!-- Today's schedule -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Today's Schedule</div>
+          <div class="card-sub">{{ today|date:"l, j F Y" }}</div>
+        </div>
+        <a href="{% url 'appointment_list' %}" class="link-btn">View calendar <i class="bi bi-arrow-right"></i></a>
+      </div>
+      {% if todays_appointments %}
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          {% for a in todays_appointments %}
+          <a href="{% url 'appointment_detail' a.pk %}" class="schedule-item">
+            <div class="schedule-time">{{ a.time|time:"H:i" }}</div>
+            <div class="avatar av-36 av-{{ a.patient.id|divisibleby:8|yesno:'8,1' }} av-{{ forloop.counter }}">
+              {{ a.patient.first_name|first|upper }}{{ a.patient.last_name|first|upper }}
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:600;font-size:13.5px;">{{ a.patient }}</div>
+              <div style="font-size:12px;color:var(--text-3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ a.reason }}</div>
+            </div>
+            {% if a.patient.allergies %}
+              <i class="bi bi-exclamation-triangle-fill" style="color:#f59e0b;font-size:13px;flex-shrink:0;" title="Allergies: {{ a.patient.allergies }}"></i>
+            {% endif %}
+            <span class="badge badge-{{ a.status|lower|cut:'-' }}">{{ a.status }}</span>
+          </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state"><i class="bi bi-calendar3"></i><p>No appointments scheduled today.</p></div>
+      {% endif %}
+    </div>
+
+    <!-- Right column -->
+    <div style="display:flex;flex-direction:column;gap:18px;">
+      <!-- Priority tasks -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Priority Tasks</div>
+          <a href="{% url 'task_list' %}" class="link-btn">All <i class="bi bi-arrow-right"></i></a>
+        </div>
+        {% if pending_tasks %}
+          {% for t in pending_tasks %}
+          <div class="task-row" style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #f1f5f9;">
+            <form method="post" class="js-task-toggle-form" data-task-transition="complete" style="margin-top:2px;">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="toggle_task">
+              <input type="hidden" name="task_id" value="{{ t.id }}">
+              <button type="submit" class="task-check" style="background:none;border:2px solid #d1d5db;" title="Mark complete"></button>
+            </form>
+            <a href="{% url 'task_list' %}" class="task-row-link">
+              <div class="task-row-body" style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:500;color:#111827;line-height:1.4;">{{ t.title }}</div>
+                <div style="display:flex;gap:8px;align-items:center;margin-top:4px;flex-wrap:wrap;">
+                  {% if t.patient %}
+                    <span style="font-size:11px;color:var(--text-3);">{{ t.patient }}</span>
+                  {% endif %}
+                  <span style="font-size:11px;color:{% if t.due_date < today %}#dc2626{% else %}var(--text-4){% endif %};">
+                    <i class="bi bi-clock" style="margin-right:3px;"></i>{{ t.due_date|date:"j M Y" }}{% if t.due_date < today %} &mdash; Overdue{% endif %}
+                  </span>
+                </div>
+              </div>
+              <span class="pri-{{ t.priority|lower }}">{{ t.priority }}</span>
+            </a>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state"><i class="bi bi-check2-all"></i><p>All caught up!</p></div>
+        {% endif %}
+      </div>
+
+      <!-- Follow-ups -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Upcoming Follow-ups</div>
+        </div>
+        {% if follow_ups %}
+          {% for c in follow_ups %}
+          <a href="{% url 'consultation_detail' c.pk %}" class="followup-item">
+            <div class="avatar av-36 av-{{ forloop.counter }}">
+              {{ c.patient.first_name|first|upper }}{{ c.patient.last_name|first|upper }}
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;font-weight:600;">{{ c.patient }}</div>
+              <div style="font-size:11px;color:var(--text-3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ c.assessment|truncatewords:8 }}</div>
+            </div>
+            <span style="font-size:12px;color:var(--accent);font-weight:600;white-space:nowrap;">{{ c.follow_up_date|date:"j M Y" }}</span>
+          </a>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state"><i class="bi bi-arrow-clockwise"></i><p>No follow-ups scheduled.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent patients -->
+  <div class="card" style="margin-top:20px;">
+    <div class="card-header">
+      <div class="card-title">Recent Patients</div>
+      <a href="{% url 'patient_list' %}" class="link-btn">View all <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      {% for p in recent_patients %}
+      <a href="{% url 'patient_detail' p.pk %}" style="padding:16px;border-radius:12px;border:1px solid #f1f5f9;background:#fafafa;text-align:center;display:block;text-decoration:none;transition:background 0.14s;">
+        <div style="display:flex;justify-content:center;margin-bottom:10px;">
+          <div class="avatar av-44 av-{{ forloop.counter }}">
+            {{ p.first_name|first|upper }}{{ p.last_name|first|upper }}
+          </div>
+        </div>
+        <div style="font-weight:600;font-size:13px;color:var(--text-1);">{{ p }}</div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:2px;">{{ p.get_age }} yrs &middot; {{ p.get_gender_display }}</div>
+        {% if p.allergies %}
+          <div style="margin-top:8px;">
+            <span class="tag tag-allergy"><i class="bi bi-exclamation-triangle-fill"></i> {{ p.allergies_list.0 }}</span>
+          </div>
+        {% endif %}
+        {% if p.chronic_conditions %}
+          <div style="margin-top:6px;">
+            <span class="tag tag-chronic">{{ p.chronic_list.0 }}</span>
+          </div>
+        {% endif %}
+      </a>
+      {% empty %}
+        <div class="empty-state" style="grid-column:1/-1;"><i class="bi bi-people"></i><p>No patients registered yet.</p></div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

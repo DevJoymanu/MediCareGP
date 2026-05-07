@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Documents | G.P CRM{% endblock %}
+{% block page_title %}Documents{% endblock %}
+{% block page_sub %}Clinical and administrative records{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div class="page-header">
+    <div>
+      <h1>Documents</h1>
+      <p>Clinical and administrative records</p>
+    </div>
+    <a href="{% url 'document_create' %}" class="btn-primary"><i class="bi bi-plus-lg"></i> New Document</a>
+  </div>
+
+  <!-- Search -->
+  <div class="card" style="padding:13px 16px;margin-bottom:18px;">
+    <form method="get" style="display:flex;gap:12px;align-items:center;">
+      <div style="flex:1;position:relative;">
+        <i class="bi bi-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-4);font-size:13px;pointer-events:none;"></i>
+        <input name="q" value="{{ q }}" placeholder="Search documents…" class="crm-input" style="padding-left:36px;">
+      </div>
+      <button type="submit" class="btn-ghost"><i class="bi bi-funnel"></i></button>
+      {% if q %}<a href="{% url 'document_list' %}" class="btn-ghost">Clear</a>{% endif %}
+    </form>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    {% for d in documents %}
+    <div class="card" style="display:flex;gap:14px;align-items:center;">
+      <div style="width:46px;height:46px;border-radius:12px;background:
+        {% if d.doc_type == 'Sick Note' %}#fef3c7{% elif d.doc_type == 'Referral Letter' %}#eff6ff{% elif d.doc_type == 'Prescription' %}#f0fdf4{% elif d.doc_type == 'Vaccination Record' %}#f5f3ff{% else %}#f8fafc{% endif %};
+        display:flex;align-items:center;justify-content:center;font-size:20px;color:
+        {% if d.doc_type == 'Sick Note' %}#d97706{% elif d.doc_type == 'Referral Letter' %}#2563eb{% elif d.doc_type == 'Prescription' %}#15803d{% elif d.doc_type == 'Vaccination Record' %}#7c3aed{% else %}#6b7280{% endif %};
+        flex-shrink:0;">
+        <i class="bi bi-{% if d.doc_type == 'Sick Note' %}file-medical{% elif d.doc_type == 'Referral Letter' %}envelope-paper{% elif d.doc_type == 'Prescription' %}capsule-pill{% elif d.doc_type == 'Vaccination Record' %}shield-check{% else %}file-earmark-text{% endif %}"></i>
+      </div>
+      <div style="flex:1;">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:4px;">
+          <span style="font-weight:700;font-size:15px;">{{ d.doc_type }}</span>
+          <span style="font-size:11px;color:var(--text-3);padding:2px 9px;border-radius:6px;background:#f1f5f9;font-weight:500;">{{ d.category }}</span>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;font-size:13px;color:var(--text-3);">
+          <div class="avatar av-36 av-1" style="width:18px;height:18px;font-size:7px;">
+            {{ d.patient.first_name|first|upper }}{{ d.patient.last_name|first|upper }}
+          </div>
+          <span>{{ d.patient }}</span>
+          <span style="color:#d1d5db;">&middot;</span>
+          <span>Issued {{ d.date_issued|date:"j M Y" }}</span>
+          <span style="color:#d1d5db;">&middot;</span>
+          <span>{{ d.issued_by }}</span>
+        </div>
+        {% if d.notes %}<div style="margin-top:5px;font-size:12px;color:var(--text-4);font-style:italic;">{{ d.notes }}</div>{% endif %}
+      </div>
+      <div style="display:flex;gap:8px;">
+        <a href="{% url 'document_detail' d.pk %}" class="btn-ghost" style="padding:7px 13px;font-size:12px;"><i class="bi bi-eye"></i> View</a>
+        <a href="{% url 'document_print' d.pk %}" class="btn-ghost" style="padding:7px 11px;font-size:12px;"><i class="bi bi-printer"></i></a>
+      </div>
+    </div>
+    {% empty %}
+    <div class="card"><div class="empty-state"><i class="bi bi-file-earmark"></i><p>No documents found.</p></div></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

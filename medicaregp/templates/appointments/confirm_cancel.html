@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Cancel Appointment | G.P CRM{% endblock %}
+{% block page_title %}Cancel Appointment{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div class="card confirm-card">
+    <div style="width:60px;height:60px;border-radius:50%;background:#fffbeb;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:24px;color:#f59e0b;">
+      <i class="bi bi-x-circle"></i>
+    </div>
+    <h2 class="brand-heading" style="font-size:20px;margin-bottom:8px;">Cancel this appointment?</h2>
+    <p style="color:var(--text-3);font-size:14px;margin-bottom:8px;">
+      <strong>{{ appointment.patient }}</strong> — {{ appointment.date|date:"l, j F Y" }} at {{ appointment.time|time:"H:i" }}
+    </p>
+    <p style="color:var(--text-3);font-size:13px;margin-bottom:24px;">{{ appointment.reason }}</p>
+    <form method="post" style="display:flex;gap:10px;justify-content:center;">
+      {% csrf_token %}
+      <button type="submit" class="btn-danger"><i class="bi bi-x-circle"></i> Yes, cancel</button>
+      <a href="{% url 'appointment_detail' appointment.pk %}" class="btn-ghost">Go back</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

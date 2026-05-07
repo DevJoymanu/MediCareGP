@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Consultation | G.P CRM{% endblock %}
+{% block page_title %}Consultation Record{% endblock %}
+{% block page_sub %}{{ consultation.patient }} — {{ consultation.date|date:"j F Y" }}{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div style="max-width:800px;margin:0 auto;">
+    <div class="page-header">
+      <div><h1>Consultation Record</h1></div>
+      <div style="display:flex;gap:8px;">
+        <a href="{% url 'consultation_print' consultation.pk %}" class="btn-ghost"><i class="bi bi-printer"></i> Print</a>
+        <a href="{% url 'consultation_edit' consultation.pk %}" class="btn-ghost"><i class="bi bi-pencil"></i> Edit</a>
+        <a href="{% url 'consultation_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+      </div>
+    </div>
+
+    <!-- Header card -->
+    <div class="card" style="margin-bottom:18px;">
+      <div style="display:flex;gap:14px;align-items:center;">
+        <div class="avatar av-62 av-1">
+          {{ consultation.patient.first_name|first|upper }}{{ consultation.patient.last_name|first|upper }}
+        </div>
+        <div style="flex:1;">
+          <h2 class="brand-heading" style="font-size:18px;margin:0 0 4px;">{{ consultation.patient }}</h2>
+          <div style="font-size:13px;color:var(--text-3);">Consultation — {{ consultation.date|date:"l, j F Y" }}</div>
+        </div>
+        {% if consultation.follow_up_date %}
+        <div style="padding:9px 14px;border-radius:11px;background:#eff6ff;border:1px solid #bfdbfe;text-align:center;flex-shrink:0;">
+          <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;">Follow-up</div>
+          <div style="font-size:13px;font-weight:700;color:#1e40af;">{{ consultation.follow_up_date|date:"j M Y" }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- SOAP grid -->
+    <div class="soap-grid" style="margin-bottom:18px;">
+      <div class="soap-block soap-s">
+        <div class="soap-label">S — Subjective</div>
+        <p class="soap-text">{{ consultation.subjective }}</p>
+      </div>
+      <div class="soap-block soap-o">
+        <div class="soap-label">O — Objective</div>
+        <p class="soap-text">{{ consultation.objective }}</p>
+      </div>
+      <div class="soap-block soap-a">
+        <div class="soap-label">A — Assessment</div>
+        <p class="soap-text">{{ consultation.assessment }}</p>
+      </div>
+      <div class="soap-block soap-p">
+        <div class="soap-label">P — Plan</div>
+        <p class="soap-text">{{ consultation.plan }}</p>
+      </div>
+    </div>
+
+    <!-- Prescriptions -->
+    {% if consultation.prescriptions %}
+    <div class="card" style="background:#f0fdf4;border:1px solid #bbf7d0;margin-bottom:18px;">
+      <div style="font-size:10.5px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;">
+        <i class="bi bi-capsule-pill" style="margin-right:6px;"></i>Prescriptions
+      </div>
+      <div style="font-size:13px;color:#166534;white-space:pre-line;line-height:1.8;">{{ consultation.prescriptions }}</div>
+    </div>
+    {% endif %}
+
+    <div style="display:flex;gap:10px;">
+      <a href="{% url 'consultation_print' consultation.pk %}" class="btn-primary"><i class="bi bi-printer"></i> Print Record</a>
+      <a href="{% url 'consultation_edit' consultation.pk %}" class="btn-ghost"><i class="bi bi-pencil"></i> Edit</a>
+      <a href="{% url 'consultation_delete' consultation.pk %}" class="btn-ghost" style="color:#ef4444;margin-left:auto;"><i class="bi bi-trash"></i> Delete</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} - MediCare GP{% endblock %}
+{% block header %}<h4 class="mb-0">{{ title }}</h4>{% endblock %}
+{% block content %}
+<div class="card stat-card">
+    <div class="card-body">
+        <form method="post">{% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">{{ form.patient.label }}</label>{{ form.patient }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">{{ form.appointment.label }}</label>{{ form.appointment }}
+                </div>
+            </div>
+            <h5 class="mt-3 text-primary"><i class="bi bi-journal-medical me-2"></i>SOAP Note</h5>
+            <hr>
+            <div class="mb-3">
+                <label class="form-label fw-bold">S — Subjective</label>{{ form.subjective }}
+                <small class="text-muted">{{ form.subjective.help_text }}</small>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">O — Objective</label>{{ form.objective }}
+                <small class="text-muted">{{ form.objective.help_text }}</small>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">A — Assessment</label>{{ form.assessment }}
+                <small class="text-muted">{{ form.assessment.help_text }}</small>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">P — Plan</label>{{ form.plan }}
+                <small class="text-muted">{{ form.plan.help_text }}</small>
+            </div>
+            <div class="row">
+                <div class="col-md-8 mb-3">
+                    <label class="form-label fw-bold">Prescriptions</label>{{ form.prescriptions }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Follow-up Date</label>{{ form.follow_up_date }}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Consultation</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

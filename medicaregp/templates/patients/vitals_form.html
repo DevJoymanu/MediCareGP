@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Record Vitals | G.P CRM{% endblock %}
+{% block page_title %}Record Vitals{% endblock %}
+{% block page_sub %}{{ patient }}{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div style="max-width:680px;margin:0 auto;">
+    <div class="page-header">
+      <div>
+        <h1>Record Vitals</h1>
+        <p>{{ patient }} — file {{ patient.file_number }}</p>
+      </div>
+      <a href="{% url 'patient_detail' patient.pk %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="card" style="margin-bottom:18px;">
+        <div class="form-group" style="margin-bottom:16px;">
+          <label>Date *</label>
+          {{ form.date }}
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+          <div class="form-group">
+            <label>Blood Pressure</label>
+            {{ form.blood_pressure }}
+            <div style="font-size:11px;color:var(--text-4);margin-top:4px;">e.g. 120/80 mmHg</div>
+          </div>
+          <div class="form-group">
+            <label>Systolic (mmHg)</label>
+            {{ form.bp_systolic }}
+          </div>
+          <div class="form-group">
+            <label>Diastolic (mmHg)</label>
+            {{ form.bp_diastolic }}
+          </div>
+          <div class="form-group">
+            <label>Pulse (bpm)</label>
+            {{ form.pulse }}
+          </div>
+          <div class="form-group">
+            <label>Temperature (°C)</label>
+            {{ form.temperature }}
+          </div>
+          <div class="form-group">
+            <label>O₂ Saturation (%)</label>
+            {{ form.oxygen_saturation }}
+          </div>
+          <div class="form-group">
+            <label>Weight (kg)</label>
+            {{ form.weight }}
+          </div>
+          <div class="form-group">
+            <label>Height (cm)</label>
+            {{ form.height }}
+          </div>
+          <div class="form-group">
+            <label>Blood Glucose (mmol/L)</label>
+            {{ form.blood_glucose }}
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:4px;margin-bottom:0;">
+          <label>Recorded By</label>
+          {{ form.recorded_by }}
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Vitals</button>
+        <a href="{% url 'patient_detail' patient.pk %}" class="btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// Auto-split blood pressure into systolic/diastolic
+document.getElementById('id_blood_pressure').addEventListener('blur', function () {
+  const val = this.value;
+  if (val.includes('/')) {
+    const parts = val.split('/');
+    const sys = parseInt(parts[0].trim());
+    const dia = parseInt(parts[1].trim());
+    if (!isNaN(sys)) document.getElementById('id_bp_systolic').value = sys;
+    if (!isNaN(dia)) document.getElementById('id_bp_diastolic').value = dia;
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ document.doc_type }} — {{ document.patient }}</title>
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
+  <style>body { background:#fff; } @media screen { .print-shell { box-shadow:0 4px 32px rgba(0,0,0,0.10); margin:32px auto; } }</style>
+</head>
+<body>
+<div class="print-shell">
+  <div class="print-header">
+    <div style="display:flex;gap:14px;align-items:center;">
+      <div class="print-logo" style="display:flex;align-items:center;justify-content:center;">
+        <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><path d="M9 2v14M2 9h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div style="font-size:20px;font-weight:800;font-family:'Bricolage Grotesque',sans-serif;">G.P CRM</div>
+        <div style="font-size:13px;color:#6b7280;">Dr. Sarah Malan — General Practitioner</div>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:14px;font-weight:700;">{{ document.doc_type }}</div>
+      <div style="font-size:12px;color:#6b7280;">{{ document.category }}</div>
+      <div style="font-size:12px;color:#6b7280;">{{ document.date_issued|date:"j F Y" }}</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #e8ecf1;">
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#9ca3af;margin-bottom:4px;">Patient</div>
+      <div style="font-size:16px;font-weight:700;">{{ document.patient }}</div>
+      <div style="font-size:13px;color:#6b7280;">{{ document.patient.phone }}</div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#9ca3af;margin-bottom:4px;">Issued By</div>
+      <div style="font-size:14px;font-weight:600;">{{ document.issued_by }}</div>
+    </div>
+  </div>
+
+  {% if document.content %}
+  <div style="font-size:14px;color:#374151;line-height:1.75;white-space:pre-line;margin-bottom:40px;">{{ document.content }}</div>
+  {% endif %}
+
+  <div style="margin-top:60px;display:flex;justify-content:flex-end;">
+    <div>
+      <div style="width:240px;border-top:1px solid #374151;padding-top:8px;font-size:13px;">
+        <strong>{{ document.issued_by }}</strong><br>
+        <span style="color:#6b7280;">General Practitioner</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>window.onload = () => window.print();</script>
+</body>
+</html>

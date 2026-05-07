@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | G.P CRM{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div style="max-width:680px;margin:0 auto;">
+    <div class="page-header">
+      <div><h1>{{ title }}</h1></div>
+      <a href="{% url 'appointment_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-title" style="margin-bottom:16px;">Appointment</div>
+        <div class="form-grid-2">
+          <div class="form-group form-full">
+            <label>Patient *</label>
+            {{ form.patient }}
+          </div>
+          <div class="form-group">
+            <label>Date *</label>
+            {{ form.date }}
+          </div>
+          <div class="form-group">
+            <label>Time *</label>
+            {{ form.time }}
+          </div>
+          <div class="form-group form-full">
+            <label>Reason for Visit *</label>
+            {{ form.reason }}
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            {{ form.status }}
+          </div>
+          <div class="form-group form-full">
+            <label>Notes</label>
+            {{ form.notes }}
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-title" style="margin-bottom:4px;">Reception / Admin</div>
+        <div style="font-size:12px;color:var(--text-4);margin-bottom:16px;">Optional — complete if applicable</div>
+        <div class="form-grid-2">
+          <div class="form-group form-full">
+            <label>Referring Doctor</label>
+            {{ form.referring_doctor }}
+          </div>
+          <div class="form-group">
+            <label>Medical Aid Auth. Number</label>
+            {{ form.authorization_number }}
+          </div>
+          <div class="form-group">
+            <label>ICD-10 Code</label>
+            {{ form.icd10_code }}
+          </div>
+        </div>
+      </div>
+
+      {% if form.errors %}
+      <div class="alert alert-error" style="margin-bottom:16px;">Please correct the errors above.</div>
+      {% endif %}
+
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Appointment</button>
+        <a href="{% url 'appointment_list' %}" class="btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

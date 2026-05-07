@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Consultation - MediCare GP{% endblock %}
+{% block header %}<h4 class="mb-0">SOAP Note — {{ consultation.patient }}</h4>{% endblock %}
+{% block content %}
+<div class="card stat-card">
+    <div class="card-body">
+        <p class="text-muted">Date: {{ consultation.date|date:"d M Y" }}
+        {% if consultation.appointment %} | Appointment: {{ consultation.appointment.date|date:"d M Y" }} {{ consultation.appointment.time|time:"H:i" }}{% endif %}</p>
+        <h5 class="text-primary mt-3">S — Subjective</h5>
+        <p>{{ consultation.subjective|linebreaks }}</p>
+        <h5 class="text-primary">O — Objective</h5>
+        <p>{{ consultation.objective|linebreaks }}</p>
+        <h5 class="text-primary">A — Assessment</h5>
+        <p>{{ consultation.assessment|linebreaks }}</p>
+        <h5 class="text-primary">P — Plan</h5>
+        <p>{{ consultation.plan|linebreaks }}</p>
+        {% if consultation.prescriptions %}
+        <h5 class="text-primary">Prescriptions</h5>
+        <p>{{ consultation.prescriptions|linebreaks }}</p>
+        {% endif %}
+        {% if consultation.follow_up_date %}
+        <p><strong>Follow-up:</strong> {{ consultation.follow_up_date|date:"d M Y" }}</p>
+        {% endif %}
+        <a href="{% url 'patients:detail' consultation.patient.pk %}" class="btn btn-outline-primary mt-3">Back to Patient</a>
+    </div>
+</div>
+{% endblock %}

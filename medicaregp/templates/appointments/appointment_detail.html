@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Appointment | G.P CRM{% endblock %}
+{% block page_title %}Appointment Details{% endblock %}
+{% block page_sub %}{{ appointment.patient }} — {{ appointment.date|date:"j F Y" }}{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div style="max-width:680px;margin:0 auto;">
+    <div class="page-header">
+      <div><h1>Appointment</h1></div>
+      <div style="display:flex;gap:8px;">
+        <a href="{% url 'appointment_edit' appointment.pk %}" class="btn-ghost"><i class="bi bi-pencil"></i> Edit</a>
+        <a href="{% url 'appointment_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:18px;">
+      <div style="display:flex;gap:14px;align-items:center;margin-bottom:20px;">
+        <div class="avatar av-62 av-1">
+          {{ appointment.patient.first_name|first|upper }}{{ appointment.patient.last_name|first|upper }}
+        </div>
+        <div style="flex:1;">
+          <h2 class="brand-heading" style="font-size:20px;margin:0 0 4px;">{{ appointment.patient }}</h2>
+          <div style="font-size:13px;color:var(--text-3);">{{ appointment.patient.phone }}</div>
+        </div>
+        <span class="badge badge-{{ appointment.status|lower|cut:'-' }}" style="font-size:13px;padding:5px 14px;">{{ appointment.status }}</span>
+      </div>
+
+      <div class="detail-row"><span class="detail-key">Date</span><span class="detail-val">{{ appointment.date|date:"l, j F Y" }}</span></div>
+      <div class="detail-row"><span class="detail-key">Time</span><span class="detail-val">{{ appointment.time|time:"H:i" }}</span></div>
+      <div class="detail-row"><span class="detail-key">Reason</span><span class="detail-val">{{ appointment.reason }}</span></div>
+      {% if appointment.notes %}
+      <div class="detail-row"><span class="detail-key">Notes</span><span class="detail-val">{{ appointment.notes }}</span></div>
+      {% endif %}
+    </div>
+
+    {% if appointment.patient.allergies %}
+    <div class="allergy-banner" style="margin-bottom:18px;">
+      <i class="bi bi-exclamation-triangle-fill" style="color:#ef4444;"></i>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;">Allergy Alert</div>
+        <div style="font-size:13px;color:var(--text-1);">{{ appointment.patient.allergies }}</div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="{% url 'consultation_create' %}?patient_id={{ appointment.patient.pk }}&appointment_id={{ appointment.pk }}" class="btn-primary">
+        <i class="bi bi-clipboard2-plus"></i> Start Consultation
+      </a>
+      {% if appointment.status == 'Scheduled' %}
+      <form method="post" action="{% url 'appointment_cancel' appointment.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-ghost" style="color:#ef4444;">
+          <i class="bi bi-x-circle"></i> Cancel
+        </button>
+      </form>
+      {% endif %}
+      <a href="{% url 'appointment_delete' appointment.pk %}" class="btn-ghost" style="color:#ef4444;margin-left:auto;">
+        <i class="bi bi-trash"></i> Delete
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

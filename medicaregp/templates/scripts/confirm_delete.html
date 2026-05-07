@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Delete Document | G.P CRM{% endblock %}
+{% block page_title %}Delete Document{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div class="card confirm-card">
+    <div style="width:60px;height:60px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:24px;color:#ef4444;">
+      <i class="bi bi-trash"></i>
+    </div>
+    <h2 class="brand-heading" style="font-size:20px;margin-bottom:8px;">Delete this document?</h2>
+    <p style="color:var(--text-3);font-size:14px;margin-bottom:24px;">
+      <strong>{{ document.doc_type }}</strong> — {{ document.patient }}<br>
+      <span style="font-size:13px;">Issued {{ document.date_issued|date:"j F Y" }}</span>
+    </p>
+    <form method="post" style="display:flex;gap:10px;justify-content:center;">
+      {% csrf_token %}
+      <button type="submit" class="btn-danger"><i class="bi bi-trash"></i> Delete</button>
+      <a href="{% url 'document_detail' document.pk %}" class="btn-ghost">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | G.P CRM{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block extra_head %}
+<style>
+  .sick-note-fields { display:none; }
+  .sick-note-fields.visible { display:grid; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div style="max-width:960px;margin:0 auto;">
+    <div class="page-header">
+      <div><h1>{{ title }}</h1></div>
+      <a href="{% url 'consultation_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+
+    <form method="post" id="consultForm">
+      {% csrf_token %}
+
+      <!-- Patient & appointment -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-title" style="margin-bottom:16px;">Patient &amp; Appointment</div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Patient *</label>
+            {{ form.patient }}
+          </div>
+          <div class="form-group">
+            <label>Linked Appointment (optional)</label>
+            {{ form.appointment }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Chief complaint -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-title" style="margin-bottom:4px;">Chief Complaint</div>
+        <div style="font-size:12px;color:var(--text-4);margin-bottom:12px;">Reason for visit in the patient's own words</div>
+        <div class="form-group" style="margin-bottom:0;">
+          {{ form.chief_complaint }}
+        </div>
+      </div>
+
+      <!-- SOAP -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-title" style="margin-bottom:16px;">SOAP Notes</div>
+        <div class="soap-grid" style="margin-bottom:16px;">
+          <div class="soap-block soap-s" style="padding:0;">
+            <div style="padding:14px 16px 8px;">
+              <div class="soap-label">S — Subjective</div>
+              <div style="font-size:11px;color:#818cf8;margin-bottom:8px;">History of presenting illness — onset, duration, severity, progression</div>
+            </div>
+            <div style="padding:0 16px 16px;">{{ form.subjective }}</div>
+          </div>
+          <div class="soap-block soap-o" style="padding:0;">
+            <div style="padding:14px 16px 8px;">
+              <div class="soap-label">O — Objective</div>
+              <div style="font-size:11px;color:#0891b2;margin-bottom:8px;">Examination findings, vital signs, investigations</div>
+            </div>
+            <div style="padding:0 16px 16px;">{{ form.objective }}</div>
+          </div>
+          <div class="soap-block soap-a" style="padding:0;">
+            <div style="padding:14px 16px 8px;">
+              <div class="soap-label">A — Assessment / Diagnosis</div>
+              <div style="font-size:11px;color:#15803d;margin-bottom:8px;">Final diagnosis</div>
+            </div>
+            <div style="padding:0 16px 16px;">{{ form.assessment }}</div>
+          </div>
+          <div class="soap-block soap-p" style="padding:0;">
+            <div style="padding:14px 16px 8px;">
+              <div class="soap-label">P — Plan</div>
+              <div style="font-size:11px;color:#d97706;margin-bottom:8px;">Treatment, management, follow-up</div>
+            </div>
+            <div style="padding:0 16px 16px;">{{ form.plan }}</div>
+          </div>
+        </div>
+        <!-- Differential diagnosis -->
+        <div class="form-group">
+          <label>Differential Diagnosis <span style="font-weight:400;color:var(--text-4);">(optional)</span></label>
+          {{ form.differential_diagnosis }}
+        </div>
+        <!-- ICD-10 -->
+        <div class="form-group" style="margin-bottom:0;">
+          <label>ICD-10 Code</label>
+          {{ form.icd10_code }}
+        </div>
+      </div>
+
+      <!-- Prescriptions & follow-up -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-title" style="margin-bottom:16px;">Prescriptions &amp; Follow-up</div>
+        <div class="form-grid-2">
+          <div class="form-group form-full">
+            <label>Prescriptions <span style="font-weight:400;color:var(--text-4);">— one per line</span></label>
+            {{ form.prescriptions }}
+          </div>
+          <div class="form-group">
+            <label>Follow-up Date</label>
+            {{ form.follow_up_date }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Referral -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-title" style="margin-bottom:4px;">Referral <span style="font-size:12px;font-weight:400;color:var(--text-4);">(if applicable)</span></div>
+        <div style="font-size:12px;color:var(--text-4);margin-bottom:14px;">Complete if you are referring the patient to a specialist or facility</div>
+        <div class="form-grid-2">
+          <div class="form-group form-full">
+            <label>Refer to</label>
+            {{ form.referral_to }}
+          </div>
+          <div class="form-group form-full">
+            <label>Reason for referral</label>
+            {{ form.referral_reason }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab & radiology -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-title" style="margin-bottom:16px;">Lab &amp; Radiology Requests</div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Lab / Blood Test Requests</label>
+            {{ form.lab_requests }}
+          </div>
+          <div class="form-group">
+            <label>Radiology Requests</label>
+            {{ form.radiology_requests }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sick note -->
+      <div class="card" style="margin-bottom:18px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:{% if form.sick_note_issued.value %}16{% else %}0{% endif %}px;">
+          <div style="position:relative;">
+            {{ form.sick_note_issued }}
+          </div>
+          <label for="{{ form.sick_note_issued.id_for_label }}" style="font-size:14px;font-weight:600;cursor:pointer;margin:0;">
+            <i class="bi bi-file-medical" style="margin-right:6px;color:var(--text-3);"></i>Issue a sick / medical certificate
+          </label>
+        </div>
+        <div id="sickNoteFields" class="sick-note-fields form-grid-2" style="margin-top:16px;">
+          <div class="form-group">
+            <label>Start Date</label>
+            {{ form.sick_note_start_date }}
+          </div>
+          <div class="form-group">
+            <label>Number of Days</label>
+            {{ form.sick_note_days }}
+          </div>
+          <div class="form-group form-full">
+            <label>Employer / Company Name</label>
+            {{ form.sick_note_employer }}
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Consultation</button>
+        <a href="{% url 'consultation_list' %}" class="btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// Reload appointment list when patient changes
+document.getElementById('id_patient').addEventListener('change', function () {
+  document.getElementById('consultForm').submit();
+});
+
+// Toggle sick note fields
+const sickCb = document.getElementById('{{ form.sick_note_issued.id_for_label }}');
+const sickFields = document.getElementById('sickNoteFields');
+function updateSickNote() {
+  sickFields.classList.toggle('visible', sickCb.checked);
+}
+sickCb.addEventListener('change', updateSickNote);
+updateSickNote();
+</script>
+{% endblock %}

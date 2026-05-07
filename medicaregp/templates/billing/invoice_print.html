@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice {{ invoice.invoice_number }}</title>
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
+  <style>
+    body { background:#fff; }
+    @media screen { .print-shell { box-shadow:0 4px 32px rgba(0,0,0,0.10); margin:32px auto; } }
+    .inv-table { width:100%; border-collapse:collapse; margin:20px 0; }
+    .inv-table th { text-align:left; font-size:11px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.06em; padding:8px 12px; background:#f9fafb; border-bottom:1px solid #f1f5f9; }
+    .inv-table td { padding:10px 12px; font-size:13px; border-bottom:1px solid #f9fafb; }
+    .inv-table .num { text-align:right; }
+  </style>
+</head>
+<body>
+<div class="print-shell">
+  <!-- Header -->
+  <div class="print-header">
+    <div style="display:flex;gap:14px;align-items:center;">
+      <div class="print-logo" style="display:flex;align-items:center;justify-content:center;">
+        <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><path d="M9 2v14M2 9h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div style="font-size:20px;font-weight:800;font-family:'Bricolage Grotesque',sans-serif;">G.P CRM</div>
+        <div style="font-size:12px;color:#6b7280;">Dr. Sarah Malan — General Practitioner</div>
+        <div style="font-size:12px;color:#6b7280;">dr.malan@gpcrm.co.za &bull; +27 21 555 0100</div>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:22px;font-weight:800;font-family:'Bricolage Grotesque',sans-serif;">INVOICE</div>
+      <div style="font-size:14px;font-weight:700;color:#475569;margin-top:4px;">{{ invoice.invoice_number }}</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:6px;">
+        Issued: {{ invoice.date_issued|date:"j F Y" }}<br>
+        Due: <strong style="color:{% if invoice.status == 'Overdue' %}#dc2626{% else %}#0d1117{% endif %};">{{ invoice.due_date|date:"j F Y" }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bill to / From -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid #e8ecf1;">
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#9ca3af;margin-bottom:8px;">Bill To</div>
+      <div style="font-size:15px;font-weight:700;">{{ invoice.patient }}</div>
+      <div style="font-size:13px;color:#6b7280;margin-top:2px;">{{ invoice.patient.phone }}</div>
+      {% if invoice.patient.email %}<div style="font-size:13px;color:#6b7280;">{{ invoice.patient.email }}</div>{% endif %}
+      {% if invoice.patient.address %}<div style="font-size:13px;color:#6b7280;margin-top:4px;">{{ invoice.patient.address }}</div>{% endif %}
+      {% if invoice.patient.medical_aid_name %}
+      <div style="font-size:12px;color:#6b7280;margin-top:8px;">Medical Aid: {{ invoice.patient.medical_aid_name }} — {{ invoice.patient.medical_aid_number }}</div>
+      {% endif %}
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#9ca3af;margin-bottom:8px;">Status</div>
+      <span style="display:inline-block;padding:4px 14px;border-radius:999px;font-size:13px;font-weight:700;
+        background:{% if invoice.status == 'Paid' %}#f0fdf4{% elif invoice.status == 'Overdue' %}#fef2f2{% else %}#f1f5f9{% endif %};
+        color:{% if invoice.status == 'Paid' %}#15803d{% elif invoice.status == 'Overdue' %}#b91c1c{% else %}#475569{% endif %};">
+        {{ invoice.status }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Line items -->
+  <table class="inv-table">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th class="num">Qty</th>
+        <th class="num">Unit Price</th>
+        <th class="num">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in invoice.items.all %}
+      <tr>
+        <td>{{ item.description }}</td>
+        <td class="num" style="color:#6b7280;">{{ item.quantity }}</td>
+        <td class="num" style="color:#6b7280;">R {{ item.unit_price|floatformat:2 }}</td>
+        <td class="num" style="font-weight:600;">R {{ item.line_total|floatformat:2 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr style="background:#f9fafb;">
+        <td colspan="3" class="num" style="color:#6b7280;">Subtotal</td>
+        <td class="num" style="font-weight:600;">R {{ invoice.subtotal|floatformat:2 }}</td>
+      </tr>
+      <tr style="background:#f9fafb;">
+        <td colspan="3" class="num" style="color:#6b7280;">VAT (15%)</td>
+        <td class="num" style="font-weight:600;">R {{ invoice.vat_amount|floatformat:2 }}</td>
+      </tr>
+      <tr style="background:#f0f9ff;">
+        <td colspan="3" class="num" style="font-size:15px;font-weight:800;padding:14px 12px;">Total Due</td>
+        <td class="num" style="font-size:18px;font-weight:800;color:#475569;padding:14px 12px;">R {{ invoice.total|floatformat:2 }}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  {% if invoice.notes %}
+  <div style="margin-top:20px;padding:14px;background:#f9fafb;border-radius:10px;font-size:13px;color:#374151;">
+    <strong>Notes:</strong> {{ invoice.notes }}
+  </div>
+  {% endif %}
+
+  <div style="margin-top:48px;display:flex;justify-content:space-between;align-items:flex-end;">
+    <div style="font-size:12px;color:#9ca3af;">
+      Thank you for your business.<br>
+      Please reference <strong>{{ invoice.invoice_number }}</strong> with your payment.
+    </div>
+    <div>
+      <div style="width:220px;border-top:1px solid #374151;padding-top:8px;font-size:13px;text-align:center;">
+        <strong>{{ invoice.issued_by }}</strong><br>
+        <span style="color:#6b7280;">General Practitioner</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>window.onload = () => window.print();</script>
+</body>
+</html>

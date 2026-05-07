@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | G.P CRM{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_sub %}Patient registration{% endblock %}
+
+{% block extra_head %}
+<style>
+  .form-tab-bar { display:flex; border-bottom:1px solid var(--border); margin-bottom:0; overflow-x:auto; }
+  .form-tab { padding:12px 18px; background:none; border:none; cursor:pointer; font-size:13px; font-weight:600; color:var(--text-3); border-bottom:2px solid transparent; white-space:nowrap; transition:all 0.15s; }
+  .form-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .form-section { display:none; padding:24px; }
+  .form-section.active { display:block; }
+  .crm-checkbox { width:18px; height:18px; cursor:pointer; accent-color:var(--accent); }
+  .consent-row { display:flex; align-items:center; gap:12px; padding:14px; border-radius:10px; border:1px solid var(--border); background:#fafafa; }
+  .consent-row label { margin:0; font-size:13.5px; font-weight:500; color:var(--text-1); cursor:pointer; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div style="max-width:860px;margin:0 auto;">
+    <div class="page-header">
+      <div><h1>{{ title }}</h1><p>Complete all applicable sections</p></div>
+      <a href="{% url 'patient_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+
+    <form method="post" id="patientForm">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-error" style="margin-bottom:16px;">
+        {% for e in form.non_field_errors %}<div>{{ e }}</div>{% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="card" style="padding:0;overflow:hidden;">
+        <!-- Tab bar -->
+        <div class="form-tab-bar">
+          <button type="button" class="form-tab active" data-section="personal"><i class="bi bi-person" style="margin-right:6px;"></i>Personal</button>
+          <button type="button" class="form-tab" data-section="contact"><i class="bi bi-telephone" style="margin-right:6px;"></i>Contact &amp; Next of Kin</button>
+          <button type="button" class="form-tab" data-section="medaid"><i class="bi bi-shield-check" style="margin-right:6px;"></i>Medical Aid</button>
+          <button type="button" class="form-tab" data-section="clinical"><i class="bi bi-heart-pulse" style="margin-right:6px;"></i>Clinical History</button>
+          <button type="button" class="form-tab" data-section="lifestyle"><i class="bi bi-activity" style="margin-right:6px;"></i>Lifestyle</button>
+          <button type="button" class="form-tab" data-section="consent"><i class="bi bi-file-check" style="margin-right:6px;"></i>Consent</button>
+        </div>
+
+        <!-- ── Personal ─────────────────────────────────────────────────── -->
+        <div id="section-personal" class="form-section active">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>First Name *</label>
+              {{ form.first_name }}
+              {% if form.first_name.errors %}<div style="color:#dc2626;font-size:12px;margin-top:4px;">{{ form.first_name.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label>Last Name / Surname *</label>
+              {{ form.last_name }}
+              {% if form.last_name.errors %}<div style="color:#dc2626;font-size:12px;margin-top:4px;">{{ form.last_name.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label>Date of Birth *</label>
+              {{ form.date_of_birth }}
+            </div>
+            <div class="form-group">
+              <label>Gender *</label>
+              {{ form.gender }}
+            </div>
+            <div class="form-group">
+              <label>ID Type *</label>
+              {{ form.id_type }}
+            </div>
+            <div class="form-group">
+              <label>ID / Passport Number *</label>
+              {{ form.id_number }}
+              {% if form.id_number.errors %}<div style="color:#dc2626;font-size:12px;margin-top:4px;">{{ form.id_number.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group">
+              <label>Blood Type</label>
+              {{ form.blood_type }}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Contact & Next of kin ────────────────────────────────────── -->
+        <div id="section-contact" class="form-section">
+          <div style="margin-bottom:20px;">
+            <div class="section-label" style="margin-bottom:14px;">Contact Details</div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Cell Number *</label>
+                {{ form.phone }}
+              </div>
+              <div class="form-group">
+                <label>Alt. Number (home / work)</label>
+                {{ form.alt_phone }}
+              </div>
+              <div class="form-group form-full">
+                <label>Email Address</label>
+                {{ form.email }}
+              </div>
+              <div class="form-group form-full">
+                <label>Residential Address</label>
+                {{ form.address }}
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="section-label" style="margin-bottom:14px;">Emergency Contact / Next of Kin</div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Full Name</label>
+                {{ form.next_of_kin_name }}
+              </div>
+              <div class="form-group">
+                <label>Contact Number</label>
+                {{ form.next_of_kin_phone }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Medical Aid ──────────────────────────────────────────────── -->
+        <div id="section-medaid" class="form-section">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:12px 14px;border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe;">
+            <i class="bi bi-info-circle" style="color:#2563eb;flex-shrink:0;"></i>
+            <span style="font-size:13px;color:#1d4ed8;">Leave blank if the patient is a self-payer or has no medical aid.</span>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Medical Aid Scheme</label>
+              {{ form.medical_aid_name }}
+            </div>
+            <div class="form-group">
+              <label>Plan / Option</label>
+              {{ form.medical_aid_plan }}
+            </div>
+            <div class="form-group">
+              <label>Membership Number</label>
+              {{ form.medical_aid_number }}
+            </div>
+            <div class="form-group">
+              <label>Dependant Code</label>
+              {{ form.dependant_code }}
+            </div>
+            <div class="form-group">
+              <label>Principal Member's Full Name</label>
+              {{ form.principal_member_name }}
+            </div>
+            <div class="form-group">
+              <label>Principal Member's ID Number</label>
+              {{ form.principal_member_id }}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Clinical History ─────────────────────────────────────────── -->
+        <div id="section-clinical" class="form-section">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Known Allergies</label>
+              {{ form.allergies }}
+              <div style="font-size:11px;color:var(--text-4);margin-top:4px;">Comma-separated: medication, food, environmental</div>
+            </div>
+            <div class="form-group">
+              <label>Chronic Conditions</label>
+              {{ form.chronic_conditions }}
+              <div style="font-size:11px;color:var(--text-4);margin-top:4px;">Comma-separated: e.g. Hypertension, Type 2 Diabetes</div>
+            </div>
+            <div class="form-group form-full">
+              <label>Current Chronic Medication &amp; Dosages</label>
+              {{ form.current_medication }}
+            </div>
+            <div class="form-group form-full">
+              <label>Previous Surgeries / Hospitalisations</label>
+              {{ form.previous_surgeries }}
+            </div>
+            <div class="form-group form-full">
+              <label>Family Medical History</label>
+              {{ form.family_history }}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Lifestyle ────────────────────────────────────────────────── -->
+        <div id="section-lifestyle" class="form-section">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Smoking Status</label>
+              {{ form.smoking_status }}
+            </div>
+            <div class="form-group">
+              <label>Alcohol Use</label>
+              {{ form.alcohol_use }}
+            </div>
+            <div class="form-group form-full">
+              <label>Other Substance Use <span style="font-weight:400;color:var(--text-4);">(optional)</span></label>
+              {{ form.substance_use }}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Consent ──────────────────────────────────────────────────── -->
+        <div id="section-consent" class="form-section">
+          <div style="margin-bottom:20px;padding:14px;border-radius:10px;background:#fffbeb;border:1px solid #fde68a;">
+            <div style="font-size:13px;font-weight:600;color:#92400e;margin-bottom:6px;"><i class="bi bi-exclamation-triangle" style="margin-right:6px;"></i>Consent to treat</div>
+            <p style="font-size:13px;color:#78350f;margin:0;">By ticking the box below, the patient confirms they consent to examination and treatment by the practice. This must be confirmed verbally or in writing before any treatment is rendered.</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="consent-row">
+              {{ form.consent_to_treat }}
+              <label for="{{ form.consent_to_treat.id_for_label }}">
+                <strong>Consent to Treat</strong> — I consent to examination and treatment by this practice.
+              </label>
+            </div>
+            <div class="consent-row">
+              {{ form.popia_consent }}
+              <label for="{{ form.popia_consent.id_for_label }}">
+                <strong>POPIA Consent</strong> — I consent to the collection, storage, and use of my personal information in accordance with the Protection of Personal Information Act (POPIA).
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div style="display:flex;gap:10px;margin-top:18px;align-items:center;">
+        <button type="button" id="prevBtn" class="btn-ghost" style="display:none;"><i class="bi bi-arrow-left"></i> Previous</button>
+        <button type="button" id="nextBtn" class="btn-primary">Next <i class="bi bi-arrow-right"></i></button>
+        <button type="submit" id="saveBtn" class="btn-primary" style="display:none;"><i class="bi bi-check-lg"></i> Save Patient</button>
+        <a href="{% url 'patient_list' %}" class="btn-ghost" style="margin-left:auto;">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function () {
+  const tabs = ['personal', 'contact', 'medaid', 'clinical', 'lifestyle', 'consent'];
+  let current = 0;
+
+  function showTab(idx) {
+    tabs.forEach((t, i) => {
+      document.getElementById('section-' + t).classList.toggle('active', i === idx);
+      document.querySelectorAll('.form-tab')[i].classList.toggle('active', i === idx);
+    });
+    document.getElementById('prevBtn').style.display = idx > 0 ? '' : 'none';
+    document.getElementById('nextBtn').style.display = idx < tabs.length - 1 ? '' : 'none';
+    document.getElementById('saveBtn').style.display = idx === tabs.length - 1 ? '' : 'none';
+    current = idx;
+  }
+
+  document.querySelectorAll('.form-tab').forEach((btn, i) => {
+    btn.addEventListener('click', () => showTab(i));
+  });
+
+  document.getElementById('prevBtn').addEventListener('click', () => showTab(current - 1));
+  document.getElementById('nextBtn').addEventListener('click', () => showTab(current + 1));
+
+  showTab(0);
+})();
+</script>
+{% endblock %}

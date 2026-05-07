@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{{ patient.full_name }} - MediCare GP{% endblock %}
+{% block header %}<h4 class="mb-0">{{ patient.full_name }}</h4>{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card stat-card mb-3">
+            <div class="card-header bg-white fw-bold">Patient Info</div>
+            <div class="card-body">
+                <p><strong>DOB:</strong> {{ patient.date_of_birth|date:"d M Y" }}<br>
+                <strong>Gender:</strong> {{ patient.get_gender_display }}<br>
+                <strong>ID:</strong> {{ patient.id_number }}<br>
+                <strong>Phone:</strong> {{ patient.phone }}<br>
+                <strong>Email:</strong> {{ patient.email|default:"-" }}<br>
+                <strong>Address:</strong> {{ patient.address|default:"-" }}</p>
+                <hr>
+                <p><strong>Medical Aid:</strong> {{ patient.medical_aid_name|default:"-" }}<br>
+                <strong>Medical Aid #:</strong> {{ patient.medical_aid_number|default:"-" }}</p>
+            </div>
+            <div class="card-footer bg-white">
+                <a href="{% url 'patients:edit' patient.pk %}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                <a href="{% url 'patients:delete' patient.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                <a href="{% url 'appointments:create' %}?patient={{ patient.pk }}" class="btn btn-sm btn-primary float-end">New Appointment</a>
+            </div>
+        </div>
+        <a href="{% url 'scripts:create' %}?patient={{ patient.pk }}" class="btn btn-outline-primary w-100 mb-3"><i class="bi bi-file-medical me-1"></i>Create Document</a>
+    </div>
+    <div class="col-md-8">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#appts">Appointments ({{ appointments|length }})</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#consults">Consultations ({{ consultations|length }})</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#docs">Documents ({{ documents|length }})</a></li>
+        </ul>
+        <div class="tab-content bg-white border border-top-0 rounded-bottom p-3">
+            <div class="tab-pane fade show active" id="appts">
+                {% for a in appointments %}
+                <div class="d-flex justify-content-between border-bottom py-2">
+                    <div><strong>{{ a.date|date:"d M Y" }} {{ a.time|time:"H:i" }}</strong> — {{ a.reason }}</div>
+                    <div><span class="badge bg-{% if a.status == 'scheduled' %}primary{% elif a.status == 'completed' %}success{% elif a.status == 'cancelled' %}secondary{% else %}warning{% endif %}">{{ a.get_status_display }}</span>
+                    <a href="{% url 'appointments:detail' a.pk %}" class="ms-2">View</a></div>
+                </div>
+                {% empty %}<p class="text-muted">No appointments</p>{% endfor %}
+            </div>
+            <div class="tab-pane fade" id="consults">
+                {% for c in consultations %}
+                <div class="border-bottom py-2">
+                    <strong>{{ c.date|date:"d M Y" }}</strong> — {{ c.assessment|truncatewords:15 }}
+                    <a href="{% url 'consultations:detail' c.pk %}" class="float-end">View SOAP Note</a>
+                </div>
+                {% empty %}<p class="text-muted">No consultations</p>{% endfor %}
+            </div>
+            <div class="tab-pane fade" id="docs">
+                {% for d in documents %}
+                <div class="d-flex justify-content-between border-bottom py-2">
+                    <div><span class="badge bg-info">{{ d.get_doc_type_display }}</span> {{ d.date_issued|date:"d M Y" }}</div>
+                    <div><a href="{% url 'scripts:detail' d.pk %}">View</a> | <a href="{% url 'scripts:print' d.pk %}">Print</a></div>
+                </div>
+                {% empty %}<p class="text-muted">No documents</p>{% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

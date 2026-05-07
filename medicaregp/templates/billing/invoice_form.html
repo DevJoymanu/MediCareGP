@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | G.P CRM{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div style="max-width:960px;margin:0 auto;">
+    <div class="page-header">
+      <div><h1>{{ title }}</h1></div>
+      <a href="{% url 'invoice_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+
+    <form method="post" id="invoiceForm">
+      {% csrf_token %}
+
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start;">
+        <div>
+          <!-- Invoice details -->
+          <div class="card" style="margin-bottom:18px;">
+            <div class="card-title" style="margin-bottom:16px;">Invoice Details</div>
+            <div class="form-grid-2">
+              <div class="form-group form-full">
+                <label>Patient *</label>
+                {{ form.patient }}
+              </div>
+              <div class="form-group">
+                <label>Invoice Number</label>
+                {{ form.invoice_number }}
+              </div>
+              <div class="form-group">
+                <label>Status</label>
+                {{ form.status }}
+              </div>
+              <div class="form-group">
+                <label>Date Issued</label>
+                {{ form.date_issued }}
+              </div>
+              <div class="form-group">
+                <label>Due Date</label>
+                {{ form.due_date }}
+              </div>
+              <div class="form-group">
+                <label>Issued By</label>
+                {{ form.issued_by }}
+              </div>
+              <div class="form-group form-full">
+                <label>Notes</label>
+                {{ form.notes }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Line items -->
+          <div class="card" style="margin-bottom:18px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+              <div class="card-title">Line Items</div>
+              <button type="button" id="addLine" class="btn-ghost" style="font-size:12px;padding:6px 12px;">
+                <i class="bi bi-plus-lg"></i> Add Line
+              </button>
+            </div>
+
+            {{ formset.management_form }}
+
+            <div style="display:grid;grid-template-columns:80px 1fr 80px 110px 100px 32px;gap:8px;padding:0 0 8px;border-bottom:1px solid #f1f5f9;margin-bottom:4px;">
+              {% for h in "Code,Description,Qty,Unit Price (R),Total," %}
+              <div style="font-size:11px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:0.06em;">{{ h }}</div>
+              {% endfor %}
+            </div>
+
+            <div id="formsetRows">
+              {% for f in formset %}
+              <div class="line-row" style="display:grid;grid-template-columns:80px 1fr 80px 110px 100px 32px;gap:8px;margin-bottom:8px;align-items:center;">
+                {{ f.id }}
+                {% if f.DELETE %}<div style="display:none;">{{ f.DELETE }}</div>{% endif %}
+                <div>{{ f.procedure_code }}</div>
+                <div>{{ f.description }}</div>
+                <div>{{ f.quantity }}</div>
+                <div>{{ f.unit_price }}</div>
+                <div class="line-total" style="font-size:13px;font-weight:600;color:var(--text-2);">—</div>
+                <button type="button" class="remove-line" style="background:none;border:none;color:var(--text-4);font-size:16px;cursor:pointer;padding:4px;" title="Remove">
+                  <i class="bi bi-x-circle"></i>
+                </button>
+              </div>
+              {% endfor %}
+            </div>
+
+            <!-- Totals -->
+            <div style="border-top:1px solid #f1f5f9;margin-top:12px;padding-top:12px;">
+              <div style="display:flex;justify-content:flex-end;">
+                <div style="min-width:240px;">
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
+                    <span style="color:var(--text-3);">Subtotal</span>
+                    <span id="subtotal" style="font-weight:600;">R 0.00</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
+                    <span style="color:var(--text-3);">VAT (15%)</span>
+                    <span id="vat" style="font-weight:600;">R 0.00</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:8px 0 0;font-size:16px;font-weight:800;border-top:2px solid var(--border);margin-top:4px;">
+                    <span>Total</span>
+                    <span id="total" style="color:var(--accent);">R 0.00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right sidebar: Medical aid coding + payment -->
+        <div>
+          <div class="card" style="margin-bottom:18px;">
+            <div class="card-title" style="margin-bottom:4px;">Medical Aid Billing</div>
+            <div style="font-size:12px;color:var(--text-4);margin-bottom:14px;">Complete for medical aid claims</div>
+            <div class="form-group">
+              <label>ICD-10 Code(s)</label>
+              {{ form.icd10_code }}
+              <div style="font-size:11px;color:var(--text-4);margin-top:4px;">e.g. I10, E11.9</div>
+            </div>
+            <div class="form-group">
+              <label>Procedure Codes</label>
+              {{ form.procedure_codes }}
+              <div style="font-size:11px;color:var(--text-4);margin-top:4px;">One per line</div>
+            </div>
+            <div class="form-group">
+              <label>Auth. Number</label>
+              {{ form.authorization_number }}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px;">Payment Received</div>
+            <div class="form-group">
+              <label>Amount Received (R)</label>
+              {{ form.amount_paid }}
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Receipt Number</label>
+              {{ form.receipt_number }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:4px;">
+        <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Invoice</button>
+        <a href="{% url 'invoice_list' %}" class="btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function () {
+  function calcTotals() {
+    let sub = 0;
+    document.querySelectorAll('.line-row').forEach(row => {
+      if (row.style.display === 'none') return;
+      const qty   = parseFloat(row.querySelector('[name$="-quantity"]')?.value) || 0;
+      const price = parseFloat(row.querySelector('[name$="-unit_price"]')?.value) || 0;
+      const lt    = qty * price;
+      const el    = row.querySelector('.line-total');
+      if (el) el.textContent = lt > 0 ? 'R ' + lt.toFixed(2) : '—';
+      sub += lt;
+    });
+    const vat = sub * 0.15;
+    document.getElementById('subtotal').textContent = 'R ' + sub.toFixed(2);
+    document.getElementById('vat').textContent      = 'R ' + vat.toFixed(2);
+    document.getElementById('total').textContent    = 'R ' + (sub + vat).toFixed(2);
+  }
+
+  document.addEventListener('input', calcTotals);
+  calcTotals();
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('.remove-line')) {
+      const row = e.target.closest('.line-row');
+      const delCb = row.querySelector('[name$="-DELETE"]');
+      if (delCb) { delCb.checked = true; row.style.display = 'none'; }
+      else row.remove();
+      calcTotals();
+    }
+  });
+
+  let extraIdx = {{ formset.total_form_count }};
+  const prefix = '{{ formset.prefix }}';
+  document.getElementById('addLine').addEventListener('click', () => {
+    const container = document.getElementById('formsetRows');
+    const row = document.createElement('div');
+    row.className = 'line-row';
+    row.style.cssText = 'display:grid;grid-template-columns:80px 1fr 80px 110px 100px 32px;gap:8px;margin-bottom:8px;align-items:center;';
+    row.innerHTML = `
+      <input type="hidden" name="${prefix}-${extraIdx}-id">
+      <input class="crm-input" name="${prefix}-${extraIdx}-procedure_code" placeholder="0190" style="font-size:12px;">
+      <input class="crm-input" name="${prefix}-${extraIdx}-description"    placeholder="e.g. Consultation fee">
+      <input class="crm-input" name="${prefix}-${extraIdx}-quantity"       type="number" value="1" step="0.01" min="0">
+      <input class="crm-input" name="${prefix}-${extraIdx}-unit_price"     type="number" placeholder="0.00" step="0.01" min="0">
+      <div class="line-total" style="font-size:13px;font-weight:600;color:var(--text-2);">—</div>
+      <button type="button" class="remove-line" style="background:none;border:none;color:var(--text-4);font-size:16px;cursor:pointer;padding:4px;"><i class="bi bi-x-circle"></i></button>
+    `;
+    container.appendChild(row);
+    document.querySelector(`[name=${prefix}-TOTAL_FORMS]`).value = ++extraIdx;
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Document - MediCare GP{% endblock %}
+{% block header %}<h4 class="mb-0">{{ document.get_doc_type_display }}</h4>{% endblock %}
+{% block content %}
+<div class="card stat-card">
+    <div class="card-body">
+        <p><strong>Patient:</strong> <a href="{% url 'patients:detail' document.patient.pk %}">{{ document.patient }}</a><br>
+        <strong>Date:</strong> {{ document.date_issued|date:"d M Y" }}<br>
+        <strong>Issued by:</strong> {{ document.issued_by }}</p>
+        <hr>
+        <div style="white-space:pre-wrap">{{ document.content }}</div>
+        <div class="mt-3">
+            <a href="{% url 'scripts:print' document.pk %}" class="btn btn-outline-primary"><i class="bi bi-printer me-1"></i>Print</a>
+            <a href="{% url 'scripts:list' %}" class="btn btn-outline-secondary ms-2">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

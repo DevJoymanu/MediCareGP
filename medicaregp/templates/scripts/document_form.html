@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | G.P CRM{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div style="max-width:700px;margin:0 auto;">
+    <div class="page-header">
+      <div><h1>{{ title }}</h1></div>
+      <a href="{% url 'document_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="card" style="margin-bottom:18px;">
+        <div class="form-grid-2">
+          <div class="form-group form-full">
+            <label>Patient</label>
+            {{ form.patient }}
+          </div>
+          <div class="form-group">
+            <label>Document Type</label>
+            {{ form.doc_type }}
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            {{ form.category }}
+          </div>
+          <div class="form-group">
+            <label>Issued By</label>
+            {{ form.issued_by }}
+          </div>
+          <div class="form-group form-full">
+            <label>Content</label>
+            {{ form.content }}
+          </div>
+          <div class="form-group form-full">
+            <label>Attachment (optional)</label>
+            {{ form.attachment }}
+          </div>
+        </div>
+        {% if form.errors %}
+        <div class="alert alert-error" style="margin-top:12px;">
+          {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Document</button>
+        <a href="{% url 'document_list' %}" class="btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

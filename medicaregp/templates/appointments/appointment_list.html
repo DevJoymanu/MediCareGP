@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Appointments | G.P CRM{% endblock %}
+{% block page_title %}Appointments{% endblock %}
+{% block page_sub %}Schedule and track patient visits{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div class="page-header">
+    <div>
+      <h1>Appointments</h1>
+      <p>{{ appointments|length }} total record{{ appointments|length|pluralize }}</p>
+    </div>
+    <a href="{% url 'appointment_create' %}" class="btn-primary"><i class="bi bi-plus-lg"></i> New Appointment</a>
+  </div>
+
+  <!-- Filters -->
+  <div class="card" style="padding:13px 16px;margin-bottom:18px;">
+    <form method="get" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+      <div class="filter-pills">
+        <a href="?{% if date %}date={{ date }}{% endif %}" class="filter-pill {% if not status %}active{% endif %}">All</a>
+        <a href="?status=Scheduled{% if date %}&date={{ date }}{% endif %}" class="filter-pill {% if status == 'Scheduled' %}active{% endif %}">Scheduled</a>
+        <a href="?status=Completed{% if date %}&date={{ date }}{% endif %}" class="filter-pill {% if status == 'Completed' %}active{% endif %}">Completed</a>
+        <a href="?status=Cancelled{% if date %}&date={{ date }}{% endif %}" class="filter-pill {% if status == 'Cancelled' %}active{% endif %}">Cancelled</a>
+        <a href="?status=No-Show{% if date %}&date={{ date }}{% endif %}" class="filter-pill {% if status == 'No-Show' %}active{% endif %}">No-Show</a>
+      </div>
+      <div style="display:flex;gap:8px;margin-left:auto;align-items:center;">
+        <input type="date" name="date" value="{{ date }}" class="crm-input" style="width:160px;">
+        <button type="submit" class="btn-ghost"><i class="bi bi-funnel"></i></button>
+        {% if date or status %}<a href="{% url 'appointment_list' %}" class="btn-ghost">Clear</a>{% endif %}
+      </div>
+    </form>
+  </div>
+
+  <!-- List -->
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="crm-table">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Patient</th>
+          <th>Reason</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in appointments %}
+        <tr onclick="window.location='{% url 'appointment_detail' a.pk %}'">
+          <td>
+            <div class="appt-time" style="display:inline-flex;">{{ a.time|time:"H:i" }}</div>
+          </td>
+          <td>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <div class="avatar av-36 av-{{ forloop.counter }}">
+                {{ a.patient.first_name|first|upper }}{{ a.patient.last_name|first|upper }}
+              </div>
+              <div>
+                <div style="font-weight:600;">{{ a.patient }}</div>
+                <div style="font-size:11px;color:var(--text-4);">{{ a.patient.phone }}</div>
+              </div>
+            </div>
+          </td>
+          <td style="color:var(--text-2);max-width:220px;">
+            {{ a.reason }}
+            {% if a.patient.allergies %}
+              <i class="bi bi-exclamation-triangle-fill" style="color:#f59e0b;font-size:12px;margin-left:5px;" title="Allergies: {{ a.patient.allergies }}"></i>
+            {% endif %}
+          </td>
+          <td style="white-space:nowrap;color:var(--text-3);">{{ a.date|date:"j M Y" }}</td>
+          <td><span class="badge badge-{{ a.status|lower|cut:'-' }}">{{ a.status }}</span></td>
+          <td>
+            <div style="display:flex;gap:7px;">
+              <a href="{% url 'appointment_edit' a.pk %}" class="btn-ghost" style="font-size:12px;padding:6px 10px;" onclick="event.stopPropagation();"><i class="bi bi-pencil"></i></a>
+              <a href="{% url 'appointment_detail' a.pk %}" class="btn-ghost" style="font-size:12px;padding:6px 12px;" onclick="event.stopPropagation();">Open</a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6">
+            <div class="empty-state"><i class="bi bi-calendar3"></i><p>No appointments found.</p></div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

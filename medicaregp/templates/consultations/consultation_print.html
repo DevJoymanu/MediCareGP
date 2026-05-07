@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Consultation — {{ consultation.patient }}</title>
+  <link href="{% static 'css/main.css' %}" rel="stylesheet">
+  <style>
+    body { background: #fff; }
+    @media screen { .print-shell { box-shadow: 0 4px 32px rgba(0,0,0,0.10); margin: 32px auto; } }
+  </style>
+</head>
+<body>
+<div class="print-shell">
+  <div class="print-header">
+    <div style="display:flex;gap:14px;align-items:center;">
+      <div class="print-logo"><i class="bi bi-heart-pulse" style="font-family:'bootstrap-icons';"></i>+</div>
+      <div>
+        <div style="font-size:20px;font-weight:800;font-family:'Bricolage Grotesque',sans-serif;">G.P CRM</div>
+        <div style="font-size:13px;color:#6b7280;">Dr. Sarah Malan — General Practitioner</div>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:13px;font-weight:600;">Consultation Note</div>
+      <div style="font-size:12px;color:#6b7280;">{{ consultation.date|date:"j F Y" }}</div>
+    </div>
+  </div>
+
+  <!-- Patient info -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+    <div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#9ca3af;margin-bottom:6px;">Patient</div>
+      <div style="font-size:16px;font-weight:700;">{{ consultation.patient }}</div>
+      <div style="font-size:13px;color:#6b7280;">{{ consultation.patient.phone }}</div>
+    </div>
+    <div>
+      {% if consultation.follow_up_date %}
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#9ca3af;margin-bottom:6px;">Follow-up</div>
+      <div style="font-size:14px;font-weight:700;color:#4f46e5;">{{ consultation.follow_up_date|date:"j F Y" }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- SOAP -->
+  <div class="soap-grid" style="margin-bottom:20px;">
+    <div class="soap-block soap-s"><div class="soap-label">S — Subjective</div><p class="soap-text">{{ consultation.subjective }}</p></div>
+    <div class="soap-block soap-o"><div class="soap-label">O — Objective</div><p class="soap-text">{{ consultation.objective }}</p></div>
+    <div class="soap-block soap-a"><div class="soap-label">A — Assessment</div><p class="soap-text">{{ consultation.assessment }}</p></div>
+    <div class="soap-block soap-p"><div class="soap-label">P — Plan</div><p class="soap-text">{{ consultation.plan }}</p></div>
+  </div>
+
+  {% if consultation.prescriptions %}
+  <div style="padding:14px 16px;border-radius:10px;background:#f0fdf4;border:1px solid #bbf7d0;margin-bottom:24px;">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#15803d;margin-bottom:10px;">Prescriptions</div>
+    <div style="font-size:13px;color:#166534;white-space:pre-line;line-height:1.8;">{{ consultation.prescriptions }}</div>
+  </div>
+  {% endif %}
+
+  <div style="margin-top:60px;display:flex;justify-content:flex-end;">
+    <div>
+      <div style="width:240px;border-top:1px solid #374151;padding-top:8px;font-size:13px;">
+        <strong>Dr. Sarah Malan</strong><br>
+        <span style="color:#6b7280;">General Practitioner</span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>window.onload = () => window.print();</script>
+</body>
+</html>

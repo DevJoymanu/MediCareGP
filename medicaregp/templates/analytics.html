@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Analytics | G.P CRM{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+{% block page_sub %}Practice performance and clinical insights{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div class="page-header">
+    <div><h1>Analytics</h1><p>Practice performance and clinical insights</p></div>
+  </div>
+
+  <!-- Summary stats -->
+  <div class="stat-grid" style="margin-bottom:22px;">
+    <div class="stat-card">
+      <div class="stat-icon indigo"><i class="bi bi-people"></i></div>
+      <div><div class="stat-number" data-countup="{{ total_patients }}">{{ total_patients }}</div><div class="stat-label">Total Patients</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon teal"><i class="bi bi-calendar3"></i></div>
+      <div><div class="stat-number" data-countup="{{ total_appointments }}">{{ total_appointments }}</div><div class="stat-label">Total Appointments</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon amber"><i class="bi bi-clipboard2-pulse"></i></div>
+      <div><div class="stat-number" data-countup="{{ total_consultations }}">{{ total_consultations }}</div><div class="stat-label">Consultations</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon rose"><i class="bi bi-file-earmark-text"></i></div>
+      <div><div class="stat-number" data-countup="{{ total_documents }}">{{ total_documents }}</div><div class="stat-label">Documents Issued</div></div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+    <!-- Appointment trend -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:4px;">Appointment Trend</div>
+      <div style="font-size:12px;color:var(--text-4);margin-bottom:18px;">Last 14 days</div>
+      <div style="display:flex;gap:4px;align-items:flex-end;height:90px;">
+        {% for d in trend %}
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:100%;border-radius:4px 4px 0 0;background:{% if d.is_today %}var(--accent){% else %}rgba(71,85,105,0.35){% endif %};
+            height:{% if trend_max %}{% widthratio d.count trend_max 74 %}{% else %}0{% endif %}px;
+            min-height:{% if d.count %}4{% else %}0{% endif %}px;transition:height 0.5s;"></div>
+          <div style="font-size:9.5px;color:var(--text-4);text-align:center;white-space:nowrap;">{{ d.day }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Status breakdown -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:18px;">Status Breakdown</div>
+      {% for s in status_data %}
+      <div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+          <span style="font-weight:600;">{{ s.status }}</span>
+          <span style="color:var(--text-3);">{{ s.count }} ({{ s.pct }}%)</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" style="width:{{ s.pct }}%;background:{{ s.color }};"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Top chronic conditions -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:18px;">Top Chronic Conditions</div>
+      {% for cond, cnt in top_conditions %}
+      <div style="margin-bottom:13px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+          <span style="font-weight:500;">{{ cond }}</span>
+          <span style="color:var(--text-3);">{{ cnt }} patient{{ cnt|pluralize }}</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" style="width:{% widthratio cnt max_cond 100 %}%;background:var(--accent);"></div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="empty-state"><i class="bi bi-bar-chart-line"></i><p>No chronic condition data yet.</p></div>
+      {% endfor %}
+    </div>
+
+    <!-- Patient overview -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:18px;">Patient Overview</div>
+      {% with rows=patients_with_aid|add:0 %}
+      {% for label, value, color in patient_overview %}
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+          <span style="font-weight:500;">{{ label }}</span>
+          <span style="color:var(--text-3);">{{ value }} / {{ total_patients }}</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" style="width:{% if total_patients %}{% widthratio value total_patients 100 %}{% else %}0{% endif %}%;background:{{ color }};"></div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endwith %}
+    </div>
+  </div>
+</div>
+{% endblock %}
