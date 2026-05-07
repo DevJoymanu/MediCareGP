@@ -73,9 +73,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # DEFAULT_FROM_EMAIL  = 'GP CRM <your-gmail@gmail.com>'
 
 # ── Practice details (used on invoices & emails) ───────────────────────────────
-PRACTICE_NAME    = 'Dr. Sarah Malan'
+PRACTICE_NAME    = 'Dr. Tamuka Chivonivoni'
 PRACTICE_SUBTITLE = 'General Practitioner'
-PRACTICE_EMAIL   = 'dr.malan@gpcrm.co.za'
+PRACTICE_EMAIL   = 'dr.chivonivoni@gpcrm.co.za'
 PRACTICE_PHONE   = '+27 21 555 0100'
 PRACTICE_ADDRESS = '1 Medical Park, Cape Town, 8001'
 PRACTICE_REG     = 'HPCSA: MP 0123456'

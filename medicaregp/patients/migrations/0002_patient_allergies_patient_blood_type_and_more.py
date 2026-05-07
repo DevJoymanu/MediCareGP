@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ('height', models.IntegerField(blank=True, help_text='cm', null=True)),
                 ('temperature', models.DecimalField(blank=True, decimal_places=1, help_text='°C', max_digits=4, null=True)),
                 ('oxygen_saturation', models.IntegerField(blank=True, help_text='%', null=True)),
-                ('recorded_by', models.CharField(default='Dr. Sarah Malan', max_length=100)),
+                ('recorded_by', models.CharField(default='Dr. Tamuka Chivonivoni', max_length=100)),
                 ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='vitals', to='patients.patient')),
             ],
             options={

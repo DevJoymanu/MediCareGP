@@ -137,14 +137,14 @@ def invoice_send_email(request, pk):
     patient = invoice.patient
 
     default_to    = patient.email or ''
-    default_subj  = f'Invoice {invoice.invoice_number} from Dr. Sarah Malan'
+    default_subj  = f'Invoice {invoice.invoice_number} from Dr. Tamuka Chivonivoni'
     default_msg   = (
         f'Dear {patient.first_name},\n\n'
         f'Please find attached your invoice {invoice.invoice_number} '
         f'dated {invoice.date_issued.strftime("%d %B %Y")} '
         f'for R{invoice.total():,.2f}, due by {invoice.due_date.strftime("%d %B %Y")}.\n\n'
         f'Please contact us if you have any queries.\n\n'
-        f'Kind regards,\nDr. Sarah Malan\nGeneral Practitioner'
+        f'Kind regards,\nDr. Tamuka Chivonivoni\nGeneral Practitioner'
     )
 
     if request.method == 'POST':

@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('doc_type', models.CharField(choices=[('Prescription', 'Prescription'), ('Sick Note', 'Sick Note'), ('Referral Letter', 'Referral Letter')], max_length=20)),
                 ('content', models.TextField()),
                 ('date_issued', models.DateField(auto_now_add=True)),
-                ('issued_by', models.CharField(default='Dr. Sarah Malan', max_length=100)),
+                ('issued_by', models.CharField(default='Dr. Tamuka Chivonivoni', max_length=100)),
                 ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='documents', to='patients.patient')),
             ],
             options={

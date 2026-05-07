@@ -17,7 +17,7 @@ class Invoice(models.Model):
     due_date             = models.DateField()
     status               = models.CharField(max_length=12, choices=STATUS_CHOICES, default='Draft')
     notes                = models.TextField(blank=True, null=True)
-    issued_by            = models.CharField(max_length=100, default='Dr. Sarah Malan')
+    issued_by            = models.CharField(max_length=100, default='Dr. Tamuka Chivonivoni')
 
     # ── Medical aid billing ───────────────────────────────────────────────────
     icd10_code           = models.CharField(max_length=20,  blank=True, null=True, verbose_name='ICD-10 code')

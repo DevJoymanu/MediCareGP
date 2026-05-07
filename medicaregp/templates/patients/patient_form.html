@@ -82,7 +82,17 @@
             </div>
             <div class="form-group">
               <label>ID Type *</label>
-              {{ form.id_type }}
+              <div style="display:none;">{{ form.id_type }}</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="id-type-grid">
+                <button type="button" class="blood-btn selected" data-val="SA_ID" id="idtype-said">
+                  <i class="bi bi-person-vcard" style="display:block;font-size:18px;margin-bottom:4px;"></i>
+                  SA ID
+                </button>
+                <button type="button" class="blood-btn" data-val="Passport" id="idtype-passport">
+                  <i class="bi bi-passport" style="display:block;font-size:18px;margin-bottom:4px;"></i>
+                  Passport
+                </button>
+              </div>
             </div>
             <div class="form-group">
               <label>ID / Passport Number *</label>
@@ -115,10 +125,6 @@
               <div class="form-group">
                 <label>Cell Number *</label>
                 {{ form.phone }}
-              </div>
-              <div class="form-group">
-                <label>Alt. Number (home / work)</label>
-                {{ form.alt_phone }}
               </div>
               <div class="form-group form-full">
                 <label>Email Address</label>
@@ -283,6 +289,25 @@
   document.getElementById('nextBtn').addEventListener('click', () => showTab(current + 1));
 
   showTab(0);
+})();
+
+// ── ID Type toggle ────────────────────────────────────────────────────────
+(function () {
+  const select   = document.getElementById('{{ form.id_type.id_for_label }}');
+  const idInput  = document.getElementById('{{ form.id_number.id_for_label }}');
+  const buttons  = document.querySelectorAll('#id-type-grid .blood-btn');
+  const hints    = { 'SA_ID': 'e.g. 8001015009087', 'Passport': 'e.g. A12345678' };
+
+  function activate(val) {
+    buttons.forEach(btn => btn.classList.toggle('selected', btn.dataset.val === val));
+    select.value = val;
+    if (idInput) idInput.placeholder = hints[val] || '';
+  }
+
+  buttons.forEach(btn => btn.addEventListener('click', () => activate(btn.dataset.val)));
+
+  // Pre-select when editing
+  activate(select.value || 'SA_ID');
 })();
 
 // ── Blood type button grid ────────────────────────────────────────────────

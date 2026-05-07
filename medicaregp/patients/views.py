@@ -67,7 +67,7 @@ def patient_delete(request, pk):
 def vitals_add(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     from django.utils import timezone
-    form = VitalsForm(request.POST or None, initial={'date': timezone.now().date(), 'recorded_by': 'Dr. Sarah Malan'})
+    form = VitalsForm(request.POST or None, initial={'date': timezone.now().date(), 'recorded_by': 'Dr. Tamuka Chivonivoni'})
     if form.is_valid():
         v = form.save(commit=False)
         # Auto-parse blood pressure into systolic/diastolic

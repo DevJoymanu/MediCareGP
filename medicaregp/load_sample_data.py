@@ -129,20 +129,20 @@ print('  Consultations: done')
 # ── Documents ─────────────────────────────────────────────────────────────────
 doc_rows = [
     dict(patient=p1, doc_type='Sick Note', category='Administrative',
-         content='Patient James Thornton is unfit for work for 3 days due to tension headaches and poorly controlled hypertension.\n\nDr. Sarah Malan\nGeneral Practitioner',
-         issued_by='Dr. Sarah Malan'),
+         content='Patient James Thornton is unfit for work for 3 days due to tension headaches and poorly controlled hypertension.\n\nDr. Tamuka Chivonivoni\nGeneral Practitioner',
+         issued_by='Dr. Tamuka Chivonivoni'),
     dict(patient=p4, doc_type='Referral Letter', category='Clinical',
-         content='Dear Dr. Nkosi,\n\nI am referring Ms. Lerato Dlamini (DOB: 14/02/1988) for CBT for Generalised Anxiety Disorder. She is currently stable on Escitalopram 20mg OD.\n\nKind regards,\nDr. Sarah Malan',
-         issued_by='Dr. Sarah Malan'),
+         content='Dear Dr. Nkosi,\n\nI am referring Ms. Lerato Dlamini (DOB: 14/02/1988) for CBT for Generalised Anxiety Disorder. She is currently stable on Escitalopram 20mg OD.\n\nKind regards,\nDr. Tamuka Chivonivoni',
+         issued_by='Dr. Tamuka Chivonivoni'),
     dict(patient=p2, doc_type='Vaccination Record', category='Administrative',
          content='Patient: Amara Osei\nVaccine: Influenza (Vaxigrip Tetra)\nBatch: VGT-2026-04\nSite: Left deltoid\nNo adverse reaction observed.',
-         issued_by='Dr. Sarah Malan'),
+         issued_by='Dr. Tamuka Chivonivoni'),
     dict(patient=p7, doc_type='Referral Letter', category='Clinical',
-         content='Dear Registered Dietitian,\n\nPlease see Mr. Thabo Nkosi for nutritional management of Type 2 Diabetes (HbA1c 8.4%). Advise on carbohydrate counting and portion control.\n\nDr. Sarah Malan',
-         issued_by='Dr. Sarah Malan'),
+         content='Dear Registered Dietitian,\n\nPlease see Mr. Thabo Nkosi for nutritional management of Type 2 Diabetes (HbA1c 8.4%). Advise on carbohydrate counting and portion control.\n\nDr. Tamuka Chivonivoni',
+         issued_by='Dr. Tamuka Chivonivoni'),
     dict(patient=p9, doc_type='Referral Letter', category='Clinical',
-         content='Dear Neurologist,\n\nI am referring Mr. Sipho Dube for specialist review following a breakthrough seizure on Lamotrigine 200mg BD. Repeat EEG has been requested.\n\nDr. Sarah Malan',
-         issued_by='Dr. Sarah Malan'),
+         content='Dear Neurologist,\n\nI am referring Mr. Sipho Dube for specialist review following a breakthrough seizure on Lamotrigine 200mg BD. Repeat EEG has been requested.\n\nDr. Tamuka Chivonivoni',
+         issued_by='Dr. Tamuka Chivonivoni'),
 ]
 for dd in doc_rows:
     Document.objects.get_or_create(patient=dd['patient'], doc_type=dd['doc_type'], defaults=dd)

@@ -35,7 +35,7 @@ class Document(models.Model):
     content     = models.TextField(blank=True)
     attachment  = models.FileField(upload_to='documents/%Y/%m/', blank=True, null=True)
     date_issued = models.DateField(auto_now_add=True)
-    issued_by   = models.CharField(max_length=100, default='Dr. Sarah Malan')
+    issued_by   = models.CharField(max_length=100, default='Dr. Tamuka Chivonivoni')
     notes       = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):

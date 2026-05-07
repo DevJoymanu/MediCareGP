@@ -28,7 +28,7 @@ class DocumentFormTests(TestCase):
             'category': 'Clinical',
             'doc_type': 'Lab Result',
             'content': '',
-            'issued_by': 'Dr. Sarah Malan',
+            'issued_by': 'Dr. Tamuka Chivonivoni',
         })
 
         self.assertFalse(form.is_valid())
@@ -42,7 +42,7 @@ class DocumentFormTests(TestCase):
                 'category': 'Clinical',
                 'doc_type': 'Lab Result',
                 'content': '',
-                'issued_by': 'Dr. Sarah Malan',
+                'issued_by': 'Dr. Tamuka Chivonivoni',
             },
             files={'attachment': upload},
         )
@@ -63,7 +63,7 @@ class DocumentFormTests(TestCase):
             'category': 'Administrative',
             'doc_type': 'Billing Statement',
             'content': 'Updated statement',
-            'issued_by': 'Dr. Sarah Malan',
+            'issued_by': 'Dr. Tamuka Chivonivoni',
         })
 
         self.assertRedirects(response, reverse('document_detail', args=[document.pk]))

@@ -111,7 +111,7 @@ class Vitals(models.Model):
     temperature       = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True, help_text='°C')
     oxygen_saturation = models.IntegerField(blank=True, null=True, help_text='%')
     blood_glucose     = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True, help_text='mmol/L')
-    recorded_by       = models.CharField(max_length=100, default='Dr. Sarah Malan')
+    recorded_by       = models.CharField(max_length=100, default='Dr. Tamuka Chivonivoni')
 
     def bmi(self):
         if self.weight and self.height:

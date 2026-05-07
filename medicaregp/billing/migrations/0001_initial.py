@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('due_date', models.DateField()),
                 ('status', models.CharField(choices=[('Draft', 'Draft'), ('Sent', 'Sent'), ('Paid', 'Paid'), ('Overdue', 'Overdue'), ('Cancelled', 'Cancelled')], default='Draft', max_length=12)),
                 ('notes', models.TextField(blank=True, null=True)),
-                ('issued_by', models.CharField(default='Dr. Sarah Malan', max_length=100)),
+                ('issued_by', models.CharField(default='Dr. Tamuka Chivonivoni', max_length=100)),
                 ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='invoices', to='patients.patient')),
             ],
             options={
