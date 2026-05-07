@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:medicareapp.up.railway.app)",
+      "Bash(Get-ChildItem -Recurse -Path \"d:\\\\downloads\\\\medicaregp_1\\\\medicaregp\\\\templates\\\\\" -File | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Recurse -Path \"d:\\\\downloads\\\\medicaregp_1\\\\medicaregp\\\\templates\\\\\" | Where-Object {$_.PSIsContainer -eq $false} | Select-Object FullName)",
+      "Bash(python -c ' *)",
+      "Bash(Remove-Item \"d:\\\\downloads\\\\medicaregp_1\\\\guide_part*.html\")",
+      "Bash(Write-Host \"Cleaned up\")"
+    ],
+    "additionalDirectories": [
+      "d:\\downloads\\medicaregp_1"
+    ]
+  }
+}

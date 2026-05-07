@@ -38,8 +38,8 @@
         <tr>
           <th>Time</th>
           <th>Patient</th>
-          <th>Reason</th>
-          <th>Date</th>
+          <th class="col-hide-mobile">Reason</th>
+          <th class="col-hide-mobile">Date</th>
           <th>Status</th>
           <th></th>
         </tr>
@@ -61,13 +61,13 @@
               </div>
             </div>
           </td>
-          <td style="color:var(--text-2);max-width:220px;">
+          <td class="col-hide-mobile" style="color:var(--text-2);max-width:220px;">
             {{ a.reason }}
             {% if a.patient.allergies %}
               <i class="bi bi-exclamation-triangle-fill" style="color:#f59e0b;font-size:12px;margin-left:5px;" title="Allergies: {{ a.patient.allergies }}"></i>
             {% endif %}
           </td>
-          <td style="white-space:nowrap;color:var(--text-3);">{{ a.date|date:"j M Y" }}</td>
+          <td class="col-hide-mobile" style="white-space:nowrap;color:var(--text-3);">{{ a.date|date:"j M Y" }}</td>
           <td><span class="badge badge-{{ a.status|lower|cut:'-' }}">{{ a.status }}</span></td>
           <td>
             <div style="display:flex;gap:7px;">

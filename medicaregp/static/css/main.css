@@ -929,6 +929,91 @@ button { cursor: pointer; }
   .stat-grid { grid-template-columns: 1fr 1fr; }
   .grid-4 { grid-template-columns: 1fr 1fr; }
 }
+
+/* ═══ Patient detail — layout classes ════════════════════════════════════ */
+.patient-hero {
+  border-radius: var(--radius); overflow: hidden; margin-bottom: 20px;
+  background: linear-gradient(145deg, #080e1c 0%, #1e1b4b 100%);
+  color: #fff; padding: 24px;
+}
+.patient-hero-body   { display: flex; gap: 16px; align-items: flex-start; }
+.patient-hero-info   { flex: 1; min-width: 0; }
+.patient-hero-meta   { display: flex; gap: 16px; font-size: 12.5px; color: rgba(255,255,255,0.65); margin-bottom: 12px; flex-wrap: wrap; }
+.patient-hero-badges { display: flex; gap: 7px; flex-wrap: wrap; }
+.patient-hero-actions { display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; align-items: flex-start; }
+
+.patient-detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 18px; }
+.vitals-grid         { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 12px; }
+.lifestyle-grid      { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.lifestyle-full      { grid-column: 1 / -1; }
+
+/* Scrollable tab bar */
+.patient-tab-bar { display: flex; border-bottom: 1px solid var(--border); background: #fff; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.patient-tab-bar::-webkit-scrollbar { display: none; }
+.patient-tab-btn { padding: 14px 18px; background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-3); white-space: nowrap; flex-shrink: 0; transition: color 0.15s, border-color 0.15s; }
+.patient-tab-btn.active { color: #4f46e5; border-bottom-color: #4f46e5; }
+.patient-tab-btn:hover:not(.active) { color: var(--text-2); }
+
+/* Vital cells */
+.vital-cell       { padding: 12px; border-radius: 10px; border: 1px solid #f1f5f9; background: #fafafa; }
+.vital-cell.alert { border-color: #fecaca; background: #fff5f5; }
+.vital-cell-label { font-size: 10px; color: var(--text-4); margin-bottom: 3px; }
+.vital-cell-label.alert { color: #dc2626; }
+.vital-cell-value { font-size: 17px; font-weight: 700; color: var(--text-1); }
+.vital-cell-value.alert { color: #dc2626; }
+.vital-cell-unit  { font-size: 10px; color: var(--text-4); }
+
+/* Patient page footer actions */
+.patient-actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+.patient-delete-btn { color: #ef4444 !important; border-color: #fecaca !important; margin-left: auto; }
+
+/* Invoice bill-to / from */
+.invoice-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+/* Detail action rows (appointment, consultation) */
+.detail-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ─── Responsive: 900px ───────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  /* Hero — stack vertically, buttons full-width */
+  .patient-hero-body    { flex-direction: column; align-items: stretch; }
+  .patient-hero-actions { flex-direction: column; }
+  .patient-hero-actions .btn-ghost,
+  .patient-hero-actions .btn-primary { width: 100%; justify-content: center; }
+
+  /* Detail grid — single column */
+  .patient-detail-grid { grid-template-columns: 1fr; }
+
+  /* Vitals — 2-up */
+  .vitals-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Lifestyle — 2-up */
+  .lifestyle-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Patient footer actions — 2-up, delete full-width */
+  .patient-actions .btn-ghost { flex: 1 1 calc(50% - 5px); justify-content: center; }
+  .patient-delete-btn { flex: 1 1 100% !important; margin-left: 0 !important; }
+
+  /* Invoice parties — single column */
+  .invoice-parties { grid-template-columns: 1fr; }
+
+  /* Detail actions — stack */
+  .detail-actions { flex-direction: column; }
+  .detail-actions .btn-primary,
+  .detail-actions .btn-ghost { width: 100%; justify-content: center; }
+
+  /* Table column hiding on mobile */
+  .col-hide-mobile { display: none; }
+}
+
+/* ─── Responsive: 640px ───────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .patient-hero    { padding: 16px; }
+  .lifestyle-grid  { grid-template-columns: 1fr; }
+  .patient-actions .btn-ghost { flex: 1 1 100%; }
+  .vitals-grid     { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media print {
   .sidebar, .topbar, .bottom-nav, .no-print { display: none !important; }
   .app-main { margin-left: 0; }

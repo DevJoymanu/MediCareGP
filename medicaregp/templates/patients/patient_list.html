@@ -32,11 +32,11 @@
       <thead>
         <tr>
           <th>Patient</th>
-          <th>Age / Gender</th>
+          <th class="col-hide-mobile">Age / Gender</th>
           <th>Contact</th>
-          <th>Medical Aid</th>
-          <th>Conditions &amp; Alerts</th>
-          <th>Registered</th>
+          <th class="col-hide-mobile">Medical Aid</th>
+          <th class="col-hide-mobile">Conditions &amp; Alerts</th>
+          <th class="col-hide-mobile">Registered</th>
           <th></th>
         </tr>
       </thead>
@@ -54,15 +54,15 @@
               </div>
             </div>
           </td>
-          <td style="color:var(--text-2);white-space:nowrap;">{{ p.get_age }} yrs &middot; {{ p.get_gender_display }}</td>
+          <td class="col-hide-mobile" style="color:var(--text-2);white-space:nowrap;">{{ p.get_age }} yrs &middot; {{ p.get_gender_display }}</td>
           <td>
             <div style="font-size:13px;">{{ p.phone }}</div>
             {% if p.email %}<div style="font-size:11px;color:var(--text-4);">{{ p.email }}</div>{% endif %}
           </td>
-          <td style="font-size:13px;color:{% if p.medical_aid_name %}var(--text-2){% else %}var(--text-4){% endif %};">
+          <td class="col-hide-mobile" style="font-size:13px;color:{% if p.medical_aid_name %}var(--text-2){% else %}var(--text-4){% endif %};">
             {{ p.medical_aid_name|default:"None" }}
           </td>
-          <td>
+          <td class="col-hide-mobile">
             <div style="display:flex;gap:5px;flex-wrap:wrap;">
               {% for a in p.allergies_list %}
                 {% if forloop.first %}<span class="tag tag-allergy">⚠ {{ a }}</span>{% endif %}
@@ -75,7 +75,7 @@
               {% endif %}
             </div>
           </td>
-          <td style="font-size:13px;color:var(--text-3);white-space:nowrap;">{{ p.date_registered|date:"j M Y" }}</td>
+          <td class="col-hide-mobile" style="font-size:13px;color:var(--text-3);white-space:nowrap;">{{ p.date_registered|date:"j M Y" }}</td>
           <td>
             <a href="{% url 'patient_detail' p.pk %}" class="btn-ghost" style="font-size:12px;padding:6px 12px;" onclick="event.stopPropagation();">
               Open <i class="bi bi-arrow-right"></i>

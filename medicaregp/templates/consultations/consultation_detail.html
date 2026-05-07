@@ -63,7 +63,8 @@
     </div>
     {% endif %}
 
-    <div style="display:flex;gap:10px;">
+    <!-- CHANGES: detail-actions stacks buttons full-width on mobile -->
+    <div class="detail-actions">
       <a href="{% url 'consultation_print' consultation.pk %}" class="btn-primary"><i class="bi bi-printer"></i> Print Record</a>
       <a href="{% url 'consultation_edit' consultation.pk %}" class="btn-ghost"><i class="bi bi-pencil"></i> Edit</a>
       <a href="{% url 'consultation_delete' consultation.pk %}" class="btn-ghost" style="color:#ef4444;margin-left:auto;"><i class="bi bi-trash"></i> Delete</a>

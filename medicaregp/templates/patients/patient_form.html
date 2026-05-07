@@ -13,6 +13,12 @@
   .crm-checkbox { width:18px; height:18px; cursor:pointer; accent-color:var(--accent); }
   .consent-row { display:flex; align-items:center; gap:12px; padding:14px; border-radius:10px; border:1px solid var(--border); background:#fafafa; }
   .consent-row label { margin:0; font-size:13.5px; font-weight:500; color:var(--text-1); cursor:pointer; }
+  .blood-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+  .blood-btn { padding:10px 4px; border:2px solid var(--border); border-radius:10px; background:#fff; font-size:15px; font-weight:700; color:var(--text-2); cursor:pointer; text-align:center; transition:all 0.12s; -webkit-tap-highlight-color:transparent; user-select:none; }
+  .blood-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .blood-btn.selected { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .blood-btn.unknown { font-size:12px; font-weight:600; color:var(--text-4); grid-column:span 4; padding:8px; }
+  .blood-btn.unknown.selected { background:var(--text-3); border-color:var(--text-3); color:#fff; }
 </style>
 {% endblock %}
 
@@ -59,7 +65,16 @@
             </div>
             <div class="form-group">
               <label>Date of Birth *</label>
-              {{ form.date_of_birth }}
+              <div style="display:none;">{{ form.date_of_birth }}</div>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <input type="number" id="dob_day"   min="1"    max="31"   placeholder="DD"   class="crm-input" style="width:64px;text-align:center;padding-left:0;padding-right:0;" inputmode="numeric">
+                <span style="color:var(--text-3);font-weight:600;">/</span>
+                <input type="number" id="dob_month" min="1"    max="12"   placeholder="MM"   class="crm-input" style="width:64px;text-align:center;padding-left:0;padding-right:0;" inputmode="numeric">
+                <span style="color:var(--text-3);font-weight:600;">/</span>
+                <input type="number" id="dob_year"  min="1900" max="2025" placeholder="YYYY" class="crm-input" style="width:84px;text-align:center;padding-left:0;padding-right:0;" inputmode="numeric">
+                <span id="dob_age_badge" style="display:none;font-size:12px;font-weight:600;color:#fff;background:var(--accent);border-radius:20px;padding:2px 10px;margin-left:4px;white-space:nowrap;"></span>
+              </div>
+              {% if form.date_of_birth.errors %}<div style="color:#dc2626;font-size:12px;margin-top:4px;">{{ form.date_of_birth.errors.0 }}</div>{% endif %}
             </div>
             <div class="form-group">
               <label>Gender *</label>
@@ -76,7 +91,18 @@
             </div>
             <div class="form-group">
               <label>Blood Type</label>
-              {{ form.blood_type }}
+              <div style="display:none;">{{ form.blood_type }}</div>
+              <div class="blood-grid" id="blood-grid">
+                <button type="button" class="blood-btn" data-val="A+">A+</button>
+                <button type="button" class="blood-btn" data-val="A-">A−</button>
+                <button type="button" class="blood-btn" data-val="B+">B+</button>
+                <button type="button" class="blood-btn" data-val="B-">B−</button>
+                <button type="button" class="blood-btn" data-val="AB+">AB+</button>
+                <button type="button" class="blood-btn" data-val="AB-">AB−</button>
+                <button type="button" class="blood-btn" data-val="O+">O+</button>
+                <button type="button" class="blood-btn" data-val="O-">O−</button>
+                <button type="button" class="blood-btn unknown" data-val="">Not known</button>
+              </div>
             </div>
           </div>
         </div>
@@ -257,6 +283,75 @@
   document.getElementById('nextBtn').addEventListener('click', () => showTab(current + 1));
 
   showTab(0);
+})();
+
+// ── Blood type button grid ────────────────────────────────────────────────
+(function () {
+  const select  = document.getElementById('{{ form.blood_type.id_for_label }}');
+  const buttons = document.querySelectorAll('#blood-grid .blood-btn');
+
+  function activate(val) {
+    buttons.forEach(btn => btn.classList.toggle('selected', btn.dataset.val === val));
+    select.value = val;
+  }
+
+  buttons.forEach(btn => btn.addEventListener('click', () => activate(btn.dataset.val)));
+
+  // Pre-select when editing
+  if (select.value) activate(select.value);
+  else activate('');   // highlight "Not known" by default
+})();
+
+// ── Date of Birth split inputs ────────────────────────────────────────────
+(function () {
+  const dayEl   = document.getElementById('dob_day');
+  const monEl   = document.getElementById('dob_month');
+  const yrEl    = document.getElementById('dob_year');
+  const badge   = document.getElementById('dob_age_badge');
+  const hidden  = document.getElementById('{{ form.date_of_birth.id_for_label }}');
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function updateHidden() {
+    const d = parseInt(dayEl.value, 10);
+    const m = parseInt(monEl.value, 10);
+    const y = parseInt(yrEl.value, 10);
+    if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1900 && y <= 2025) {
+      hidden.value = y + '-' + pad(m) + '-' + pad(d);
+      const today = new Date();
+      let age = today.getFullYear() - y;
+      if (today.getMonth() + 1 < m || (today.getMonth() + 1 === m && today.getDate() < d)) age--;
+      if (age >= 0) {
+        badge.textContent = age + ' yrs';
+        badge.style.display = '';
+      }
+    } else {
+      hidden.value = '';
+      badge.style.display = 'none';
+    }
+  }
+
+  // Auto-advance: move focus when field is filled
+  dayEl.addEventListener('input', function () {
+    if (this.value.length >= 2 || parseInt(this.value, 10) > 3) monEl.focus();
+    updateHidden();
+  });
+  monEl.addEventListener('input', function () {
+    if (this.value.length >= 2 || parseInt(this.value, 10) > 1) yrEl.focus();
+    updateHidden();
+  });
+  yrEl.addEventListener('input', updateHidden);
+
+  // Pre-populate when editing (value is YYYY-MM-DD)
+  if (hidden && hidden.value) {
+    const parts = hidden.value.split('-');
+    if (parts.length === 3) {
+      yrEl.value  = parts[0];
+      monEl.value = parseInt(parts[1], 10);
+      dayEl.value = parseInt(parts[2], 10);
+      updateHidden();
+    }
+  }
 })();
 </script>
 {% endblock %}

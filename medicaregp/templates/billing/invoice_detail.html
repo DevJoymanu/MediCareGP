@@ -47,8 +47,9 @@
     </div>
 
     <!-- Patient + practice -->
+    <!-- CHANGES: bill-to/from uses invoice-parties class (collapses to 1-col on mobile) -->
     <div class="card" style="margin-bottom:18px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div class="invoice-parties">
         <div>
           <div class="section-label" style="margin-bottom:10px;">Bill To</div>
           <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px;">
@@ -76,8 +77,9 @@
       </div>
     </div>
 
-    <!-- Line items -->
+    <!-- Line items — CHANGES: wrapped in table-scroll for mobile -->
     <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;">
+      <div class="table-scroll">
       <table class="crm-table">
         <thead>
           <tr>
@@ -100,6 +102,7 @@
           {% endfor %}
         </tbody>
       </table>
+      </div>
 
       <!-- Totals -->
       <div style="padding:16px 20px;border-top:1px solid #f1f5f9;">
@@ -129,7 +132,8 @@
     </div>
     {% endif %}
 
-    <div style="display:flex;gap:10px;">
+    <!-- CHANGES: detail-actions class makes buttons stack full-width on mobile -->
+    <div class="detail-actions">
       <a href="{% url 'invoice_send_email' invoice.pk %}" class="btn-primary"><i class="bi bi-envelope"></i> Send Email</a>
       <a href="{% url 'invoice_print' invoice.pk %}" class="btn-ghost"><i class="bi bi-printer"></i> Print PDF</a>
       <a href="{% url 'invoice_delete' invoice.pk %}" class="btn-ghost" style="color:#ef4444;margin-left:auto;"><i class="bi bi-trash"></i> Delete</a>

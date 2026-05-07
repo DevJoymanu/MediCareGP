@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G.P CRM — Illustrated User Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#3b5bdb;--accent-light:#e8edff;
+  --sidebar:#080e1c;
+  --text-1:#0d1117;--text-2:#374151;--text-3:#6b7280;
+  --border:#e5e7eb;--bg:#f0f3f8;--white:#ffffff;
+  --green:#16a34a;--green-light:#f0fdf4;
+  --red:#dc2626;--red-light:#fef2f2;
+  --amber:#d97706;--amber-light:#fffbeb;
+  --purple:#7c3aed;
+}
+body{font-family:'Inter',-apple-system,sans-serif;font-size:14px;line-height:1.65;color:var(--text-1);background:var(--white)}
+.cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(135deg,#080e1c 0%,#1a2744 100%);color:white;text-align:center;padding:60px 40px;page-break-after:always}
+.cover-logo{width:80px;height:80px;border-radius:22px;background:#3b5bdb;display:flex;align-items:center;justify-content:center;margin:0 auto 32px}
+.cover h1{font-size:52px;font-weight:800;margin-bottom:10px;letter-spacing:-.02em}
+.cover h2{font-size:22px;font-weight:400;opacity:.65;margin-bottom:40px}
+.cover-divider{width:60px;height:3px;background:#3b5bdb;border-radius:2px;margin:0 auto 40px}
+.cover-meta{opacity:.5;font-size:13px;line-height:2.2}
+.page{max-width:840px;margin:0 auto;padding:52px 60px}
+.toc-page{page-break-after:always}
+.toc-title{font-size:28px;font-weight:800;margin-bottom:28px;padding-bottom:16px;border-bottom:2px solid var(--border)}
+.toc-section a{display:flex;justify-content:space-between;align-items:baseline;color:var(--text-1);text-decoration:none;padding:8px 0;border-bottom:1px dotted var(--border);font-size:14px}
+.toc-num{font-weight:700;color:var(--accent);margin-right:10px;min-width:24px}
+.toc-name{flex:1}
+.toc-sub{color:var(--text-3);font-size:12px}
+.chapter{page-break-before:always;padding-top:12px}
+.chapter-number{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px}
+.chapter-title{font-size:32px;font-weight:800;margin-bottom:10px;letter-spacing:-.02em;line-height:1.2}
+.chapter-intro{font-size:15px;color:var(--text-2);line-height:1.7;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.section{margin-bottom:38px}
+.section-title{font-size:17px;font-weight:700;margin-bottom:14px;color:var(--text-1);display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';display:inline-block;width:4px;height:18px;background:var(--accent);border-radius:2px;flex-shrink:0}
+.screen-wrap{margin:18px 0 8px;border-radius:12px;overflow:hidden;border:1.5px solid var(--border);box-shadow:0 6px 24px rgba(0,0,0,.09)}
+.screen-caption{font-size:12px;color:var(--text-3);margin-top:8px;font-style:italic;text-align:center;margin-bottom:16px}
+.callouts{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin:12px 0 22px;background:var(--bg);border-radius:10px;padding:14px 16px;border:1px solid var(--border)}
+.callout{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--text-2);padding:4px 0}
+.cnum{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--accent);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.flow-wrap{margin:20px 0 28px;background:var(--bg);border-radius:12px;padding:24px;border:1px solid var(--border)}
+.flow-title{font-size:13px;font-weight:700;color:var(--text-2);margin-bottom:16px;text-align:center;text-transform:uppercase;letter-spacing:.08em}
+.steps{list-style:none;padding:0}
+.steps li{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.step-num{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--accent);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.step-body{flex:1;padding-top:3px}
+.step-body strong{display:block;margin-bottom:2px;font-weight:600}
+.box{border-radius:10px;padding:14px 16px;margin:16px 0;display:flex;gap:12px;align-items:flex-start}
+.box-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.box-body{flex:1;font-size:13.5px;line-height:1.6}
+.box-body strong{display:block;margin-bottom:3px;font-weight:600}
+.box-tip{background:var(--accent-light);color:#1e3a8a}
+.box-note{background:var(--amber-light);color:#78350f}
+.box-warning{background:var(--red-light);color:#7f1d1d}
+.box-success{background:var(--green-light);color:#14532d}
+.field-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+.field-table th{text-align:left;padding:9px 12px;background:var(--bg);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);border-bottom:2px solid var(--border)}
+.field-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55}
+.field-table tr:last-child td{border-bottom:none}
+.field-table td:first-child{font-weight:600;width:36%}
+.req{display:inline-block;font-size:10px;font-weight:700;background:#fef2f2;color:#b91c1c;padding:1px 5px;border-radius:4px;margin-left:5px}
+.opt{display:inline-block;font-size:10px;font-weight:700;background:#f0fdf4;color:#15803d;padding:1px 5px;border-radius:4px;margin-left:5px}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-blue{background:#dbeafe;color:#1e40af}
+.badge-green{background:#dcfce7;color:#15803d}
+.badge-red{background:#fee2e2;color:#b91c1c}
+.badge-amber{background:#fef3c7;color:#92400e}
+.badge-gray{background:#f3f4f6;color:#4b5563}
+.badge-purple{background:#ede9fe;color:#6d28d9}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.ref-card{border:1px solid var(--border);border-radius:10px;padding:16px}
+.ref-card-title{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--accent)}
+.ref-card ul{padding-left:16px}
+.ref-card li{font-size:13px;margin-bottom:5px;color:var(--text-2)}
+.faq-item{border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden}
+.faq-q{background:var(--bg);padding:12px 16px;font-weight:700;font-size:14px;color:var(--text-1);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px}
+.faq-q::before{content:"Q";flex-shrink:0;width:20px;height:20px;border-radius:50%;background:var(--accent);color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.faq-a{padding:12px 16px 14px 46px;font-size:13.5px;color:var(--text-2);line-height:1.65}
+@media print{
+  .cover,.chapter,.toc-page{page-break-before:always}
+  .cover{page-break-after:always;min-height:100vh}
+  .screen-wrap,.flow-wrap,.callouts{page-break-inside:avoid}
+  a{color:inherit!important}
+}
+@page{margin:1.8cm 2cm}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-logo">
+    <svg width="40" height="40" viewBox="0 0 18 18" fill="none">
+      <path d="M9 2v14M2 9h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="9" cy="9" r="7.5" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+    </svg>
+  </div>
+  <h1>G.P CRM</h1>
+  <h2>Illustrated Practice Manager User Guide</h2>
+  <div class="cover-divider"></div>
+  <p style="opacity:.6;max-width:500px;font-size:15px;line-height:1.85;margin-bottom:48px">Step-by-step visual guide with annotated screen diagrams and workflow maps for General Practitioners in private practice.</p>
+  <div class="cover-meta">
+    <div>Designed for <strong style="color:white;opacity:1">General Practitioners</strong></div>
+    <div>Version 2.0 &nbsp;&middot;&nbsp; May 2026 &nbsp;&middot;&nbsp; Confidential</div>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="page toc-page">
+  <div class="toc-title">Contents</div>
+  <div class="toc-section"><a href="#ch1"><span><span class="toc-num">1</span><span class="toc-name">Getting Started</span></span><span class="toc-sub">Login &amp; Dashboard overview</span></a></div>
+  <div class="toc-section"><a href="#ch2"><span><span class="toc-num">2</span><span class="toc-name">Patient Records</span></span><span class="toc-sub">Register, search, profile &amp; vitals</span></a></div>
+  <div class="toc-section"><a href="#ch3"><span><span class="toc-num">3</span><span class="toc-name">Appointments</span></span><span class="toc-sub">Book, manage &amp; track consultations</span></a></div>
+  <div class="toc-section"><a href="#ch4"><span><span class="toc-num">4</span><span class="toc-name">Consultation Notes</span></span><span class="toc-sub">SOAP notes, sick notes &amp; lab requests</span></a></div>
+  <div class="toc-section"><a href="#ch5"><span><span class="toc-num">5</span><span class="toc-name">Documents &amp; Prescriptions</span></span><span class="toc-sub">Scripts, referrals &amp; file uploads</span></a></div>
+  <div class="toc-section"><a href="#ch6"><span><span class="toc-num">6</span><span class="toc-name">Tasks &amp; Reminders</span></span><span class="toc-sub">Follow-up task management</span></a></div>
+  <div class="toc-section"><a href="#ch7"><span><span class="toc-num">7</span><span class="toc-name">Billing &amp; Invoicing</span></span><span class="toc-sub">Create, send &amp; track invoices</span></a></div>
+  <div class="toc-section"><a href="#ch8"><span><span class="toc-num">8</span><span class="toc-name">Analytics</span></span><span class="toc-sub">Practice performance overview</span></a></div>
+  <div class="toc-section"><a href="#ch9"><span><span class="toc-num">9</span><span class="toc-name">Workflow Diagrams</span></span><span class="toc-sub">Daily routine &amp; patient journey maps</span></a></div>
+  <div class="toc-section"><a href="#ch10"><span><span class="toc-num">10</span><span class="toc-name">Quick Reference</span></span><span class="toc-sub">Cheat sheet &amp; troubleshooting</span></a></div>
+  <div class="toc-section"><a href="#ch11"><span><span class="toc-num">11</span><span class="toc-name">Frequently Asked Questions</span></span><span class="toc-sub">Patients, appointments, billing, security &amp; technical</span></a></div>
+</div>
+
+
+<!-- CH1: GETTING STARTED -->
+<div class="page chapter" id="ch1">
+  <div class="chapter-number">Chapter 1</div>
+  <div class="chapter-title">Getting Started</div>
+  <p class="chapter-intro">G.P CRM runs in your web browser — no software to install. Open it on any device and log in with your credentials. The Dashboard is your command centre for the day.</p>
+
+  <div class="section">
+    <div class="section-title">The Login Screen</div>
+    <div class="screen-wrap">
+      <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <!-- Left brand panel -->
+        <rect width="380" height="380" fill="#080e1c"/>
+        <!-- Logo -->
+        <rect x="32" y="36" width="44" height="44" rx="12" fill="#3b5bdb"/>
+        <line x1="54" y1="47" x2="54" y2="69" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="43" y1="58" x2="65" y2="58" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="54" cy="58" r="12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="none"/>
+        <text x="86" y="53" fill="white" font-size="14" font-weight="800">G.P CRM</text>
+        <text x="86" y="68" fill="rgba(255,255,255,0.4)" font-size="10">Practice Manager</text>
+        <!-- Headline -->
+        <text x="32" y="130" fill="white" font-size="24" font-weight="800">Modern clinical</text>
+        <text x="32" y="158" fill="white" font-size="24" font-weight="800">practice management</text>
+        <text x="32" y="188" fill="rgba(255,255,255,0.55)" font-size="12">Patients, appointments, SOAP notes,</text>
+        <text x="32" y="204" fill="rgba(255,255,255,0.55)" font-size="12">and tasks — everything a GP needs.</text>
+        <!-- Feature bullets -->
+        <circle cx="40" cy="244" r="5" fill="#3b5bdb"/>
+        <text x="52" y="248" fill="rgba(255,255,255,0.6)" font-size="11">Patient records</text>
+        <circle cx="40" cy="264" r="5" fill="#3b5bdb"/>
+        <text x="52" y="268" fill="rgba(255,255,255,0.6)" font-size="11">SOAP consultations</text>
+        <circle cx="40" cy="284" r="5" fill="#3b5bdb"/>
+        <text x="52" y="288" fill="rgba(255,255,255,0.6)" font-size="11">Task queue &amp; reminders</text>
+        <circle cx="40" cy="304" r="5" fill="#3b5bdb"/>
+        <text x="52" y="308" fill="rgba(255,255,255,0.6)" font-size="11">Practice analytics</text>
+        <!-- Right form panel -->
+        <rect x="380" width="380" height="380" fill="#f0f3f8"/>
+        <!-- Form card -->
+        <rect x="420" y="60" width="300" height="270" rx="14" fill="white" filter="url(#shadow)"/>
+        <defs><filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="10" flood-opacity="0.08"/></filter></defs>
+        <text x="520" y="102" fill="#0d1117" font-size="18" font-weight="800" text-anchor="middle">Sign in</text>
+        <text x="520" y="120" fill="#6b7280" font-size="11" text-anchor="middle">Enter your credentials to access the CRM</text>
+        <!-- Username field -->
+        <text x="440" y="153" fill="#374151" font-size="11" font-weight="600">Username</text>
+        <rect x="440" y="160" width="260" height="34" rx="8" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="456" y="182" fill="#9ca3af" font-size="11">Enter your username</text>
+        <!-- Password field -->
+        <text x="440" y="215" fill="#374151" font-size="11" font-weight="600">Password</text>
+        <rect x="440" y="222" width="260" height="34" rx="8" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="456" y="244" fill="#9ca3af" font-size="11">Enter your password</text>
+        <!-- Button -->
+        <rect x="440" y="272" width="260" height="38" rx="9" fill="#3b5bdb"/>
+        <text x="570" y="296" fill="white" font-size="13" font-weight="600" text-anchor="middle">Sign in</text>
+        <!-- Callout circles -->
+        <circle cx="440" cy="177" r="10" fill="#3b5bdb" opacity="0.9"/>
+        <text x="440" y="181" fill="white" font-size="9" font-weight="700" text-anchor="middle">1</text>
+        <circle cx="440" cy="239" r="10" fill="#3b5bdb" opacity="0.9"/>
+        <text x="440" y="243" fill="white" font-size="9" font-weight="700" text-anchor="middle">2</text>
+        <circle cx="570" cy="291" r="10" fill="#1e40af" opacity="0.9"/>
+        <text x="570" y="295" fill="white" font-size="9" font-weight="700" text-anchor="middle">3</text>
+      </svg>
+    </div>
+    <div class="callouts">
+      <div class="callout"><div class="cnum">1</div><span><strong>Username field</strong> — type your username (not your email address)</span></div>
+      <div class="callout"><div class="cnum">2</div><span><strong>Password field</strong> — type your password, then press Enter or click Sign in</span></div>
+      <div class="callout"><div class="cnum">3</div><span><strong>Sign in button</strong> — takes you straight to your Dashboard</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">The Dashboard — Your Daily Overview</div>
+    <div class="screen-wrap">
+      <svg viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <!-- Sidebar -->
+        <rect width="160" height="440" fill="#080e1c"/>
+        <!-- Brand -->
+        <rect x="12" y="14" width="30" height="30" rx="8" fill="#3b5bdb"/>
+        <line x1="27" y1="20" x2="27" y2="38" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="18" y1="29" x2="36" y2="29" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <text x="50" y="28" fill="white" font-size="11" font-weight="800">G.P CRM</text>
+        <text x="50" y="40" fill="rgba(255,255,255,0.35)" font-size="8">Practice Manager</text>
+        <!-- Nav items -->
+        <rect x="8" y="68" width="144" height="28" rx="7" fill="rgba(99,102,241,0.2)"/>
+        <text x="24" y="87" fill="#a5b4fc" font-size="11" font-weight="600">⊞  Dashboard</text>
+        <text x="24" y="115" fill="rgba(255,255,255,0.45)" font-size="11">👤  Patients</text>
+        <text x="24" y="139" fill="rgba(255,255,255,0.45)" font-size="11">📅  Appointments</text>
+        <text x="24" y="163" fill="rgba(255,255,255,0.45)" font-size="11">📋  Consultations</text>
+        <text x="24" y="187" fill="rgba(255,255,255,0.45)" font-size="11">📄  Documents</text>
+        <text x="24" y="211" fill="rgba(255,255,255,0.45)" font-size="11">✅  Tasks</text>
+        <!-- badge on Tasks -->
+        <rect x="115" y="201" width="22" height="16" rx="8" fill="rgba(239,68,68,0.3)"/>
+        <text x="126" y="213" fill="#fca5a5" font-size="9" font-weight="700" text-anchor="middle">3</text>
+        <text x="24" y="235" fill="rgba(255,255,255,0.45)" font-size="11">💰  Billing</text>
+        <text x="24" y="259" fill="rgba(255,255,255,0.45)" font-size="11">📊  Analytics</text>
+        <!-- Footer -->
+        <rect x="0" y="400" width="160" height="40" fill="rgba(255,255,255,0.04)"/>
+        <circle cx="22" cy="420" r="10" fill="#374151"/>
+        <text x="22" y="424" fill="white" font-size="8" text-anchor="middle">DR</text>
+        <text x="38" y="417" fill="rgba(255,255,255,0.7)" font-size="9" font-weight="600">Dr. Malan</text>
+        <text x="38" y="428" fill="rgba(255,255,255,0.35)" font-size="8">Administrator</text>
+
+        <!-- Topbar -->
+        <rect x="160" y="0" width="600" height="48" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="180" y="22" fill="#0d1117" font-size="13" font-weight="800">Dashboard</text>
+        <text x="180" y="36" fill="#9ca3af" font-size="9">Wednesday, 7 May 2026</text>
+        <!-- Search -->
+        <rect x="340" y="12" width="200" height="26" rx="8" fill="#f7f9fc" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="354" y="29" fill="#9ca3af" font-size="10">🔍  Search patients...</text>
+        <!-- Avatar -->
+        <circle cx="730" cy="24" r="14" fill="#3b5bdb"/>
+        <text x="730" y="28" fill="white" font-size="9" font-weight="700" text-anchor="middle">DR</text>
+
+        <!-- Stat cards -->
+        <rect x="170" y="58" width="134" height="70" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <rect x="178" y="68" width="32" height="32" rx="8" fill="#e8edff"/>
+        <text x="194" y="89" fill="#3b5bdb" font-size="16" text-anchor="middle">👥</text>
+        <text x="222" y="80" fill="#0d1117" font-size="18" font-weight="800">247</text>
+        <text x="222" y="94" fill="#6b7280" font-size="9">Total patients</text>
+
+        <rect x="314" y="58" width="134" height="70" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <rect x="322" y="68" width="32" height="32" rx="8" fill="#dcfce7"/>
+        <text x="338" y="89" fill="#16a34a" font-size="16" text-anchor="middle">📅</text>
+        <text x="366" y="80" fill="#0d1117" font-size="18" font-weight="800">8</text>
+        <text x="366" y="94" fill="#6b7280" font-size="9">Today's appointments</text>
+
+        <rect x="458" y="58" width="134" height="70" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <rect x="466" y="68" width="32" height="32" rx="8" fill="#fef3c7"/>
+        <text x="482" y="89" fill="#d97706" font-size="16" text-anchor="middle">✅</text>
+        <text x="510" y="80" fill="#0d1117" font-size="18" font-weight="800">5</text>
+        <text x="510" y="94" fill="#6b7280" font-size="9">Scheduled today</text>
+
+        <rect x="602" y="58" width="148" height="70" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <rect x="610" y="68" width="32" height="32" rx="8" fill="#fef2f2"/>
+        <text x="626" y="89" fill="#dc2626" font-size="16" text-anchor="middle">⚡</text>
+        <text x="654" y="80" fill="#0d1117" font-size="18" font-weight="800">3</text>
+        <text x="654" y="94" fill="#6b7280" font-size="9">Pending tasks</text>
+
+        <!-- Today's schedule panel -->
+        <rect x="170" y="140" width="350" height="286" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="186" y="164" fill="#0d1117" font-size="12" font-weight="700">Today's Schedule</text>
+        <text x="472" y="164" fill="#3b5bdb" font-size="10" text-anchor="end">8 total</text>
+        <!-- Appointment rows -->
+        <rect x="186" y="174" width="318" height="44" rx="8" fill="#f8fafc" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="193" fill="#374151" font-size="10" font-weight="600">08:00</text>
+        <text x="240" y="193" fill="#0d1117" font-size="11" font-weight="700">Sarah Johnson</text>
+        <text x="240" y="207" fill="#6b7280" font-size="10">Hypertension follow-up</text>
+        <rect x="426" y="180" width="62" height="18" rx="9" fill="#dbeafe"/>
+        <text x="457" y="193" fill="#1e40af" font-size="9" font-weight="600" text-anchor="middle">Scheduled</text>
+
+        <rect x="186" y="224" width="318" height="44" rx="8" fill="#f8fafc" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="243" fill="#374151" font-size="10" font-weight="600">09:00</text>
+        <text x="240" y="243" fill="#0d1117" font-size="11" font-weight="700">Michael Dlamini</text>
+        <text x="240" y="257" fill="#6b7280" font-size="10">Acute chest pain</text>
+        <rect x="426" y="230" width="62" height="18" rx="9" fill="#dcfce7"/>
+        <text x="457" y="243" fill="#15803d" font-size="9" font-weight="600" text-anchor="middle">Completed</text>
+
+        <rect x="186" y="274" width="318" height="44" rx="8" fill="#f8fafc" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="293" fill="#374151" font-size="10" font-weight="600">10:00</text>
+        <text x="240" y="293" fill="#0d1117" font-size="11" font-weight="700">Thandiwe Nkosi</text>
+        <text x="240" y="307" fill="#6b7280" font-size="10">Diabetes management</text>
+        <rect x="426" y="280" width="62" height="18" rx="9" fill="#dbeafe"/>
+        <text x="457" y="293" fill="#1e40af" font-size="9" font-weight="600" text-anchor="middle">Scheduled</text>
+
+        <rect x="186" y="324" width="318" height="44" rx="8" fill="#f8fafc" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="343" fill="#374151" font-size="10" font-weight="600">11:00</text>
+        <text x="240" y="343" fill="#0d1117" font-size="11" font-weight="700">Peter van der Berg</text>
+        <text x="240" y="357" fill="#6b7280" font-size="10">Annual check-up</text>
+        <rect x="426" y="330" width="62" height="18" rx="9" fill="#dbeafe"/>
+        <text x="457" y="343" fill="#1e40af" font-size="9" font-weight="600" text-anchor="middle">Scheduled</text>
+        <text x="186" y="396" fill="#6b7280" font-size="10">+ 4 more appointments today</text>
+
+        <!-- Tasks panel -->
+        <rect x="530" y="140" width="220" height="186" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="546" y="164" fill="#0d1117" font-size="12" font-weight="700">Pending Tasks</text>
+        <rect x="546" y="174" width="188" height="36" rx="7" fill="#fef2f2"/>
+        <rect x="556" y="183" width="10" height="10" rx="2" stroke="#dc2626" stroke-width="1.5" fill="none"/>
+        <text x="572" y="193" fill="#374151" font-size="10" font-weight="500">Chase FBC — M. Dlamini</text>
+        <rect x="680" y="178" width="42" height="16" rx="8" fill="#fee2e2"/>
+        <text x="701" y="190" fill="#b91c1c" font-size="8" font-weight="700" text-anchor="middle">HIGH</text>
+        <rect x="546" y="216" width="188" height="36" rx="7" fill="#f8fafc"/>
+        <rect x="556" y="225" width="10" height="10" rx="2" stroke="#9ca3af" stroke-width="1.5" fill="none"/>
+        <text x="572" y="235" fill="#374151" font-size="10">Renew Metformin — T. Nkosi</text>
+        <rect x="678" y="220" width="46" height="16" rx="8" fill="#fef3c7"/>
+        <text x="701" y="232" fill="#92400e" font-size="8" font-weight="700" text-anchor="middle">MED</text>
+        <rect x="546" y="258" width="188" height="36" rx="7" fill="#f8fafc"/>
+        <rect x="556" y="267" width="10" height="10" rx="2" stroke="#9ca3af" stroke-width="1.5" fill="none"/>
+        <text x="572" y="277" fill="#374151" font-size="10">Referral — S. Johnson</text>
+        <rect x="682" y="262" width="40" height="16" rx="8" fill="#f3f4f6"/>
+        <text x="702" y="274" fill="#4b5563" font-size="8" font-weight="700" text-anchor="middle">LOW</text>
+
+        <!-- Follow-ups panel -->
+        <rect x="530" y="336" width="220" height="90" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="546" y="358" fill="#0d1117" font-size="12" font-weight="700">Follow-ups Due</text>
+        <text x="546" y="378" fill="#374151" font-size="10">Sarah Johnson</text>
+        <text x="686" y="378" fill="#6b7280" font-size="9" text-anchor="end">Today</text>
+        <line x1="546" y1="385" x2="740" y2="385" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="546" y="402" fill="#374151" font-size="10">Thandiwe Nkosi</text>
+        <text x="686" y="402" fill="#6b7280" font-size="9" text-anchor="end">Tomorrow</text>
+        <line x1="546" y1="409" x2="740" y2="409" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="546" y="422" fill="#374151" font-size="10">John Sithole</text>
+        <text x="686" y="422" fill="#6b7280" font-size="9" text-anchor="end">9 May</text>
+
+        <!-- Callout circles -->
+        <circle cx="302" cy="93" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="302" y="97" fill="white" font-size="9" font-weight="700" text-anchor="middle">1</text>
+        <circle cx="172" cy="58" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="172" y="62" fill="white" font-size="9" font-weight="700" text-anchor="middle">2</text>
+        <circle cx="172" cy="140" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="172" y="144" fill="white" font-size="9" font-weight="700" text-anchor="middle">3</text>
+        <circle cx="532" cy="140" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="532" y="144" fill="white" font-size="9" font-weight="700" text-anchor="middle">4</text>
+        <circle cx="532" cy="336" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="532" y="340" fill="white" font-size="9" font-weight="700" text-anchor="middle">5</text>
+        <circle cx="8" cy="205" r="11" fill="#ef4444" opacity="0.92"/>
+        <text x="8" y="209" fill="white" font-size="9" font-weight="700" text-anchor="middle">6</text>
+      </svg>
+    </div>
+    <div class="callouts">
+      <div class="callout"><div class="cnum">1</div><span><strong>Stat cards</strong> — total patients, today's bookings, scheduled count, and pending tasks at a glance</span></div>
+      <div class="callout"><div class="cnum">2</div><span><strong>Sidebar navigation</strong> — click any item to switch module; you are always one click away</span></div>
+      <div class="callout"><div class="cnum">3</div><span><strong>Today's Schedule</strong> — every patient booked for today in time order, with status badge</span></div>
+      <div class="callout"><div class="cnum">4</div><span><strong>Pending Tasks</strong> — your top follow-up items, colour-coded by priority; tick to complete</span></div>
+      <div class="callout"><div class="cnum">5</div><span><strong>Follow-ups Due</strong> — patients whose follow-up date has arrived, pulled from your SOAP notes</span></div>
+      <div class="callout"><div class="cnum">6</div><span><strong>Red badge</strong> — number on sidebar means items need attention (here: 3 pending tasks)</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- CH2: PATIENT RECORDS -->
+<div class="page chapter" id="ch2">
+  <div class="chapter-number">Chapter 2</div>
+  <div class="chapter-title">Patient Records</div>
+  <p class="chapter-intro">Every clinical activity links to a patient record. Register a new patient in under two minutes. Once registered, their full history — appointments, consultations, documents, vitals, and invoices — lives in one place.</p>
+
+  <div class="section">
+    <div class="section-title">The Patient List &amp; Search</div>
+    <div class="screen-wrap">
+      <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <rect width="160" height="320" fill="#080e1c"/>
+        <rect x="12" y="14" width="30" height="30" rx="8" fill="#3b5bdb"/>
+        <text x="50" y="34" fill="white" font-size="11" font-weight="800">G.P CRM</text>
+        <text x="24" y="72" fill="rgba(255,255,255,0.45)" font-size="11">⊞  Dashboard</text>
+        <rect x="8" y="82" width="144" height="26" rx="7" fill="rgba(99,102,241,0.2)"/>
+        <text x="24" y="99" fill="#a5b4fc" font-size="11" font-weight="600">👤  Patients</text>
+        <text x="24" y="123" fill="rgba(255,255,255,0.45)" font-size="11">📅  Appointments</text>
+        <text x="24" y="147" fill="rgba(255,255,255,0.45)" font-size="11">📋  Consultations</text>
+        <text x="24" y="171" fill="rgba(255,255,255,0.45)" font-size="11">📄  Documents</text>
+        <text x="24" y="195" fill="rgba(255,255,255,0.45)" font-size="11">✅  Tasks</text>
+        <text x="24" y="219" fill="rgba(255,255,255,0.45)" font-size="11">💰  Billing</text>
+        <!-- Main area -->
+        <rect x="160" width="600" height="320" fill="#f0f3f8"/>
+        <!-- Topbar -->
+        <rect x="160" y="0" width="600" height="44" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="178" y="18" fill="#0d1117" font-size="13" font-weight="800">Patients</text>
+        <text x="178" y="32" fill="#9ca3af" font-size="9">247 registered patients</text>
+        <!-- Page content -->
+        <rect x="170" y="54" width="580" height="256" rx="12" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <!-- Search + button row -->
+        <rect x="186" y="68" width="340" height="32" rx="8" fill="#f7f9fc" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="202" y="88" fill="#9ca3af" font-size="11">🔍  Search by name, phone, ID, medical aid, condition...</text>
+        <rect x="542" y="68" width="132" height="32" rx="8" fill="#3b5bdb"/>
+        <text x="608" y="88" fill="white" font-size="11" font-weight="600" text-anchor="middle">+ New Patient</text>
+        <!-- Table header -->
+        <rect x="186" y="110" width="548" height="26" rx="0" fill="#f8fafc"/>
+        <text x="198" y="127" fill="#6b7280" font-size="9" font-weight="700">FILE NO.</text>
+        <text x="268" y="127" fill="#6b7280" font-size="9" font-weight="700">PATIENT NAME</text>
+        <text x="400" y="127" fill="#6b7280" font-size="9" font-weight="700">PHONE</text>
+        <text x="480" y="127" fill="#6b7280" font-size="9" font-weight="700">MEDICAL AID</text>
+        <text x="588" y="127" fill="#6b7280" font-size="9" font-weight="700">ACTIONS</text>
+        <line x1="186" y1="136" x2="734" y2="136" stroke="#e5e7eb" stroke-width="1.5"/>
+        <!-- Row 1 -->
+        <text x="198" y="154" fill="#6b7280" font-size="10">GP-0001</text>
+        <circle cx="258" cy="150" r="10" fill="#dbeafe"/>
+        <text x="258" y="154" fill="#1e40af" font-size="8" font-weight="700" text-anchor="middle">SJ</text>
+        <text x="274" y="154" fill="#0d1117" font-size="11" font-weight="600">Sarah Johnson</text>
+        <text x="400" y="154" fill="#374151" font-size="10">+27 82 555 0101</text>
+        <rect x="480" y="143" width="82" height="16" rx="8" fill="#dcfce7"/>
+        <text x="521" y="155" fill="#15803d" font-size="9" font-weight="600" text-anchor="middle">Discovery Health</text>
+        <text x="590" y="154" fill="#3b5bdb" font-size="10">View</text>
+        <text x="618" y="154" fill="#6b7280" font-size="10">Edit</text>
+        <line x1="186" y1="164" x2="734" y2="164" stroke="#e5e7eb" stroke-width="1"/>
+        <!-- Row 2 -->
+        <text x="198" y="182" fill="#6b7280" font-size="10">GP-0002</text>
+        <circle cx="258" cy="178" r="10" fill="#ede9fe"/>
+        <text x="258" y="182" fill="#6d28d9" font-size="8" font-weight="700" text-anchor="middle">MD</text>
+        <text x="274" y="182" fill="#0d1117" font-size="11" font-weight="600">Michael Dlamini</text>
+        <text x="400" y="182" fill="#374151" font-size="10">+27 71 444 0202</text>
+        <rect x="480" y="171" width="58" height="16" rx="8" fill="#f3f4f6"/>
+        <text x="509" y="183" fill="#4b5563" font-size="9" font-weight="600" text-anchor="middle">Private</text>
+        <text x="590" y="182" fill="#3b5bdb" font-size="10">View</text>
+        <text x="618" y="182" fill="#6b7280" font-size="10">Edit</text>
+        <line x1="186" y1="192" x2="734" y2="192" stroke="#e5e7eb" stroke-width="1"/>
+        <!-- Row 3 -->
+        <text x="198" y="210" fill="#6b7280" font-size="10">GP-0003</text>
+        <circle cx="258" cy="206" r="10" fill="#fef3c7"/>
+        <text x="258" y="210" fill="#92400e" font-size="8" font-weight="700" text-anchor="middle">TN</text>
+        <text x="274" y="210" fill="#0d1117" font-size="11" font-weight="600">Thandiwe Nkosi</text>
+        <text x="400" y="210" fill="#374151" font-size="10">+27 63 333 0303</text>
+        <rect x="480" y="199" width="68" height="16" rx="8" fill="#dcfce7"/>
+        <text x="514" y="211" fill="#15803d" font-size="9" font-weight="600" text-anchor="middle">Momentum</text>
+        <text x="590" y="210" fill="#3b5bdb" font-size="10">View</text>
+        <text x="618" y="210" fill="#6b7280" font-size="10">Edit</text>
+        <line x1="186" y1="220" x2="734" y2="220" stroke="#e5e7eb" stroke-width="1"/>
+        <!-- Row 4 -->
+        <text x="198" y="238" fill="#6b7280" font-size="10">GP-0004</text>
+        <circle cx="258" cy="234" r="10" fill="#fef2f2"/>
+        <text x="258" y="238" fill="#b91c1c" font-size="8" font-weight="700" text-anchor="middle">PV</text>
+        <text x="274" y="238" fill="#0d1117" font-size="11" font-weight="600">Peter van der Berg</text>
+        <text x="400" y="238" fill="#374151" font-size="10">+27 84 222 0404</text>
+        <rect x="480" y="227" width="82" height="16" rx="8" fill="#dcfce7"/>
+        <text x="521" y="239" fill="#15803d" font-size="9" font-weight="600" text-anchor="middle">Discovery Health</text>
+        <text x="590" y="238" fill="#3b5bdb" font-size="10">View</text>
+        <text x="618" y="238" fill="#6b7280" font-size="10">Edit</text>
+        <text x="186" y="298" fill="#6b7280" font-size="10">Showing 4 of 247 patients</text>
+        <!-- callout circles -->
+        <circle cx="186" cy="84" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="186" y="88" fill="white" font-size="9" font-weight="700" text-anchor="middle">1</text>
+        <circle cx="542" cy="84" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="542" y="88" fill="white" font-size="9" font-weight="700" text-anchor="middle">2</text>
+        <circle cx="186" cy="120" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="186" y="124" fill="white" font-size="9" font-weight="700" text-anchor="middle">3</text>
+      </svg>
+    </div>
+    <div class="callouts">
+      <div class="callout"><div class="cnum">1</div><span><strong>Search bar</strong> — search by name, phone, ID number, medical aid scheme, or chronic condition</span></div>
+      <div class="callout"><div class="cnum">2</div><span><strong>+ New Patient</strong> — click to open the registration form</span></div>
+      <div class="callout"><div class="cnum">3</div><span><strong>Patient row</strong> — click <em>View</em> to open their full profile, <em>Edit</em> to update details</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">The Patient Profile</div>
+    <div class="screen-wrap">
+      <svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <!-- Sidebar (simplified) -->
+        <rect width="160" height="400" fill="#080e1c"/>
+        <rect x="12" y="14" width="30" height="30" rx="8" fill="#3b5bdb"/>
+        <text x="50" y="34" fill="white" font-size="11" font-weight="800">G.P CRM</text>
+        <text x="24" y="72" fill="rgba(255,255,255,0.45)" font-size="11">⊞  Dashboard</text>
+        <rect x="8" y="82" width="144" height="26" rx="7" fill="rgba(99,102,241,0.2)"/>
+        <text x="24" y="99" fill="#a5b4fc" font-size="11" font-weight="600">👤  Patients</text>
+        <text x="24" y="123" fill="rgba(255,255,255,0.45)" font-size="11">📅  Appointments</text>
+        <text x="24" y="147" fill="rgba(255,255,255,0.45)" font-size="11">📋  Consultations</text>
+        <!-- Main -->
+        <rect x="160" width="600" height="400" fill="#f0f3f8"/>
+        <rect x="160" y="0" width="600" height="44" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="178" y="28" fill="#0d1117" font-size="13" font-weight="800">Sarah Johnson — GP-0001</text>
+        <!-- Patient header card -->
+        <rect x="170" y="54" width="580" height="76" rx="12" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <circle cx="210" cy="92" r="28" fill="#dbeafe"/>
+        <text x="210" y="97" fill="#1e40af" font-size="16" font-weight="700" text-anchor="middle">SJ</text>
+        <text x="248" y="78" fill="#0d1117" font-size="16" font-weight="800">Sarah Johnson</text>
+        <text x="248" y="94" fill="#6b7280" font-size="11">Female &nbsp;·&nbsp; Age 54 &nbsp;·&nbsp; GP-0001 &nbsp;·&nbsp; ID: 7012150123084</text>
+        <text x="248" y="110" fill="#374151" font-size="10">📞 +27 82 555 0101 &nbsp;&nbsp; ✉ sarah.j@email.com</text>
+        <rect x="574" y="66" width="110" height="26" rx="7" fill="#3b5bdb"/>
+        <text x="629" y="83" fill="white" font-size="10" font-weight="600" text-anchor="middle">+ New Consultation</text>
+        <rect x="574" y="98" width="110" height="26" rx="7" fill="white" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="629" y="115" fill="#374151" font-size="10" font-weight="600" text-anchor="middle">Book Appointment</text>
+        <!-- Tab navigation -->
+        <rect x="170" y="140" width="580" height="36" rx="0" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="196" y="163" fill="#3b5bdb" font-size="11" font-weight="700">Overview</text>
+        <line x1="170" y1="176" x2="246" y2="176" stroke="#3b5bdb" stroke-width="2.5"/>
+        <text x="268" y="163" fill="#6b7280" font-size="11">Appointments (8)</text>
+        <text x="380" y="163" fill="#6b7280" font-size="11">Consultations (12)</text>
+        <text x="500" y="163" fill="#6b7280" font-size="11">Documents (5)</text>
+        <text x="596" y="163" fill="#6b7280" font-size="11">Invoices</text>
+        <!-- Three info cards -->
+        <rect x="170" y="186" width="186" height="200" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="186" y="206" fill="#0d1117" font-size="12" font-weight="700">Clinical Summary</text>
+        <text x="186" y="224" fill="#6b7280" font-size="9" font-weight="700">BLOOD TYPE</text>
+        <text x="186" y="238" fill="#374151" font-size="11">A Positive</text>
+        <text x="186" y="256" fill="#6b7280" font-size="9" font-weight="700">ALLERGIES</text>
+        <rect x="186" y="262" width="58" height="16" rx="8" fill="#fef2f2"/>
+        <text x="215" y="274" fill="#b91c1c" font-size="9" font-weight="600" text-anchor="middle">Penicillin</text>
+        <text x="186" y="292" fill="#6b7280" font-size="9" font-weight="700">CHRONIC CONDITIONS</text>
+        <rect x="186" y="298" width="66" height="16" rx="8" fill="#fef3c7"/>
+        <text x="219" y="310" fill="#92400e" font-size="9" font-weight="600" text-anchor="middle">Hypertension</text>
+        <rect x="258" y="298" width="70" height="16" rx="8" fill="#fef3c7"/>
+        <text x="293" y="310" fill="#92400e" font-size="9" font-weight="600" text-anchor="middle">Hyperlipidaemia</text>
+        <text x="186" y="340" fill="#6b7280" font-size="9" font-weight="700">MEDICATIONS</text>
+        <text x="186" y="354" fill="#374151" font-size="10">Amlodipine 5mg</text>
+        <text x="186" y="367" fill="#374151" font-size="10">Atorvastatin 20mg</text>
+
+        <rect x="366" y="186" width="186" height="200" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="382" y="206" fill="#0d1117" font-size="12" font-weight="700">Medical Aid</text>
+        <text x="382" y="224" fill="#6b7280" font-size="9" font-weight="700">SCHEME</text>
+        <text x="382" y="238" fill="#374151" font-size="11">Discovery Health</text>
+        <text x="382" y="256" fill="#6b7280" font-size="9" font-weight="700">PLAN</text>
+        <text x="382" y="270" fill="#374151" font-size="11">Comprehensive</text>
+        <text x="382" y="288" fill="#6b7280" font-size="9" font-weight="700">MEMBERSHIP NO.</text>
+        <text x="382" y="302" fill="#374151" font-size="11">DH-789-456-123</text>
+        <text x="382" y="320" fill="#6b7280" font-size="9" font-weight="700">PRINCIPAL MEMBER</text>
+        <text x="382" y="334" fill="#374151" font-size="11">Self</text>
+
+        <rect x="562" y="186" width="188" height="200" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="578" y="206" fill="#0d1117" font-size="12" font-weight="700">Recent Vitals</text>
+        <text x="578" y="224" fill="#6b7280" font-size="9">Recorded 5 May 2026</text>
+        <text x="578" y="244" fill="#6b7280" font-size="9" font-weight="700">BLOOD PRESSURE</text>
+        <text x="578" y="258" fill="#374151" font-size="13" font-weight="700">138 <tspan font-size="10" fill="#6b7280">/</tspan> 88 <tspan font-size="9" fill="#6b7280">mmHg</tspan></text>
+        <text x="578" y="278" fill="#6b7280" font-size="9" font-weight="700">PULSE</text>
+        <text x="578" y="292" fill="#374151" font-size="13" font-weight="700">76 <tspan font-size="9" fill="#6b7280">bpm</tspan></text>
+        <text x="578" y="312" fill="#6b7280" font-size="9" font-weight="700">WEIGHT / BMI</text>
+        <text x="578" y="326" fill="#374151" font-size="13" font-weight="700">74 kg <tspan font-size="10" fill="#6b7280">· BMI 27.4</tspan></text>
+        <text x="578" y="346" fill="#6b7280" font-size="9" font-weight="700">TEMP / O2 SAT</text>
+        <text x="578" y="360" fill="#374151" font-size="13" font-weight="700">36.8°C <tspan font-size="10" fill="#6b7280">· 98%</tspan></text>
+        <rect x="578" y="370" width="100" height="12" rx="4"/>
+        <text x="578" y="381" fill="#3b5bdb" font-size="9">+ Add Vitals</text>
+        <!-- callouts -->
+        <circle cx="237" cy="92" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="237" y="96" fill="white" font-size="9" font-weight="700" text-anchor="middle">1</text>
+        <circle cx="574" cy="68" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="574" y="72" fill="white" font-size="9" font-weight="700" text-anchor="middle">2</text>
+        <circle cx="172" cy="158" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="172" y="162" fill="white" font-size="9" font-weight="700" text-anchor="middle">3</text>
+        <circle cx="172" cy="192" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="172" y="196" fill="white" font-size="9" font-weight="700" text-anchor="middle">4</text>
+        <circle cx="564" cy="192" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="564" y="196" fill="white" font-size="9" font-weight="700" text-anchor="middle">5</text>
+      </svg>
+    </div>
+    <div class="callouts">
+      <div class="callout"><div class="cnum">1</div><span><strong>Patient header</strong> — name, age, file number, ID, contact details all visible immediately</span></div>
+      <div class="callout"><div class="cnum">2</div><span><strong>Quick action buttons</strong> — start a consultation or book an appointment without navigating away</span></div>
+      <div class="callout"><div class="cnum">3</div><span><strong>Tab navigation</strong> — switch between Overview, Appointments, Consultations, Documents, Invoices</span></div>
+      <div class="callout"><div class="cnum">4</div><span><strong>Clinical Summary</strong> — blood type, allergies (red), chronic conditions (amber), current medications</span></div>
+      <div class="callout"><div class="cnum">5</div><span><strong>Recent Vitals</strong> — last recorded readings; click "+ Add Vitals" to record new ones</span></div>
+    </div>
+
+    <div class="box box-tip">
+      <div class="box-icon">💡</div>
+      <div class="box-body"><strong>Blood pressure entry shortcut:</strong> Type 138/88 in the blood pressure field — the system splits it automatically into 138 systolic and 88 diastolic. No need to use two separate fields.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- CH3: APPOINTMENTS -->
+<div class="page chapter" id="ch3">
+  <div class="chapter-number">Chapter 3</div>
+  <div class="chapter-title">Appointments</div>
+  <p class="chapter-intro">The Appointments module is your booking register. Schedule new appointments, filter by date or status, and update outcomes after each consultation.</p>
+
+  <div class="section">
+    <div class="section-title">The Appointment List</div>
+    <div class="screen-wrap">
+      <svg viewBox="0 0 760 310" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <rect width="160" height="310" fill="#080e1c"/>
+        <rect x="12" y="14" width="30" height="30" rx="8" fill="#3b5bdb"/>
+        <text x="50" y="34" fill="white" font-size="11" font-weight="800">G.P CRM</text>
+        <text x="24" y="72" fill="rgba(255,255,255,0.45)" font-size="11">⊞  Dashboard</text>
+        <text x="24" y="96" fill="rgba(255,255,255,0.45)" font-size="11">👤  Patients</text>
+        <rect x="8" y="106" width="144" height="26" rx="7" fill="rgba(99,102,241,0.2)"/>
+        <text x="24" y="123" fill="#a5b4fc" font-size="11" font-weight="600">📅  Appointments</text>
+        <!-- Main -->
+        <rect x="160" width="600" height="310" fill="#f0f3f8"/>
+        <rect x="160" y="0" width="600" height="44" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="178" y="28" fill="#0d1117" font-size="13" font-weight="800">Appointments</text>
+        <!-- Content card -->
+        <rect x="170" y="54" width="580" height="246" rx="12" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <!-- Filters row -->
+        <text x="186" y="78" fill="#374151" font-size="10" font-weight="600">Status:</text>
+        <rect x="226" y="66" width="52" height="22" rx="11" fill="#3b5bdb"/>
+        <text x="252" y="81" fill="white" font-size="10" font-weight="600" text-anchor="middle">All</text>
+        <rect x="284" y="66" width="70" height="22" rx="11" fill="#f3f4f6"/>
+        <text x="319" y="81" fill="#374151" font-size="10" text-anchor="middle">Scheduled</text>
+        <rect x="360" y="66" width="72" height="22" rx="11" fill="#f3f4f6"/>
+        <text x="396" y="81" fill="#374151" font-size="10" text-anchor="middle">Completed</text>
+        <rect x="438" y="66" width="70" height="22" rx="11" fill="#f3f4f6"/>
+        <text x="473" y="81" fill="#374151" font-size="10" text-anchor="middle">Cancelled</text>
+        <rect x="514" y="66" width="60" height="22" rx="11" fill="#f3f4f6"/>
+        <text x="544" y="81" fill="#374151" font-size="10" text-anchor="middle">No-Show</text>
+        <!-- Date filter -->
+        <rect x="186" y="96" width="120" height="26" rx="7" fill="#f7f9fc" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="198" y="113" fill="#6b7280" font-size="10">📅 07/05/2026</text>
+        <rect x="590" y="96" width="114" height="26" rx="7" fill="#3b5bdb"/>
+        <text x="647" y="113" fill="white" font-size="10" font-weight="600" text-anchor="middle">+ New Appointment</text>
+        <!-- Table -->
+        <rect x="186" y="132" width="548" height="22" fill="#f8fafc"/>
+        <text x="198" y="147" fill="#6b7280" font-size="9" font-weight="700">DATE &amp; TIME</text>
+        <text x="302" y="147" fill="#6b7280" font-size="9" font-weight="700">PATIENT</text>
+        <text x="450" y="147" fill="#6b7280" font-size="9" font-weight="700">REASON</text>
+        <text x="614" y="147" fill="#6b7280" font-size="9" font-weight="700">STATUS</text>
+        <line x1="186" y1="154" x2="734" y2="154" stroke="#e5e7eb" stroke-width="1.5"/>
+        <!-- Rows -->
+        <text x="198" y="172" fill="#374151" font-size="10" font-weight="600">07 May · 08:00</text>
+        <text x="302" y="172" fill="#0d1117" font-size="11">Sarah Johnson</text>
+        <text x="450" y="172" fill="#6b7280" font-size="10">Hypertension follow-up</text>
+        <rect x="606" y="162" width="72" height="18" rx="9" fill="#dbeafe"/>
+        <text x="642" y="175" fill="#1e40af" font-size="9" font-weight="600" text-anchor="middle">Scheduled</text>
+        <line x1="186" y1="182" x2="734" y2="182" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="200" fill="#374151" font-size="10" font-weight="600">07 May · 09:00</text>
+        <text x="302" y="200" fill="#0d1117" font-size="11">Michael Dlamini</text>
+        <text x="450" y="200" fill="#6b7280" font-size="10">Acute chest pain</text>
+        <rect x="606" y="190" width="72" height="18" rx="9" fill="#dcfce7"/>
+        <text x="642" y="203" fill="#15803d" font-size="9" font-weight="600" text-anchor="middle">Completed</text>
+        <line x1="186" y1="210" x2="734" y2="210" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="228" fill="#374151" font-size="10" font-weight="600">06 May · 14:00</text>
+        <text x="302" y="228" fill="#0d1117" font-size="11">John Sithole</text>
+        <text x="450" y="228" fill="#6b7280" font-size="10">Routine check-up</text>
+        <rect x="606" y="218" width="72" height="18" rx="9" fill="#fee2e2"/>
+        <text x="642" y="231" fill="#b91c1c" font-size="9" font-weight="600" text-anchor="middle">No-Show</text>
+        <line x1="186" y1="238" x2="734" y2="238" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="256" fill="#374151" font-size="10" font-weight="600">06 May · 10:00</text>
+        <text x="302" y="256" fill="#0d1117" font-size="11">Thandiwe Nkosi</text>
+        <text x="450" y="256" fill="#6b7280" font-size="10">Diabetes management</text>
+        <rect x="606" y="246" width="72" height="18" rx="9" fill="#dcfce7"/>
+        <text x="642" y="259" fill="#15803d" font-size="9" font-weight="600" text-anchor="middle">Completed</text>
+        <!-- callouts -->
+        <circle cx="226" cy="77" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="226" y="81" fill="white" font-size="9" font-weight="700" text-anchor="middle">1</text>
+        <circle cx="186" cy="109" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="186" y="113" fill="white" font-size="9" font-weight="700" text-anchor="middle">2</text>
+        <circle cx="590" cy="109" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="590" y="113" fill="white" font-size="9" font-weight="700" text-anchor="middle">3</text>
+        <circle cx="642" cy="162" r="11" fill="#1e40af" opacity="0.92"/>
+        <text x="642" y="166" fill="white" font-size="9" font-weight="700" text-anchor="middle">4</text>
+      </svg>
+    </div>
+    <div class="callouts">
+      <div class="callout"><div class="cnum">1</div><span><strong>Status filter pills</strong> — click any status to show only those appointments</span></div>
+      <div class="callout"><div class="cnum">2</div><span><strong>Date picker</strong> — filter to a specific day to see a single day's schedule</span></div>
+      <div class="callout"><div class="cnum">3</div><span><strong>+ New Appointment</strong> — opens the booking form</span></div>
+      <div class="callout"><div class="cnum">4</div><span><strong>Status badge</strong> — colour-coded; update after each patient encounter</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Appointment Status Guide</div>
+    <table class="field-table">
+      <thead><tr><th>Status</th><th>When to use it</th><th>What to do next</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-blue">Scheduled</span></td><td>Booked, not yet seen</td><td>Default on creation — no action needed until the patient arrives</td></tr>
+        <tr><td><span class="badge badge-green">Completed</span></td><td>Patient attended and was seen</td><td>Write a Consultation Note (Chapter 4) and create an Invoice (Chapter 7)</td></tr>
+        <tr><td><span class="badge badge-red">Cancelled</span></td><td>Appointment will not happen</td><td>Click Cancel on the appointment — optionally rebook</td></tr>
+        <tr><td><span class="badge badge-amber">No-Show</span></td><td>Patient did not attend, no contact</td><td>Add a Task to follow up; consider rescheduling</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CH4: CONSULTATION NOTES -->
+<div class="page chapter" id="ch4">
+  <div class="chapter-number">Chapter 4</div>
+  <div class="chapter-title">Consultation Notes</div>
+  <p class="chapter-intro">Consultations use the standard SOAP format. Every note is stored permanently in the patient's record, giving you a complete longitudinal clinical history.</p>
+
+  <div class="section">
+    <div class="section-title">The SOAP Note Form</div>
+    <div class="screen-wrap">
+      <svg viewBox="0 0 760 520" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <rect width="160" height="520" fill="#080e1c"/>
+        <rect x="12" y="14" width="30" height="30" rx="8" fill="#3b5bdb"/>
+        <text x="50" y="34" fill="white" font-size="11" font-weight="800">G.P CRM</text>
+        <text x="24" y="72" fill="rgba(255,255,255,0.45)" font-size="11">⊞  Dashboard</text>
+        <text x="24" y="96" fill="rgba(255,255,255,0.45)" font-size="11">👤  Patients</text>
+        <text x="24" y="120" fill="rgba(255,255,255,0.45)" font-size="11">📅  Appointments</text>
+        <rect x="8" y="130" width="144" height="26" rx="7" fill="rgba(99,102,241,0.2)"/>
+        <text x="24" y="147" fill="#a5b4fc" font-size="11" font-weight="600">📋  Consultations</text>
+        <!-- Main -->
+        <rect x="160" width="600" height="520" fill="#f0f3f8"/>
+        <rect x="160" y="0" width="600" height="44" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="178" y="28" fill="#0d1117" font-size="13" font-weight="800">New Consultation — Sarah Johnson</text>
+        <!-- Form card -->
+        <rect x="170" y="54" width="580" height="454" rx="12" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <!-- Patient + appt row -->
+        <text x="186" y="78" fill="#374151" font-size="10" font-weight="600">Patient</text>
+        <rect x="186" y="84" width="260" height="28" rx="7" fill="#f7f9fc" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="198" y="102" fill="#0d1117" font-size="11">Sarah Johnson</text>
+        <text x="466" y="78" fill="#374151" font-size="10" font-weight="600">Link to Appointment <span style="font-weight:400;color:#9ca3af">(optional)</span></text>
+        <rect x="466" y="84" width="268" height="28" rx="7" fill="#f7f9fc" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="478" y="102" fill="#9ca3af" font-size="11">Select appointment...</text>
+        <!-- Chief complaint -->
+        <text x="186" y="130" fill="#374151" font-size="10" font-weight="600">Chief Complaint</text>
+        <text x="186" y="142" fill="#9ca3af" font-size="9">(in the patient's own words)</text>
+        <rect x="186" y="150" width="548" height="28" rx="7" fill="#f7f9fc" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="198" y="168" fill="#374151" font-size="11">"My blood pressure headaches are back"</text>
+        <!-- S -->
+        <rect x="186" y="186" width="6" height="50" rx="3" fill="#3b5bdb"/>
+        <text x="200" y="205" fill="#3b5bdb" font-size="10" font-weight="800">S — SUBJECTIVE</text>
+        <text x="200" y="218" fill="#6b7280" font-size="9">History of presenting illness</text>
+        <rect x="186" y="228" width="548" height="40" rx="7" fill="#f7f9fc" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="198" y="244" fill="#374151" font-size="10">54F known hypertensive on amlodipine 5mg. Presents with 3-day history of occipital headaches,</text>
+        <text x="198" y="258" fill="#374151" font-size="10">worse in the morning. No visual changes, no neurological symptoms.</text>
+        <!-- O -->
+        <rect x="186" y="278" width="6" height="50" rx="3" fill="#16a34a"/>
+        <text x="200" y="297" fill="#16a34a" font-size="10" font-weight="800">O — OBJECTIVE</text>
+        <text x="200" y="310" fill="#6b7280" font-size="9">Examination findings</text>
+        <rect x="186" y="320" width="548" height="40" rx="7" fill="#f7f9fc" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="198" y="336" fill="#374151" font-size="10">BP 158/96 mmHg (repeat 154/92). Pulse 78 bpm regular. No papilloedema. Chest clear. HS I+II+0.</text>
+        <text x="198" y="350" fill="#374151" font-size="10">No focal neurological deficit.</text>
+        <!-- A -->
+        <rect x="186" y="370" width="6" height="50" rx="3" fill="#d97706"/>
+        <text x="200" y="389" fill="#d97706" font-size="10" font-weight="800">A — ASSESSMENT</text>
+        <text x="200" y="402" fill="#6b7280" font-size="9">Diagnosis</text>
+        <rect x="186" y="412" width="548" height="28" rx="7" fill="#f7f9fc" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="198" y="430" fill="#374151" font-size="11">Poorly controlled hypertension (ICD-10: I10)</text>
+        <!-- P -->
+        <rect x="186" y="450" width="6" height="50" rx="3" fill="#dc2626"/>
+        <text x="200" y="469" fill="#dc2626" font-size="10" font-weight="800">P — PLAN</text>
+        <text x="200" y="482" fill="#6b7280" font-size="9">Treatment plan</text>
+        <rect x="186" y="492" width="548" height="6" rx="3" fill="#f3f4f6"/>
+        <text x="198" y="504" fill="#9ca3af" font-size="10">Increase amlodipine to 10mg. Lifestyle advice re salt intake. Follow-up in 4 weeks...</text>
+        <!-- callouts -->
+        <circle cx="186" cy="165" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="186" y="169" fill="white" font-size="9" font-weight="700" text-anchor="middle">1</text>
+        <circle cx="186" cy="210" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="186" y="214" fill="white" font-size="9" font-weight="700" text-anchor="middle">2</text>
+        <circle cx="186" cy="302" r="11" fill="#16a34a" opacity="0.92"/>
+        <text x="186" y="306" fill="white" font-size="9" font-weight="700" text-anchor="middle">3</text>
+        <circle cx="186" cy="394" r="11" fill="#d97706" opacity="0.92"/>
+        <text x="186" y="398" fill="white" font-size="9" font-weight="700" text-anchor="middle">4</text>
+        <circle cx="186" cy="474" r="11" fill="#dc2626" opacity="0.92"/>
+        <text x="186" y="478" fill="white" font-size="9" font-weight="700" text-anchor="middle">5</text>
+      </svg>
+    </div>
+    <div class="callouts">
+      <div class="callout"><div class="cnum">1</div><span><strong>Chief Complaint</strong> — the patient's presenting problem in their own words</span></div>
+      <div class="callout"><div class="cnum">2</div><span><strong>S — Subjective</strong> (blue) — full history: onset, duration, character, associated symptoms</span></div>
+      <div class="callout"><div class="cnum">3</div><span><strong>O — Objective</strong> (green) — examination findings, vital signs, investigations results</span></div>
+      <div class="callout"><div class="cnum">4</div><span><strong>A — Assessment</strong> (amber) — your diagnosis; add ICD-10 code for billing</span></div>
+      <div class="callout"><div class="cnum">5</div><span><strong>P — Plan</strong> (red) — treatment, medications, referrals, follow-up date</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Additional Fields Below the SOAP Note</div>
+    <table class="field-table">
+      <thead><tr><th>Field</th><th>Use it when</th></tr></thead>
+      <tbody>
+        <tr><td>Follow-up Date</td><td>Patient needs to return — sets automatic reminder on your Dashboard</td></tr>
+        <tr><td>Prescriptions</td><td>List medications prescribed during this visit</td></tr>
+        <tr><td>Referral To / Reason</td><td>Referring to a specialist or facility</td></tr>
+        <tr><td>Sick Note Issued</td><td>Tick and fill in days, start date, and employer name</td></tr>
+        <tr><td>Lab Requests</td><td>One test per line (e.g. FBC, U&amp;E, HbA1c, TSH)</td></tr>
+        <tr><td>Radiology Requests</td><td>One request per line (e.g. Chest X-ray PA, Abdominal USS)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- CH5: DOCUMENTS -->
+<div class="page chapter" id="ch5">
+  <div class="chapter-number">Chapter 5</div>
+  <div class="chapter-title">Documents &amp; Prescriptions</div>
+  <p class="chapter-intro">Store and print prescriptions, sick notes, referral letters, and any uploaded clinical files — all linked to the patient.</p>
+
+  <div class="section">
+    <div class="section-title">Document List &amp; Search</div>
+    <div class="screen-wrap">
+      <svg viewBox="0 0 760 270" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <rect width="160" height="270" fill="#080e1c"/>
+        <rect x="12" y="14" width="30" height="30" rx="8" fill="#3b5bdb"/>
+        <text x="50" y="34" fill="white" font-size="11" font-weight="800">G.P CRM</text>
+        <text x="24" y="72" fill="rgba(255,255,255,0.45)" font-size="11">⊞  Dashboard</text>
+        <text x="24" y="96" fill="rgba(255,255,255,0.45)" font-size="11">👤  Patients</text>
+        <text x="24" y="120" fill="rgba(255,255,255,0.45)" font-size="11">📅  Appointments</text>
+        <text x="24" y="144" fill="rgba(255,255,255,0.45)" font-size="11">📋  Consultations</text>
+        <rect x="8" y="154" width="144" height="26" rx="7" fill="rgba(99,102,241,0.2)"/>
+        <text x="24" y="171" fill="#a5b4fc" font-size="11" font-weight="600">📄  Documents</text>
+        <rect x="160" width="600" height="270" fill="#f0f3f8"/>
+        <rect x="160" y="0" width="600" height="44" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="178" y="28" fill="#0d1117" font-size="13" font-weight="800">Documents</text>
+        <rect x="170" y="54" width="580" height="206" rx="12" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <!-- Search row -->
+        <rect x="186" y="68" width="320" height="28" rx="7" fill="#f7f9fc" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="200" y="86" fill="#9ca3af" font-size="10">🔍  Search by patient name, type, or category...</text>
+        <rect x="598" y="68" width="126" height="28" rx="7" fill="#3b5bdb"/>
+        <text x="661" y="86" fill="white" font-size="10" font-weight="600" text-anchor="middle">+ New Document</text>
+        <!-- Table header -->
+        <rect x="186" y="106" width="548" height="22" fill="#f8fafc"/>
+        <text x="198" y="121" fill="#6b7280" font-size="9" font-weight="700">DATE</text>
+        <text x="260" y="121" fill="#6b7280" font-size="9" font-weight="700">PATIENT</text>
+        <text x="380" y="121" fill="#6b7280" font-size="9" font-weight="700">TYPE</text>
+        <text x="480" y="121" fill="#6b7280" font-size="9" font-weight="700">CATEGORY</text>
+        <text x="628" y="121" fill="#6b7280" font-size="9" font-weight="700">ACTIONS</text>
+        <line x1="186" y1="128" x2="734" y2="128" stroke="#e5e7eb" stroke-width="1.5"/>
+        <!-- Rows -->
+        <text x="198" y="148" fill="#374151" font-size="10">7 May 2026</text>
+        <text x="260" y="148" fill="#0d1117" font-size="11">Sarah Johnson</text>
+        <rect x="380" y="138" width="76" height="18" rx="9" fill="#dbeafe"/>
+        <text x="418" y="151" fill="#1e40af" font-size="9" font-weight="600" text-anchor="middle">Prescription</text>
+        <text x="480" y="148" fill="#6b7280" font-size="10">Chronic medication</text>
+        <text x="628" y="148" fill="#3b5bdb" font-size="10">View</text>
+        <text x="660" y="148" fill="#6b7280" font-size="10">Print</text>
+        <line x1="186" y1="158" x2="734" y2="158" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="178" fill="#374151" font-size="10">6 May 2026</text>
+        <text x="260" y="178" fill="#0d1117" font-size="11">Michael Dlamini</text>
+        <rect x="380" y="168" width="64" height="18" rx="9" fill="#dcfce7"/>
+        <text x="412" y="181" fill="#15803d" font-size="9" font-weight="600" text-anchor="middle">Sick Note</text>
+        <text x="480" y="178" fill="#6b7280" font-size="10">Acute illness</text>
+        <text x="628" y="178" fill="#3b5bdb" font-size="10">View</text>
+        <text x="660" y="178" fill="#6b7280" font-size="10">Print</text>
+        <line x1="186" y1="188" x2="734" y2="188" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="208" fill="#374151" font-size="10">5 May 2026</text>
+        <text x="260" y="208" fill="#0d1117" font-size="11">Thandiwe Nkosi</text>
+        <rect x="380" y="198" width="80" height="18" rx="9" fill="#fef3c7"/>
+        <text x="420" y="211" fill="#92400e" font-size="9" font-weight="600" text-anchor="middle">Referral Letter</text>
+        <text x="480" y="208" fill="#6b7280" font-size="10">Cardiology</text>
+        <text x="628" y="208" fill="#3b5bdb" font-size="10">View</text>
+        <text x="660" y="208" fill="#6b7280" font-size="10">Print</text>
+        <line x1="186" y1="218" x2="734" y2="218" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="238" fill="#374151" font-size="10">4 May 2026</text>
+        <text x="260" y="238" fill="#0d1117" font-size="11">Peter van der Berg</text>
+        <rect x="380" y="228" width="40" height="18" rx="9" fill="#f3f4f6"/>
+        <text x="400" y="241" fill="#4b5563" font-size="9" font-weight="600" text-anchor="middle">Other</text>
+        <text x="480" y="238" fill="#6b7280" font-size="10">Lab result upload</text>
+        <text x="628" y="238" fill="#3b5bdb" font-size="10">View</text>
+        <text x="660" y="238" fill="#6b7280" font-size="10">Print</text>
+        <circle cx="186" cy="82" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="186" y="86" fill="white" font-size="9" font-weight="700" text-anchor="middle">1</text>
+        <circle cx="598" cy="82" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="598" y="86" fill="white" font-size="9" font-weight="700" text-anchor="middle">2</text>
+        <circle cx="418" cy="148" r="11" fill="#1e40af" opacity="0.92"/>
+        <text x="418" y="152" fill="white" font-size="9" font-weight="700" text-anchor="middle">3</text>
+        <circle cx="660" cy="148" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="660" y="152" fill="white" font-size="9" font-weight="700" text-anchor="middle">4</text>
+      </svg>
+    </div>
+    <div class="callouts">
+      <div class="callout"><div class="cnum">1</div><span><strong>Search</strong> — find by patient name, document type, or category</span></div>
+      <div class="callout"><div class="cnum">2</div><span><strong>+ New Document</strong> — create a prescription, sick note, referral letter, or upload a file</span></div>
+      <div class="callout"><div class="cnum">3</div><span><strong>Type badge</strong> — Prescription (blue), Sick Note (green), Referral Letter (amber), Other (grey)</span></div>
+      <div class="callout"><div class="cnum">4</div><span><strong>Print</strong> — opens a print-ready view with your practice letterhead; use "Save as PDF" to keep a digital copy</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CH6: TASKS -->
+<div class="page chapter" id="ch6">
+  <div class="chapter-number">Chapter 6</div>
+  <div class="chapter-title">Tasks &amp; Reminders</div>
+  <p class="chapter-intro">Tasks are your clinical follow-up list — lab results to chase, callbacks, referral outcomes. They appear on your Dashboard and can be linked to a specific patient.</p>
+
+  <div class="section">
+    <div class="section-title">The Task List</div>
+    <div class="screen-wrap">
+      <svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <rect width="160" height="340" fill="#080e1c"/>
+        <rect x="12" y="14" width="30" height="30" rx="8" fill="#3b5bdb"/>
+        <text x="50" y="34" fill="white" font-size="11" font-weight="800">G.P CRM</text>
+        <text x="24" y="72" fill="rgba(255,255,255,0.45)" font-size="11">⊞  Dashboard</text>
+        <text x="24" y="96" fill="rgba(255,255,255,0.45)" font-size="11">👤  Patients</text>
+        <text x="24" y="120" fill="rgba(255,255,255,0.45)" font-size="11">📅  Appointments</text>
+        <text x="24" y="144" fill="rgba(255,255,255,0.45)" font-size="11">📋  Consultations</text>
+        <text x="24" y="168" fill="rgba(255,255,255,0.45)" font-size="11">📄  Documents</text>
+        <rect x="8" y="178" width="144" height="26" rx="7" fill="rgba(99,102,241,0.2)"/>
+        <text x="24" y="195" fill="#a5b4fc" font-size="11" font-weight="600">✅  Tasks</text>
+        <rect x="160" width="600" height="340" fill="#f0f3f8"/>
+        <rect x="160" y="0" width="600" height="44" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="178" y="28" fill="#0d1117" font-size="13" font-weight="800">Tasks</text>
+        <!-- Priority summary cards -->
+        <rect x="170" y="54" width="178" height="54" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <rect x="186" y="66" width="28" height="28" rx="7" fill="#fee2e2"/>
+        <text x="200" y="85" fill="#dc2626" font-size="14" text-anchor="middle">⚡</text>
+        <text x="224" y="78" fill="#0d1117" font-size="18" font-weight="800">2</text>
+        <text x="224" y="92" fill="#6b7280" font-size="9">High priority</text>
+        <rect x="358" y="54" width="178" height="54" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <rect x="374" y="66" width="28" height="28" rx="7" fill="#fef3c7"/>
+        <text x="388" y="85" fill="#d97706" font-size="14" text-anchor="middle">📋</text>
+        <text x="412" y="78" fill="#0d1117" font-size="18" font-weight="800">3</text>
+        <text x="412" y="92" fill="#6b7280" font-size="9">Medium priority</text>
+        <rect x="546" y="54" width="184" height="54" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <rect x="562" y="66" width="28" height="28" rx="7" fill="#f3f4f6"/>
+        <text x="576" y="85" fill="#6b7280" font-size="14" text-anchor="middle">📌</text>
+        <text x="600" y="78" fill="#0d1117" font-size="18" font-weight="800">1</text>
+        <text x="600" y="92" fill="#6b7280" font-size="9">Low priority</text>
+        <!-- Tasks list -->
+        <rect x="170" y="118" width="580" height="212" rx="12" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="186" y="140" fill="#0d1117" font-size="12" font-weight="700">Pending Tasks (6)</text>
+        <rect x="594" y="128" width="120" height="26" rx="7" fill="#3b5bdb"/>
+        <text x="654" y="145" fill="white" font-size="10" font-weight="600" text-anchor="middle">+ Add Task</text>
+        <!-- Task rows -->
+        <rect x="186" y="150" width="548" height="38" rx="7" fill="#fef2f2"/>
+        <rect x="196" y="162" width="14" height="14" rx="3" stroke="#dc2626" stroke-width="1.5" fill="none"/>
+        <text x="218" y="173" fill="#0d1117" font-size="11" font-weight="600">Chase FBC result — Michael Dlamini</text>
+        <rect x="580" y="155" width="38" height="16" rx="8" fill="#fee2e2"/>
+        <text x="599" y="167" fill="#b91c1c" font-size="8" font-weight="700" text-anchor="middle">HIGH</text>
+        <text x="628" y="167" fill="#6b7280" font-size="9">Due today</text>
+        <text x="218" y="183" fill="#6b7280" font-size="9">Patient: Michael Dlamini</text>
+
+        <rect x="186" y="194" width="548" height="38" rx="7" fill="#fef2f2"/>
+        <rect x="196" y="206" width="14" height="14" rx="3" stroke="#dc2626" stroke-width="1.5" fill="none"/>
+        <text x="218" y="217" fill="#0d1117" font-size="11" font-weight="600">Cardiac referral feedback — T. Nkosi</text>
+        <rect x="580" y="199" width="38" height="16" rx="8" fill="#fee2e2"/>
+        <text x="599" y="211" fill="#b91c1c" font-size="8" font-weight="700" text-anchor="middle">HIGH</text>
+        <text x="628" y="211" fill="#6b7280" font-size="9">Due today</text>
+        <text x="218" y="227" fill="#6b7280" font-size="9">Patient: Thandiwe Nkosi</text>
+
+        <rect x="186" y="238" width="548" height="38" rx="7" fill="#f8fafc"/>
+        <rect x="196" y="250" width="14" height="14" rx="3" stroke="#9ca3af" stroke-width="1.5" fill="none"/>
+        <text x="218" y="261" fill="#0d1117" font-size="11" font-weight="600">Renew Metformin prescription — T. Nkosi</text>
+        <rect x="574" y="243" width="44" height="16" rx="8" fill="#fef3c7"/>
+        <text x="596" y="255" fill="#92400e" font-size="8" font-weight="700" text-anchor="middle">MED</text>
+        <text x="628" y="255" fill="#6b7280" font-size="9">Due 8 May</text>
+        <text x="218" y="271" fill="#6b7280" font-size="9">Patient: Thandiwe Nkosi</text>
+
+        <text x="186" y="302" fill="#6b7280" font-size="10">+ 3 more tasks · View completed tasks ↓</text>
+        <!-- callouts -->
+        <circle cx="172" cy="71" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="172" y="75" fill="white" font-size="9" font-weight="700" text-anchor="middle">1</text>
+        <circle cx="196" cy="168" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="196" y="172" fill="white" font-size="9" font-weight="700" text-anchor="middle">2</text>
+        <circle cx="594" cy="141" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="594" y="145" fill="white" font-size="9" font-weight="700" text-anchor="middle">3</text>
+      </svg>
+    </div>
+    <div class="callouts">
+      <div class="callout"><div class="cnum">1</div><span><strong>Priority summary</strong> — at a glance count of High / Medium / Low tasks outstanding</span></div>
+      <div class="callout"><div class="cnum">2</div><span><strong>Checkbox</strong> — tick to mark a task as done; it moves to the Completed section</span></div>
+      <div class="callout"><div class="cnum">3</div><span><strong>+ Add Task</strong> — enter title, due date, priority, and optionally link to a patient</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CH7: BILLING -->
+<div class="page chapter" id="ch7">
+  <div class="chapter-number">Chapter 7</div>
+  <div class="chapter-title">Billing &amp; Invoicing</div>
+  <p class="chapter-intro">Generate, send, and track private invoices. Invoices are auto-numbered, support multiple line items, calculate 15% VAT, and can be emailed directly to patients.</p>
+
+  <div class="section">
+    <div class="section-title">The Invoice List</div>
+    <div class="screen-wrap">
+      <svg viewBox="0 0 760 330" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <rect width="160" height="330" fill="#080e1c"/>
+        <rect x="12" y="14" width="30" height="30" rx="8" fill="#3b5bdb"/>
+        <text x="50" y="34" fill="white" font-size="11" font-weight="800">G.P CRM</text>
+        <text x="24" y="72" fill="rgba(255,255,255,0.45)" font-size="11">⊞  Dashboard</text>
+        <text x="24" y="96" fill="rgba(255,255,255,0.45)" font-size="11">👤  Patients</text>
+        <text x="24" y="120" fill="rgba(255,255,255,0.45)" font-size="11">📅  Appointments</text>
+        <text x="24" y="144" fill="rgba(255,255,255,0.45)" font-size="11">📋  Consultations</text>
+        <text x="24" y="168" fill="rgba(255,255,255,0.45)" font-size="11">📄  Documents</text>
+        <text x="24" y="192" fill="rgba(255,255,255,0.45)" font-size="11">✅  Tasks</text>
+        <rect x="8" y="202" width="144" height="26" rx="7" fill="rgba(99,102,241,0.2)"/>
+        <text x="24" y="219" fill="#a5b4fc" font-size="11" font-weight="600">💰  Billing</text>
+        <rect x="160" width="600" height="330" fill="#f0f3f8"/>
+        <rect x="160" y="0" width="600" height="44" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="178" y="28" fill="#0d1117" font-size="13" font-weight="800">Billing</text>
+        <!-- Status tiles -->
+        <rect x="170" y="54" width="104" height="50" rx="9" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="222" y="74" fill="#6b7280" font-size="9" font-weight="700" text-anchor="middle">ALL</text>
+        <text x="222" y="92" fill="#0d1117" font-size="18" font-weight="800" text-anchor="middle">24</text>
+        <rect x="282" y="54" width="104" height="50" rx="9" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="334" y="74" fill="#1e40af" font-size="9" font-weight="700" text-anchor="middle">SENT</text>
+        <text x="334" y="92" fill="#1e40af" font-size="18" font-weight="800" text-anchor="middle">7</text>
+        <rect x="394" y="54" width="104" height="50" rx="9" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="446" y="74" fill="#15803d" font-size="9" font-weight="700" text-anchor="middle">PAID</text>
+        <text x="446" y="92" fill="#15803d" font-size="18" font-weight="800" text-anchor="middle">14</text>
+        <rect x="506" y="54" width="104" height="50" rx="9" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+        <text x="558" y="74" fill="#b91c1c" font-size="9" font-weight="700" text-anchor="middle">OVERDUE</text>
+        <text x="558" y="92" fill="#b91c1c" font-size="18" font-weight="800" text-anchor="middle">3</text>
+        <rect x="618" y="54" width="132" height="50" rx="9" fill="#3b5bdb"/>
+        <text x="684" y="68" fill="white" font-size="10" font-weight="700" text-anchor="middle">+ New Invoice</text>
+        <text x="684" y="84" fill="rgba(255,255,255,0.6)" font-size="9" text-anchor="middle">Auto-numbered</text>
+        <!-- Table -->
+        <rect x="170" y="114" width="580" height="206" rx="12" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <rect x="186" y="120" width="548" height="22" fill="#f8fafc"/>
+        <text x="198" y="135" fill="#6b7280" font-size="9" font-weight="700">INVOICE NO.</text>
+        <text x="296" y="135" fill="#6b7280" font-size="9" font-weight="700">PATIENT</text>
+        <text x="420" y="135" fill="#6b7280" font-size="9" font-weight="700">DATE ISSUED</text>
+        <text x="508" y="135" fill="#6b7280" font-size="9" font-weight="700">TOTAL</text>
+        <text x="570" y="135" fill="#6b7280" font-size="9" font-weight="700">STATUS</text>
+        <text x="650" y="135" fill="#6b7280" font-size="9" font-weight="700">ACTIONS</text>
+        <line x1="186" y1="142" x2="734" y2="142" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="198" y="160" fill="#374151" font-size="10" font-weight="600">INV-202605-001</text>
+        <text x="296" y="160" fill="#0d1117" font-size="11">Sarah Johnson</text>
+        <text x="420" y="160" fill="#6b7280" font-size="10">7 May 2026</text>
+        <text x="508" y="160" fill="#0d1117" font-size="11" font-weight="600">R 862.50</text>
+        <rect x="564" y="151" width="52" height="18" rx="9" fill="#dcfce7"/>
+        <text x="590" y="164" fill="#15803d" font-size="9" font-weight="600" text-anchor="middle">Paid</text>
+        <text x="652" y="160" fill="#3b5bdb" font-size="10">View</text>
+        <text x="686" y="160" fill="#6b7280" font-size="10">Print</text>
+        <line x1="186" y1="170" x2="734" y2="170" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="188" fill="#374151" font-size="10" font-weight="600">INV-202605-002</text>
+        <text x="296" y="188" fill="#0d1117" font-size="11">Michael Dlamini</text>
+        <text x="420" y="188" fill="#6b7280" font-size="10">6 May 2026</text>
+        <text x="508" y="188" fill="#0d1117" font-size="11" font-weight="600">R 1 150.00</text>
+        <rect x="564" y="179" width="52" height="18" rx="9" fill="#dbeafe"/>
+        <text x="590" y="192" fill="#1e40af" font-size="9" font-weight="600" text-anchor="middle">Sent</text>
+        <text x="652" y="188" fill="#3b5bdb" font-size="10">View</text>
+        <text x="686" y="188" fill="#6b7280" font-size="10">Print</text>
+        <line x1="186" y1="198" x2="734" y2="198" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="216" fill="#374151" font-size="10" font-weight="600">INV-202604-018</text>
+        <text x="296" y="216" fill="#0d1117" font-size="11">Thandiwe Nkosi</text>
+        <text x="420" y="216" fill="#6b7280" font-size="10">1 Apr 2026</text>
+        <text x="508" y="216" fill="#dc2626" font-size="11" font-weight="600">R 690.00</text>
+        <rect x="564" y="207" width="60" height="18" rx="9" fill="#fee2e2"/>
+        <text x="594" y="220" fill="#b91c1c" font-size="9" font-weight="600" text-anchor="middle">Overdue</text>
+        <text x="652" y="216" fill="#3b5bdb" font-size="10">View</text>
+        <text x="686" y="216" fill="#6b7280" font-size="10">Send</text>
+        <line x1="186" y1="226" x2="734" y2="226" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="198" y="244" fill="#374151" font-size="10" font-weight="600">INV-202605-003</text>
+        <text x="296" y="244" fill="#0d1117" font-size="11">Peter van der Berg</text>
+        <text x="420" y="244" fill="#6b7280" font-size="10">7 May 2026</text>
+        <text x="508" y="244" fill="#0d1117" font-size="11" font-weight="600">R 575.00</text>
+        <rect x="564" y="235" width="46" height="18" rx="9" fill="#f3f4f6"/>
+        <text x="587" y="248" fill="#4b5563" font-size="9" font-weight="600" text-anchor="middle">Draft</text>
+        <text x="652" y="244" fill="#3b5bdb" font-size="10">Edit</text>
+        <text x="686" y="244" fill="#6b7280" font-size="10">Send</text>
+        <text x="186" y="310" fill="#6b7280" font-size="10">Showing 4 of 24 invoices</text>
+        <!-- callouts -->
+        <circle cx="558" cy="58" r="11" fill="#b91c1c" opacity="0.92"/>
+        <text x="558" y="62" fill="white" font-size="9" font-weight="700" text-anchor="middle">1</text>
+        <circle cx="618" cy="58" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="618" y="62" fill="white" font-size="9" font-weight="700" text-anchor="middle">2</text>
+        <circle cx="186" cy="130" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="186" y="134" fill="white" font-size="9" font-weight="700" text-anchor="middle">3</text>
+      </svg>
+    </div>
+    <div class="callouts">
+      <div class="callout"><div class="cnum">1</div><span><strong>Overdue tile</strong> — automatically counts invoices past their due date; click to filter</span></div>
+      <div class="callout"><div class="cnum">2</div><span><strong>+ New Invoice</strong> — invoice number is assigned automatically (INV-YYYYMM-###)</span></div>
+      <div class="callout"><div class="cnum">3</div><span><strong>Status badges</strong> — Draft → Sent → Paid lifecycle; Overdue flags automatically</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Invoice Lifecycle</div>
+    <div class="flow-wrap">
+      <div class="flow-title">Invoice Status Flow</div>
+      <svg viewBox="0 0 680 80" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <!-- Draft -->
+        <rect x="10" y="20" width="110" height="44" rx="10" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="65" y="38" fill="#4b5563" font-size="10" font-weight="700" text-anchor="middle">DRAFT</text>
+        <text x="65" y="54" fill="#6b7280" font-size="9" text-anchor="middle">Create &amp; edit freely</text>
+        <!-- Arrow -->
+        <line x1="122" y1="42" x2="158" y2="42" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="140" y="36" fill="#9ca3af" font-size="8" text-anchor="middle">Email / Print</text>
+        <!-- Sent -->
+        <rect x="160" y="20" width="110" height="44" rx="10" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+        <text x="215" y="38" fill="#1e40af" font-size="10" font-weight="700" text-anchor="middle">SENT</text>
+        <text x="215" y="54" fill="#1d4ed8" font-size="9" text-anchor="middle">Awaiting payment</text>
+        <!-- Arrow -->
+        <line x1="272" y1="42" x2="308" y2="42" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="290" y="36" fill="#9ca3af" font-size="8" text-anchor="middle">Mark Paid</text>
+        <!-- Paid -->
+        <rect x="310" y="20" width="110" height="44" rx="10" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+        <text x="365" y="38" fill="#15803d" font-size="10" font-weight="700" text-anchor="middle">PAID</text>
+        <text x="365" y="54" fill="#16a34a" font-size="9" text-anchor="middle">Payment received</text>
+        <!-- Overdue branch -->
+        <line x1="215" y1="64" x2="215" y2="72" stroke="#dc2626" stroke-width="1.5"/>
+        <line x1="215" y1="72" x2="480" y2="72" stroke="#dc2626" stroke-width="1.5"/>
+        <line x1="480" y1="72" x2="480" y2="64" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrd)"/>
+        <text x="348" y="69" fill="#dc2626" font-size="8" text-anchor="middle">Past due date → auto-flagged</text>
+        <!-- Overdue -->
+        <rect x="435" y="20" width="110" height="44" rx="10" fill="#fee2e2" stroke="#fca5a5" stroke-width="1.5"/>
+        <text x="490" y="38" fill="#b91c1c" font-size="10" font-weight="700" text-anchor="middle">OVERDUE</text>
+        <text x="490" y="54" fill="#dc2626" font-size="9" text-anchor="middle">Re-send to patient</text>
+        <!-- Cancelled -->
+        <line x1="547" y1="42" x2="578" y2="42" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arr)"/>
+        <rect x="580" y="20" width="90" height="44" rx="10" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+        <text x="625" y="38" fill="#6d28d9" font-size="10" font-weight="700" text-anchor="middle">CANCELLED</text>
+        <text x="625" y="54" fill="#7c3aed" font-size="9" text-anchor="middle">Void invoice</text>
+        <defs>
+          <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#9ca3af"/>
+          </marker>
+          <marker id="arrd" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#dc2626"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  </div>
+</div>
+
+
+<!-- CH8: ANALYTICS -->
+<div class="page chapter" id="ch8">
+  <div class="chapter-number">Chapter 8</div>
+  <div class="chapter-title">Analytics</div>
+  <p class="chapter-intro">A read-only view of your practice's performance. Figures update automatically as you use the system — no data entry required.</p>
+
+  <div class="section">
+    <div class="section-title">The Analytics Dashboard</div>
+    <div class="screen-wrap">
+      <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <rect width="160" height="380" fill="#080e1c"/>
+        <rect x="12" y="14" width="30" height="30" rx="8" fill="#3b5bdb"/>
+        <text x="50" y="34" fill="white" font-size="11" font-weight="800">G.P CRM</text>
+        <text x="24" y="72" fill="rgba(255,255,255,0.45)" font-size="11">⊞  Dashboard</text>
+        <text x="24" y="96" fill="rgba(255,255,255,0.45)" font-size="11">👤  Patients</text>
+        <text x="24" y="120" fill="rgba(255,255,255,0.45)" font-size="11">📅  Appointments</text>
+        <text x="24" y="144" fill="rgba(255,255,255,0.45)" font-size="11">📋  Consultations</text>
+        <text x="24" y="168" fill="rgba(255,255,255,0.45)" font-size="11">📄  Documents</text>
+        <text x="24" y="192" fill="rgba(255,255,255,0.45)" font-size="11">✅  Tasks</text>
+        <text x="24" y="216" fill="rgba(255,255,255,0.45)" font-size="11">💰  Billing</text>
+        <rect x="8" y="226" width="144" height="26" rx="7" fill="rgba(99,102,241,0.2)"/>
+        <text x="24" y="243" fill="#a5b4fc" font-size="11" font-weight="600">📊  Analytics</text>
+        <rect x="160" width="600" height="380" fill="#f0f3f8"/>
+        <rect x="160" y="0" width="600" height="44" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="178" y="28" fill="#0d1117" font-size="13" font-weight="800">Analytics</text>
+        <!-- Summary tiles row -->
+        <rect x="170" y="54" width="130" height="50" rx="9" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="235" y="72" fill="#6b7280" font-size="9" font-weight="700" text-anchor="middle">PATIENTS</text>
+        <text x="235" y="90" fill="#0d1117" font-size="20" font-weight="800" text-anchor="middle">247</text>
+        <rect x="308" y="54" width="130" height="50" rx="9" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="373" y="72" fill="#6b7280" font-size="9" font-weight="700" text-anchor="middle">APPOINTMENTS</text>
+        <text x="373" y="90" fill="#0d1117" font-size="20" font-weight="800" text-anchor="middle">1 284</text>
+        <rect x="446" y="54" width="130" height="50" rx="9" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="511" y="72" fill="#6b7280" font-size="9" font-weight="700" text-anchor="middle">CONSULTATIONS</text>
+        <text x="511" y="90" fill="#0d1117" font-size="20" font-weight="800" text-anchor="middle">983</text>
+        <rect x="584" y="54" width="166" height="50" rx="9" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="667" y="72" fill="#6b7280" font-size="9" font-weight="700" text-anchor="middle">DOCUMENTS</text>
+        <text x="667" y="90" fill="#0d1117" font-size="20" font-weight="800" text-anchor="middle">342</text>
+        <!-- 14-day trend chart -->
+        <rect x="170" y="114" width="370" height="130" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="186" y="134" fill="#0d1117" font-size="12" font-weight="700">14-Day Appointment Trend</text>
+        <!-- Bars -->
+        <rect x="194" y="196" width="14" height="24" rx="3" fill="#3b5bdb" opacity="0.7"/>
+        <rect x="212" y="186" width="14" height="34" rx="3" fill="#3b5bdb" opacity="0.7"/>
+        <rect x="230" y="200" width="14" height="20" rx="3" fill="#3b5bdb" opacity="0.7"/>
+        <rect x="248" y="188" width="14" height="32" rx="3" fill="#3b5bdb" opacity="0.7"/>
+        <rect x="266" y="194" width="14" height="26" rx="3" fill="#3b5bdb" opacity="0.7"/>
+        <rect x="284" y="182" width="14" height="38" rx="3" fill="#3b5bdb" opacity="0.7"/>
+        <rect x="302" y="198" width="14" height="22" rx="3" fill="#3b5bdb" opacity="0.4"/>
+        <rect x="320" y="195" width="14" height="25" rx="3" fill="#3b5bdb"/>
+        <rect x="338" y="180" width="14" height="40" rx="3" fill="#3b5bdb"/>
+        <rect x="356" y="188" width="14" height="32" rx="3" fill="#3b5bdb"/>
+        <rect x="374" y="176" width="14" height="44" rx="3" fill="#3b5bdb"/>
+        <rect x="392" y="184" width="14" height="36" rx="3" fill="#3b5bdb"/>
+        <rect x="410" y="178" width="14" height="42" rx="3" fill="#3b5bdb"/>
+        <rect x="428" y="170" width="14" height="50" rx="3" fill="#3b5bdb"/>
+        <line x1="186" y1="220" x2="452" y2="220" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="194" y="232" fill="#9ca3af" font-size="8">24</text>
+        <text x="248" y="232" fill="#9ca3af" font-size="8">28</text>
+        <text x="302" y="232" fill="#9ca3af" font-size="8">1</text>
+        <text x="356" y="232" fill="#9ca3af" font-size="8">5</text>
+        <text x="428" y="232" fill="#9ca3af" font-size="8">7</text>
+        <text x="186" y="238" fill="#6b7280" font-size="8">← Apr &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; May →</text>
+        <!-- Appt status -->
+        <rect x="548" y="114" width="202" height="130" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="564" y="134" fill="#0d1117" font-size="12" font-weight="700">Appointment Status</text>
+        <rect x="564" y="144" width="100" height="10" rx="5" fill="#dcfce7"/>
+        <rect x="564" y="144" width="68" height="10" rx="5" fill="#3b5bdb" opacity="0.8"/>
+        <text x="564" y="167" fill="#374151" font-size="10">Completed</text>
+        <text x="720" y="167" fill="#15803d" font-size="10" font-weight="700" text-anchor="end">68%</text>
+        <rect x="564" y="174" width="100" height="10" rx="5" fill="#f3f4f6"/>
+        <rect x="564" y="174" width="18" height="10" rx="5" fill="#3b5bdb" opacity="0.5"/>
+        <text x="564" y="197" fill="#374151" font-size="10">Scheduled</text>
+        <text x="720" y="197" fill="#6b7280" font-size="10" font-weight="700" text-anchor="end">18%</text>
+        <rect x="564" y="204" width="100" height="10" rx="5" fill="#f3f4f6"/>
+        <rect x="564" y="204" width="10" height="10" rx="5" fill="#fee2e2"/>
+        <text x="564" y="227" fill="#374151" font-size="10">No-Show</text>
+        <text x="720" y="227" fill="#dc2626" font-size="10" font-weight="700" text-anchor="end">10%</text>
+        <text x="564" y="237" fill="#374151" font-size="10">Cancelled</text>
+        <text x="720" y="237" fill="#9ca3af" font-size="10" font-weight="700" text-anchor="end">4%</text>
+        <!-- Chronic conditions -->
+        <rect x="170" y="254" width="370" height="116" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="186" y="274" fill="#0d1117" font-size="12" font-weight="700">Top Chronic Conditions</text>
+        <text x="186" y="294" fill="#374151" font-size="10">Hypertension</text>
+        <rect x="280" y="285" width="240" height="10" rx="5" fill="#f3f4f6"/>
+        <rect x="280" y="285" width="200" height="10" rx="5" fill="#3b5bdb" opacity="0.7"/>
+        <text x="528" y="295" fill="#6b7280" font-size="9">83</text>
+        <text x="186" y="314" fill="#374151" font-size="10">Type 2 Diabetes</text>
+        <rect x="280" y="305" width="240" height="10" rx="5" fill="#f3f4f6"/>
+        <rect x="280" y="305" width="148" height="10" rx="5" fill="#3b5bdb" opacity="0.7"/>
+        <text x="528" y="315" fill="#6b7280" font-size="9">61</text>
+        <text x="186" y="334" fill="#374151" font-size="10">Hyperlipidaemia</text>
+        <rect x="280" y="325" width="240" height="10" rx="5" fill="#f3f4f6"/>
+        <rect x="280" y="325" width="100" height="10" rx="5" fill="#3b5bdb" opacity="0.7"/>
+        <text x="528" y="335" fill="#6b7280" font-size="9">42</text>
+        <text x="186" y="354" fill="#374151" font-size="10">Asthma</text>
+        <rect x="280" y="345" width="240" height="10" rx="5" fill="#f3f4f6"/>
+        <rect x="280" y="345" width="72" height="10" rx="5" fill="#3b5bdb" opacity="0.7"/>
+        <text x="528" y="355" fill="#6b7280" font-size="9">30</text>
+        <!-- Patient demographics -->
+        <rect x="548" y="254" width="202" height="116" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="564" y="274" fill="#0d1117" font-size="12" font-weight="700">Patient Demographics</text>
+        <text x="564" y="294" fill="#374151" font-size="10">With Medical Aid</text>
+        <text x="730" y="294" fill="#15803d" font-size="10" font-weight="700" text-anchor="end">71%</text>
+        <text x="564" y="314" fill="#374151" font-size="10">With Allergies</text>
+        <text x="730" y="314" fill="#374151" font-size="10" font-weight="700" text-anchor="end">34%</text>
+        <text x="564" y="334" fill="#374151" font-size="10">Chronic Conditions</text>
+        <text x="730" y="334" fill="#374151" font-size="10" font-weight="700" text-anchor="end">58%</text>
+        <text x="564" y="354" fill="#374151" font-size="10">Female / Male</text>
+        <text x="730" y="354" fill="#374151" font-size="10" font-weight="700" text-anchor="end">54 / 46%</text>
+        <!-- callouts -->
+        <circle cx="172" cy="134" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="172" y="138" fill="white" font-size="9" font-weight="700" text-anchor="middle">1</text>
+        <circle cx="548" cy="134" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="548" y="138" fill="white" font-size="9" font-weight="700" text-anchor="middle">2</text>
+        <circle cx="172" cy="274" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="172" y="278" fill="white" font-size="9" font-weight="700" text-anchor="middle">3</text>
+        <circle cx="548" cy="274" r="11" fill="#3b5bdb" opacity="0.92"/>
+        <text x="548" y="278" fill="white" font-size="9" font-weight="700" text-anchor="middle">4</text>
+      </svg>
+    </div>
+    <div class="callouts">
+      <div class="callout"><div class="cnum">1</div><span><strong>14-Day Trend</strong> — appointment volume per day; spot busy and quiet patterns</span></div>
+      <div class="callout"><div class="cnum">2</div><span><strong>Appointment Status</strong> — track your DNA (no-show) rate; aim to keep it below 10%</span></div>
+      <div class="callout"><div class="cnum">3</div><span><strong>Top Chronic Conditions</strong> — most common diagnoses across your patient base for clinical planning</span></div>
+      <div class="callout"><div class="cnum">4</div><span><strong>Patient Demographics</strong> — medical aid coverage, allergy and chronic condition prevalence, gender split</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CH9: WORKFLOW DIAGRAMS -->
+<div class="page chapter" id="ch9">
+  <div class="chapter-number">Chapter 9</div>
+  <div class="chapter-title">Workflow Diagrams</div>
+  <p class="chapter-intro">These diagrams show how the different modules connect. Use them to understand the typical flow of a patient visit from start to finish.</p>
+
+  <div class="section">
+    <div class="section-title">The Complete Patient Visit Flow</div>
+    <div class="flow-wrap">
+      <div class="flow-title">From Booking to Paid Invoice</div>
+      <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <defs>
+          <marker id="a1" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#9ca3af"/></marker>
+          <marker id="a2" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#3b5bdb"/></marker>
+        </defs>
+        <!-- Step 1: Book -->
+        <rect x="10" y="20" width="110" height="56" rx="10" fill="#e8edff" stroke="#3b5bdb" stroke-width="1.5"/>
+        <text x="65" y="40" fill="#3b5bdb" font-size="10" font-weight="700" text-anchor="middle">📅 BOOK</text>
+        <text x="65" y="54" fill="#374151" font-size="9" text-anchor="middle">Appointments</text>
+        <text x="65" y="66" fill="#374151" font-size="9" text-anchor="middle">→ New Appointment</text>
+        <!-- Arrow -->
+        <line x1="122" y1="48" x2="156" y2="48" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a1)"/>
+        <!-- Step 2: Arrive -->
+        <rect x="158" y="20" width="110" height="56" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+        <text x="213" y="40" fill="#d97706" font-size="10" font-weight="700" text-anchor="middle">🏥 ARRIVES</text>
+        <text x="213" y="54" fill="#374151" font-size="9" text-anchor="middle">Record Vitals</text>
+        <text x="213" y="66" fill="#374151" font-size="9" text-anchor="middle">Patient Profile → Vitals</text>
+        <!-- Arrow -->
+        <line x1="270" y1="48" x2="304" y2="48" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a1)"/>
+        <!-- Step 3: Consult -->
+        <rect x="306" y="20" width="110" height="56" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="361" y="40" fill="#16a34a" font-size="10" font-weight="700" text-anchor="middle">📋 CONSULT</text>
+        <text x="361" y="54" fill="#374151" font-size="9" text-anchor="middle">Write SOAP Note</text>
+        <text x="361" y="66" fill="#374151" font-size="9" text-anchor="middle">Consultations → New</text>
+        <!-- Arrow -->
+        <line x1="418" y1="48" x2="452" y2="48" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a1)"/>
+        <!-- Step 4: Document -->
+        <rect x="454" y="20" width="110" height="56" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+        <text x="509" y="40" fill="#7c3aed" font-size="10" font-weight="700" text-anchor="middle">📄 DOCUMENT</text>
+        <text x="509" y="54" fill="#374151" font-size="9" text-anchor="middle">Rx / Sick Note</text>
+        <text x="509" y="66" fill="#374151" font-size="9" text-anchor="middle">Documents → New</text>
+        <!-- Arrow -->
+        <line x1="566" y1="48" x2="600" y2="48" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#a1)"/>
+        <!-- Step 5: Invoice -->
+        <rect x="602" y="20" width="68" height="56" rx="10" fill="#dbeafe" stroke="#3b5bdb" stroke-width="1.5"/>
+        <text x="636" y="40" fill="#3b5bdb" font-size="10" font-weight="700" text-anchor="middle">💰 BILL</text>
+        <text x="636" y="54" fill="#374151" font-size="9" text-anchor="middle">Create</text>
+        <text x="636" y="66" fill="#374151" font-size="9" text-anchor="middle">Invoice</text>
+
+        <!-- Update appt status arrow -->
+        <line x1="213" y1="76" x2="213" y2="100" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="361" y1="76" x2="361" y2="100" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="213" y1="100" x2="361" y2="100" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="287" y="116" fill="#16a34a" font-size="9" text-anchor="middle">Update Appointment → "Completed"</text>
+
+        <!-- Follow-up section -->
+        <rect x="10" y="148" width="660" height="140" rx="12" fill="rgba(59,91,219,0.05)" stroke="#c7d2fe" stroke-width="1.5"/>
+        <text x="340" y="170" fill="#3b5bdb" font-size="11" font-weight="700" text-anchor="middle">AFTER THE CONSULTATION</text>
+
+        <rect x="30" y="182" width="140" height="44" rx="8" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="100" y="200" fill="#0d1117" font-size="10" font-weight="600" text-anchor="middle">📊 Follow-up Date?</text>
+        <text x="100" y="214" fill="#6b7280" font-size="9" text-anchor="middle">Set in SOAP note →</text>
+        <text x="100" y="226" fill="#6b7280" font-size="9" text-anchor="middle">appears on Dashboard</text>
+
+        <rect x="190" y="182" width="140" height="44" rx="8" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="260" y="200" fill="#0d1117" font-size="10" font-weight="600" text-anchor="middle">✅ Task to chase?</text>
+        <text x="260" y="214" fill="#6b7280" font-size="9" text-anchor="middle">Add to Tasks →</text>
+        <text x="260" y="226" fill="#6b7280" font-size="9" text-anchor="middle">with priority + due date</text>
+
+        <rect x="350" y="182" width="140" height="44" rx="8" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="420" y="200" fill="#0d1117" font-size="10" font-weight="600" text-anchor="middle">📧 Send Invoice?</text>
+        <text x="420" y="214" fill="#6b7280" font-size="9" text-anchor="middle">Billing → Email →</text>
+        <text x="420" y="226" fill="#6b7280" font-size="9" text-anchor="middle">status changes to Sent</text>
+
+        <rect x="510" y="182" width="140" height="44" rx="8" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+        <text x="580" y="200" fill="#0d1117" font-size="10" font-weight="600" text-anchor="middle">💊 Print Rx?</text>
+        <text x="580" y="214" fill="#6b7280" font-size="9" text-anchor="middle">Documents → Print →</text>
+        <text x="580" y="226" fill="#6b7280" font-size="9" text-anchor="middle">hand to patient</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">The Recommended Daily Routine</div>
+    <div class="flow-wrap">
+      <div class="flow-title">A Typical Consulting Day</div>
+      <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <defs><marker id="da" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#9ca3af"/></marker></defs>
+        <!-- Morning -->
+        <rect x="10" y="50" width="110" height="80" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+        <text x="65" y="72" fill="#d97706" font-size="11" font-weight="800" text-anchor="middle">☀ MORNING</text>
+        <text x="65" y="88" fill="#374151" font-size="9" text-anchor="middle">Check Dashboard</text>
+        <text x="65" y="101" fill="#374151" font-size="9" text-anchor="middle">Today's schedule</text>
+        <text x="65" y="114" fill="#374151" font-size="9" text-anchor="middle">Overdue tasks</text>
+        <text x="65" y="127" fill="#374151" font-size="9" text-anchor="middle">Follow-ups due</text>
+        <!-- Arrow -->
+        <line x1="122" y1="90" x2="156" y2="90" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#da)"/>
+        <!-- Each patient -->
+        <rect x="158" y="50" width="130" height="80" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="223" y="72" fill="#16a34a" font-size="11" font-weight="800" text-anchor="middle">👤 EACH PATIENT</text>
+        <text x="223" y="88" fill="#374151" font-size="9" text-anchor="middle">Open profile</text>
+        <text x="223" y="101" fill="#374151" font-size="9" text-anchor="middle">Record vitals</text>
+        <text x="223" y="114" fill="#374151" font-size="9" text-anchor="middle">Write SOAP note</text>
+        <text x="223" y="127" fill="#374151" font-size="9" text-anchor="middle">Mark "Completed"</text>
+        <!-- Arrow -->
+        <line x1="290" y1="90" x2="324" y2="90" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#da)"/>
+        <!-- During session -->
+        <rect x="326" y="50" width="130" height="80" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+        <text x="391" y="72" fill="#7c3aed" font-size="11" font-weight="800" text-anchor="middle">📋 AS NEEDED</text>
+        <text x="391" y="88" fill="#374151" font-size="9" text-anchor="middle">Issue Rx / sick note</text>
+        <text x="391" y="101" fill="#374151" font-size="9" text-anchor="middle">Send referral letter</text>
+        <text x="391" y="114" fill="#374151" font-size="9" text-anchor="middle">Set follow-up date</text>
+        <text x="391" y="127" fill="#374151" font-size="9" text-anchor="middle">Add task to chase</text>
+        <!-- Arrow -->
+        <line x1="458" y1="90" x2="492" y2="90" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#da)"/>
+        <!-- End of day -->
+        <rect x="494" y="50" width="175" height="80" rx="10" fill="#e8edff" stroke="#3b5bdb" stroke-width="1.5"/>
+        <text x="581" y="72" fill="#3b5bdb" font-size="11" font-weight="800" text-anchor="middle">🌙 END OF DAY</text>
+        <text x="581" y="88" fill="#374151" font-size="9" text-anchor="middle">Create/send invoices</text>
+        <text x="581" y="101" fill="#374151" font-size="9" text-anchor="middle">Tick completed tasks</text>
+        <text x="581" y="114" fill="#374151" font-size="9" text-anchor="middle">Add tomorrow's tasks</text>
+        <text x="581" y="127" fill="#374151" font-size="9" text-anchor="middle">Log out</text>
+        <!-- Time labels -->
+        <text x="65" y="168" fill="#9ca3af" font-size="9" text-anchor="middle">07:30 – 08:30</text>
+        <text x="223" y="168" fill="#9ca3af" font-size="9" text-anchor="middle">For each consult</text>
+        <text x="391" y="168" fill="#9ca3af" font-size="9" text-anchor="middle">During session</text>
+        <text x="581" y="168" fill="#9ca3af" font-size="9" text-anchor="middle">17:00 – 17:30</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">New Patient Registration Flow</div>
+    <div class="flow-wrap">
+      <div class="flow-title">First Visit — Registration to First Consultation</div>
+      <svg viewBox="0 0 680 110" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+        <defs><marker id="na" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#9ca3af"/></marker></defs>
+        <rect x="10" y="20" width="120" height="56" rx="10" fill="#f8fafc" stroke="#e5e7eb" stroke-width="1.5"/>
+        <text x="70" y="41" fill="#374151" font-size="10" font-weight="700" text-anchor="middle">1. REGISTER</text>
+        <text x="70" y="55" fill="#6b7280" font-size="9" text-anchor="middle">Patients → New</text>
+        <text x="70" y="67" fill="#6b7280" font-size="9" text-anchor="middle">File no. auto-assigned</text>
+        <line x1="132" y1="48" x2="160" y2="48" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#na)"/>
+        <rect x="162" y="20" width="120" height="56" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+        <text x="222" y="41" fill="#d97706" font-size="10" font-weight="700" text-anchor="middle">2. BOOK</text>
+        <text x="222" y="55" fill="#6b7280" font-size="9" text-anchor="middle">Appointments → New</text>
+        <text x="222" y="67" fill="#6b7280" font-size="9" text-anchor="middle">Patient pre-filled</text>
+        <line x1="284" y1="48" x2="312" y2="48" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#na)"/>
+        <rect x="314" y="20" width="120" height="56" rx="10" fill="#e8edff" stroke="#3b5bdb" stroke-width="1.5"/>
+        <text x="374" y="41" fill="#3b5bdb" font-size="10" font-weight="700" text-anchor="middle">3. VITALS</text>
+        <text x="374" y="55" fill="#6b7280" font-size="9" text-anchor="middle">Patient Profile</text>
+        <text x="374" y="67" fill="#6b7280" font-size="9" text-anchor="middle">→ Add Vitals</text>
+        <line x1="436" y1="48" x2="464" y2="48" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#na)"/>
+        <rect x="466" y="20" width="120" height="56" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="526" y="41" fill="#16a34a" font-size="10" font-weight="700" text-anchor="middle">4. SOAP NOTE</text>
+        <text x="526" y="55" fill="#6b7280" font-size="9" text-anchor="middle">Consultations → New</text>
+        <text x="526" y="67" fill="#6b7280" font-size="9" text-anchor="middle">Full clinical record</text>
+        <line x1="588" y1="48" x2="616" y2="48" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#na)"/>
+        <rect x="618" y="20" width="52" height="56" rx="10" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+        <text x="644" y="41" fill="#1e40af" font-size="10" font-weight="700" text-anchor="middle">5. BILL</text>
+        <text x="644" y="55" fill="#6b7280" font-size="9" text-anchor="middle">Create</text>
+        <text x="644" y="67" fill="#6b7280" font-size="9" text-anchor="middle">Invoice</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+
+<!-- CH11: FAQ -->
+<div class="page chapter" id="ch11">
+  <div class="chapter-number">Chapter 11</div>
+  <div class="chapter-title">Frequently Asked Questions</div>
+  <p class="chapter-intro">Answers to the questions GPs ask most often when starting with G.P CRM.</p>
+
+  <!-- SECTION: Patients -->
+  <div class="section">
+    <div class="section-title">Patients</div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can two patients share the same name?</div>
+      <div class="faq-a">Yes. Each patient receives a unique file number (e.g. GP-0047) on registration, so two patients called "John Smith" are distinguished by their file number, ID number, and date of birth — not their name.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What if a patient does not have a South African ID number?</div>
+      <div class="faq-a">Select <strong>Passport</strong> as the ID type and enter the passport number instead. The ID field is optional — you can register a patient with name, date of birth, and phone number only if no ID document is available.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I merge two duplicate patient records?</div>
+      <div class="faq-a">Not automatically. If you accidentally created a duplicate, manually copy any important clinical notes into the correct record, then delete the duplicate. Contact your administrator if you need help identifying which record has the full history.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I record multiple allergies or chronic conditions?</div>
+      <div class="faq-a">Enter each allergy or chronic condition on a <strong>separate line</strong> in the respective field when registering or editing the patient. For example:<br><br>
+        <code style="background:#f8fafc;padding:6px 10px;border-radius:6px;font-size:12px;display:block;margin-top:6px">Penicillin<br>Sulfonamides<br>Aspirin</code>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I upload a scanned ID or consent form to a patient's record?</div>
+      <div class="faq-a">Yes. Go to <strong>Documents → New Document</strong>, select the patient, choose type "Other", and use the file attachment field to upload a scanned PDF or image. It will appear under the Documents tab on their profile.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is patient data backed up?</div>
+      <div class="faq-a">Yes. The system runs on a managed cloud database (Railway PostgreSQL) which is automatically backed up. Your data is not stored on your local computer — it is safe even if your device is lost or damaged.</div>
+    </div>
+  </div>
+
+  <!-- SECTION: Appointments -->
+  <div class="section">
+    <div class="section-title">Appointments</div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I book more than one appointment at the same time?</div>
+      <div class="faq-a">The system does not prevent double-booking — it is your responsibility to check the schedule before booking. Filter the appointment list by date and time to confirm a slot is free before adding a new booking.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I mark a patient as "seen" after their appointment?</div>
+      <div class="faq-a">Open the appointment and change the status from <span class="badge badge-blue">Scheduled</span> to <span class="badge badge-green">Completed</span>. Do this after you have finished the consultation. Alternatively, write a Consultation Note and update the status at the same time.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I see a week or month view of appointments?</div>
+      <div class="faq-a">The list view can be filtered by a date range — set a start and end date to see a full week or month. A calendar grid view is not currently available, but the filtered list shows the same information in date-time order.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What happens to cancelled appointments — are they deleted?</div>
+      <div class="faq-a">No. Cancelled appointments remain in the system with a <span class="badge badge-red">Cancelled</span> status. This is intentional for medico-legal record-keeping. You can filter them out of your view using the status filter.</div>
+    </div>
+  </div>
+
+  <!-- SECTION: Consultations -->
+  <div class="section">
+    <div class="section-title">Consultation Notes</div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I edit a consultation note after saving it?</div>
+      <div class="faq-a">Yes. Open the consultation and click <strong>Edit</strong>. There is no time lock — you can amend notes at any time. For medico-legal best practice, avoid editing notes after the fact unless correcting a genuine error, and note the date of any amendment in the Plan field.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Does the system generate a printed sick note with my practice details?</div>
+      <div class="faq-a">Yes. When you tick <strong>"Sick note issued"</strong> in the consultation form and fill in the number of days, start date, and employer, a print-ready sick note is available from the consultation's Print view. It includes your practice name, address, and HPCSA registration number automatically.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I search through my old SOAP notes?</div>
+      <div class="faq-a">Yes. Go to <strong>Consultations</strong> and use the search bar to search by <strong>patient name</strong> or by keywords in the <strong>assessment field</strong>. For example, searching "hypertension" will surface all consultations where that word appears in the assessment. You can also filter by going to a specific patient's profile and clicking the Consultations tab.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I link a consultation to an appointment?</div>
+      <div class="faq-a">Yes. When creating a new consultation, there is an optional <strong>"Link to Appointment"</strong> dropdown. Linking them is recommended as it helps you track which appointments resulted in documented consultations, and avoids confusion with unattended slots.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is there a template for common consultation types (e.g. hypertension review)?</div>
+      <div class="faq-a">Not currently — each SOAP note starts blank. A practical workaround is to keep a text file with your standard consultation templates and paste the relevant sections into the fields. This significantly speeds up note-writing for chronic disease follow-ups.</div>
+    </div>
+  </div>
+
+  <!-- SECTION: Billing -->
+  <div class="section">
+    <div class="section-title">Billing &amp; Invoicing</div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I edit an invoice after sending it?</div>
+      <div class="faq-a">Yes, but exercise caution. Editing a Sent invoice changes the figures the patient has already received. Best practice is to cancel the original invoice, create a corrected one, and re-send it — noting "Replaces INV-XXXXXX" in the notes field.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">The patient paid less than the full amount — how do I record a partial payment?</div>
+      <div class="faq-a">Click <strong>Mark as Paid</strong> on the invoice and enter the actual <strong>amount received</strong>. The invoice will show both the total and the amount paid, and calculate the outstanding balance automatically. The status will update to <span class="badge badge-green">Paid</span> regardless — you may want to keep it as <span class="badge badge-blue">Sent</span> until the balance is cleared.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I issue an invoice to the patient's medical aid instead of the patient directly?</div>
+      <div class="faq-a">Fill in the <strong>ICD-10 code</strong>, <strong>procedure codes</strong>, and <strong>authorisation number</strong> fields on the invoice. These fields are specifically designed for medical aid billing. Print the invoice and submit it to the scheme directly — the system does not currently submit claims electronically to medical aids.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">My practice is not VAT-registered. Can I turn off VAT on invoices?</div>
+      <div class="faq-a">VAT is calculated at 15% by default. If you are not VAT-registered, contact your administrator to adjust the <code style="background:#f8fafc;padding:1px 5px;border-radius:4px;font-size:12px">VAT_RATE</code> setting to <code style="background:#f8fafc;padding:1px 5px;border-radius:4px;font-size:12px">0</code> in the system settings. This will remove VAT from all invoices going forward.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I set my own invoice numbering format?</div>
+      <div class="faq-a">Invoice numbers are auto-generated in the format <strong>INV-YYYYMM-###</strong> (e.g. INV-202605-001). This format cannot be changed through the interface. If you need a custom format, contact your administrator.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What email address do invoices get sent from?</div>
+      <div class="faq-a">Invoices are sent from the email address configured in the practice settings — by default this is the practice Gmail account set up during installation. The patient's name and invoice details appear in the email body. Check with your administrator if you are unsure which address is being used.</div>
+    </div>
+  </div>
+
+  <!-- SECTION: Data & Security -->
+  <div class="section">
+    <div class="section-title">Data, Security &amp; Privacy</div>
+
+    <div class="faq-item">
+      <div class="faq-q">Who can see patient records?</div>
+      <div class="faq-a">Only users with a login account can access the system. The system does not currently support role-based access (e.g. receptionist vs doctor views) — any logged-in user can see all records. Each person should have their own login; never share accounts. Contact your administrator to create additional user accounts.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can a patient request access to their records under POPIA?</div>
+      <div class="faq-a">Yes. Under POPIA, patients have the right to access their personal information. You can print or export their consultation notes, invoices, and documents from the system and provide these directly. Ensure you verify the patient's identity before releasing any records.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What happens to the data if we stop using the system?</div>
+      <div class="faq-a">Your data is stored in the cloud database. Before cancelling the service, export all patient records (consult your administrator for a data export). Under POPIA, you are required to retain medical records for a minimum period — ensure you have a compliant offline backup before decommissioning the system.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is the system secure? Can someone hack into it?</div>
+      <div class="faq-a">The system uses HTTPS encryption for all data in transit, and the database is not publicly accessible. Your main security responsibilities are: use a strong password, do not share your login, log out on shared computers, and do not access the system on public Wi-Fi without a VPN.</div>
+    </div>
+  </div>
+
+  <!-- SECTION: Technical -->
+  <div class="section">
+    <div class="section-title">Technical &amp; General</div>
+
+    <div class="faq-item">
+      <div class="faq-q">Which browsers work best?</div>
+      <div class="faq-a">The system works in all modern browsers. <strong>Google Chrome</strong> and <strong>Microsoft Edge</strong> are recommended — they offer the best print-to-PDF support for consultation notes and invoices. Avoid Internet Explorer.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I use the system on a tablet or smartphone?</div>
+      <div class="faq-a">Yes. The system is accessible from any device with a browser. On a tablet (e.g. iPad), it works well for reading records and writing notes. On a smartphone screen, some tables may require horizontal scrolling — a tablet or laptop is recommended for intensive data entry.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What happens if the internet goes down during a consultation?</div>
+      <div class="faq-a">Any unsaved data will be lost if the connection drops before you click Save. As a precaution, click <strong>Save</strong> frequently while writing long consultation notes — treat it like a word processor. Keep a paper backup of critical information for network-down scenarios.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can multiple staff members use the system at the same time?</div>
+      <div class="faq-a">Yes. The system supports multiple simultaneous users. Reception can be booking appointments while you write consultation notes, for example. Each person should log in with their own account.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I add my practice logo to printed documents?</div>
+      <div class="faq-a">Not through the interface currently — printed documents display your practice name, address, phone number, and HPCSA registration number as configured in the system settings. Logo support would require a system update by your administrator.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I request a new feature or report a problem?</div>
+      <div class="faq-a">Contact your practice administrator with a description of the feature you need or the problem you encountered, including the page you were on and what you were trying to do. Screenshots are very helpful for bug reports.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CH10: QUICK REFERENCE -->
+<div class="page chapter" id="ch10">
+  <div class="chapter-number">Chapter 10</div>
+  <div class="chapter-title">Quick Reference</div>
+  <p class="chapter-intro">Print this chapter and keep it at your desk. Everything you need at a glance.</p>
+
+  <div class="section">
+    <div class="section-title">Where to Find Everything</div>
+    <table class="field-table">
+      <thead><tr><th>Task</th><th>Where to go</th></tr></thead>
+      <tbody>
+        <tr><td>Register a new patient</td><td>Patients → + New Patient</td></tr>
+        <tr><td>Search for a patient</td><td>Patients → search bar (name, phone, ID, medical aid)</td></tr>
+        <tr><td>Book an appointment</td><td>Appointments → + New Appointment <em>or</em> patient profile</td></tr>
+        <tr><td>Record vital signs</td><td>Patient profile → Add Vitals</td></tr>
+        <tr><td>Write a SOAP note</td><td>Consultations → + New Consultation <em>or</em> patient profile</td></tr>
+        <tr><td>Issue a prescription / sick note</td><td>Documents → + New Document</td></tr>
+        <tr><td>Add a follow-up task</td><td>Tasks → + Add Task (or tick directly on Dashboard)</td></tr>
+        <tr><td>Create an invoice</td><td>Billing → + New Invoice</td></tr>
+        <tr><td>Email an invoice to a patient</td><td>Billing → open invoice → Send Email</td></tr>
+        <tr><td>Mark an invoice as paid</td><td>Billing → open invoice → Mark as Paid</td></tr>
+        <tr><td>View practice statistics</td><td>Analytics (bottom of sidebar)</td></tr>
+        <tr><td>Print any record</td><td>Open the record → click Print</td></tr>
+        <tr><td>Change your password</td><td>Contact your practice administrator</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Colour &amp; Status Reference</div>
+    <svg viewBox="0 0 680 120" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+      <!-- Header row -->
+      <rect x="0" y="0" width="680" height="24" rx="0" fill="#f8fafc"/>
+      <text x="90" y="16" fill="#6b7280" font-size="9" font-weight="700" text-anchor="middle">COLOUR</text>
+      <text x="250" y="16" fill="#6b7280" font-size="9" font-weight="700">APPOINTMENTS</text>
+      <text x="400" y="16" fill="#6b7280" font-size="9" font-weight="700">INVOICES</text>
+      <text x="560" y="16" fill="#6b7280" font-size="9" font-weight="700">TASKS</text>
+      <line x1="0" y1="24" x2="680" y2="24" stroke="#e5e7eb" stroke-width="1.5"/>
+      <!-- Blue row -->
+      <rect x="20" y="34" width="120" height="16" rx="8" fill="#dbeafe"/>
+      <text x="80" y="46" fill="#1e40af" font-size="9" font-weight="700" text-anchor="middle">Blue</text>
+      <text x="250" y="46" fill="#374151" font-size="11">Scheduled</text>
+      <text x="400" y="46" fill="#374151" font-size="11">Sent</text>
+      <text x="560" y="46" fill="#374151" font-size="11">—</text>
+      <line x1="0" y1="56" x2="680" y2="56" stroke="#e5e7eb" stroke-width="1"/>
+      <!-- Green row -->
+      <rect x="20" y="64" width="120" height="16" rx="8" fill="#dcfce7"/>
+      <text x="80" y="76" fill="#15803d" font-size="9" font-weight="700" text-anchor="middle">Green</text>
+      <text x="250" y="76" fill="#374151" font-size="11">Completed</text>
+      <text x="400" y="76" fill="#374151" font-size="11">Paid</text>
+      <text x="560" y="76" fill="#374151" font-size="11">Done</text>
+      <line x1="0" y1="86" x2="680" y2="86" stroke="#e5e7eb" stroke-width="1"/>
+      <!-- Red row -->
+      <rect x="20" y="94" width="120" height="16" rx="8" fill="#fee2e2"/>
+      <text x="80" y="106" fill="#b91c1c" font-size="9" font-weight="700" text-anchor="middle">Red</text>
+      <text x="250" y="106" fill="#374151" font-size="11">Cancelled</text>
+      <text x="400" y="106" fill="#374151" font-size="11">Overdue</text>
+      <text x="560" y="106" fill="#374151" font-size="11">High priority</text>
+    </svg>
+    <svg viewBox="0 0 680 64" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif" style="margin-top:-1px">
+      <!-- Amber row -->
+      <rect x="20" y="4" width="120" height="16" rx="8" fill="#fef3c7"/>
+      <text x="80" y="16" fill="#92400e" font-size="9" font-weight="700" text-anchor="middle">Amber</text>
+      <text x="250" y="16" fill="#374151" font-size="11">No-Show</text>
+      <text x="400" y="16" fill="#374151" font-size="11">—</text>
+      <text x="560" y="16" fill="#374151" font-size="11">Medium priority</text>
+      <line x1="0" y1="26" x2="680" y2="26" stroke="#e5e7eb" stroke-width="1"/>
+      <!-- Grey row -->
+      <rect x="20" y="34" width="120" height="16" rx="8" fill="#f3f4f6"/>
+      <text x="80" y="46" fill="#4b5563" font-size="9" font-weight="700" text-anchor="middle">Grey</text>
+      <text x="250" y="46" fill="#374151" font-size="11">—</text>
+      <text x="400" y="46" fill="#374151" font-size="11">Draft</text>
+      <text x="560" y="46" fill="#374151" font-size="11">Low priority</text>
+    </svg>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Troubleshooting</div>
+    <table class="field-table">
+      <thead><tr><th>Problem</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>Cannot log in</td><td>Check your username (not your email). Contact your administrator to reset your password.</td></tr>
+        <tr><td>Cannot find a patient</td><td>Try phone number or ID number instead of name. Check spelling.</td></tr>
+        <tr><td>Invoice email not received</td><td>Verify the patient has a valid email on their record. Ask them to check spam.</td></tr>
+        <tr><td>Page shows error 500</td><td>Refresh the browser. If it persists, note the page URL and contact your administrator.</td></tr>
+        <tr><td>Data not saving</td><td>Check internet connection. Required fields (shown in red) must be completed first.</td></tr>
+        <tr><td>Follow-up not showing on Dashboard</td><td>Ensure the Follow-up Date was saved in the SOAP note, not just typed without saving.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-success">
+    <div class="box-icon">🔒</div>
+    <div class="box-body">
+      <strong>Data Security — POPIA Reminder</strong>
+      Always log out when leaving your workstation unattended. Never share your login credentials. Patient data is protected under POPIA — access records only for legitimate clinical purposes.
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:56px;padding-top:24px;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:12px;line-height:2.2">
+    <strong style="color:#374151">G.P CRM — Practice Manager</strong><br>
+    Illustrated User Guide v2.0 &nbsp;&middot;&nbsp; May 2026<br>
+    For technical support, contact your practice administrator.
+  </div>
+</div>
+
+</body>
+</html>
+

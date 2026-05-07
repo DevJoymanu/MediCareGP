@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G.P CRM — User Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #3b5bdb;
+    --accent-light: #e8edff;
+    --text-1: #0d1117;
+    --text-2: #374151;
+    --text-3: #6b7280;
+    --border: #e5e7eb;
+    --bg: #f8fafc;
+    --white: #ffffff;
+    --green: #16a34a;
+    --green-light: #f0fdf4;
+    --red: #dc2626;
+    --red-light: #fef2f2;
+    --amber: #d97706;
+    --amber-light: #fffbeb;
+    --purple: #7c3aed;
+    --purple-light: #f5f3ff;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-1);
+    background: var(--white);
+  }
+
+  /* ── Cover Page ─────────────────────────────────────────────────────────── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0d1117 0%, #1e3a5f 100%);
+    color: white;
+    text-align: center;
+    padding: 60px 40px;
+    page-break-after: always;
+  }
+
+  .cover-logo {
+    width: 72px; height: 72px;
+    border-radius: 20px;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 32px;
+  }
+
+  .cover-logo svg { width: 36px; height: 36px; }
+  .cover h1 { font-size: 48px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.02em; }
+  .cover h2 { font-size: 22px; font-weight: 400; opacity: 0.7; margin-bottom: 48px; }
+
+  .cover-divider {
+    width: 60px; height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    margin: 0 auto 48px;
+  }
+
+  .cover-meta { opacity: 0.55; font-size: 13px; line-height: 2; }
+  .cover-meta strong { color: white; opacity: 1; }
+
+  /* ── Page layout ────────────────────────────────────────────────────────── */
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 56px 60px;
+  }
+
+  /* ── Table of contents ──────────────────────────────────────────────────── */
+  .toc-page { page-break-after: always; }
+
+  .toc-title {
+    font-size: 28px; font-weight: 800;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .toc-section { margin-bottom: 6px; }
+  .toc-section a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    color: var(--text-1);
+    text-decoration: none;
+    padding: 7px 0;
+    border-bottom: 1px dotted var(--border);
+    font-size: 14px;
+  }
+  .toc-section a:hover { color: var(--accent); }
+  .toc-num { font-weight: 700; color: var(--accent); margin-right: 10px; }
+  .toc-name { flex: 1; }
+  .toc-page-num { color: var(--text-3); font-size: 13px; }
+
+  /* ── Chapter heading ────────────────────────────────────────────────────── */
+  .chapter {
+    page-break-before: always;
+    padding-top: 12px;
+  }
+
+  .chapter-number {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .chapter-title {
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .chapter-intro {
+    font-size: 15px;
+    color: var(--text-2);
+    line-height: 1.7;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Section ────────────────────────────────────────────────────────────── */
+  .section { margin-bottom: 36px; }
+  .section-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px; height: 18px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── Steps ──────────────────────────────────────────────────────────────── */
+  .steps { list-style: none; padding: 0; }
+  .steps li {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .step-body { flex: 1; padding-top: 3px; }
+  .step-body strong { display: block; margin-bottom: 2px; font-weight: 600; }
+
+  /* ── Info boxes ─────────────────────────────────────────────────────────── */
+  .box {
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 16px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .box-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .box-body { flex: 1; font-size: 13.5px; line-height: 1.6; }
+  .box-body strong { display: block; margin-bottom: 3px; font-weight: 600; }
+
+  .box-tip    { background: var(--accent-light); color: #1e3a8a; }
+  .box-note   { background: var(--amber-light);  color: #78350f; }
+  .box-warning{ background: var(--red-light);    color: #7f1d1d; }
+  .box-success{ background: var(--green-light);  color: #14532d; }
+
+  /* ── Field table ────────────────────────────────────────────────────────── */
+  .field-table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  .field-table th {
+    text-align: left;
+    padding: 9px 12px;
+    background: var(--bg);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-3);
+    border-bottom: 2px solid var(--border);
+  }
+  .field-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .field-table tr:last-child td { border-bottom: none; }
+  .field-table td:first-child { font-weight: 600; width: 38%; }
+  .field-table .req {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    background: #fef2f2; color: #b91c1c;
+    padding: 1px 5px; border-radius: 4px;
+    margin-left: 5px; vertical-align: middle;
+  }
+  .field-table .opt {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    background: #f0fdf4; color: #15803d;
+    padding: 1px 5px; border-radius: 4px;
+    margin-left: 5px; vertical-align: middle;
+  }
+
+  /* ── Status badges ──────────────────────────────────────────────────────── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+  }
+  .badge-blue   { background: #dbeafe; color: #1e40af; }
+  .badge-green  { background: #dcfce7; color: #15803d; }
+  .badge-red    { background: #fee2e2; color: #b91c1c; }
+  .badge-amber  { background: #fef3c7; color: #92400e; }
+  .badge-gray   { background: #f3f4f6; color: #4b5563; }
+  .badge-purple { background: #ede9fe; color: #6d28d9; }
+
+  /* ── Quick reference cards ──────────────────────────────────────────────── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .ref-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .ref-card-title {
+    font-size: 13px; font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--accent);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .ref-card ul { padding-left: 16px; }
+  .ref-card li { font-size: 13px; margin-bottom: 5px; color: var(--text-2); }
+
+  /* ── Shortcut table ─────────────────────────────────────────────────────── */
+  .shortcut-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+  }
+  .shortcut-row:last-child { border-bottom: none; }
+  kbd {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--text-2);
+  }
+
+  /* ── Print styles ───────────────────────────────────────────────────────── */
+  @media print {
+    body { font-size: 12px; }
+    .cover { min-height: 100vh; page-break-after: always; }
+    .chapter { page-break-before: always; }
+    .toc-page { page-break-after: always; }
+    a { color: inherit !important; }
+    .box, .ref-card { page-break-inside: avoid; }
+    .steps li { page-break-inside: avoid; }
+  }
+
+  @page {
+    margin: 1.8cm 2cm;
+    @bottom-center {
+      content: counter(page);
+      font-size: 10px;
+      color: #9ca3af;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     COVER PAGE
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-logo">
+    <svg viewBox="0 0 18 18" fill="none">
+      <path d="M9 2v14M2 9h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="9" cy="9" r="7.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+    </svg>
+  </div>
+  <h1>G.P CRM</h1>
+  <h2>Practice Manager — User Guide</h2>
+  <div class="cover-divider"></div>
+  <p style="opacity:0.65; max-width:480px; line-height:1.8; font-size:15px; margin-bottom:48px;">
+    A complete guide to managing your patients, appointments, consultations, tasks, and billing from one secure platform.
+  </p>
+  <div class="cover-meta">
+    <div>Designed for <strong>General Practitioners</strong> in private practice</div>
+    <div>Version 1.0 &nbsp;·&nbsp; May 2026</div>
+    <div style="margin-top:8px; opacity:0.4;">Confidential — for practice use only</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TABLE OF CONTENTS
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page toc-page">
+  <div class="toc-title">Contents</div>
+
+  <div class="toc-section"><a href="#ch1"><span><span class="toc-num">1</span><span class="toc-name">Getting Started</span></span><span class="toc-page-num">Logging in &amp; the dashboard</span></a></div>
+  <div class="toc-section"><a href="#ch2"><span><span class="toc-num">2</span><span class="toc-name">Patient Records</span></span><span class="toc-page-num">Registering &amp; managing patients</span></a></div>
+  <div class="toc-section"><a href="#ch3"><span><span class="toc-num">3</span><span class="toc-name">Appointments</span></span><span class="toc-page-num">Scheduling &amp; tracking consultations</span></a></div>
+  <div class="toc-section"><a href="#ch4"><span><span class="toc-num">4</span><span class="toc-name">Consultation Notes</span></span><span class="toc-page-num">SOAP notes &amp; clinical records</span></a></div>
+  <div class="toc-section"><a href="#ch5"><span><span class="toc-num">5</span><span class="toc-name">Documents &amp; Prescriptions</span></span><span class="toc-page-num">Scripts, sick notes &amp; referrals</span></a></div>
+  <div class="toc-section"><a href="#ch6"><span><span class="toc-num">6</span><span class="toc-name">Tasks &amp; Reminders</span></span><span class="toc-page-num">Follow-up task management</span></a></div>
+  <div class="toc-section"><a href="#ch7"><span><span class="toc-num">7</span><span class="toc-name">Billing &amp; Invoicing</span></span><span class="toc-page-num">Creating &amp; sending invoices</span></a></div>
+  <div class="toc-section"><a href="#ch8"><span><span class="toc-num">8</span><span class="toc-name">Analytics</span></span><span class="toc-page-num">Practice performance overview</span></a></div>
+  <div class="toc-section"><a href="#ch9"><span><span class="toc-num">9</span><span class="toc-name">Quick Reference</span></span><span class="toc-page-num">At-a-glance cheat sheet</span></a></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CHAPTER 1 — GETTING STARTED
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page chapter" id="ch1">
+  <div class="chapter-number">Chapter 1</div>
+  <div class="chapter-title">Getting Started</div>
+  <p class="chapter-intro">
+    G.P CRM is a secure, web-based practice management system. It runs in your browser — no software installation is required. You can access it from your consulting room computer, a tablet, or any device with an internet connection.
+  </p>
+
+  <div class="section">
+    <div class="section-title">Logging In</div>
+    <ol class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Open your browser</strong>
+          Navigate to your practice URL: <strong>https://medicareapp.up.railway.app</strong>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Enter your credentials</strong>
+          Type your username and password. These were set up when your account was created.
+        </div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Click "Sign In"</strong>
+          You will be taken directly to your Dashboard.
+        </div>
+      </li>
+    </ol>
+    <div class="box box-note">
+      <div class="box-icon">⚠</div>
+      <div class="box-body">
+        <strong>Forgotten password?</strong>
+        Contact your practice administrator to reset your password. Do not share your login credentials with anyone, including reception staff — each user should have their own account.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">The Dashboard — Your Daily Overview</div>
+    <p style="margin-bottom:14px; color:var(--text-2);">
+      After logging in you land on the Dashboard. This gives you a real-time snapshot of your practice at a glance — no clicking required.
+    </p>
+
+    <table class="field-table">
+      <thead><tr><th>Dashboard Panel</th><th>What it shows you</th></tr></thead>
+      <tbody>
+        <tr><td>Today's Appointments</td><td>Every patient booked for today, in time order, with their reason for visiting.</td></tr>
+        <tr><td>Stat Cards (top row)</td><td>Total patients on the system, today's appointment count, how many are still Scheduled, and pending tasks.</td></tr>
+        <tr><td>Pending Tasks</td><td>Your four highest-priority outstanding tasks — lab follow-ups, callbacks, referrals, etc.</td></tr>
+        <tr><td>Follow-ups Due</td><td>Patients whose follow-up date is coming up soonest.</td></tr>
+        <tr><td>Recent Patients</td><td>The last four patients registered, for quick access.</td></tr>
+        <tr><td>Week Summary</td><td>Total appointments and consultations completed this week.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="box box-tip">
+      <div class="box-icon">💡</div>
+      <div class="box-body">
+        <strong>Tick tasks directly from the Dashboard.</strong>
+        Click the checkbox next to any pending task to mark it done without leaving the dashboard.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Navigating the System</div>
+    <p style="color:var(--text-2); margin-bottom:12px;">The dark sidebar on the left is your main navigation. It stays visible on every page.</p>
+    <table class="field-table">
+      <thead><tr><th>Sidebar Item</th><th>Takes you to</th></tr></thead>
+      <tbody>
+        <tr><td>🏠 Dashboard</td><td>Daily overview and stats</td></tr>
+        <tr><td>👥 Patients</td><td>Full patient list and search</td></tr>
+        <tr><td>📅 Appointments</td><td>Schedule and manage bookings</td></tr>
+        <tr><td>📋 Consultations</td><td>SOAP notes and clinical records</td></tr>
+        <tr><td>📄 Documents</td><td>Prescriptions, sick notes, referrals</td></tr>
+        <tr><td>✅ Tasks</td><td>Your follow-up task list</td></tr>
+        <tr><td>💰 Billing</td><td>Invoices and payments</td></tr>
+        <tr><td>📊 Analytics</td><td>Practice statistics and trends</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--text-2); margin-top:12px;">Red badge numbers on sidebar items (e.g. next to Tasks or Billing) indicate items needing attention.</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CHAPTER 2 — PATIENT RECORDS
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page chapter" id="ch2">
+  <div class="chapter-number">Chapter 2</div>
+  <div class="chapter-title">Patient Records</div>
+  <p class="chapter-intro">
+    All clinical activity in G.P CRM is linked to a patient record. Registering a new patient takes about two minutes. Once registered, the patient's complete history — appointments, consultations, documents, vitals, and invoices — is available in one place.
+  </p>
+
+  <div class="section">
+    <div class="section-title">Searching for a Patient</div>
+    <ol class="steps">
+      <li><div class="step-num">1</div><div class="step-body">Click <strong>Patients</strong> in the sidebar.</div></li>
+      <li><div class="step-num">2</div><div class="step-body">Type in the search box — you can search by <strong>full name</strong>, <strong>phone number</strong>, <strong>ID number</strong>, <strong>medical aid name</strong>, or <strong>chronic condition</strong>.</div></li>
+      <li><div class="step-num">3</div><div class="step-body">Click the patient's name in the results to open their full record.</div></li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Registering a New Patient</div>
+    <ol class="steps">
+      <li><div class="step-num">1</div><div class="step-body">Click <strong>Patients</strong> in the sidebar, then click the <strong>"+ New Patient"</strong> button.</div></li>
+      <li><div class="step-num">2</div><div class="step-body">Complete the registration form. Required fields are marked <span class="req">Required</span>.</div></li>
+      <li><div class="step-num">3</div><div class="step-body">Click <strong>"Save Patient"</strong>. A file number is automatically assigned.</div></li>
+    </ol>
+
+    <table class="field-table" style="margin-top:18px;">
+      <thead><tr><th>Field</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>First &amp; Last Name <span class="req">Required</span></td><td>As per the patient's ID document.</td></tr>
+        <tr><td>Date of Birth <span class="req">Required</span></td><td>Age is calculated automatically.</td></tr>
+        <tr><td>Gender <span class="req">Required</span></td><td>Male / Female / Other.</td></tr>
+        <tr><td>ID Type &amp; Number <span class="opt">Optional</span></td><td>South African ID or Passport number.</td></tr>
+        <tr><td>File Number</td><td>Auto-generated — you cannot change this.</td></tr>
+        <tr><td>Phone &amp; Alternate Phone <span class="opt">Optional</span></td><td>Mobile preferred for appointment reminders.</td></tr>
+        <tr><td>Email <span class="opt">Optional</span></td><td>Required if you want to email invoices to this patient.</td></tr>
+        <tr><td>Address <span class="opt">Optional</span></td><td>Residential address for records.</td></tr>
+        <tr><td>Next of Kin <span class="opt">Optional</span></td><td>Name and contact number of nearest relative.</td></tr>
+        <tr><td>Medical Aid Scheme <span class="opt">Optional</span></td><td>Scheme name, plan, membership number, principal member.</td></tr>
+        <tr><td>Blood Type <span class="opt">Optional</span></td><td>A+, A−, B+, B−, AB+, AB−, O+, O−.</td></tr>
+        <tr><td>Allergies <span class="opt">Optional</span></td><td>List one per line, e.g. "Penicillin", "Sulfonamides".</td></tr>
+        <tr><td>Chronic Conditions <span class="opt">Optional</span></td><td>List one per line, e.g. "Type 2 Diabetes", "Hypertension".</td></tr>
+        <tr><td>Current Medications <span class="opt">Optional</span></td><td>Free text. One medication per line recommended.</td></tr>
+        <tr><td>Previous Surgeries <span class="opt">Optional</span></td><td>Free text surgical history.</td></tr>
+        <tr><td>Family History <span class="opt">Optional</span></td><td>Relevant hereditary conditions.</td></tr>
+        <tr><td>Smoking / Alcohol / Substances <span class="opt">Optional</span></td><td>Lifestyle history for clinical context.</td></tr>
+        <tr><td>POPIA &amp; Treatment Consent</td><td>Tick once the patient has signed consent forms.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">The Patient Profile Page</div>
+    <p style="color:var(--text-2); margin-bottom:12px;">
+      Clicking any patient's name opens their full profile. From here you can see and access everything related to that patient:
+    </p>
+    <div class="card-grid">
+      <div class="ref-card">
+        <div class="ref-card-title">📋 Clinical Summary</div>
+        <ul>
+          <li>Demographics &amp; contact info</li>
+          <li>Blood type, allergies, chronic conditions</li>
+          <li>Current medications</li>
+          <li>Lifestyle history</li>
+        </ul>
+      </div>
+      <div class="ref-card">
+        <div class="ref-card-title">📅 Appointments tab</div>
+        <ul>
+          <li>All past and upcoming appointments</li>
+          <li>Quick link to book a new appointment</li>
+        </ul>
+      </div>
+      <div class="ref-card">
+        <div class="ref-card-title">📝 Consultations tab</div>
+        <ul>
+          <li>Every SOAP note ever written for this patient</li>
+          <li>Quick link to start a new consultation</li>
+        </ul>
+      </div>
+      <div class="ref-card">
+        <div class="ref-card-title">📄 Documents tab</div>
+        <ul>
+          <li>Prescriptions, sick notes, referral letters</li>
+          <li>Uploaded files and attachments</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Recording Vital Signs</div>
+    <ol class="steps">
+      <li><div class="step-num">1</div><div class="step-body">Open the patient's profile.</div></li>
+      <li><div class="step-num">2</div><div class="step-body">Click <strong>"Add Vitals"</strong>.</div></li>
+      <li><div class="step-num">3</div><div class="step-body">Enter the readings. For blood pressure, type it as <strong>120/80</strong> — the system splits it automatically into systolic and diastolic.</div></li>
+      <li><div class="step-num">4</div><div class="step-body">BMI is calculated automatically from weight and height.</div></li>
+    </ol>
+
+    <table class="field-table" style="margin-top:12px;">
+      <thead><tr><th>Vital</th><th>Unit / Format</th></tr></thead>
+      <tbody>
+        <tr><td>Blood Pressure</td><td>Enter as systolic/diastolic, e.g. 120/80 (mmHg)</td></tr>
+        <tr><td>Pulse</td><td>Beats per minute (bpm)</td></tr>
+        <tr><td>Weight</td><td>Kilograms (kg)</td></tr>
+        <tr><td>Height</td><td>Centimetres (cm)</td></tr>
+        <tr><td>BMI</td><td>Calculated automatically</td></tr>
+        <tr><td>Temperature</td><td>Degrees Celsius (°C)</td></tr>
+        <tr><td>Oxygen Saturation</td><td>Percentage (%)</td></tr>
+        <tr><td>Blood Glucose</td><td>mmol/L</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Editing or Deleting a Patient Record</div>
+    <p style="color:var(--text-2);">
+      Open the patient's profile and click <strong>Edit</strong> to update any field. To delete a patient, click <strong>Delete</strong> — you will be asked to confirm. Note that deleting a patient permanently removes all their appointments, consultations, and documents.
+    </p>
+    <div class="box box-warning">
+      <div class="box-icon">🚨</div>
+      <div class="box-body">
+        <strong>Deletion is permanent.</strong>
+        Always verify you have selected the correct patient before deleting. This action cannot be undone.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CHAPTER 3 — APPOINTMENTS
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page chapter" id="ch3">
+  <div class="chapter-number">Chapter 3</div>
+  <div class="chapter-title">Appointments</div>
+  <p class="chapter-intro">
+    The Appointments module is your booking register. You can view the full schedule, filter by date or status, book new appointments, and update their outcome after the consultation.
+  </p>
+
+  <div class="section">
+    <div class="section-title">Booking a New Appointment</div>
+    <ol class="steps">
+      <li><div class="step-num">1</div><div class="step-body">Click <strong>Appointments</strong> in the sidebar, then <strong>"+ New Appointment"</strong>.</div></li>
+      <li><div class="step-num">2</div><div class="step-body">Select the patient from the dropdown. If they are not yet registered, register them first (see Chapter 2).</div></li>
+      <li><div class="step-num">3</div><div class="step-body">Choose the <strong>date</strong> and <strong>time</strong>.</div></li>
+      <li><div class="step-num">4</div><div class="step-body">Enter the <strong>reason for visit</strong> (e.g. "Hypertension follow-up", "Acute chest pain").</div></li>
+      <li><div class="step-num">5</div><div class="step-body">Click <strong>"Save Appointment"</strong>.</div></li>
+    </ol>
+
+    <div class="box box-tip">
+      <div class="box-icon">💡</div>
+      <div class="box-body">
+        You can also book an appointment directly from a patient's profile page — the patient field will be pre-filled.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Appointment Statuses</div>
+    <p style="margin-bottom:12px; color:var(--text-2);">Every appointment carries one of four statuses. Update the status after each patient encounter.</p>
+    <table class="field-table">
+      <thead><tr><th>Status</th><th>When to use it</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-blue">Scheduled</span></td><td>Booked but the appointment has not happened yet. This is the default when you create a new appointment.</td></tr>
+        <tr><td><span class="badge badge-green">Completed</span></td><td>The patient attended and was seen. Change to this after the consultation is done.</td></tr>
+        <tr><td><span class="badge badge-red">Cancelled</span></td><td>The patient cancelled or you cancelled the slot. Use the Cancel button on the appointment.</td></tr>
+        <tr><td><span class="badge badge-amber">No-Show</span></td><td>The patient did not arrive and did not contact you.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Filtering the Appointment List</div>
+    <p style="color:var(--text-2); margin-bottom:12px;">The Appointments page shows all appointments, newest first. Use the filter bar to narrow the list:</p>
+    <table class="field-table">
+      <thead><tr><th>Filter</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>Status filter</td><td>Show only Scheduled, Completed, Cancelled, or No-Show appointments.</td></tr>
+        <tr><td>Date filter</td><td>Pick a specific date to see only that day's bookings (useful for a daily schedule view).</td></tr>
+        <tr><td>Date range</td><td>Set a start and end date to view a week or month of appointments.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Optional Medical Aid Fields</div>
+    <p style="color:var(--text-2); margin-bottom:10px;">
+      When completing or editing an appointment, you can record the following medical aid billing details:
+    </p>
+    <table class="field-table">
+      <thead><tr><th>Field</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>ICD-10 Code</td><td>Primary diagnosis code for this visit, for billing purposes.</td></tr>
+        <tr><td>Authorization Number</td><td>Medical aid pre-authorisation number if required for the procedure.</td></tr>
+        <tr><td>Referring Doctor</td><td>Name of the GP or specialist who referred the patient.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CHAPTER 4 — CONSULTATION NOTES
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page chapter" id="ch4">
+  <div class="chapter-number">Chapter 4</div>
+  <div class="chapter-title">Consultation Notes</div>
+  <p class="chapter-intro">
+    Consultations are where you record your clinical findings using the standard SOAP format — Subjective, Objective, Assessment, and Plan. Every consultation is permanently stored and linked to the patient's record, giving you a complete longitudinal clinical history.
+  </p>
+
+  <div class="section">
+    <div class="section-title">Creating a New Consultation Note</div>
+    <ol class="steps">
+      <li><div class="step-num">1</div><div class="step-body">Click <strong>Consultations</strong> in the sidebar, then <strong>"+ New Consultation"</strong>.<br><em>Or</em>, open the patient's profile and click <strong>"New Consultation"</strong> from the Consultations tab — the patient field will be pre-filled.</div></li>
+      <li><div class="step-num">2</div><div class="step-body">Select the <strong>patient</strong> and optionally link to an existing <strong>appointment</strong>.</div></li>
+      <li><div class="step-num">3</div><div class="step-body">Fill in the SOAP fields (see below).</div></li>
+      <li><div class="step-num">4</div><div class="step-body">Click <strong>"Save Consultation"</strong>.</div></li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">The SOAP Note Fields</div>
+    <table class="field-table">
+      <thead><tr><th>SOAP Field</th><th>What to record here</th></tr></thead>
+      <tbody>
+        <tr><td>Chief Complaint <span class="opt">Optional</span></td><td>The patient's presenting complaint in their own words. E.g. "Sore throat for 3 days".</td></tr>
+        <tr><td>S — Subjective <span class="req">Required</span></td><td>History of the presenting illness. Symptoms, onset, duration, character, associated symptoms, relevant PMH.</td></tr>
+        <tr><td>O — Objective <span class="req">Required</span></td><td>Examination findings. Vital signs, physical examination findings, investigation results.</td></tr>
+        <tr><td>A — Assessment <span class="req">Required</span></td><td>Your diagnosis or differential diagnosis.</td></tr>
+        <tr><td>Differential Diagnosis <span class="opt">Optional</span></td><td>Other diagnoses you are considering or ruling out.</td></tr>
+        <tr><td>P — Plan <span class="req">Required</span></td><td>Treatment plan. Medications, investigations ordered, lifestyle advice, referrals.</td></tr>
+        <tr><td>ICD-10 Code <span class="opt">Optional</span></td><td>Billing diagnosis code.</td></tr>
+        <tr><td>Referral To <span class="opt">Optional</span></td><td>Specialist or facility you are referring the patient to.</td></tr>
+        <tr><td>Referral Reason <span class="opt">Optional</span></td><td>Reason for referral, used on the referral letter.</td></tr>
+        <tr><td>Prescriptions <span class="opt">Optional</span></td><td>Medications prescribed during this consultation.</td></tr>
+        <tr><td>Follow-up Date <span class="opt">Optional</span></td><td>When the patient should return. Sets an automatic follow-up reminder on your Dashboard.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Sick Note Details</div>
+    <p style="color:var(--text-2); margin-bottom:10px;">If you are issuing a sick note, tick <strong>"Sick note issued"</strong> and complete:</p>
+    <table class="field-table">
+      <thead><tr><th>Field</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Number of days</td><td>Duration of the sick note period.</td></tr>
+        <tr><td>Start date</td><td>First day of the sick leave period.</td></tr>
+        <tr><td>Employer</td><td>Name of the patient's employer (for the sick note document).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Lab and Radiology Requests</div>
+    <p style="color:var(--text-2);">
+      In the consultation form, enter any lab or radiology requests in the dedicated fields — one request per line. For example:
+    </p>
+    <div class="box box-tip" style="margin-top:10px;">
+      <div class="box-icon">💡</div>
+      <div class="box-body">
+        <strong>Lab requests:</strong> FBC, U&amp;E, LFT, HbA1c, TSH<br>
+        <strong>Radiology requests:</strong> Chest X-ray (PA view), Abdominal ultrasound
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Printing a Consultation Note</div>
+    <p style="color:var(--text-2);">
+      Open any consultation and click the <strong>Print</strong> button. A clean, printable version opens which you can print or save as PDF for medico-legal records.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Finding an Old Consultation</div>
+    <p style="color:var(--text-2);">
+      Go to <strong>Consultations</strong> in the sidebar and use the search bar to search by <strong>patient name</strong> or keywords in the <strong>assessment</strong> field. You can also open a patient's profile and click the Consultations tab to see that patient's history only.
+    </p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CHAPTER 5 — DOCUMENTS & PRESCRIPTIONS
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page chapter" id="ch5">
+  <div class="chapter-number">Chapter 5</div>
+  <div class="chapter-title">Documents &amp; Prescriptions</div>
+  <p class="chapter-intro">
+    The Documents module stores prescriptions, sick notes, referral letters, and any other clinical documents linked to a patient. Documents can be created in the system, printed, and optionally attached as files.
+  </p>
+
+  <div class="section">
+    <div class="section-title">Adding a New Document</div>
+    <ol class="steps">
+      <li><div class="step-num">1</div><div class="step-body">Click <strong>Documents</strong> in the sidebar, then <strong>"+ New Document"</strong>.</div></li>
+      <li><div class="step-num">2</div><div class="step-body">Select the <strong>patient</strong>.</div></li>
+      <li><div class="step-num">3</div><div class="step-body">Choose the <strong>document type</strong> (Prescription, Sick Note, Referral Letter, or Other).</div></li>
+      <li><div class="step-num">4</div><div class="step-body">Select or create a <strong>category</strong> to keep documents organised (e.g. "Chronic medication", "Acute illness").</div></li>
+      <li><div class="step-num">5</div><div class="step-body">Add notes or content in the <strong>Notes</strong> field.</div></li>
+      <li><div class="step-num">6</div><div class="step-body">Optionally <strong>attach a file</strong> (a PDF, image, or scanned document).</div></li>
+      <li><div class="step-num">7</div><div class="step-body">Click <strong>"Save Document"</strong>.</div></li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Searching Documents</div>
+    <p style="color:var(--text-2);">
+      On the Documents page, use the search bar to find documents by <strong>patient name</strong>, <strong>document type</strong>, or <strong>category</strong>.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Printing a Document</div>
+    <p style="color:var(--text-2);">
+      Open any document and click <strong>Print</strong>. The print view includes your practice name, address, and registration number at the top — making it suitable for handing directly to the patient or posting.
+    </p>
+    <div class="box box-tip">
+      <div class="box-icon">💡</div>
+      <div class="box-body">
+        <strong>To save as PDF:</strong> Click Print, then in the print dialog choose <em>"Save as PDF"</em> as the printer destination. This gives you a digitally stored copy.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CHAPTER 6 — TASKS & REMINDERS
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page chapter" id="ch6">
+  <div class="chapter-number">Chapter 6</div>
+  <div class="chapter-title">Tasks &amp; Reminders</div>
+  <p class="chapter-intro">
+    Tasks are your personal follow-up list — lab results to chase, callbacks to make, referral outcomes to check. They appear on your Dashboard and can be linked to a specific patient.
+  </p>
+
+  <div class="section">
+    <div class="section-title">Adding a Task</div>
+    <ol class="steps">
+      <li><div class="step-num">1</div><div class="step-body">Click <strong>Tasks</strong> in the sidebar.</div></li>
+      <li><div class="step-num">2</div><div class="step-body">Click <strong>"+ Add Task"</strong>.</div></li>
+      <li><div class="step-num">3</div><div class="step-body">Enter a clear <strong>title</strong> (e.g. "Chase FBC result — John Smith").</div></li>
+      <li><div class="step-num">4</div><div class="step-body">Set the <strong>due date</strong> and <strong>priority</strong>.</div></li>
+      <li><div class="step-num">5</div><div class="step-body">Optionally link the task to a <strong>patient</strong>.</div></li>
+      <li><div class="step-num">6</div><div class="step-body">Click <strong>"Save Task"</strong>.</div></li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Task Priorities</div>
+    <table class="field-table">
+      <thead><tr><th>Priority</th><th>Use for</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-red">High</span></td><td>Urgent clinical follow-ups — abnormal results, same-day callbacks, deteriorating patients.</td></tr>
+        <tr><td><span class="badge badge-amber">Medium</span></td><td>Routine follow-ups — standard lab results, prescription renewals, referral acknowledgements.</td></tr>
+        <tr><td><span class="badge badge-gray">Low</span></td><td>Administrative or non-time-sensitive items.</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--text-2); margin-top:10px;">
+      Tasks are sorted with High priority at the top, then by due date. Overdue tasks remain visible until marked done.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Completing a Task</div>
+    <p style="color:var(--text-2);">
+      Click the <strong>checkbox</strong> next to any task — on the Tasks page or directly on the Dashboard — to mark it as done. Completed tasks move to the "Completed" section at the bottom of the Tasks page for your records.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Follow-up Reminders from Consultations</div>
+    <p style="color:var(--text-2);">
+      When you set a <strong>Follow-up Date</strong> in a consultation note, that patient automatically appears in the <strong>"Follow-ups Due"</strong> panel on your Dashboard on and after that date — no manual task creation needed.
+    </p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CHAPTER 7 — BILLING & INVOICING
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page chapter" id="ch7">
+  <div class="chapter-number">Chapter 7</div>
+  <div class="chapter-title">Billing &amp; Invoicing</div>
+  <p class="chapter-intro">
+    The Billing module handles private invoicing for your practice. Invoices are auto-numbered, support multiple line items, calculate VAT at 15%, and can be emailed directly to patients or printed for hand delivery.
+  </p>
+
+  <div class="section">
+    <div class="section-title">Creating an Invoice</div>
+    <ol class="steps">
+      <li><div class="step-num">1</div><div class="step-body">Click <strong>Billing</strong> in the sidebar, then <strong>"+ New Invoice"</strong>.</div></li>
+      <li><div class="step-num">2</div><div class="step-body">Select the <strong>patient</strong>. The invoice number is generated automatically (format: INV-YYYYMM-001).</div></li>
+      <li><div class="step-num">3</div><div class="step-body">The <strong>issue date</strong> defaults to today, and the <strong>due date</strong> defaults to 30 days from today. Adjust if needed.</div></li>
+      <li><div class="step-num">4</div><div class="step-body">Add <strong>line items</strong> — each with a description, quantity, unit price, and optional procedure code.</div></li>
+      <li><div class="step-num">5</div><div class="step-body">Optionally fill in ICD-10 code, procedure codes, and medical aid authorisation number.</div></li>
+      <li><div class="step-num">6</div><div class="step-body">Click <strong>"Save Invoice"</strong>. The invoice is saved as a <span class="badge badge-gray">Draft</span>.</div></li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Invoice Statuses</div>
+    <table class="field-table">
+      <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-gray">Draft</span></td><td>Created but not yet sent. You can still edit all fields.</td></tr>
+        <tr><td><span class="badge badge-blue">Sent</span></td><td>Emailed or handed to the patient. The system records the date sent.</td></tr>
+        <tr><td><span class="badge badge-green">Paid</span></td><td>Payment received. Click "Mark as Paid" to update the status and record the amount received.</td></tr>
+        <tr><td><span class="badge badge-red">Overdue</span></td><td>Automatically flagged when a Sent or Draft invoice passes its due date without payment.</td></tr>
+        <tr><td><span class="badge badge-purple">Cancelled</span></td><td>Invoice voided. Use this instead of deleting to maintain a complete billing history.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Sending an Invoice by Email</div>
+    <ol class="steps">
+      <li><div class="step-num">1</div><div class="step-body">Open the invoice.</div></li>
+      <li><div class="step-num">2</div><div class="step-body">Click <strong>"Send Email"</strong>. The email is sent to the address on the patient's record.</div></li>
+      <li><div class="step-num">3</div><div class="step-body">The invoice status automatically changes to <span class="badge badge-blue">Sent</span>.</div></li>
+    </ol>
+    <div class="box box-note">
+      <div class="box-icon">⚠</div>
+      <div class="box-body">
+        <strong>Email requires a patient email address.</strong>
+        If the patient has no email address on file, update their record before sending. See Chapter 2 — Patient Records.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Recording a Payment</div>
+    <ol class="steps">
+      <li><div class="step-num">1</div><div class="step-body">Open the invoice.</div></li>
+      <li><div class="step-num">2</div><div class="step-body">Click <strong>"Mark as Paid"</strong>.</div></li>
+      <li><div class="step-num">3</div><div class="step-body">Enter the <strong>amount received</strong> and the <strong>receipt number</strong>.</div></li>
+      <li><div class="step-num">4</div><div class="step-body">The status changes to <span class="badge badge-green">Paid</span> and the balance due updates to zero.</div></li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Printing an Invoice</div>
+    <p style="color:var(--text-2);">
+      Open any invoice and click <strong>Print</strong>. The printed invoice includes your practice name, address, HPCSA registration number, all line items, VAT calculation, and balance due.
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">VAT on Invoices</div>
+    <p style="color:var(--text-2);">
+      VAT is calculated at <strong>15%</strong> on the subtotal of all line items. The invoice shows the subtotal, VAT amount, and total separately. If your practice is not VAT-registered, do not use the VAT line — contact your administrator to adjust the setting.
+    </p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CHAPTER 8 — ANALYTICS
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page chapter" id="ch8">
+  <div class="chapter-number">Chapter 8</div>
+  <div class="chapter-title">Analytics</div>
+  <p class="chapter-intro">
+    The Analytics page gives you a bird's-eye view of your practice's performance and patient population. It is read-only — no data entry is required. The figures update automatically as you use the system.
+  </p>
+
+  <div class="section">
+    <div class="section-title">What the Analytics Page Shows</div>
+    <table class="field-table">
+      <thead><tr><th>Section</th><th>What it tells you</th></tr></thead>
+      <tbody>
+        <tr><td>14-Day Appointment Trend</td><td>A bar graph showing how many appointments you had each day over the last two weeks. Useful for spotting busy periods and quiet spells.</td></tr>
+        <tr><td>Appointment Status Breakdown</td><td>How your appointments are split between Scheduled, Completed, Cancelled, and No-Show as percentages. Tracks your DNA (Did Not Attend) rate.</td></tr>
+        <tr><td>Top Chronic Conditions</td><td>The six most common chronic conditions across your entire patient base. Useful for understanding your practice's clinical burden.</td></tr>
+        <tr><td>Patient Summary Totals</td><td>Total patients, total appointments, total consultations, and total documents on the system.</td></tr>
+        <tr><td>Patient Demographics</td><td>How many patients have medical aid, how many have documented allergies or chronic conditions, and the gender split.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">How to Use Analytics in Practice</div>
+    <div class="card-grid">
+      <div class="ref-card">
+        <div class="ref-card-title">📈 Staffing</div>
+        <ul>
+          <li>Use the 14-day trend to identify your busiest days</li>
+          <li>Plan locum cover around recurring peaks</li>
+        </ul>
+      </div>
+      <div class="ref-card">
+        <div class="ref-card-title">🏥 Clinical audit</div>
+        <ul>
+          <li>Review top chronic conditions to inform health promotion activities</li>
+          <li>Monitor your Completed vs No-Show rate</li>
+        </ul>
+      </div>
+      <div class="ref-card">
+        <div class="ref-card-title">💰 Revenue planning</div>
+        <ul>
+          <li>Track total consultations to estimate monthly income</li>
+          <li>Monitor medical aid coverage in your patient base</li>
+        </ul>
+      </div>
+      <div class="ref-card">
+        <div class="ref-card-title">📋 POPIA compliance</div>
+        <ul>
+          <li>Patient demographics help verify consent records are complete</li>
+          <li>Use totals to confirm all active patients are on the system</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CHAPTER 9 — QUICK REFERENCE
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page chapter" id="ch9">
+  <div class="chapter-number">Chapter 9</div>
+  <div class="chapter-title">Quick Reference</div>
+  <p class="chapter-intro">
+    A single-page summary for daily use. Print this page and keep it at your desk until the system becomes second nature.
+  </p>
+
+  <div class="section">
+    <div class="section-title">Daily Workflow — Typical Consulting Day</div>
+    <ol class="steps">
+      <li><div class="step-num">1</div><div class="step-body"><strong>Morning:</strong> Check the Dashboard — review today's appointment list, check for overdue tasks, and note any follow-ups due.</div></li>
+      <li><div class="step-num">2</div><div class="step-body"><strong>Each patient:</strong> Open their record → record vitals → complete the consultation note (SOAP) → issue documents or prescriptions if needed → update the appointment status to "Completed".</div></li>
+      <li><div class="step-num">3</div><div class="step-body"><strong>After consulting:</strong> Create any invoices for today's patients. Send or print as appropriate.</div></li>
+      <li><div class="step-num">4</div><div class="step-body"><strong>End of day:</strong> Tick off completed tasks. Add any new tasks for tomorrow (pending results, callbacks).</div></li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Key Actions — Where to Find Them</div>
+    <table class="field-table">
+      <thead><tr><th>Task</th><th>Where</th></tr></thead>
+      <tbody>
+        <tr><td>Register a new patient</td><td>Patients → + New Patient</td></tr>
+        <tr><td>Search for a patient</td><td>Patients → search bar (name, phone, ID, medical aid)</td></tr>
+        <tr><td>Book an appointment</td><td>Appointments → + New Appointment <em>or</em> patient profile</td></tr>
+        <tr><td>Write a SOAP note</td><td>Consultations → + New Consultation <em>or</em> patient profile</td></tr>
+        <tr><td>Record vital signs</td><td>Patient profile → Add Vitals</td></tr>
+        <tr><td>Issue a sick note or prescription</td><td>Documents → + New Document</td></tr>
+        <tr><td>Add a follow-up task</td><td>Tasks → + Add Task <em>or</em> Dashboard (inline)</td></tr>
+        <tr><td>Create an invoice</td><td>Billing → + New Invoice</td></tr>
+        <tr><td>Mark an invoice as paid</td><td>Billing → open invoice → Mark as Paid</td></tr>
+        <tr><td>View practice statistics</td><td>Analytics (sidebar)</td></tr>
+        <tr><td>Change your password</td><td>Contact your practice administrator</td></tr>
+        <tr><td>Print any record</td><td>Open the record → click Print</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Status Colour Guide</div>
+    <table class="field-table">
+      <thead><tr><th>Colour</th><th>Appointments</th><th>Invoices</th><th>Tasks</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-blue">Blue</span></td>
+          <td>Scheduled</td>
+          <td>Sent</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-green">Green</span></td>
+          <td>Completed</td>
+          <td>Paid</td>
+          <td>Done</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-red">Red</span></td>
+          <td>Cancelled</td>
+          <td>Overdue</td>
+          <td>High priority</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-amber">Amber</span></td>
+          <td>No-Show</td>
+          <td>—</td>
+          <td>Medium priority</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-gray">Grey</span></td>
+          <td>—</td>
+          <td>Draft</td>
+          <td>Low priority</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-purple">Purple</span></td>
+          <td>—</td>
+          <td>Cancelled</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">If Something Goes Wrong</div>
+    <table class="field-table">
+      <thead><tr><th>Problem</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>Cannot log in</td><td>Check your username (not your email). Contact your administrator to reset the password.</td></tr>
+        <tr><td>Cannot find a patient</td><td>Try searching by phone number or ID number instead of name. Check spelling.</td></tr>
+        <tr><td>Invoice email not arriving</td><td>Check that the patient has a valid email address on their record. Check the patient's spam folder.</td></tr>
+        <tr><td>Page shows an error</td><td>Refresh the browser. If the error persists, note the page you were on and contact your system administrator.</td></tr>
+        <tr><td>Data not saving</td><td>Check your internet connection. Required fields (marked in red) must be filled before saving.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-success" style="margin-top:32px;">
+    <div class="box-icon">✅</div>
+    <div class="box-body">
+      <strong>Data Security Reminder</strong>
+      Always log out when leaving your workstation unattended. Patient data is protected under POPIA — never share your login credentials, and never access patient records for non-clinical purposes.
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:56px; padding-top:24px; border-top:1px solid var(--border); color:var(--text-3); font-size:12px; line-height:2;">
+    <strong style="color:var(--text-2);">G.P CRM — Practice Manager</strong><br>
+    User Guide v1.0 &nbsp;·&nbsp; May 2026<br>
+    For technical support, contact your practice administrator.
+  </div>
+</div>
+
+</body>
+</html>

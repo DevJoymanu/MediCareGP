@@ -2,29 +2,30 @@
 {% block title %}{{ patient }} | G.P CRM{% endblock %}
 {% block page_title %}Patient Profile{% endblock %}
 {% block page_sub %}{{ patient }} — {{ patient.file_number|default:"No file number" }}{% endblock %}
+<!-- CHANGES: Hero stacks vertically on mobile (patient-hero-body/actions); 3-col detail grid collapses to 1-col (patient-detail-grid); 6-col vitals collapses to 2-col (vitals-grid); lifestyle grid collapses (lifestyle-grid); tab bar horizontally scrollable (patient-tab-bar); bottom actions wrap 2-up then full-width (patient-actions); all layout via main.css classes, no inline grid/flex overrides -->
 {% block content %}
 <div class="page-body">
 
   <!-- Hero header -->
-  <div style="border-radius:var(--radius);overflow:hidden;margin-bottom:20px;background:linear-gradient(145deg,#080e1c 0%,#1e1b4b 100%);color:#fff;padding:24px;">
-    <div style="display:flex;gap:16px;align-items:flex-start;">
+  <div class="patient-hero">
+    <div class="patient-hero-body">
       <div class="avatar av-62 av-{{ patient.id }}">
         {{ patient.first_name|first|upper }}{{ patient.last_name|first|upper }}
       </div>
-      <div style="flex:1;">
+      <div class="patient-hero-info">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
           <h1 class="brand-heading" style="font-size:22px;font-weight:800;margin:0;">{{ patient }}</h1>
           {% if patient.file_number %}
           <span style="padding:2px 10px;border-radius:6px;background:rgba(255,255,255,0.1);font-size:11px;font-family:monospace;color:rgba(255,255,255,0.6);">{{ patient.file_number }}</span>
           {% endif %}
         </div>
-        <div style="display:flex;gap:16px;font-size:12.5px;color:rgba(255,255,255,0.65);margin-bottom:12px;flex-wrap:wrap;">
+        <div class="patient-hero-meta">
           <span><i class="bi bi-person" style="margin-right:4px;"></i>{{ patient.get_age }} yrs &middot; {{ patient.get_gender_display }}</span>
           <span><i class="bi bi-telephone" style="margin-right:4px;"></i>{{ patient.phone }}</span>
           {% if patient.alt_phone %}<span><i class="bi bi-telephone" style="margin-right:4px;opacity:0.6;"></i>{{ patient.alt_phone }}</span>{% endif %}
           {% if patient.email %}<span><i class="bi bi-envelope" style="margin-right:4px;"></i>{{ patient.email }}</span>{% endif %}
         </div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap;">
+        <div class="patient-hero-badges">
           {% if patient.blood_type %}
           <span style="padding:3px 10px;border-radius:999px;background:rgba(255,255,255,0.14);font-size:12px;font-weight:600;">
             <i class="bi bi-droplet-fill" style="margin-right:4px;"></i>{{ patient.blood_type }}
@@ -42,7 +43,7 @@
           {% endif %}
         </div>
       </div>
-      <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;">
+      <div class="patient-hero-actions">
         <a href="{% url 'vitals_add' patient.pk %}" class="btn-ghost" style="border-color:rgba(255,255,255,0.2);color:#fff;background:rgba(255,255,255,0.08);">
           <i class="bi bi-heart-pulse"></i> Vitals
         </a>
@@ -66,8 +67,8 @@
     {% endif %}
   </div>
 
-  <!-- Detail grid -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px;">
+  <!-- Detail grid — 3-col desktop, 1-col mobile -->
+  <div class="patient-detail-grid">
     <!-- Personal -->
     <div class="card">
       <div class="card-title" style="margin-bottom:14px;">Personal</div>
@@ -127,11 +128,11 @@
     </div>
   </div>
 
-  <!-- Lifestyle & family history (if any) -->
+  <!-- Lifestyle & family history -->
   {% if patient.smoking_status or patient.alcohol_use or patient.family_history %}
   <div class="card" style="margin-bottom:18px;">
     <div class="card-title" style="margin-bottom:14px;">Lifestyle &amp; Family History</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+    <div class="lifestyle-grid">
       {% if patient.smoking_status %}
       <div><div class="section-label" style="margin-bottom:4px;">Smoking</div><span style="font-size:13px;">{{ patient.get_smoking_status_display }}</span></div>
       {% endif %}
@@ -142,13 +143,13 @@
       <div><div class="section-label" style="margin-bottom:4px;">Other Substances</div><span style="font-size:13px;">{{ patient.substance_use }}</span></div>
       {% endif %}
       {% if patient.family_history %}
-      <div style="grid-column:1/-1;"><div class="section-label" style="margin-bottom:4px;">Family Medical History</div><p style="font-size:13px;color:var(--text-2);margin:0;white-space:pre-line;">{{ patient.family_history }}</p></div>
+      <div class="lifestyle-full"><div class="section-label" style="margin-bottom:4px;">Family Medical History</div><p style="font-size:13px;color:var(--text-2);margin:0;white-space:pre-line;">{{ patient.family_history }}</p></div>
       {% endif %}
     </div>
   </div>
   {% endif %}
 
-  <!-- Latest vitals -->
+  <!-- Latest vitals — 6-col desktop, 2-col mobile -->
   {% if vitals %}
   <div class="card" style="margin-bottom:18px;">
     <div class="card-header">
@@ -156,47 +157,47 @@
       <a href="{% url 'vitals_add' patient.pk %}" class="btn-ghost" style="font-size:12px;padding:6px 12px;"><i class="bi bi-plus-lg"></i> Record Vitals</a>
     </div>
     {% with v=vitals.0 %}
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px;">
+    <div class="vitals-grid">
       {% if v.blood_pressure %}
-      <div style="padding:12px;border-radius:10px;border:1px solid {% if v.bp_systolic and v.bp_systolic > 140 %}#fecaca{% else %}#f1f5f9{% endif %};background:{% if v.bp_systolic and v.bp_systolic > 140 %}#fff5f5{% else %}#fafafa{% endif %};">
-        <div style="font-size:10px;color:{% if v.bp_systolic and v.bp_systolic > 140 %}#dc2626{% else %}var(--text-4){% endif %};margin-bottom:3px;">Blood Pressure</div>
-        <div style="font-size:17px;font-weight:700;color:{% if v.bp_systolic and v.bp_systolic > 140 %}#dc2626{% else %}var(--text-1){% endif %};">{{ v.blood_pressure }}</div>
-        <div style="font-size:10px;color:var(--text-4);">mmHg</div>
+      <div class="vital-cell{% if v.bp_systolic and v.bp_systolic > 140 %} alert{% endif %}">
+        <div class="vital-cell-label{% if v.bp_systolic and v.bp_systolic > 140 %} alert{% endif %}">Blood Pressure</div>
+        <div class="vital-cell-value{% if v.bp_systolic and v.bp_systolic > 140 %} alert{% endif %}">{{ v.blood_pressure }}</div>
+        <div class="vital-cell-unit">mmHg</div>
       </div>
       {% endif %}
       {% if v.pulse %}
-      <div style="padding:12px;border-radius:10px;border:1px solid #f1f5f9;background:#fafafa;">
-        <div style="font-size:10px;color:var(--text-4);margin-bottom:3px;">Pulse</div>
-        <div style="font-size:17px;font-weight:700;">{{ v.pulse }}</div>
-        <div style="font-size:10px;color:var(--text-4);">bpm</div>
+      <div class="vital-cell">
+        <div class="vital-cell-label">Pulse</div>
+        <div class="vital-cell-value">{{ v.pulse }}</div>
+        <div class="vital-cell-unit">bpm</div>
       </div>
       {% endif %}
       {% if v.temperature %}
-      <div style="padding:12px;border-radius:10px;border:1px solid {% if v.temperature > 37.5 %}#fecaca{% else %}#f1f5f9{% endif %};background:{% if v.temperature > 37.5 %}#fff5f5{% else %}#fafafa{% endif %};">
-        <div style="font-size:10px;color:var(--text-4);margin-bottom:3px;">Temp</div>
-        <div style="font-size:17px;font-weight:700;color:{% if v.temperature > 37.5 %}#dc2626{% else %}var(--text-1){% endif %};">{{ v.temperature }}</div>
-        <div style="font-size:10px;color:var(--text-4);">°C</div>
+      <div class="vital-cell{% if v.temperature > 37.5 %} alert{% endif %}">
+        <div class="vital-cell-label">Temp</div>
+        <div class="vital-cell-value{% if v.temperature > 37.5 %} alert{% endif %}">{{ v.temperature }}</div>
+        <div class="vital-cell-unit">°C</div>
       </div>
       {% endif %}
       {% if v.oxygen_saturation %}
-      <div style="padding:12px;border-radius:10px;border:1px solid {% if v.oxygen_saturation < 95 %}#fecaca{% else %}#f1f5f9{% endif %};background:{% if v.oxygen_saturation < 95 %}#fff5f5{% else %}#fafafa{% endif %};">
-        <div style="font-size:10px;color:var(--text-4);margin-bottom:3px;">O₂ Sat</div>
-        <div style="font-size:17px;font-weight:700;color:{% if v.oxygen_saturation < 95 %}#dc2626{% else %}var(--text-1){% endif %};">{{ v.oxygen_saturation }}</div>
-        <div style="font-size:10px;color:var(--text-4);">%</div>
+      <div class="vital-cell{% if v.oxygen_saturation < 95 %} alert{% endif %}">
+        <div class="vital-cell-label">O₂ Sat</div>
+        <div class="vital-cell-value{% if v.oxygen_saturation < 95 %} alert{% endif %}">{{ v.oxygen_saturation }}</div>
+        <div class="vital-cell-unit">%</div>
       </div>
       {% endif %}
       {% if v.weight %}
-      <div style="padding:12px;border-radius:10px;border:1px solid #f1f5f9;background:#fafafa;">
-        <div style="font-size:10px;color:var(--text-4);margin-bottom:3px;">Weight</div>
-        <div style="font-size:17px;font-weight:700;">{{ v.weight }}</div>
-        <div style="font-size:10px;color:var(--text-4);">kg{% if v.bmi %} &middot; BMI {{ v.bmi }}{% endif %}</div>
+      <div class="vital-cell">
+        <div class="vital-cell-label">Weight</div>
+        <div class="vital-cell-value">{{ v.weight }}</div>
+        <div class="vital-cell-unit">kg{% if v.bmi %} &middot; BMI {{ v.bmi }}{% endif %}</div>
       </div>
       {% endif %}
       {% if v.blood_glucose %}
-      <div style="padding:12px;border-radius:10px;border:1px solid {% if v.blood_glucose > 7 %}#fecaca{% else %}#f1f5f9{% endif %};background:{% if v.blood_glucose > 7 %}#fff5f5{% else %}#fafafa{% endif %};">
-        <div style="font-size:10px;color:var(--text-4);margin-bottom:3px;">Blood Glucose</div>
-        <div style="font-size:17px;font-weight:700;color:{% if v.blood_glucose > 7 %}#dc2626{% else %}var(--text-1){% endif %};">{{ v.blood_glucose }}</div>
-        <div style="font-size:10px;color:var(--text-4);">mmol/L</div>
+      <div class="vital-cell{% if v.blood_glucose > 7 %} alert{% endif %}">
+        <div class="vital-cell-label">Blood Glucose</div>
+        <div class="vital-cell-value{% if v.blood_glucose > 7 %} alert{% endif %}">{{ v.blood_glucose }}</div>
+        <div class="vital-cell-unit">mmol/L</div>
       </div>
       {% endif %}
     </div>
@@ -207,14 +208,15 @@
 
   <!-- Tabbed: Appointments / Consultations / Documents -->
   <div class="card" style="padding:0;overflow:hidden;">
-    <div style="display:flex;border-bottom:1px solid var(--border);background:#fff;" id="tabBar">
-      <button class="tab-btn active" data-tab="appts" style="padding:14px 18px;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#4f46e5;border-bottom:2px solid #4f46e5;margin-bottom:-1px;">
+    <!-- Scrollable tab bar — no wrapping on mobile -->
+    <div class="patient-tab-bar" id="tabBar">
+      <button class="patient-tab-btn active" data-tab="appts">
         Appointments ({{ appointments|length }})
       </button>
-      <button class="tab-btn" data-tab="consults" style="padding:14px 18px;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--text-3);border-bottom:2px solid transparent;margin-bottom:-1px;">
+      <button class="patient-tab-btn" data-tab="consults">
         Consultations ({{ consultations|length }})
       </button>
-      <button class="tab-btn" data-tab="docs" style="padding:14px 18px;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--text-3);border-bottom:2px solid transparent;margin-bottom:-1px;">
+      <button class="patient-tab-btn" data-tab="docs">
         Documents ({{ documents|length }})
       </button>
     </div>
@@ -223,14 +225,13 @@
       {% if appointments %}
       <div style="display:flex;flex-direction:column;gap:9px;">
         {% for a in appointments %}
-        <div style="display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:11px;border:1px solid #f1f5f9;background:#fafafa;">
+        <div style="display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:11px;border:1px solid #f1f5f9;background:#fafafa;flex-wrap:wrap;">
           <div class="appt-time">{{ a.time|time:"H:i" }}</div>
-          <div style="flex:1;">
+          <div style="flex:1;min-width:160px;">
             <div style="font-weight:600;font-size:13.5px;">{{ a.reason }}</div>
             <div style="font-size:11px;color:var(--text-3);margin-top:1px;">
               {{ a.date|date:"l, j F Y" }}
               {% if a.icd10_code %}<span style="margin-left:8px;font-family:monospace;background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:10px;">{{ a.icd10_code }}</span>{% endif %}
-              {% if a.referring_doctor %}<span style="margin-left:8px;color:var(--text-4);">Ref: {{ a.referring_doctor }}</span>{% endif %}
             </div>
           </div>
           <span class="badge badge-{{ a.status|lower|cut:'-' }}">{{ a.status }}</span>
@@ -272,11 +273,11 @@
       {% if documents %}
       <div style="display:flex;flex-direction:column;gap:9px;">
         {% for d in documents %}
-        <div style="display:flex;gap:12px;align-items:center;padding:14px;border-radius:11px;border:1px solid #f1f5f9;">
+        <div style="display:flex;gap:12px;align-items:center;padding:14px;border-radius:11px;border:1px solid #f1f5f9;flex-wrap:wrap;">
           <div style="width:40px;height:40px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;color:#3b82f6;flex-shrink:0;font-size:18px;">
             <i class="bi bi-file-earmark-text"></i>
           </div>
-          <div style="flex:1;">
+          <div style="flex:1;min-width:140px;">
             <div style="font-weight:600;font-size:13.5px;">{{ d.doc_type }}</div>
             <div style="font-size:11px;color:var(--text-3);margin-top:1px;">{{ d.category }} &middot; {{ d.date_issued|date:"j M Y" }}</div>
             {% if d.notes %}<div style="font-size:11px;color:var(--text-4);margin-top:2px;font-style:italic;">{{ d.notes }}</div>{% endif %}
@@ -291,24 +292,20 @@
     </div>
   </div>
 
-  <!-- Actions -->
-  <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+  <!-- Footer actions — 2-up on mobile, delete full-width -->
+  <div class="patient-actions">
     <a href="{% url 'document_create' %}?patient={{ patient.pk }}" class="btn-ghost"><i class="bi bi-file-earmark-plus"></i> New Document</a>
     <a href="{% url 'consultation_create' %}?patient_id={{ patient.pk }}" class="btn-ghost"><i class="bi bi-clipboard2-plus"></i> New Consultation</a>
     <a href="{% url 'invoice_create' %}?patient_id={{ patient.pk }}" class="btn-ghost"><i class="bi bi-receipt"></i> New Invoice</a>
-    <a href="{% url 'patient_delete' patient.pk %}" class="btn-ghost" style="color:#ef4444;border-color:#fecaca;margin-left:auto;"><i class="bi bi-trash"></i> Delete Patient</a>
+    <a href="{% url 'patient_delete' patient.pk %}" class="btn-ghost patient-delete-btn"><i class="bi bi-trash"></i> Delete Patient</a>
   </div>
 </div>
 
 <script>
-document.querySelectorAll('.tab-btn').forEach(btn => {
+document.querySelectorAll('.patient-tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => {
-      b.style.color = 'var(--text-3)';
-      b.style.borderBottomColor = 'transparent';
-    });
-    btn.style.color = '#4f46e5';
-    btn.style.borderBottomColor = '#4f46e5';
+    document.querySelectorAll('.patient-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
     document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
     document.getElementById('tab-' + btn.dataset.tab).style.display = 'block';
   });
