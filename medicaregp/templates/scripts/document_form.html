@@ -265,8 +265,8 @@
       </div>
     </div>
 
-    <!-- ── Shared metadata ─────────────────────────────────────────────── -->
-    <div class="card" style="margin-bottom:14px;" id="metaFields">
+    <!-- Upload mode metadata (doc type / category / issued by) -->
+    <div class="card" style="margin-bottom:14px;display:none;" id="metaFields">
       <div class="card-title" style="margin-bottom:16px;">Document Details</div>
       <div class="form-grid-2">
         <div class="form-group">
@@ -285,6 +285,14 @@
           <label style="font-size:12px;font-weight:700;color:var(--text-3);margin-bottom:6px;display:block;">Notes <span style="font-weight:400;color:var(--text-4);">(optional)</span></label>
           {{ form.notes }}
         </div>
+      </div>
+    </div>
+
+    <!-- Create mode: notes only (everything else auto-set by template) -->
+    <div class="card" style="margin-bottom:14px;" id="createNotesField">
+      <div class="form-group" style="margin-bottom:0;">
+        <label style="font-size:12px;font-weight:700;color:var(--text-3);margin-bottom:6px;display:block;">Notes <span style="font-weight:400;color:var(--text-4);">(optional)</span></label>
+        {{ form.notes }}
       </div>
     </div>
 
@@ -726,14 +734,22 @@
   const DRAFT_KEY = () => 'doc_draft_' + (patientSel.value || 'none');
 
   /* ── Mode switching ────────────────────────────────────────────────── */
-  modeCreate.addEventListener('click', () => {
-    modeCreate.classList.add('active'); modeUpload.classList.remove('active');
-    createFlow.style.display = ''; uploadFlow.style.display = 'none';
-  });
-  modeUpload.addEventListener('click', () => {
-    modeUpload.classList.add('active'); modeCreate.classList.remove('active');
-    uploadFlow.style.display = ''; createFlow.style.display = 'none';
-  });
+  const metaFields       = document.getElementById('metaFields');
+  const createNotesField = document.getElementById('createNotesField');
+
+  function setMode(mode) {
+    const isCreate = mode === 'create';
+    modeCreate.classList.toggle('active', isCreate);
+    modeUpload.classList.toggle('active', !isCreate);
+    createFlow.style.display       = isCreate ? '' : 'none';
+    uploadFlow.style.display       = isCreate ? 'none' : '';
+    metaFields.style.display       = isCreate ? 'none' : '';
+    createNotesField.style.display = isCreate ? '' : 'none';
+  }
+
+  modeCreate.addEventListener('click', () => setMode('create'));
+  modeUpload.addEventListener('click', () => setMode('upload'));
+  setMode('create');
 
   /* ── Build template gallery ────────────────────────────────────────── */
   function buildGallery(filter = '', cat = 'all') {
