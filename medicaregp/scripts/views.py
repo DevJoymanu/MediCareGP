@@ -6,14 +6,45 @@ from .forms import DocumentForm
 
 @login_required
 def document_list(request):
-    from django.db.models import Q
+    from django.db.models import Q, Count
     q = request.GET.get('q', '')
-    documents = Document.objects.select_related('patient').all()
+    cat = request.GET.get('cat', '')
+
+    qs = Document.objects.select_related('patient').all()
     if q:
-        documents = documents.filter(
+        qs = qs.filter(
             Q(patient__first_name__icontains=q) | Q(patient__last_name__icontains=q) | Q(doc_type__icontains=q) | Q(category__icontains=q)
         )
-    return render(request, 'scripts/document_list.html', {'documents': documents, 'q': q})
+    if cat:
+        qs = qs.filter(category=cat)
+
+    raw_counts = Document.objects.values('category').annotate(n=Count('id'))
+    counts = {c['category']: c['n'] for c in raw_counts}
+
+    categories_with_counts = [
+        {'value': v, 'label': label, 'count': counts.get(v, 0)}
+        for v, label in Document.CATEGORY_CHOICES
+    ]
+
+    grouped = None
+    if not cat:
+        cat_map = {v: label for v, label in Document.CATEGORY_CHOICES}
+        group_map = {}
+        for doc in qs:
+            key = doc.category
+            if key not in group_map:
+                group_map[key] = {'value': key, 'label': cat_map.get(key, key), 'docs': []}
+            group_map[key]['docs'].append(doc)
+        grouped = [group_map[v] for v, _ in Document.CATEGORY_CHOICES if v in group_map]
+
+    return render(request, 'scripts/document_list.html', {
+        'documents': qs,
+        'q': q,
+        'cat': cat,
+        'categories_with_counts': categories_with_counts,
+        'total': sum(counts.values()),
+        'grouped': grouped,
+    })
 
 @login_required
 def document_create(request):
