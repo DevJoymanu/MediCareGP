@@ -88,7 +88,13 @@
       <div class="card-title" style="margin-bottom:14px;">Personal</div>
       <div class="detail-row"><span class="detail-key">Date of Birth</span><span class="detail-val">{{ patient.date_of_birth|date:"j F Y" }}</span></div>
       <div class="detail-row"><span class="detail-key">{{ patient.get_id_type_display }}</span><span class="detail-val" style="font-family:monospace;font-size:12px;">{{ patient.id_number }}</span></div>
-      <div class="detail-row"><span class="detail-key">Address</span><span class="detail-val">{{ patient.address|default:"—" }}</span></div>
+      {% if patient.marital_status %}<div class="detail-row"><span class="detail-key">Marital Status</span><span class="detail-val">{{ patient.get_marital_status_display }}</span></div>{% endif %}
+      {% if patient.occupation %}<div class="detail-row"><span class="detail-key">Occupation</span><span class="detail-val">{{ patient.occupation }}</span></div>{% endif %}
+      {% if patient.home_language %}<div class="detail-row"><span class="detail-key">Home Language</span><span class="detail-val">{{ patient.home_language }}</span></div>{% endif %}
+      {% if patient.employer %}<div class="detail-row"><span class="detail-key">Employer</span><span class="detail-val">{{ patient.employer }}</span></div>{% endif %}
+      <div class="detail-row"><span class="detail-key">Residential Address</span><span class="detail-val">{{ patient.address|default:"—" }}</span></div>
+      {% if patient.postal_address %}<div class="detail-row"><span class="detail-key">Postal Address</span><span class="detail-val">{{ patient.postal_address }}</span></div>{% endif %}
+      {% if patient.work_phone %}<div class="detail-row"><span class="detail-key">Work Phone</span><span class="detail-val">{{ patient.work_phone }}</span></div>{% endif %}
       {% if patient.next_of_kin_name %}
       <div style="margin-top:12px;">
         <div class="section-label" style="margin-bottom:8px;">Next of Kin</div>
@@ -159,6 +165,42 @@
       {% if patient.family_history %}
       <div class="lifestyle-full"><div class="section-label" style="margin-bottom:4px;">Family Medical History</div><p style="font-size:13px;color:var(--text-2);margin:0;white-space:pre-line;">{{ patient.family_history }}</p></div>
       {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Family Members -->
+  {% if family_members %}
+  <div class="card" style="margin-bottom:18px;">
+    <div class="card-header">
+      <div class="card-title">Family Members / Dependants</div>
+      <a href="{% url 'patient_edit' patient.pk %}" class="btn-ghost" style="font-size:12px;padding:6px 12px;"><i class="bi bi-pencil"></i> Edit</a>
+    </div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:8px 10px;font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Name</th>
+            <th style="text-align:left;padding:8px 10px;font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Sex</th>
+            <th style="text-align:left;padding:8px 10px;font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Date of Birth</th>
+            <th style="text-align:left;padding:8px 10px;font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Allergies</th>
+            <th style="text-align:left;padding:8px 10px;font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Other</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in family_members %}
+          <tr style="border-bottom:1px solid #f1f5f9;">
+            <td style="padding:10px 10px;font-weight:600;">{{ m.name }}</td>
+            <td style="padding:10px 10px;color:var(--text-2);">{{ m.get_gender_display|default:"—" }}</td>
+            <td style="padding:10px 10px;color:var(--text-2);">{{ m.date_of_birth|date:"j M Y"|default:"—" }}</td>
+            <td style="padding:10px 10px;">
+              {% if m.allergies %}<span style="background:#fff1f2;color:#be123c;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600;">{{ m.allergies }}</span>{% else %}—{% endif %}
+            </td>
+            <td style="padding:10px 10px;color:var(--text-3);font-size:12px;">{{ m.notes|default:"—" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
   {% endif %}

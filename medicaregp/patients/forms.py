@@ -1,8 +1,9 @@
 from django import forms
-from .models import Patient, Vitals
+from django.forms import inlineformset_factory
+from .models import Patient, Vitals, FamilyMember
 
-INPUT  = 'crm-input'
-SELECT = 'crm-select'
+INPUT    = 'crm-input'
+SELECT   = 'crm-select'
 TEXTAREA = 'crm-input'
 
 
@@ -18,11 +19,18 @@ class PatientForm(forms.ModelForm):
             'gender':               forms.Select(attrs={'class': SELECT, 'style': 'width:100%;'}),
             'id_type':              forms.Select(attrs={'class': SELECT, 'style': 'width:100%;'}),
             'id_number':            forms.TextInput(attrs={'class': INPUT, 'placeholder': 'SA ID or passport number'}),
+            'occupation':           forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. Teacher, Nurse'}),
+            'home_language':        forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. Zulu, English'}),
+            'marital_status':       forms.Select(attrs={'class': SELECT, 'style': 'width:100%;'}),
             # Contact
             'phone':                forms.TextInput(attrs={'class': INPUT, 'placeholder': '+27 xx xxx xxxx'}),
-            'alt_phone':            forms.TextInput(attrs={'class': INPUT, 'placeholder': 'Home / work number'}),
+            'alt_phone':            forms.TextInput(attrs={'class': INPUT, 'placeholder': 'Home number'}),
+            'work_phone':           forms.TextInput(attrs={'class': INPUT, 'placeholder': 'Work number'}),
             'email':                forms.EmailInput(attrs={'class': INPUT}),
             'address':              forms.Textarea(attrs={'class': TEXTAREA, 'rows': 2}),
+            'postal_address':       forms.Textarea(attrs={'class': TEXTAREA, 'rows': 2, 'placeholder': 'If different from residential'}),
+            'employer':             forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. Dept. of Education'}),
+            'work_address':         forms.Textarea(attrs={'class': TEXTAREA, 'rows': 2}),
             # Next of kin
             'next_of_kin_name':     forms.TextInput(attrs={'class': INPUT}),
             'next_of_kin_phone':    forms.TextInput(attrs={'class': INPUT, 'placeholder': '+27 xx xxx xxxx'}),
@@ -48,6 +56,27 @@ class PatientForm(forms.ModelForm):
             'popia_consent':        forms.CheckboxInput(attrs={'class': 'crm-checkbox'}),
             'consent_to_treat':     forms.CheckboxInput(attrs={'class': 'crm-checkbox'}),
         }
+
+
+class FamilyMemberForm(forms.ModelForm):
+    class Meta:
+        model  = FamilyMember
+        fields = ['name', 'gender', 'date_of_birth', 'allergies', 'notes']
+        widgets = {
+            'name':          forms.TextInput(attrs={'class': INPUT, 'placeholder': 'Full name'}),
+            'gender':        forms.Select(attrs={'class': SELECT, 'style': 'width:100%;'}),
+            'date_of_birth': forms.DateInput(attrs={'class': INPUT, 'type': 'date'}),
+            'allergies':     forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. Penicillin'}),
+            'notes':         forms.TextInput(attrs={'class': INPUT, 'placeholder': 'Other notes'}),
+        }
+
+
+FamilyMemberFormSet = inlineformset_factory(
+    Patient, FamilyMember,
+    form=FamilyMemberForm,
+    extra=1,
+    can_delete=True,
+)
 
 
 class VitalsForm(forms.ModelForm):

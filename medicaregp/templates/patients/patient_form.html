@@ -67,6 +67,7 @@
           <button type="button" class="form-tab" data-section="medaid"><i class="bi bi-shield-check" style="margin-right:6px;"></i>Medical Aid</button>
           <button type="button" class="form-tab" data-section="clinical"><i class="bi bi-heart-pulse" style="margin-right:6px;"></i>Clinical History</button>
           <button type="button" class="form-tab" data-section="lifestyle"><i class="bi bi-activity" style="margin-right:6px;"></i>Lifestyle</button>
+          <button type="button" class="form-tab" data-section="family"><i class="bi bi-people" style="margin-right:6px;"></i>Family Members</button>
           <button type="button" class="form-tab" data-section="consent"><i class="bi bi-file-check" style="margin-right:6px;"></i>Consent</button>
         </div>
 
@@ -136,6 +137,18 @@
                 <button type="button" class="blood-btn unknown" data-val="">Not known</button>
               </div>
             </div>
+            <div class="form-group">
+              <label>Occupation</label>
+              {{ form.occupation }}
+            </div>
+            <div class="form-group">
+              <label>Home Language</label>
+              {{ form.home_language }}
+            </div>
+            <div class="form-group">
+              <label>Marital Status</label>
+              {{ form.marital_status }}
+            </div>
           </div>
           {% if form.instance.pk %}</div>{% endif %}
         </div>
@@ -152,16 +165,37 @@
                 {{ form.phone }}
               </div>
               <div class="form-group">
-                <label>Alt. Number (home / work)</label>
+                <label>Home Number</label>
                 {{ form.alt_phone }}
               </div>
-              <div class="form-group form-full">
+              <div class="form-group">
+                <label>Work Number <span style="font-weight:400;color:var(--text-4);">Tel. (W)</span></label>
+                {{ form.work_phone }}
+              </div>
+              <div class="form-group">
                 <label>Email Address</label>
                 {{ form.email }}
               </div>
               <div class="form-group form-full">
                 <label>Residential Address</label>
                 {{ form.address }}
+              </div>
+              <div class="form-group form-full">
+                <label>Postal Address <span style="font-weight:400;color:var(--text-4);">if different</span></label>
+                {{ form.postal_address }}
+              </div>
+            </div>
+          </div>
+          <div style="margin-bottom:20px;">
+            <div class="section-label" style="margin-bottom:14px;">Employment</div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Employer</label>
+                {{ form.employer }}
+              </div>
+              <div class="form-group form-full">
+                <label>Work Address</label>
+                {{ form.work_address }}
               </div>
             </div>
           </div>
@@ -270,6 +304,82 @@
           {% if form.instance.pk %}</div>{% endif %}
         </div>
 
+        <!-- ── Family Members ──────────────────────────────────────────── -->
+        <div id="section-family" class="form-section">
+          {% if form.instance.pk %}<div class="edit-section-title"><i class="bi bi-people"></i> Family Members / Dependants</div>{% endif %}
+          <div class="edit-section-body">
+            <div style="font-size:13px;color:var(--text-3);margin-bottom:16px;">Record household members or medical aid dependants. Used for follow-up care and allergy flagging.</div>
+            {{ formset.management_form }}
+            <div id="family-rows">
+              {% for fform in formset %}
+              <div class="family-row" style="display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;padding:14px;border:1px solid var(--border);border-radius:10px;background:#fafafa;flex-wrap:wrap;">
+                {% if fform.instance.pk %}{{ fform.DELETE }}{% endif %}
+                <div style="flex:2;min-width:140px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Name</label>
+                  {{ fform.name }}
+                  {% if fform.name.errors %}<div style="color:#dc2626;font-size:11px;">{{ fform.name.errors.0 }}</div>{% endif %}
+                </div>
+                <div style="flex:0 0 80px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Sex</label>
+                  {{ fform.gender }}
+                </div>
+                <div style="flex:1;min-width:120px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Date of Birth</label>
+                  {{ fform.date_of_birth }}
+                </div>
+                <div style="flex:2;min-width:120px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Allergies</label>
+                  {{ fform.allergies }}
+                </div>
+                <div style="flex:2;min-width:120px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Other</label>
+                  {{ fform.notes }}
+                </div>
+                <div style="flex:0 0 auto;padding-top:22px;">
+                  <button type="button" class="btn-ghost remove-family-row" style="padding:6px 10px;color:#dc2626;border-color:#fecaca;" title="Remove row"><i class="bi bi-trash"></i></button>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <button type="button" id="add-family-row" class="btn-ghost" style="font-size:13px;"><i class="bi bi-plus-lg"></i> Add Member</button>
+
+            <!-- Hidden template row for JS cloning -->
+            <div id="family-row-template" style="display:none;">
+              <div class="family-row" style="display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;padding:14px;border:1px solid var(--border);border-radius:10px;background:#fafafa;flex-wrap:wrap;">
+                <div style="flex:2;min-width:140px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Name</label>
+                  <input type="text" name="family_members-__prefix__-name" class="crm-input" placeholder="Full name">
+                </div>
+                <div style="flex:0 0 80px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Sex</label>
+                  <select name="family_members-__prefix__-gender" class="crm-select" style="width:100%;">
+                    <option value="">—</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                    <option value="O">Other</option>
+                  </select>
+                </div>
+                <div style="flex:1;min-width:120px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Date of Birth</label>
+                  <input type="date" name="family_members-__prefix__-date_of_birth" class="crm-input">
+                </div>
+                <div style="flex:2;min-width:120px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Allergies</label>
+                  <input type="text" name="family_members-__prefix__-allergies" class="crm-input" placeholder="e.g. Penicillin">
+                </div>
+                <div style="flex:2;min-width:120px;">
+                  <label style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Other</label>
+                  <input type="text" name="family_members-__prefix__-notes" class="crm-input" placeholder="Other notes">
+                </div>
+                <div style="flex:0 0 auto;padding-top:22px;">
+                  <button type="button" class="btn-ghost remove-family-row" style="padding:6px 10px;color:#dc2626;border-color:#fecaca;" title="Remove row"><i class="bi bi-trash"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% if form.instance.pk %}</div>{% endif %}
+        </div>
+
         <!-- ── Consent ──────────────────────────────────────────────────── -->
         <div id="section-consent" class="form-section">
           {% if form.instance.pk %}<div class="edit-section-title"><i class="bi bi-file-check"></i> Consent</div>{% endif %}
@@ -317,7 +427,7 @@
 <script>
 {% if not form.instance.pk %}
 (function () {
-  const tabs = ['personal', 'contact', 'medaid', 'clinical', 'lifestyle', 'consent'];
+  const tabs = ['personal', 'contact', 'medaid', 'clinical', 'lifestyle', 'family', 'consent'];
   let current = 0;
 
   function showTab(idx) {
@@ -376,6 +486,39 @@
   // Pre-select when editing
   if (select.value) activate(select.value);
   else activate('');   // highlight "Not known" by default
+})();
+
+// ── Family Members: add / remove rows ────────────────────────────────────
+(function () {
+  const totalForms = document.getElementById('id_family_members-TOTAL_FORMS');
+  if (!totalForms) return;
+
+  function bindRemove(row) {
+    row.querySelector('.remove-family-row').addEventListener('click', function () {
+      const delInput = row.querySelector('input[name$="-DELETE"]');
+      if (delInput) {
+        delInput.checked = true;
+        row.style.display = 'none';
+      } else {
+        row.remove();
+        totalForms.value = document.querySelectorAll('#family-rows .family-row').length;
+      }
+    });
+  }
+
+  document.querySelectorAll('#family-rows .family-row').forEach(bindRemove);
+
+  document.getElementById('add-family-row').addEventListener('click', function () {
+    const idx      = parseInt(totalForms.value, 10);
+    const template = document.getElementById('family-row-template').innerHTML
+      .replace(/__prefix__/g, idx);
+    const wrapper  = document.createElement('div');
+    wrapper.innerHTML = template;
+    const newRow   = wrapper.firstElementChild;
+    document.getElementById('family-rows').appendChild(newRow);
+    totalForms.value = idx + 1;
+    bindRemove(newRow);
+  });
 })();
 
 // ── Date of Birth split inputs ────────────────────────────────────────────

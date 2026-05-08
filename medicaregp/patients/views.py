@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Patient, Vitals
-from .forms import PatientForm, VitalsForm
+from .forms import PatientForm, VitalsForm, FamilyMemberFormSet
 
 
 @login_required
@@ -23,33 +23,43 @@ def patient_list(request):
 def patient_detail(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     return render(request, 'patients/patient_detail.html', {
-        'patient':       patient,
-        'appointments':  patient.appointments.all(),
-        'consultations': patient.consultations.select_related('appointment').all(),
-        'documents':     patient.documents.all(),
-        'vitals':        patient.vitals.all()[:10],
+        'patient':        patient,
+        'appointments':   patient.appointments.all(),
+        'consultations':  patient.consultations.select_related('appointment').all(),
+        'documents':      patient.documents.all(),
+        'vitals':         patient.vitals.all()[:10],
+        'family_members': patient.family_members.all(),
     })
 
 
 @login_required
 def patient_create(request):
     form = PatientForm(request.POST or None)
-    if form.is_valid():
+    formset = FamilyMemberFormSet(request.POST or None)
+    if form.is_valid() and formset.is_valid():
         patient = form.save()
+        formset.instance = patient
+        formset.save()
         messages.success(request, f'Patient record created for {patient}.')
         return redirect('patient_detail', pk=patient.pk)
-    return render(request, 'patients/patient_form.html', {'form': form, 'title': 'New Patient Registration'})
+    return render(request, 'patients/patient_form.html', {
+        'form': form, 'formset': formset, 'title': 'New Patient Registration',
+    })
 
 
 @login_required
 def patient_edit(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
     form = PatientForm(request.POST or None, instance=patient)
-    if form.is_valid():
+    formset = FamilyMemberFormSet(request.POST or None, instance=patient)
+    if form.is_valid() and formset.is_valid():
         form.save()
+        formset.save()
         messages.success(request, 'Patient record updated.')
         return redirect('patient_detail', pk=pk)
-    return render(request, 'patients/patient_form.html', {'form': form, 'title': f'Edit — {patient}'})
+    return render(request, 'patients/patient_form.html', {
+        'form': form, 'formset': formset, 'title': f'Edit — {patient}',
+    })
 
 
 @login_required
@@ -70,7 +80,6 @@ def vitals_add(request, pk):
     form = VitalsForm(request.POST or None, initial={'date': timezone.now().date(), 'recorded_by': 'Dr. Tamuka Chivonivoni'})
     if form.is_valid():
         v = form.save(commit=False)
-        # Auto-parse blood pressure into systolic/diastolic
         if v.blood_pressure and '/' in v.blood_pressure:
             try:
                 parts = v.blood_pressure.split('/')

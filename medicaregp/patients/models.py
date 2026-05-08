@@ -23,6 +23,13 @@ class Patient(models.Model):
         ('Moderate',   'Moderate'),
         ('Heavy',      'Heavy'),
     ]
+    MARITAL_CHOICES = [
+        ('Single',   'Single'),
+        ('Married',  'Married'),
+        ('Divorced', 'Divorced'),
+        ('Widowed',  'Widowed'),
+        ('Other',    'Other'),
+    ]
 
     # ── Personal ──────────────────────────────────────────────────────────────
     first_name      = models.CharField(max_length=100)
@@ -32,12 +39,19 @@ class Patient(models.Model):
     id_type         = models.CharField(max_length=10, choices=ID_TYPE_CHOICES, default='SA_ID')
     id_number       = models.CharField(max_length=30, unique=True)
     file_number     = models.CharField(max_length=20, blank=True, null=True, unique=True)
+    occupation      = models.CharField(max_length=100, blank=True, null=True)
+    home_language   = models.CharField(max_length=50, blank=True, null=True, verbose_name='Home language')
+    marital_status  = models.CharField(max_length=10, choices=MARITAL_CHOICES, blank=True, null=True)
 
     # ── Contact ───────────────────────────────────────────────────────────────
     phone           = models.CharField(max_length=20)
-    alt_phone       = models.CharField(max_length=20, blank=True, null=True, verbose_name='Alt. phone (home/work)')
+    alt_phone       = models.CharField(max_length=20, blank=True, null=True, verbose_name='Alt. phone (home)')
+    work_phone      = models.CharField(max_length=20, blank=True, null=True, verbose_name='Work phone')
     email           = models.EmailField(blank=True, null=True)
     address         = models.TextField(blank=True, null=True, verbose_name='Residential address')
+    postal_address  = models.TextField(blank=True, null=True, verbose_name='Postal address')
+    employer        = models.CharField(max_length=150, blank=True, null=True)
+    work_address    = models.TextField(blank=True, null=True, verbose_name='Work address')
 
     # ── Next of kin ──────────────────────────────────────────────────────────
     next_of_kin_name  = models.CharField(max_length=150, blank=True, null=True, verbose_name='Next of kin name')
@@ -124,3 +138,20 @@ class Vitals(models.Model):
 
     class Meta:
         ordering = ['-date']
+
+
+class FamilyMember(models.Model):
+    GENDER_CHOICES = [('M', 'Male'), ('F', 'Female'), ('O', 'Other')]
+
+    patient       = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='family_members')
+    name          = models.CharField(max_length=150)
+    gender        = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    allergies     = models.CharField(max_length=200, blank=True, null=True)
+    notes         = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.patient})"
+
+    class Meta:
+        ordering = ['name']
