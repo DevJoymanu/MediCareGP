@@ -4,7 +4,8 @@ from patients.models import Patient
 
 class Appointment(models.Model):
     STATUS_CHOICES = [
-        ('Scheduled', 'Scheduled'),
+        ('Scheduled',  'Scheduled'),
+        ('Checked In', 'Checked In'),
         ('Completed',  'Completed'),
         ('Cancelled',  'Cancelled'),
         ('No-Show',    'No-Show'),

@@ -101,8 +101,34 @@ def walk_in_create(request):
         appt.date = date.today()
         appt.time = datetime.now().time().replace(second=0, microsecond=0)
         appt.visit_type = 'Walk-In'
+        appt.status = 'Checked In'
         appt.save()
-        messages.success(request, f'Walk-in registered for {appt.patient}. Start the consultation below.')
-        url = reverse('consultation_create') + f'?patient_id={appt.patient_id}&appointment_id={appt.pk}'
-        return redirect(url)
+        messages.success(request, f'{appt.patient} added to the waiting room.')
+        return redirect('waiting_room')
     return render(request, 'appointments/walk_in_form.html', {'form': form})
+
+@login_required
+def waiting_room(request):
+    today = date.today()
+    waiting = (Appointment.objects
+               .filter(date=today, status='Checked In')
+               .select_related('patient')
+               .order_by('time'))
+    scheduled = (Appointment.objects
+                 .filter(date=today, status='Scheduled')
+                 .select_related('patient')
+                 .order_by('time'))
+    return render(request, 'appointments/waiting_room.html', {
+        'waiting': waiting,
+        'scheduled': scheduled,
+        'today': today,
+    })
+
+@login_required
+def appointment_check_in(request, pk):
+    if request.method == 'POST':
+        appointment = get_object_or_404(Appointment, pk=pk)
+        appointment.status = 'Checked In'
+        appointment.save(update_fields=['status'])
+        messages.success(request, f'{appointment.patient} checked in.')
+    return redirect('waiting_room')

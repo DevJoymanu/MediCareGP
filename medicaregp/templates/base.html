@@ -38,9 +38,13 @@
         <i class="bi bi-people" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
         <span style="flex:1;">Patients</span>
       </a>
-      <a href="{% url 'appointment_list' %}" class="sidebar-item {% if '/appointments/' in request.path %}active{% endif %}">
+      <a href="{% url 'appointment_list' %}" class="sidebar-item {% if '/appointments/' in request.path and '/waiting-room/' not in request.path %}active{% endif %}">
         <i class="bi bi-calendar3" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
         <span style="flex:1;">Appointments</span>
+      </a>
+      <a href="{% url 'waiting_room' %}" class="sidebar-item {% if '/waiting-room/' in request.path %}active{% endif %}">
+        <i class="bi bi-hourglass-split" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Waiting Room</span>
       </a>
       <a href="{% url 'consultation_list' %}" class="sidebar-item {% if '/consultations/' in request.path %}active{% endif %}">
         <i class="bi bi-clipboard2-pulse" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>

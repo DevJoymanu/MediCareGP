@@ -21,6 +21,7 @@
       <div class="filter-pills">
         <a href="?{% if date %}date={{ date }}{% endif %}" class="filter-pill {% if not status %}active{% endif %}">All</a>
         <a href="?status=Scheduled{% if date %}&date={{ date }}{% endif %}" class="filter-pill {% if status == 'Scheduled' %}active{% endif %}">Scheduled</a>
+        <a href="?status=Checked+In{% if date %}&date={{ date }}{% endif %}" class="filter-pill {% if status == 'Checked In' %}active{% endif %}">Checked In</a>
         <a href="?status=Completed{% if date %}&date={{ date }}{% endif %}" class="filter-pill {% if status == 'Completed' %}active{% endif %}">Completed</a>
         <a href="?status=Cancelled{% if date %}&date={{ date }}{% endif %}" class="filter-pill {% if status == 'Cancelled' %}active{% endif %}">Cancelled</a>
         <a href="?status=No-Show{% if date %}&date={{ date }}{% endif %}" class="filter-pill {% if status == 'No-Show' %}active{% endif %}">No-Show</a>

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Waiting Room | G.P CRM{% endblock %}
+{% block page_title %}Waiting Room{% endblock %}
+{% block page_sub %}{{ today|date:"l, j F Y" }}{% endblock %}
+
+{% block extra_head %}
+<meta http-equiv="refresh" content="60">
+<style>
+  .waiting-divider { height:1px; background:var(--border); margin:0 18px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div class="page-header">
+    <div>
+      <h1>Waiting Room</h1>
+      <p>
+        {% with n=waiting|length %}
+          {% if n %}{{ n }} patient{{ n|pluralize }} waiting{% else %}No patients waiting right now{% endif %}
+        {% endwith %}
+      </p>
+    </div>
+    <a href="{% url 'walk_in_create' %}" class="btn-primary" style="background:#7e22ce;border-color:#7e22ce;">
+      <i class="bi bi-person-walking"></i> Walk-In Patient
+    </a>
+  </div>
+
+  <!-- ── Currently Waiting ─────────────────────────────────────────────── -->
+  <div style="margin-bottom:30px;">
+    <div class="waiting-section-label">Currently Waiting</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      {% if waiting %}
+        {% for a in waiting %}
+        <div class="waiting-row">
+          <div style="display:flex;align-items:center;gap:14px;flex:1;min-width:0;">
+            <div class="avatar av-50 av-{{ forloop.counter }}">
+              {{ a.patient.first_name|first|upper }}{{ a.patient.last_name|first|upper }}
+            </div>
+            <div style="min-width:0;">
+              <div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                {{ a.patient }}
+              </div>
+              <div style="font-size:12px;color:var(--text-3);margin-top:3px;">
+                {{ a.reason }}
+                {% if a.visit_type == 'Walk-In' %}
+                  <span class="badge badge-walkin" style="font-size:10px;padding:2px 7px;margin-left:5px;">Walk-in</span>
+                {% endif %}
+              </div>
+              {% if a.patient.allergies %}
+              <div style="font-size:11px;color:#ef4444;margin-top:4px;display:flex;align-items:center;gap:4px;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>{{ a.patient.allergies }}</span>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+            <div style="text-align:right;">
+              <div class="appt-time">{{ a.time|time:"H:i" }}</div>
+              <div style="font-size:11px;color:var(--text-4);margin-top:2px;">arrived</div>
+            </div>
+            <a href="{% url 'consultation_create' %}?patient_id={{ a.patient.pk }}&appointment_id={{ a.pk }}"
+               class="btn-primary" style="padding:9px 16px;font-size:13px;white-space:nowrap;">
+              <i class="bi bi-clipboard2-plus"></i> Start Consultation
+            </a>
+          </div>
+        </div>
+        {% if not forloop.last %}<div class="waiting-divider"></div>{% endif %}
+        {% endfor %}
+      {% else %}
+        <div class="empty-state" style="padding:40px 0;">
+          <i class="bi bi-person-check" style="font-size:32px;color:var(--text-4);"></i>
+          <p style="margin-top:10px;color:var(--text-4);">No patients in the waiting room yet.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ── Scheduled Today — Not Yet Arrived ─────────────────────────────── -->
+  {% if scheduled %}
+  <div>
+    <div class="waiting-section-label">Scheduled Today — Not Yet Arrived</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      {% for a in scheduled %}
+      <div class="waiting-row" style="opacity:0.75;">
+        <div style="display:flex;align-items:center;gap:14px;flex:1;min-width:0;">
+          <div class="avatar av-50 av-{{ forloop.counter }}">
+            {{ a.patient.first_name|first|upper }}{{ a.patient.last_name|first|upper }}
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:15px;">{{ a.patient }}</div>
+            <div style="font-size:12px;color:var(--text-3);margin-top:3px;">{{ a.reason }}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+          <div class="appt-time">{{ a.time|time:"H:i" }}</div>
+          <form method="post" action="{% url 'appointment_check_in' a.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-ghost" style="padding:9px 16px;font-size:13px;white-space:nowrap;">
+              <i class="bi bi-box-arrow-in-right"></i> Check In
+            </button>
+          </form>
+        </div>
+      </div>
+      {% if not forloop.last %}<div class="waiting-divider"></div>{% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div style="margin-top:20px;font-size:11px;color:var(--text-4);text-align:right;">
+    <i class="bi bi-arrow-clockwise"></i> Page refreshes automatically every 60 seconds
+  </div>
+</div>
+{% endblock %}

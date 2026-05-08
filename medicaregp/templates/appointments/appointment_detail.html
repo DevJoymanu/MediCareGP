@@ -9,6 +9,8 @@
   .status-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
   .status-scheduled  { background:#eff6ff; color:#1d4ed8; }
   .status-scheduled  .status-dot { background:#1d4ed8; }
+  .status-checkedin  { background:#fff7ed; color:#c2410c; }
+  .status-checkedin  .status-dot { background:#c2410c; }
   .status-completed  { background:#f0fdf4; color:#15803d; }
   .status-completed  .status-dot { background:#15803d; }
   .status-cancelled  { background:#fef2f2; color:#b91c1c; }
@@ -64,6 +66,7 @@
                 onmouseover="this.style.background='#f4f7fb'" onmouseout="this.style.background='{% if appointment.status == status_val %}#f5f3ff{% else %}transparent{% endif %}'">
                 <span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:
                   {% if status_val == 'Scheduled' %}#1d4ed8
+                  {% elif status_val == 'Checked In' %}#c2410c
                   {% elif status_val == 'Completed' %}#15803d
                   {% elif status_val == 'Cancelled' %}#b91c1c
                   {% else %}#92400e{% endif %};"></span>
