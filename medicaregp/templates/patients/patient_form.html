@@ -413,11 +413,13 @@
         <a href="{% url 'patient_detail' form.instance.pk %}" class="btn-ghost">Cancel</a>
       </div>
       {% else %}
-      <div style="display:flex;gap:10px;margin-top:18px;align-items:center;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;">
         <button type="button" id="prevBtn" class="btn-ghost" style="display:none;"><i class="bi bi-arrow-left"></i> Previous</button>
-        <button type="button" id="nextBtn" class="btn-primary">Next <i class="bi bi-arrow-right"></i></button>
-        <button type="submit" id="saveBtn" class="btn-primary" style="display:none;"><i class="bi bi-check-lg"></i> Save Patient</button>
-        <a href="{% url 'patient_list' %}" class="btn-ghost" style="margin-left:auto;">Cancel</a>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <a href="{% url 'patient_list' %}" class="btn-ghost">Cancel</a>
+          <button type="button" id="nextBtn" class="btn-primary">Next <i class="bi bi-arrow-right"></i></button>
+          <button type="submit" id="saveBtn" class="btn-primary" style="display:none;"><i class="bi bi-check-lg"></i> Save Patient</button>
+        </div>
       </div>
       {% endif %}
     </form>
