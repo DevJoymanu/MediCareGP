@@ -404,24 +404,18 @@
           </div>
           </div>
         </div>
-      </div>
-
-      <!-- Navigation: tab wizard for create, single save for edit -->
-      {% if form.instance.pk %}
-      <div style="display:flex;gap:10px;margin-top:18px;">
-        <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Changes</button>
-        <a href="{% url 'patient_detail' form.instance.pk %}" class="btn-ghost">Cancel</a>
-      </div>
-      {% else %}
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;">
-        <button type="button" id="prevBtn" class="btn-ghost" style="display:none;"><i class="bi bi-arrow-left"></i> Previous</button>
-        <div style="display:flex;gap:10px;align-items:center;">
-          <a href="{% url 'patient_list' %}" class="btn-ghost">Cancel</a>
-          <button type="button" id="nextBtn" class="btn-primary">Next <i class="bi bi-arrow-right"></i></button>
-          <button type="submit" id="saveBtn" class="btn-primary" style="display:none;"><i class="bi bi-check-lg"></i> Save Patient</button>
+        <!-- ── Card footer navigation ──────────────────────────────────── -->
+        {% if not form.instance.pk %}
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-top:1px solid var(--border);background:#fff;">
+          <button type="button" id="prevBtn" class="btn-ghost" style="display:none;"><i class="bi bi-arrow-left"></i> Previous</button>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <a href="{% url 'patient_list' %}" class="btn-ghost">Cancel</a>
+            <button type="button" id="nextBtn" class="btn-primary">Next <i class="bi bi-arrow-right"></i></button>
+            <button type="submit" id="saveBtn" class="btn-primary" style="display:none;"><i class="bi bi-check-lg"></i> Save Patient</button>
+          </div>
         </div>
+        {% endif %}
       </div>
-      {% endif %}
     </form>
   </div>
 </div>
