@@ -39,7 +39,7 @@
   </div>
 
   {% if document.content %}
-  <div style="font-size:14px;color:#374151;line-height:1.75;white-space:pre-line;margin-bottom:40px;">{{ document.content }}</div>
+  <div style="font-size:14px;color:#374151;line-height:1.8;margin-bottom:40px;">{{ document.content|safe }}</div>
   {% endif %}
 
   <div style="margin-top:60px;display:flex;justify-content:flex-end;">

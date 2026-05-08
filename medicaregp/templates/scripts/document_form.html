@@ -4,425 +4,915 @@
 
 {% block extra_head %}
 <style>
-  .tpl-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
-  .tpl-card {
-    padding:14px 10px; border:2px solid var(--border); border-radius:12px;
-    background:#fff; cursor:pointer; text-align:center;
-    transition:all 0.13s; -webkit-tap-highlight-color:transparent;
-  }
-  .tpl-card:hover { border-color:var(--accent); background:#f5f3ff; }
-  .tpl-card.active { border-color:var(--accent); background:#eef2ff; }
-  .tpl-card i { font-size:22px; display:block; margin-bottom:6px; color:var(--text-3); }
-  .tpl-card.active i { color:var(--accent); }
-  .tpl-card-label { font-size:12px; font-weight:600; color:var(--text-2); line-height:1.3; }
-  .tpl-section-label {
-    font-size:10.5px; font-weight:700; color:var(--text-4);
-    text-transform:uppercase; letter-spacing:0.07em; margin:14px 0 8px;
-  }
-  @media(max-width:640px){ .tpl-grid{ grid-template-columns:repeat(2,1fr); } }
+/* ── Mode picker ───────────────────────────────────────────────────────── */
+.mode-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:0; }
+.mode-card {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:28px 20px; border:2px solid var(--border); border-radius:var(--radius);
+  background:#fff; cursor:pointer; text-align:center;
+  transition:all 0.15s; gap:10px; text-decoration:none;
+}
+.mode-card:hover { border-color:var(--accent); background:#f5f3ff; transform:translateY(-2px); box-shadow:var(--shadow-md); }
+.mode-card.active { border-color:var(--accent); background:#eef2ff; }
+.mode-card i { font-size:32px; color:var(--text-3); }
+.mode-card.active i { color:var(--accent); }
+.mode-card h3 { font-size:15px; font-weight:700; margin:0; color:var(--text-1); }
+.mode-card p  { font-size:12px; color:var(--text-3); margin:0; }
+
+/* ── Template gallery ──────────────────────────────────────────────────── */
+.tpl-search-wrap { position:relative; margin-bottom:16px; }
+.tpl-search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-4); font-size:13px; pointer-events:none; }
+.tpl-search-input { width:100%; padding:9px 14px 9px 36px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:13px; background:#f9fafb; outline:none; transition:all 0.14s; }
+.tpl-search-input:focus { background:#fff; border-color:var(--accent); box-shadow:0 0 0 3px rgba(var(--accent-rgb),0.10); }
+.tpl-cat-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+.tpl-cat-tab { padding:5px 14px; border-radius:999px; border:1.5px solid #e5e7eb; background:#fff; font-size:12px; font-weight:600; color:var(--text-3); cursor:pointer; transition:all 0.13s; }
+.tpl-cat-tab:hover { background:#f4f7fb; }
+.tpl-cat-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+.tpl-cards-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.tpl-doc-card {
+  display:flex; flex-direction:column; gap:8px;
+  padding:16px; border:2px solid var(--border); border-radius:12px;
+  background:#fff; cursor:pointer; text-align:left; transition:all 0.13s;
+  -webkit-tap-highlight-color:transparent;
+}
+.tpl-doc-card:hover { border-color:var(--accent); background:#f5f3ff; transform:translateY(-1px); box-shadow:var(--shadow-md); }
+.tpl-doc-card.selected { border-color:var(--accent); background:#eef2ff; }
+.tpl-doc-card i { font-size:24px; color:var(--text-3); }
+.tpl-doc-card.selected i { color:var(--accent); }
+.tpl-doc-card-name { font-size:13px; font-weight:700; color:var(--text-1); line-height:1.3; }
+.tpl-doc-card-desc { font-size:11px; color:var(--text-4); line-height:1.4; }
+.tpl-cat-badge { display:inline-block; font-size:10px; font-weight:700; padding:2px 7px; border-radius:999px; background:#f1f5f9; color:var(--text-3); }
+.tpl-empty { text-align:center; padding:32px; color:var(--text-4); }
+.tpl-empty i { font-size:28px; display:block; margin-bottom:8px; opacity:0.4; }
+
+/* ── Rich text editor ──────────────────────────────────────────────────── */
+.editor-wrap { border:1.5px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; background:#fff; }
+.editor-toolbar {
+  display:flex; gap:2px; flex-wrap:wrap;
+  padding:8px 10px; border-bottom:1px solid var(--border);
+  background:#f9fafb; position:sticky; top:0; z-index:5;
+}
+.editor-toolbar-group { display:flex; gap:2px; }
+.editor-toolbar-sep { width:1px; background:var(--border); margin:2px 6px; align-self:stretch; }
+.editor-btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:30px; height:30px; border:none; border-radius:7px;
+  background:transparent; cursor:pointer; font-size:13px; font-weight:700;
+  color:var(--text-2); transition:all 0.12s;
+}
+.editor-btn:hover { background:#e5e7eb; color:var(--text-1); }
+.editor-btn.active { background:var(--accent); color:#fff; }
+.editor-select {
+  padding:4px 8px; border:1.5px solid var(--border); border-radius:7px;
+  font-size:12px; background:#fff; color:var(--text-2); cursor:pointer; outline:none;
+}
+.editor-body {
+  min-height:520px; padding:36px 40px;
+  font-size:14px; line-height:1.8; color:var(--text-1);
+  outline:none; background:#fff;
+}
+.editor-body:focus { outline:none; }
+.editor-body h1 { font-size:22px; font-weight:800; margin:0 0 12px; font-family:'Bricolage Grotesque',sans-serif; }
+.editor-body h2 { font-size:18px; font-weight:700; margin:20px 0 10px; font-family:'Bricolage Grotesque',sans-serif; }
+.editor-body h3 { font-size:14px; font-weight:700; margin:16px 0 6px; text-transform:uppercase; letter-spacing:0.05em; color:var(--accent); }
+.editor-body p  { margin:0 0 10px; }
+.editor-body ul, .editor-body ol { margin:0 0 10px 20px; padding:0; }
+.editor-body li { margin-bottom:4px; }
+.editor-body hr { border:none; border-top:1px solid var(--border); margin:18px 0; }
+.editor-body table { border-collapse:collapse; width:100%; margin-bottom:12px; font-size:13px; }
+.editor-body table td, .editor-body table th { border:1px solid #e5e7eb; padding:6px 10px; }
+.editor-body table th { background:#f9fafb; font-weight:700; }
+.editor-status { padding:6px 12px; font-size:11px; color:var(--text-4); background:#f9fafb; border-top:1px solid var(--border); display:flex; align-items:center; gap:6px; }
+.editor-status.saved { color:#15803d; }
+
+/* ── Upload dropzone ───────────────────────────────────────────────────── */
+.dropzone {
+  border:2px dashed var(--border); border-radius:var(--radius);
+  padding:48px 24px; text-align:center; cursor:pointer;
+  background:#fafafa; transition:all 0.15s;
+}
+.dropzone:hover, .dropzone.dragover { border-color:var(--accent); background:#eef2ff; }
+.dropzone i { font-size:36px; color:var(--text-4); display:block; margin-bottom:12px; }
+.dropzone p { margin:0 0 4px; font-size:14px; font-weight:600; color:var(--text-2); }
+.dropzone span { font-size:12px; color:var(--text-4); }
+.dropzone-chosen { font-size:13px; color:var(--accent); font-weight:600; margin-top:10px; }
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media(max-width:900px) {
+  .tpl-cards-grid { grid-template-columns:repeat(2,1fr); }
+  .editor-body { padding:20px; }
+}
+@media(max-width:640px) {
+  .mode-grid { grid-template-columns:1fr; }
+  .tpl-cards-grid { grid-template-columns:repeat(2,1fr); }
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="page-body">
-  <div style="max-width:700px;margin:0 auto;">
-    <div class="page-header">
-      <div><h1>{{ title }}</h1></div>
-      <a href="{% url 'document_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+<div style="max-width:860px;margin:0 auto;">
+
+  <div class="page-header">
+    <div><h1>{{ title }}</h1><p>Create from a template or attach an existing file</p></div>
+    <a href="{% url 'document_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" id="docForm">
+    {% csrf_token %}
+
+    <!-- ── Patient ─────────────────────────────────────────────────────── -->
+    <div class="card" style="margin-bottom:14px;">
+      <div class="form-group" style="margin-bottom:0;">
+        <label style="font-size:12px;font-weight:700;color:var(--text-3);margin-bottom:6px;display:block;">Patient *</label>
+        {{ form.patient }}
+      </div>
     </div>
 
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
+    <!-- ── Mode picker ─────────────────────────────────────────────────── -->
+    <div class="card" style="margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px;">How would you like to add this document?</div>
+      <div class="mode-grid">
+        <button type="button" class="mode-card active" id="modeCreate">
+          <i class="bi bi-file-earmark-richtext"></i>
+          <h3>Create from Template</h3>
+          <p>Choose a professional template and edit the content directly</p>
+        </button>
+        <button type="button" class="mode-card" id="modeUpload">
+          <i class="bi bi-cloud-arrow-up"></i>
+          <h3>Upload / Attach File</h3>
+          <p>Attach a scanned document, PDF, or image from your device</p>
+        </button>
+      </div>
+    </div>
 
-      <!-- ── Patient ──────────────────────────────────────────────────────── -->
-      <div class="card" style="margin-bottom:14px;">
-        <div class="form-group" style="margin-bottom:0;">
-          <label>Patient *</label>
-          {{ form.patient }}
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- CREATE FLOW                                                        -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="createFlow">
+
+      <!-- ── Template gallery ──────────────────────────────────────────── -->
+      <div class="card" id="tplGallery" style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <div>
+            <div class="card-title">Choose a Template</div>
+            <div style="font-size:12px;color:var(--text-4);margin-top:2px;">{{ templates|length|default:"17" }} professional medical templates available</div>
+          </div>
+        </div>
+
+        <div class="tpl-search-wrap">
+          <i class="bi bi-search tpl-search-icon"></i>
+          <input type="text" class="tpl-search-input" id="tplSearch" placeholder="Search templates — e.g. referral, prescription, sick note…">
+        </div>
+
+        <div class="tpl-cat-tabs" id="tplCatTabs">
+          <button type="button" class="tpl-cat-tab active" data-cat="all">All</button>
+          <button type="button" class="tpl-cat-tab" data-cat="clinical">Clinical Notes</button>
+          <button type="button" class="tpl-cat-tab" data-cat="certificates">Certificates</button>
+          <button type="button" class="tpl-cat-tab" data-cat="letters">Letters</button>
+          <button type="button" class="tpl-cat-tab" data-cat="requests">Requests &amp; Scripts</button>
+          <button type="button" class="tpl-cat-tab" data-cat="admin">Administrative</button>
+          <button type="button" class="tpl-cat-tab" data-cat="legal">Legal &amp; Consent</button>
+        </div>
+
+        <div class="tpl-cards-grid" id="tplGrid"></div>
+        <div class="tpl-empty" id="tplEmpty" style="display:none;">
+          <i class="bi bi-search"></i><p>No templates match your search.</p>
         </div>
       </div>
 
-      <!-- ── Template picker ─────────────────────────────────────────────── -->
-      <div class="card" style="margin-bottom:14px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-          <div class="card-title">Choose a Template</div>
-          <button type="button" id="tplToggle" class="link-btn" style="font-size:12px;">
-            <i class="bi bi-chevron-up" id="tplChevron"></i> Hide
-          </button>
-        </div>
-        <div style="font-size:12px;color:var(--text-4);margin-bottom:14px;">
-          Select a template to auto-fill the document — or skip to write from scratch.
-        </div>
-
-        <div id="tplBody">
-          <div class="tpl-section-label">Clinical</div>
-          <div class="tpl-grid">
-            <button type="button" class="tpl-card" data-tpl="sick_note" data-type="Sick Note" data-cat="Administrative">
-              <i class="bi bi-file-medical"></i>
-              <div class="tpl-card-label">Sick Note</div>
-            </button>
-            <button type="button" class="tpl-card" data-tpl="referral" data-type="Referral Letter" data-cat="Clinical">
-              <i class="bi bi-arrow-right-circle"></i>
-              <div class="tpl-card-label">Referral Letter</div>
-            </button>
-            <button type="button" class="tpl-card" data-tpl="prescription" data-type="Prescription" data-cat="Clinical">
-              <i class="bi bi-capsule-pill"></i>
-              <div class="tpl-card-label">Prescription</div>
-            </button>
-            <button type="button" class="tpl-card" data-tpl="lab" data-type="Lab Request Form" data-cat="Clinical">
-              <i class="bi bi-droplet"></i>
-              <div class="tpl-card-label">Lab Request</div>
-            </button>
-            <button type="button" class="tpl-card" data-tpl="radiology" data-type="Radiology Request Form" data-cat="Clinical">
-              <i class="bi bi-camera"></i>
-              <div class="tpl-card-label">Radiology Request</div>
-            </button>
-            <button type="button" class="tpl-card" data-tpl="vaccination" data-type="Vaccination Record" data-cat="Administrative">
-              <i class="bi bi-shield-plus"></i>
-              <div class="tpl-card-label">Vaccination Record</div>
-            </button>
+      <!-- ── Rich text editor ──────────────────────────────────────────── -->
+      <div id="editorPanel" style="display:none;margin-bottom:14px;">
+        <div class="card" style="padding:0;overflow:hidden;">
+          <!-- Editor header -->
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border);background:#f9fafb;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <button type="button" id="editorBackBtn" class="btn-ghost" style="font-size:12px;padding:5px 10px;">
+                <i class="bi bi-arrow-left"></i> Templates
+              </button>
+              <span id="editorTplName" style="font-size:13px;font-weight:700;color:var(--text-2);"></span>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button type="button" id="editorPrintBtn" class="btn-ghost" style="font-size:12px;padding:6px 12px;"><i class="bi bi-printer"></i> Preview &amp; Print</button>
+            </div>
           </div>
 
-          <div class="tpl-section-label">Administrative &amp; Legal</div>
-          <div class="tpl-grid">
-            <button type="button" class="tpl-card" data-tpl="motivation" data-type="Motivation Letter" data-cat="Administrative">
-              <i class="bi bi-envelope-open"></i>
-              <div class="tpl-card-label">Motivation Letter</div>
-            </button>
-            <button type="button" class="tpl-card" data-tpl="consent" data-type="Consent Form" data-cat="Compliance">
-              <i class="bi bi-pen"></i>
-              <div class="tpl-card-label">Consent Form</div>
-            </button>
-            <button type="button" class="tpl-card" data-tpl="popia" data-type="POPIA Consent" data-cat="Compliance">
-              <i class="bi bi-shield-lock"></i>
-              <div class="tpl-card-label">POPIA Consent</div>
-            </button>
-            <button type="button" class="tpl-card" data-tpl="scratch" data-type="" data-cat="">
-              <i class="bi bi-pencil-square"></i>
-              <div class="tpl-card-label">From Scratch</div>
-            </button>
+          <!-- Toolbar -->
+          <div class="editor-toolbar">
+            <div class="editor-toolbar-group">
+              <select class="editor-select" id="formatBlock" title="Paragraph style">
+                <option value="p">Normal</option>
+                <option value="h1">Heading 1</option>
+                <option value="h2">Heading 2</option>
+                <option value="h3">Heading 3</option>
+              </select>
+            </div>
+            <div class="editor-toolbar-sep"></div>
+            <div class="editor-toolbar-group">
+              <button type="button" class="editor-btn" data-cmd="bold"      title="Bold"><b>B</b></button>
+              <button type="button" class="editor-btn" data-cmd="italic"    title="Italic"><i>I</i></button>
+              <button type="button" class="editor-btn" data-cmd="underline" title="Underline"><u>U</u></button>
+            </div>
+            <div class="editor-toolbar-sep"></div>
+            <div class="editor-toolbar-group">
+              <button type="button" class="editor-btn" data-cmd="insertUnorderedList" title="Bullet list"><i class="bi bi-list-ul"></i></button>
+              <button type="button" class="editor-btn" data-cmd="insertOrderedList"   title="Numbered list"><i class="bi bi-list-ol"></i></button>
+            </div>
+            <div class="editor-toolbar-sep"></div>
+            <div class="editor-toolbar-group">
+              <button type="button" class="editor-btn" data-cmd="justifyLeft"   title="Align left"><i class="bi bi-text-left"></i></button>
+              <button type="button" class="editor-btn" data-cmd="justifyCenter" title="Center"><i class="bi bi-text-center"></i></button>
+            </div>
+            <div class="editor-toolbar-sep"></div>
+            <div class="editor-toolbar-group">
+              <button type="button" class="editor-btn" id="cmdHR" title="Insert divider"><i class="bi bi-dash-lg"></i></button>
+              <button type="button" class="editor-btn" data-cmd="removeFormat" title="Clear formatting"><i class="bi bi-eraser"></i></button>
+            </div>
+            <div class="editor-toolbar-sep"></div>
+            <div class="editor-toolbar-group">
+              <button type="button" class="editor-btn" data-cmd="undo" title="Undo"><i class="bi bi-arrow-counterclockwise"></i></button>
+              <button type="button" class="editor-btn" data-cmd="redo" title="Redo"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+          </div>
+
+          <!-- Editable area -->
+          <div class="editor-body" id="editorBody" contenteditable="true" spellcheck="true"></div>
+
+          <!-- Status bar -->
+          <div class="editor-status" id="editorStatus">
+            <i class="bi bi-circle-fill" style="font-size:8px;"></i>
+            <span id="editorStatusText">Start editing to auto-save draft</span>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- ── Document fields ─────────────────────────────────────────────── -->
-      <div class="card" style="margin-bottom:14px;">
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label>Document Type</label>
-            {{ form.doc_type }}
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- UPLOAD FLOW                                                        -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <div id="uploadFlow" style="display:none;margin-bottom:14px;">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px;">Upload File</div>
+        <label for="id_attachment" style="display:block;cursor:pointer;">
+          <div class="dropzone" id="dropzone">
+            <i class="bi bi-cloud-arrow-up"></i>
+            <p>Drag &amp; drop a file here, or click to browse</p>
+            <span>PDF, Word, JPG, PNG — max 10 MB</span>
+            <div class="dropzone-chosen" id="dropzoneChosen" style="display:none;"></div>
           </div>
-          <div class="form-group">
-            <label>Category</label>
-            {{ form.category }}
-          </div>
-          <div class="form-group">
-            <label>Issued By</label>
-            {{ form.issued_by }}
-          </div>
-          <div class="form-group">
-            <label>Notes <span style="font-weight:400;color:var(--text-4);">(optional)</span></label>
-            {{ form.notes }}
-          </div>
-          <div class="form-group form-full">
-            <label>Content</label>
-            {{ form.content }}
-          </div>
-          <div class="form-group form-full">
-            <label>Attachment <span style="font-weight:400;color:var(--text-4);">(optional — upload instead of or alongside typed content)</span></label>
-            {{ form.attachment }}
-          </div>
-        </div>
-        {% if form.errors %}
-        <div class="alert alert-error" style="margin-top:12px;">
-          {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
-        </div>
-        {% endif %}
+        </label>
+        <div style="display:none;">{{ form.attachment }}</div>
       </div>
+    </div>
 
-      <div style="display:flex;gap:10px;">
-        <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Document</button>
-        <a href="{% url 'document_list' %}" class="btn-ghost">Cancel</a>
+    <!-- ── Shared metadata ─────────────────────────────────────────────── -->
+    <div class="card" style="margin-bottom:14px;" id="metaFields">
+      <div class="card-title" style="margin-bottom:16px;">Document Details</div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label style="font-size:12px;font-weight:700;color:var(--text-3);margin-bottom:6px;display:block;">Document Type</label>
+          {{ form.doc_type }}
+        </div>
+        <div class="form-group">
+          <label style="font-size:12px;font-weight:700;color:var(--text-3);margin-bottom:6px;display:block;">Category</label>
+          {{ form.category }}
+        </div>
+        <div class="form-group">
+          <label style="font-size:12px;font-weight:700;color:var(--text-3);margin-bottom:6px;display:block;">Issued By</label>
+          {{ form.issued_by }}
+        </div>
+        <div class="form-group">
+          <label style="font-size:12px;font-weight:700;color:var(--text-3);margin-bottom:6px;display:block;">Notes <span style="font-weight:400;color:var(--text-4);">(optional)</span></label>
+          {{ form.notes }}
+        </div>
       </div>
-    </form>
-  </div>
+    </div>
+
+    <!-- Hidden content field — populated by editor -->
+    <div style="display:none;">{{ form.content }}</div>
+
+    {% if form.errors %}
+    <div class="alert alert-error" style="margin-bottom:14px;">
+      {% for f, errs in form.errors.items %}{% for e in errs %}<div>{{ e }}</div>{% endfor %}{% endfor %}
+    </div>
+    {% endif %}
+
+    <div style="display:flex;gap:10px;">
+      <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Document</button>
+      <a href="{% url 'document_list' %}" class="btn-ghost">Cancel</a>
+    </div>
+  </form>
+</div>
 </div>
 
 <script>
 (function () {
+  /* ── Constants ─────────────────────────────────────────────────────── */
   const DR   = 'Dr. Tamuka Chivonivoni';
   const PRAC = 'General Practitioner';
-
-  // ── Template bodies ────────────────────────────────────────────────────
-  const TEMPLATES = {
-    sick_note: (p) => `SICK NOTE / MEDICAL CERTIFICATE
-
-This is to certify that ${p} was examined by me on [DATE] and is unfit for work / school for [NUMBER] days, from [START DATE] to [END DATE].
-
-Diagnosis: [DIAGNOSIS]
-
-Restrictions / Instructions:
-[ANY SPECIAL INSTRUCTIONS, e.g. bed rest, no heavy lifting]
-
-${DR}
-${PRAC}
-Date: [DATE]`,
-
-    referral: (p) => `REFERRAL LETTER
-
-Date: [DATE]
-
-Dear Colleague,
-
-I am referring ${p} (ID: [ID NUMBER], DOB: [DATE OF BIRTH]) to you for specialist assessment and management.
-
-Reason for Referral:
-[REASON]
-
-Relevant Clinical History:
-[HISTORY]
-
-Current Medications:
-[MEDICATIONS]
-
-Relevant Investigations:
-[INVESTIGATIONS / RESULTS]
-
-Please do not hesitate to contact me should you require any further information.
-
-Kind regards,
-
-${DR}
-${PRAC}`,
-
-    prescription: (p) => `PRESCRIPTION
-
-Patient: ${p}
-ID Number: [ID NUMBER]
-Date of Birth: [DATE OF BIRTH]
-Date: [DATE]
-
-Rx:
-1. [MEDICATION] [STRENGTH] — [DOSE] — [FREQUENCY] — [DURATION]
-2. [MEDICATION] [STRENGTH] — [DOSE] — [FREQUENCY] — [DURATION]
-3. [MEDICATION] [STRENGTH] — [DOSE] — [FREQUENCY] — [DURATION]
-
-Repeat: [Yes / No]    Quantity: [QTY]
-
-${DR}
-${PRAC}`,
-
-    lab: (p) => `LAB / BLOOD TEST REQUEST
-
-Patient: ${p}
-ID Number: [ID NUMBER]
-Date of Birth: [DATE OF BIRTH]
-Date: [DATE]
-
-Tests Requested:
-[ ] FBC (Full Blood Count)
-[ ] CMP (Urea, Creatinine, Electrolytes)
-[ ] HbA1c
-[ ] Fasting Glucose
-[ ] Lipogram (Total Cholesterol, LDL, HDL, Triglycerides)
-[ ] TSH / Free T4 (Thyroid Function)
-[ ] Uric Acid
-[ ] LFTs (Liver Function)
-[ ] Urine MCS
-[ ] Other: [SPECIFY]
-
-Clinical Notes / Indication:
-[CLINICAL NOTES]
-
-Urgency:  [ ] Routine   [ ] Urgent
-
-${DR}
-${PRAC}`,
-
-    radiology: (p) => `RADIOLOGY REQUEST
-
-Patient: ${p}
-ID Number: [ID NUMBER]
-Date of Birth: [DATE OF BIRTH]
-Date: [DATE]
-
-Investigation Requested:
-[ ] Chest X-Ray (PA view)
-[ ] Abdominal Ultrasound
-[ ] Pelvic Ultrasound
-[ ] Lumbar Spine X-Ray (AP + Lateral)
-[ ] Cervical Spine X-Ray
-[ ] Right / Left [SPECIFY LIMB] X-Ray
-[ ] Other: [SPECIFY]
-
-Clinical Indication:
-[INDICATION]
-
-Urgency:  [ ] Routine   [ ] Urgent
-
-${DR}
-${PRAC}`,
-
-    vaccination: (p) => `VACCINATION RECORD
-
-Patient: ${p}
-ID Number: [ID NUMBER]
-Date of Birth: [DATE OF BIRTH]
-
-Vaccine Name: [VACCINE]
-Manufacturer / Batch No.: [BATCH]
-Date Administered: [DATE]
-Route: [IM / SC / Oral]    Site: [LEFT / RIGHT DELTOID]
-Next Dose Due: [DATE or N/A]
-
-Adverse reaction observed:  [ ] None   [ ] Yes — [DESCRIBE]
-
-Notes:
-[ADDITIONAL NOTES]
-
-Administered by: ${DR}
-${PRAC}`,
-
-    motivation: (p) => `MOTIVATION LETTER FOR PRE-AUTHORISATION
-
-Date: [DATE]
-
-To: [MEDICAL AID NAME]
-Member Number: [MEMBER NUMBER]
-Dependant Code: [DEPENDANT CODE]
-
-RE: Pre-authorisation Request — ${p}
-
-Dear Sir / Madam,
-
-I am writing to motivate for pre-authorisation for the following treatment / procedure for my patient, ${p}.
-
-Proposed Procedure / Treatment:
-[PROCEDURE NAME]
-
-ICD-10 Code(s): [ICD-10]
-CPT / NHRPL Code(s): [CODE]
-
-Clinical Motivation:
-[CLINICAL MOTIVATION — describe symptoms, diagnosis, and why this treatment is medically necessary]
-
-Conservative Treatment Already Attempted:
-[LIST PRIOR TREATMENTS]
-
-I trust you will give this matter your urgent attention.
-
-Yours sincerely,
-
-${DR}
-${PRAC}`,
-
-    consent: (p) => `PATIENT CONSENT TO TREATMENT
-
-I, ${p} (ID: [ID NUMBER]), hereby confirm the following:
-
-[ ] I consent to examination and treatment by ${DR} and the staff of this practice.
-[ ] I understand the nature of my condition and the proposed treatment as explained to me.
-[ ] I have had the opportunity to ask questions and my questions have been answered satisfactorily.
-[ ] I understand I may withdraw consent at any time.
-[ ] I consent to the disclosure of relevant medical information to my medical aid for billing and claim purposes.
-[ ] I consent to referral to other healthcare providers as deemed clinically necessary.
-
-Patient / Guardian Signature: ___________________________   Date: [DATE]
-
-Relationship to patient (if guardian): ___________________________
-
-Witness Signature: ___________________________`,
-
-    popia: (p) => `POPIA INFORMATION AND CONSENT FORM
-
-Patient: ${p}
-ID Number: [ID NUMBER]
-Date: [DATE]
-
-In terms of the Protection of Personal Information Act 4 of 2013 (POPIA), we are required to inform you of the following:
-
-PURPOSE OF COLLECTION
-We collect your personal and health information for the purpose of providing medical care, managing your health records, and processing medical aid claims.
-
-INFORMATION COLLECTED
-Name, ID number, contact details, medical history, diagnoses, treatment records, and medical aid information.
-
-STORAGE AND SECURITY
-Your information is stored securely and accessed only by authorised healthcare staff.
-
-SHARING OF INFORMATION
-Your information may be shared with: your medical aid (for claims), specialists to whom you are referred, and laboratories / radiology facilities.
-
-YOUR RIGHTS
-You have the right to access, correct, and request deletion of your personal information.
-
-CONSENT
-I, ${p}, hereby consent to the collection, processing, storage, and use of my personal information by this practice as described above.
-
-Patient Signature: ___________________________   Date: [DATE]`,
-
-    scratch: () => '',
-  };
-
-  // ── DOM refs ───────────────────────────────────────────────────────────
-  const patientSel  = document.getElementById('{{ form.patient.id_for_label }}');
-  const typeSel     = document.getElementById('{{ form.doc_type.id_for_label }}');
-  const catSel      = document.getElementById('{{ form.category.id_for_label }}');
-  const contentArea = document.getElementById('{{ form.content.id_for_label }}');
-  const tplBody     = document.getElementById('tplBody');
-  const tplToggle   = document.getElementById('tplToggle');
-  const tplChevron  = document.getElementById('tplChevron');
-
-  // ── Collapse toggle ────────────────────────────────────────────────────
-  tplToggle.addEventListener('click', () => {
-    const hidden = tplBody.style.display === 'none';
-    tplBody.style.display = hidden ? '' : 'none';
-    tplToggle.innerHTML   = hidden
-      ? '<i class="bi bi-chevron-up" id="tplChevron"></i> Hide'
-      : '<i class="bi bi-chevron-down" id="tplChevron"></i> Show';
+  const today = () => new Date().toLocaleDateString('en-ZA', {day:'numeric',month:'long',year:'numeric'});
+
+  /* ── Template definitions ──────────────────────────────────────────── */
+  const TEMPLATES = [
+    {
+      id:'soap', name:'SOAP Note', cat:'clinical', icon:'bi-clipboard2-pulse',
+      desc:'Full Subjective / Objective / Assessment / Plan structure',
+      type:'Consultation Note', docCat:'Clinical',
+      html: (p) => `<h2>SOAP Clinical Note</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> ${today()} &nbsp;&nbsp;&nbsp; <strong>Clinician:</strong> ${DR}</p>
+<p><strong>ICD-10:</strong> &nbsp;&nbsp;&nbsp; <strong>Visit Type:</strong> Routine / Urgent / Follow-Up</p>
+<hr>
+<h3>S — Subjective</h3>
+<p><strong>Chief Complaint:</strong> [Patient's presenting complaint in their own words]</p>
+<p><strong>History of Presenting Illness:</strong></p>
+<p>[Onset, duration, character, severity 1–10, aggravating / relieving factors, associated symptoms, previous similar episodes]</p>
+<p><strong>Review of Systems:</strong> [Relevant positives and negatives]</p>
+<hr>
+<h3>O — Objective</h3>
+<p><strong>Vitals:</strong> BP: &nbsp;__/__ mmHg &nbsp;|&nbsp; Pulse: __ bpm &nbsp;|&nbsp; Temp: __°C &nbsp;|&nbsp; O₂ Sat: __% &nbsp;|&nbsp; Weight: __ kg &nbsp;|&nbsp; BMI: __</p>
+<p><strong>General:</strong> [General appearance, level of distress]</p>
+<p><strong>Examination Findings:</strong></p>
+<p>[System-by-system findings relevant to the complaint]</p>
+<p><strong>Investigations (Results available today):</strong></p>
+<p>[Lab results, ECG, imaging reports if available]</p>
+<hr>
+<h3>A — Assessment / Diagnosis</h3>
+<p><strong>Primary Diagnosis:</strong> [Diagnosis] — [ICD-10 code]</p>
+<p><strong>Differential Diagnoses:</strong> [1. &nbsp;&nbsp; 2. &nbsp;&nbsp; 3.]</p>
+<p><strong>Problem List:</strong> [Other active conditions addressed]</p>
+<hr>
+<h3>P — Plan</h3>
+<p><strong>Medications:</strong></p>
+<ul>
+<li>[Medication] [Strength] — [Dose] — [Frequency] — [Duration]</li>
+<li>[Medication] [Strength] — [Dose] — [Frequency] — [Duration]</li>
+</ul>
+<p><strong>Investigations Requested:</strong> [Blood tests, imaging, etc.]</p>
+<p><strong>Referral:</strong> [Specialist / facility if applicable]</p>
+<p><strong>Patient Education:</strong> [Advice given]</p>
+<p><strong>Follow-Up:</strong> [Date and reason]</p>`
+    },
+    {
+      id:'progress', name:'Progress Note', cat:'clinical', icon:'bi-journal-text',
+      desc:'Streamlined follow-up and progress note',
+      type:'Consultation Note', docCat:'Clinical',
+      html: (p) => `<h2>Progress Note</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> ${today()} &nbsp;&nbsp;&nbsp; <strong>Clinician:</strong> ${DR}</p>
+<hr>
+<p><strong>Reason for Visit / Interval History:</strong></p>
+<p>[Patient's report since last visit — symptom changes, medication adherence, side effects]</p>
+<p><strong>Current Medications:</strong> [List unchanged / changed medications]</p>
+<p><strong>Vitals:</strong> BP: __/__ &nbsp;|&nbsp; Pulse: __ &nbsp;|&nbsp; Weight: __ kg</p>
+<p><strong>Examination:</strong></p>
+<p>[Focused examination findings]</p>
+<p><strong>Assessment:</strong></p>
+<p>[Response to treatment / current status]</p>
+<p><strong>Plan:</strong></p>
+<ul>
+<li>[Action / medication change]</li>
+<li>[Investigations if needed]</li>
+<li>[Follow-up date]</li>
+</ul>`
+    },
+    {
+      id:'general_clinical', name:'General Clinical Note', cat:'clinical', icon:'bi-file-earmark-medical',
+      desc:'Open-format clinical documentation',
+      type:'Consultation Note', docCat:'Clinical',
+      html: (p) => `<h2>Clinical Note</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> ${today()} &nbsp;&nbsp;&nbsp; <strong>Clinician:</strong> ${DR}</p>
+<hr>
+<p>[Clinical note content]</p>`
+    },
+    {
+      id:'sick_note', name:'Sick Note / Medical Certificate', cat:'certificates', icon:'bi-file-medical',
+      desc:'Standard incapacity / sick leave certificate',
+      type:'Sick Note', docCat:'Administrative',
+      html: (p) => `<h2>MEDICAL CERTIFICATE</h2>
+<p><strong>To Whom It May Concern</strong></p>
+<p>This is to certify that I have examined <strong>${p}</strong> on <strong>${today()}</strong>.</p>
+<p>The patient is, in my opinion, unfit for work / school from <strong>[START DATE]</strong> to <strong>[END DATE]</strong> (inclusive) — a period of <strong>[NUMBER] day(s)</strong>.</p>
+<p><strong>Diagnosis:</strong> [Diagnosis — only disclosed with patient consent]</p>
+<p><strong>Special Instructions / Restrictions:</strong></p>
+<p>[e.g. Bed rest advised / Avoid heavy lifting / Light duties only / No restrictions]</p>
+<p>This certificate is issued on the basis of examination and/or clinical assessment and is valid for the stated period only.</p>
+<p>&nbsp;</p>
+<p>${DR}</p>
+<p>${PRAC}</p>
+<p>Date: ${today()}</p>
+<p>_______________________________</p>
+<p><em>Signature &amp; Stamp</em></p>`
+    },
+    {
+      id:'referral', name:'Referral Letter', cat:'letters', icon:'bi-arrow-right-circle',
+      desc:'Formal specialist referral with clinical summary',
+      type:'Referral Letter', docCat:'Clinical',
+      html: (p) => `<h2>Referral Letter</h2>
+<p><strong>Date:</strong> ${today()}</p>
+<p>Dear Colleague,</p>
+<p>I am referring <strong>${p}</strong> (ID: [ID NUMBER], DOB: [DATE OF BIRTH]) for specialist assessment and management.</p>
+<p><strong>Reason for Referral:</strong></p>
+<p>[Presenting complaint and reason for referral]</p>
+<p><strong>Relevant Medical History:</strong></p>
+<p>[Significant past medical history, surgical history, family history]</p>
+<p><strong>Current Medications:</strong></p>
+<ul>
+<li>[Medication] [Dose] [Frequency]</li>
+<li>[Medication] [Dose] [Frequency]</li>
+</ul>
+<p><strong>Allergies:</strong> [Known drug / food allergies or None Known]</p>
+<p><strong>Relevant Investigation Results:</strong></p>
+<p>[Recent blood results, imaging findings, ECG etc.]</p>
+<p><strong>Examination Findings:</strong></p>
+<p>[Relevant clinical findings]</p>
+<p>I would be grateful for your assessment and recommendations. Please do not hesitate to contact me should you require any further information.</p>
+<p>Kind regards,</p>
+<p>${DR}<br>${PRAC}</p>`
+    },
+    {
+      id:'motivation', name:'Motivation Letter', cat:'letters', icon:'bi-envelope-open',
+      desc:'Medical aid pre-authorisation motivation',
+      type:'Motivation Letter', docCat:'Administrative',
+      html: (p) => `<h2>Motivation Letter — Pre-Authorisation Request</h2>
+<p><strong>Date:</strong> ${today()}</p>
+<p><strong>To:</strong> [MEDICAL AID NAME]</p>
+<p><strong>Member Number:</strong> [MEMBER NUMBER] &nbsp;&nbsp;&nbsp; <strong>Dependant Code:</strong> [DEPENDANT CODE]</p>
+<p><strong>RE: Pre-Authorisation for ${p}</strong></p>
+<p>Dear Medical Aid Administrator,</p>
+<p>I am writing to motivate for pre-authorisation for the following proposed procedure / treatment for my patient, <strong>${p}</strong>.</p>
+<p><strong>Proposed Procedure / Treatment:</strong> [PROCEDURE NAME]</p>
+<p><strong>ICD-10 Code(s):</strong> [ICD-10] &nbsp;&nbsp;&nbsp; <strong>CPT / NHRPL Code(s):</strong> [CODE]</p>
+<p><strong>Clinical Motivation:</strong></p>
+<p>[Detailed clinical motivation — describe symptoms, diagnosis, and why this treatment is medically necessary and appropriate. Include relevant history, examination findings, and investigation results.]</p>
+<p><strong>Conservative Treatment Already Attempted:</strong></p>
+<p>[List prior treatments, duration, and outcomes]</p>
+<p>This procedure is, in my professional opinion, medically necessary and appropriate for this patient. I trust you will give this application your urgent consideration.</p>
+<p>Yours sincerely,</p>
+<p>${DR}<br>${PRAC}</p>`
+    },
+    {
+      id:'followup_letter', name:'Follow-Up Letter', cat:'letters', icon:'bi-reply',
+      desc:'Post-consultation follow-up communication',
+      type:'Consultation Note', docCat:'Clinical',
+      html: (p) => `<h2>Follow-Up Clinical Note</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> ${today()}</p>
+<hr>
+<p><strong>Follow-Up for:</strong> [Original diagnosis / condition]</p>
+<p><strong>Interval History:</strong></p>
+<p>[How has the patient been since the last visit? Any changes, improvements, or new concerns?]</p>
+<p><strong>Current Status:</strong> [Stable / Improving / Worsening]</p>
+<p><strong>Examination:</strong></p>
+<p>[Relevant findings]</p>
+<p><strong>Plan:</strong></p>
+<ul>
+<li>[Medication continuation / change]</li>
+<li>[Further investigations]</li>
+<li>[Next follow-up: [DATE]]</li>
+</ul>`
+    },
+    {
+      id:'lab', name:'Lab Request Form', cat:'requests', icon:'bi-droplet',
+      desc:'Pathology and blood test request',
+      type:'Lab Request Form', docCat:'Clinical',
+      html: (p) => `<h2>LAB / BLOOD TEST REQUEST</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>ID:</strong> [ID NUMBER] &nbsp;&nbsp;&nbsp; <strong>DOB:</strong> [DATE OF BIRTH]</p>
+<p><strong>Date:</strong> ${today()} &nbsp;&nbsp;&nbsp; <strong>Requesting Clinician:</strong> ${DR}</p>
+<p><strong>Clinical Indication:</strong> [Relevant clinical history / reason for tests]</p>
+<hr>
+<p><strong>Tests Requested:</strong></p>
+<table>
+<tr><th>Test</th><th>Requested</th></tr>
+<tr><td>FBC (Full Blood Count)</td><td>[ ]</td></tr>
+<tr><td>CMP (Urea, Creatinine, Electrolytes)</td><td>[ ]</td></tr>
+<tr><td>HbA1c</td><td>[ ]</td></tr>
+<tr><td>Fasting Glucose</td><td>[ ]</td></tr>
+<tr><td>Lipogram (Cholesterol, LDL, HDL, Triglycerides)</td><td>[ ]</td></tr>
+<tr><td>TSH / Free T4 (Thyroid)</td><td>[ ]</td></tr>
+<tr><td>LFTs (Liver Function)</td><td>[ ]</td></tr>
+<tr><td>Uric Acid</td><td>[ ]</td></tr>
+<tr><td>Iron Studies / Ferritin</td><td>[ ]</td></tr>
+<tr><td>Urine MCS (Midstream)</td><td>[ ]</td></tr>
+<tr><td>Other: [SPECIFY]</td><td>[ ]</td></tr>
+</table>
+<p><strong>Urgency:</strong> &nbsp; [ ] Routine &nbsp;&nbsp; [ ] Urgent — results by [DATE/TIME]</p>
+<p><strong>Additional Notes:</strong> [Any special instructions for the laboratory]</p>
+<p>${DR} &nbsp; ${PRAC}</p>`
+    },
+    {
+      id:'radiology', name:'Radiology / Imaging Request', cat:'requests', icon:'bi-camera',
+      desc:'X-ray, ultrasound, CT and MRI requests',
+      type:'Radiology Request Form', docCat:'Clinical',
+      html: (p) => `<h2>RADIOLOGY / IMAGING REQUEST</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>ID:</strong> [ID NUMBER] &nbsp;&nbsp;&nbsp; <strong>DOB:</strong> [DATE OF BIRTH]</p>
+<p><strong>Date:</strong> ${today()} &nbsp;&nbsp;&nbsp; <strong>Requesting Clinician:</strong> ${DR}</p>
+<p><strong>Clinical Indication:</strong> [Relevant symptoms / diagnosis]</p>
+<hr>
+<p><strong>Investigation Requested:</strong></p>
+<table>
+<tr><th>Investigation</th><th>Requested</th></tr>
+<tr><td>Chest X-Ray (PA view)</td><td>[ ]</td></tr>
+<tr><td>Abdominal X-Ray (Erect + Supine)</td><td>[ ]</td></tr>
+<tr><td>Abdominal Ultrasound</td><td>[ ]</td></tr>
+<tr><td>Pelvic Ultrasound</td><td>[ ]</td></tr>
+<tr><td>Renal Ultrasound</td><td>[ ]</td></tr>
+<tr><td>Thyroid Ultrasound</td><td>[ ]</td></tr>
+<tr><td>Lumbar Spine X-Ray (AP + Lateral)</td><td>[ ]</td></tr>
+<tr><td>Cervical Spine X-Ray</td><td>[ ]</td></tr>
+<tr><td>Extremity X-Ray: [SPECIFY LIMB]</td><td>[ ]</td></tr>
+<tr><td>CT Scan: [REGION]</td><td>[ ]</td></tr>
+<tr><td>MRI: [REGION]</td><td>[ ]</td></tr>
+<tr><td>ECG / Echocardiogram</td><td>[ ]</td></tr>
+<tr><td>Other: [SPECIFY]</td><td>[ ]</td></tr>
+</table>
+<p><strong>Urgency:</strong> &nbsp; [ ] Routine &nbsp;&nbsp; [ ] Urgent &nbsp;&nbsp; [ ] Emergency</p>
+<p><strong>Additional Notes for Radiologist:</strong></p>
+<p>[Any relevant clinical information, suspected diagnosis, or specific views required]</p>
+<p>${DR} &nbsp; ${PRAC}</p>`
+    },
+    {
+      id:'prescription', name:'Prescription', cat:'requests', icon:'bi-capsule-pill',
+      desc:'Medication prescription with full details',
+      type:'Prescription', docCat:'Clinical',
+      html: (p) => `<h2>PRESCRIPTION</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>ID:</strong> [ID NUMBER] &nbsp;&nbsp;&nbsp; <strong>DOB:</strong> [DATE OF BIRTH]</p>
+<p><strong>Date:</strong> ${today()} &nbsp;&nbsp;&nbsp; <strong>Prescriber:</strong> ${DR}</p>
+<hr>
+<p><strong>Rx:</strong></p>
+<table>
+<tr><th>#</th><th>Medication &amp; Strength</th><th>Dose</th><th>Frequency</th><th>Duration</th><th>Qty</th></tr>
+<tr><td>1.</td><td>[MEDICATION] [STRENGTH]</td><td>[DOSE]</td><td>[FREQUENCY]</td><td>[DURATION]</td><td>[QTY]</td></tr>
+<tr><td>2.</td><td>[MEDICATION] [STRENGTH]</td><td>[DOSE]</td><td>[FREQUENCY]</td><td>[DURATION]</td><td>[QTY]</td></tr>
+<tr><td>3.</td><td>[MEDICATION] [STRENGTH]</td><td>[DOSE]</td><td>[FREQUENCY]</td><td>[DURATION]</td><td>[QTY]</td></tr>
+</table>
+<p><strong>Allergies on file:</strong> [Known allergies or "None known"]</p>
+<p><strong>Repeats:</strong> [ ] None &nbsp; [ ] 1 &nbsp; [ ] 2 &nbsp; [ ] 3</p>
+<p><strong>Special Instructions:</strong> [e.g. Take with food / Avoid alcohol / Complete the full course]</p>
+<p>&nbsp;</p>
+<p>${DR} — ${PRAC}</p>
+<p>_______________________________</p>
+<p><em>Signature</em></p>`
+    },
+    {
+      id:'vaccination', name:'Vaccination Record', cat:'admin', icon:'bi-shield-plus',
+      desc:'Immunisation and vaccination documentation',
+      type:'Vaccination Record', docCat:'Administrative',
+      html: (p) => `<h2>VACCINATION RECORD</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>ID:</strong> [ID NUMBER] &nbsp;&nbsp;&nbsp; <strong>DOB:</strong> [DATE OF BIRTH]</p>
+<p><strong>Date:</strong> ${today()} &nbsp;&nbsp;&nbsp; <strong>Administered by:</strong> ${DR}</p>
+<hr>
+<table>
+<tr><th>Field</th><th>Details</th></tr>
+<tr><td>Vaccine Name</td><td>[VACCINE NAME]</td></tr>
+<tr><td>Manufacturer</td><td>[MANUFACTURER]</td></tr>
+<tr><td>Batch / Lot Number</td><td>[BATCH NUMBER]</td></tr>
+<tr><td>Expiry Date (Batch)</td><td>[EXPIRY DATE]</td></tr>
+<tr><td>Route</td><td>[ ] IM &nbsp; [ ] SC &nbsp; [ ] Oral &nbsp; [ ] Intradermal</td></tr>
+<tr><td>Site</td><td>[ ] Left Deltoid &nbsp; [ ] Right Deltoid &nbsp; [ ] Other: [SPECIFY]</td></tr>
+<tr><td>Dose Number</td><td>[e.g. 1st / 2nd / Booster]</td></tr>
+<tr><td>Next Dose Due</td><td>[DATE or N/A]</td></tr>
+</table>
+<p><strong>Adverse Reaction Observed:</strong> &nbsp; [ ] None &nbsp; [ ] Yes — [DESCRIBE REACTION AND MANAGEMENT]</p>
+<p><strong>Patient Observation Period:</strong> [Minutes observed post-vaccination] &nbsp; [ ] No adverse event during observation</p>
+<p><strong>Additional Notes:</strong> [Any other relevant information]</p>
+<p>${DR} — ${PRAC}</p>`
+    },
+    {
+      id:'intake', name:'Patient Intake Form', cat:'admin', icon:'bi-person-check',
+      desc:'New patient information and history form',
+      type:'Patient Intake Form', docCat:'Administrative',
+      html: (p) => `<h2>PATIENT INTAKE FORM</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> ${today()}</p>
+<hr>
+<h3>Personal Information</h3>
+<p><strong>Full Name:</strong> [NAME] &nbsp;&nbsp;&nbsp; <strong>ID Number:</strong> [ID] &nbsp;&nbsp;&nbsp; <strong>DOB:</strong> [DOB]</p>
+<p><strong>Gender:</strong> [ ] Male &nbsp; [ ] Female &nbsp; [ ] Other &nbsp;&nbsp;&nbsp; <strong>Marital Status:</strong> [STATUS]</p>
+<p><strong>Occupation:</strong> [OCCUPATION] &nbsp;&nbsp;&nbsp; <strong>Employer:</strong> [EMPLOYER]</p>
+<p><strong>Residential Address:</strong> [ADDRESS]</p>
+<p><strong>Cell Number:</strong> [PHONE] &nbsp;&nbsp;&nbsp; <strong>Email:</strong> [EMAIL]</p>
+<h3>Emergency Contact</h3>
+<p><strong>Name:</strong> [NAME] &nbsp;&nbsp;&nbsp; <strong>Relationship:</strong> [RELATIONSHIP] &nbsp;&nbsp;&nbsp; <strong>Phone:</strong> [PHONE]</p>
+<h3>Medical Aid</h3>
+<p><strong>Medical Aid:</strong> [NAME] &nbsp;&nbsp;&nbsp; <strong>Plan:</strong> [PLAN] &nbsp;&nbsp;&nbsp; <strong>Member No.:</strong> [NUMBER] &nbsp;&nbsp;&nbsp; <strong>Dependant Code:</strong> [CODE]</p>
+<h3>Medical History</h3>
+<p><strong>Known Chronic Conditions:</strong> [ ] Hypertension &nbsp; [ ] Diabetes &nbsp; [ ] Asthma &nbsp; [ ] Heart Disease &nbsp; [ ] Arthritis &nbsp; [ ] Other: [SPECIFY]</p>
+<p><strong>Previous Surgeries / Hospitalisations:</strong> [LIST WITH YEARS]</p>
+<p><strong>Current Medications:</strong> [LIST ALL MEDICATIONS AND DOSES]</p>
+<p><strong>Known Allergies:</strong> [ALLERGIES — medication, food, environmental]</p>
+<p><strong>Family History:</strong> [RELEVANT FAMILY MEDICAL HISTORY]</p>
+<h3>Lifestyle</h3>
+<p><strong>Smoking:</strong> [ ] Never &nbsp; [ ] Former &nbsp; [ ] Current — [PACKS/DAY] &nbsp;&nbsp;&nbsp; <strong>Alcohol:</strong> [ ] None &nbsp; [ ] Occasional &nbsp; [ ] Moderate &nbsp; [ ] Heavy</p>
+<p><strong>Exercise:</strong> [ ] None &nbsp; [ ] Light &nbsp; [ ] Moderate &nbsp; [ ] Active</p>
+<p><strong>Patient Signature:</strong> ___________________________ &nbsp;&nbsp;&nbsp; <strong>Date:</strong> [DATE]</p>`
+    },
+    {
+      id:'treatment_plan', name:'Treatment Plan', cat:'admin', icon:'bi-clipboard-check',
+      desc:'Structured patient treatment and management plan',
+      type:'Patient Medical History', docCat:'Clinical',
+      html: (p) => `<h2>TREATMENT PLAN</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> ${today()} &nbsp;&nbsp;&nbsp; <strong>Clinician:</strong> ${DR}</p>
+<p><strong>Primary Diagnosis:</strong> [DIAGNOSIS] — ICD-10: [CODE]</p>
+<hr>
+<h3>Treatment Goals</h3>
+<ul>
+<li>[Short-term goal 1]</li>
+<li>[Short-term goal 2]</li>
+<li>[Long-term goal]</li>
+</ul>
+<h3>Medications</h3>
+<table>
+<tr><th>Medication</th><th>Dose</th><th>Frequency</th><th>Duration</th><th>Purpose</th></tr>
+<tr><td>[MEDICATION]</td><td>[DOSE]</td><td>[FREQUENCY]</td><td>[DURATION]</td><td>[PURPOSE]</td></tr>
+</table>
+<h3>Non-Pharmacological Interventions</h3>
+<p>[Diet, exercise, lifestyle modifications, physiotherapy, etc.]</p>
+<h3>Investigations / Monitoring</h3>
+<p>[Tests to be repeated, monitoring schedule, target values]</p>
+<h3>Referrals</h3>
+<p>[Specialist referrals with reason and urgency]</p>
+<h3>Follow-Up Schedule</h3>
+<table>
+<tr><th>Date</th><th>Purpose</th><th>Tests Due</th></tr>
+<tr><td>[DATE]</td><td>[PURPOSE]</td><td>[TESTS]</td></tr>
+<tr><td>[DATE]</td><td>[PURPOSE]</td><td>[TESTS]</td></tr>
+</table>
+<p><strong>Patient acknowledges and agrees to this treatment plan.</strong></p>
+<p>Patient Signature: ___________________________ &nbsp;&nbsp;&nbsp; Date: [DATE]</p>
+<p>${DR} — ${PRAC}</p>`
+    },
+    {
+      id:'consent', name:'Consent to Treatment', cat:'legal', icon:'bi-pen',
+      desc:'Patient informed consent to examination and treatment',
+      type:'Consent Form', docCat:'Compliance',
+      html: (p) => `<h2>CONSENT TO EXAMINATION AND TREATMENT</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> ${today()}</p>
+<hr>
+<p>I, <strong>${p}</strong> (ID: [ID NUMBER]), hereby confirm the following:</p>
+<ul>
+<li>I consent to examination and treatment by <strong>${DR}</strong> and authorised staff of this practice.</li>
+<li>I understand the nature of my condition and the proposed treatment / procedure as explained to me.</li>
+<li>I have been given the opportunity to ask questions, and my questions have been answered to my satisfaction.</li>
+<li>I understand that I may withdraw my consent at any time without affecting the quality of care I receive.</li>
+<li>I consent to the use of necessary clinical photographs, specimens, or investigation results for my medical care.</li>
+<li>I consent to the sharing of relevant medical information with my medical aid for billing and claims purposes.</li>
+<li>I consent to referral to other healthcare providers as deemed clinically necessary by my doctor.</li>
+</ul>
+<p><strong>Proposed Procedure / Treatment:</strong> [DESCRIBE PROCEDURE OR TREATMENT]</p>
+<p><strong>Risks Explained:</strong> [DESCRIBE RISKS DISCUSSED]</p>
+<p><strong>Alternatives Discussed:</strong> [DESCRIBE ALTERNATIVES]</p>
+<p>&nbsp;</p>
+<p><strong>Patient / Guardian Signature:</strong> ___________________________ &nbsp;&nbsp;&nbsp; <strong>Date:</strong> [DATE]</p>
+<p><strong>Relationship to Patient (if not patient):</strong> ___________________________</p>
+<p><strong>Witness Signature:</strong> ___________________________ &nbsp;&nbsp;&nbsp; <strong>Date:</strong> [DATE]</p>
+<p>&nbsp;</p>
+<p>${DR} — ${PRAC}</p>`
+    },
+    {
+      id:'popia', name:'POPIA Consent', cat:'legal', icon:'bi-shield-lock',
+      desc:'Protection of Personal Information Act consent',
+      type:'POPIA Consent', docCat:'Compliance',
+      html: (p) => `<h2>POPIA INFORMATION &amp; CONSENT FORM</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> ${today()}</p>
+<hr>
+<p>In terms of the <strong>Protection of Personal Information Act 4 of 2013 (POPIA)</strong>, this practice is required to inform you of how your personal information is collected, used, and protected.</p>
+<h3>Information Collected</h3>
+<p>We collect your name, identity number, contact details, medical history, diagnoses, treatment records, and medical aid information for the purposes of providing medical care and managing your health records.</p>
+<h3>Purpose of Collection</h3>
+<p>Your information is used to provide medical care, maintain clinical records, process medical aid claims, and communicate with you regarding your health.</p>
+<h3>Storage &amp; Security</h3>
+<p>Your personal information is stored securely in accordance with POPIA and is accessible only to authorised healthcare staff.</p>
+<h3>Sharing of Information</h3>
+<p>Your information may be shared with: your medical aid scheme (for claims), specialists to whom you are referred, and diagnostic facilities (laboratories, radiology). We do not sell or share your data for commercial purposes.</p>
+<h3>Your Rights</h3>
+<p>You have the right to access your personal information, request corrections, object to processing, and lodge a complaint with the Information Regulator of South Africa.</p>
+<p><strong>Information Regulator:</strong> inforeg@justice.gov.za &nbsp;|&nbsp; 012 406 4818</p>
+<hr>
+<p><strong>CONSENT</strong></p>
+<p>I, <strong>${p}</strong>, confirm that I have read and understood the above information and hereby consent to the collection, processing, storage, and use of my personal information by this practice as described.</p>
+<p>&nbsp;</p>
+<p><strong>Patient Signature:</strong> ___________________________ &nbsp;&nbsp;&nbsp; <strong>Date:</strong> [DATE]</p>
+<p><strong>Witness:</strong> ___________________________</p>`
+    },
+    {
+      id:'blank', name:'Blank Template', cat:'clinical', icon:'bi-pencil-square',
+      desc:'Start with a clean, empty document',
+      type:'Consultation Note', docCat:'Clinical',
+      html: (p) => `<h2>[Document Title]</h2>
+<p><strong>Patient:</strong> ${p} &nbsp;&nbsp;&nbsp; <strong>Date:</strong> ${today()} &nbsp;&nbsp;&nbsp; <strong>Clinician:</strong> ${DR}</p>
+<hr>
+<p></p>`
+    },
+  ];
+
+  /* ── DOM refs ──────────────────────────────────────────────────────── */
+  const patientSel   = document.getElementById('{{ form.patient.id_for_label }}');
+  const typeSel      = document.getElementById('{{ form.doc_type.id_for_label }}');
+  const catSel       = document.getElementById('{{ form.category.id_for_label }}');
+  const contentHide  = document.getElementById('{{ form.content.id_for_label }}');
+  const editorBody   = document.getElementById('editorBody');
+  const editorPanel  = document.getElementById('editorPanel');
+  const tplGallery   = document.getElementById('tplGallery');
+  const tplGrid      = document.getElementById('tplGrid');
+  const tplEmpty     = document.getElementById('tplEmpty');
+  const tplSearch    = document.getElementById('tplSearch');
+  const editorStatus = document.getElementById('editorStatus');
+  const editorStatusText = document.getElementById('editorStatusText');
+  const editorTplName    = document.getElementById('editorTplName');
+  const createFlow   = document.getElementById('createFlow');
+  const uploadFlow   = document.getElementById('uploadFlow');
+  const modeCreate   = document.getElementById('modeCreate');
+  const modeUpload   = document.getElementById('modeUpload');
+
+  let activeCat = 'all';
+  let saveTimer = null;
+  const DRAFT_KEY = () => 'doc_draft_' + (patientSel.value || 'none');
+
+  /* ── Mode switching ────────────────────────────────────────────────── */
+  modeCreate.addEventListener('click', () => {
+    modeCreate.classList.add('active'); modeUpload.classList.remove('active');
+    createFlow.style.display = ''; uploadFlow.style.display = 'none';
+  });
+  modeUpload.addEventListener('click', () => {
+    modeUpload.classList.add('active'); modeCreate.classList.remove('active');
+    uploadFlow.style.display = ''; createFlow.style.display = 'none';
   });
 
-  // ── Get current patient name from select ───────────────────────────────
+  /* ── Build template gallery ────────────────────────────────────────── */
+  function buildGallery(filter = '', cat = 'all') {
+    const q = filter.trim().toLowerCase();
+    const matches = TEMPLATES.filter(t =>
+      (cat === 'all' || t.cat === cat) &&
+      (!q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q))
+    );
+    tplGrid.innerHTML = '';
+    tplEmpty.style.display = matches.length ? 'none' : '';
+    matches.forEach(t => {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'tpl-doc-card';
+      card.dataset.id = t.id;
+      const catLabels = {clinical:'Clinical',certificates:'Certificate',letters:'Letter',requests:'Request / Script',admin:'Administrative',legal:'Legal'};
+      card.innerHTML = `<i class="bi ${t.icon}"></i>
+        <div class="tpl-doc-card-name">${t.name}</div>
+        <div class="tpl-doc-card-desc">${t.desc}</div>
+        <span class="tpl-cat-badge">${catLabels[t.cat] || t.cat}</span>`;
+      card.addEventListener('click', () => loadTemplate(t));
+      tplGrid.appendChild(card);
+    });
+  }
+
+  /* ── Category tabs ─────────────────────────────────────────────────── */
+  document.querySelectorAll('.tpl-cat-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tpl-cat-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeCat = tab.dataset.cat;
+      buildGallery(tplSearch.value, activeCat);
+    });
+  });
+  tplSearch.addEventListener('input', () => buildGallery(tplSearch.value, activeCat));
+  buildGallery();
+
+  /* ── Patient name helper ───────────────────────────────────────────── */
   function patientName() {
     const opt = patientSel.options[patientSel.selectedIndex];
     return (opt && opt.value) ? opt.text.trim() : '[PATIENT NAME]';
   }
 
-  // ── Apply template ─────────────────────────────────────────────────────
-  document.querySelectorAll('.tpl-card').forEach(card => {
-    card.addEventListener('click', () => {
-      // Highlight selected card
-      document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
+  /* ── Load a template into the editor ───────────────────────────────── */
+  function loadTemplate(t) {
+    // Mark card selected
+    document.querySelectorAll('.tpl-doc-card').forEach(c => c.classList.remove('selected'));
+    const card = tplGrid.querySelector(`[data-id="${t.id}"]`);
+    if (card) card.classList.add('selected');
 
-      const tplKey = card.dataset.tpl;
-      const type   = card.dataset.type;
-      const cat    = card.dataset.cat;
+    // Set doc type + category selects
+    typeSel.value = t.type;
+    catSel.value  = t.docCat;
+    [typeSel, catSel].forEach(s => s.dispatchEvent(new Event('change', {bubbles:true})));
 
-      // Set doc type and category selects
-      if (type) typeSel.value = type;
-      if (cat)  catSel.value  = cat;
+    // Load HTML into editor
+    editorBody.innerHTML = t.html(patientName());
+    editorTplName.textContent = t.name;
 
-      // Trigger typeahead sync if present (typeahead wraps selects)
-      [typeSel, catSel].forEach(sel => sel.dispatchEvent(new Event('change', { bubbles: true })));
+    // Show editor, hide gallery
+    tplGallery.style.display = 'none';
+    editorPanel.style.display = '';
 
-      // Fill content
-      const fn = TEMPLATES[tplKey];
-      if (fn) contentArea.value = fn(patientName());
+    // Check for saved draft
+    const draft = localStorage.getItem(DRAFT_KEY() + '_' + t.id);
+    if (draft) {
+      editorBody.innerHTML = draft;
+      showStatus('Draft restored', true);
+    }
 
-      // Scroll to content field and focus
-      contentArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      contentArea.focus();
+    // Store active template id for draft key
+    editorPanel.dataset.tplId = t.id;
+    editorBody.focus();
+  }
+
+  /* ── Back to gallery ───────────────────────────────────────────────── */
+  document.getElementById('editorBackBtn').addEventListener('click', () => {
+    tplGallery.style.display = '';
+    editorPanel.style.display = 'none';
+  });
+
+  /* ── Auto-save draft ───────────────────────────────────────────────── */
+  function showStatus(msg, ok) {
+    editorStatus.className = 'editor-status' + (ok ? ' saved' : '');
+    editorStatusText.textContent = msg;
+  }
+
+  editorBody.addEventListener('input', () => {
+    showStatus('Saving draft…', false);
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      const tplId = editorPanel.dataset.tplId;
+      if (tplId) localStorage.setItem(DRAFT_KEY() + '_' + tplId, editorBody.innerHTML);
+      showStatus('Draft saved', true);
+    }, 1200);
+  });
+
+  /* ── Toolbar commands ──────────────────────────────────────────────── */
+  document.querySelectorAll('.editor-btn[data-cmd]').forEach(btn => {
+    btn.addEventListener('mousedown', e => {
+      e.preventDefault();
+      document.execCommand(btn.dataset.cmd, false, null);
+      editorBody.focus();
     });
   });
 
-  // ── Re-substitute patient name if patient changes after template applied ─
-  patientSel.addEventListener('change', () => {
-    const active = document.querySelector('.tpl-card.active');
-    if (!active) return;
-    const fn = TEMPLATES[active.dataset.tpl];
-    if (fn) contentArea.value = fn(patientName());
+  document.getElementById('cmdHR').addEventListener('mousedown', e => {
+    e.preventDefault();
+    document.execCommand('insertHTML', false, '<hr>');
+    editorBody.focus();
   });
+
+  document.getElementById('formatBlock').addEventListener('change', function () {
+    document.execCommand('formatBlock', false, '<' + this.value + '>');
+    editorBody.focus();
+  });
+
+  /* ── Selection state → toolbar active indicators ───────────────────── */
+  document.addEventListener('selectionchange', () => {
+    if (!document.getElementById('editorBody')) return;
+    ['bold','italic','underline'].forEach(cmd => {
+      const btn = document.querySelector(`.editor-btn[data-cmd="${cmd}"]`);
+      if (btn) btn.classList.toggle('active', document.queryCommandState(cmd));
+    });
+  });
+
+  /* ── Re-sub patient name when patient select changes ───────────────── */
+  patientSel.addEventListener('change', () => {
+    const tplId = editorPanel.dataset.tplId;
+    if (!tplId || editorPanel.style.display === 'none') return;
+    const t = TEMPLATES.find(t => t.id === tplId);
+    if (t) editorBody.innerHTML = t.html(patientName());
+  });
+
+  /* ── Print preview ─────────────────────────────────────────────────── */
+  document.getElementById('editorPrintBtn').addEventListener('click', () => {
+    const win = window.open('', '_blank');
+    win.document.write(`<!DOCTYPE html><html><head>
+      <meta charset="UTF-8"><title>Document Preview</title>
+      <link rel="stylesheet" href="/static/css/main.css">
+      <style>body{background:#fff;padding:40px;font-family:'DM Sans',sans-serif;max-width:800px;margin:0 auto;font-size:14px;line-height:1.8;color:#374151;}
+      h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;}h2{font-size:20px;margin-bottom:12px;}h3{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#4f46e5;}
+      table{border-collapse:collapse;width:100%;margin-bottom:12px;}td,th{border:1px solid #e5e7eb;padding:6px 10px;}th{background:#f9fafb;font-weight:700;}
+      hr{border:none;border-top:1px solid #e5e7eb;margin:18px 0;}</style>
+    </head><body>${editorBody.innerHTML}</body></html>`);
+    win.document.close();
+    win.focus();
+    setTimeout(() => win.print(), 400);
+  });
+
+  /* ── Serialize editor → hidden content field on submit ─────────────── */
+  document.getElementById('docForm').addEventListener('submit', () => {
+    if (editorPanel.style.display !== 'none') {
+      contentHide.value = editorBody.innerHTML;
+    }
+  });
+
+  /* ── Dropzone UX ───────────────────────────────────────────────────── */
+  const dz = document.getElementById('dropzone');
+  const fileInput = document.getElementById('{{ form.attachment.id_for_label }}');
+  const dzChosen  = document.getElementById('dropzoneChosen');
+  if (fileInput && dz) {
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) {
+        dzChosen.textContent = fileInput.files[0].name;
+        dzChosen.style.display = 'block';
+      }
+    });
+    ['dragenter','dragover'].forEach(e => dz.addEventListener(e, ev => { ev.preventDefault(); dz.classList.add('dragover'); }));
+    ['dragleave','drop'].forEach(e => dz.addEventListener(e, () => dz.classList.remove('dragover')));
+    dz.addEventListener('drop', ev => {
+      ev.preventDefault();
+      fileInput.files = ev.dataTransfer.files;
+      if (fileInput.files.length) {
+        dzChosen.textContent = fileInput.files[0].name;
+        dzChosen.style.display = 'block';
+      }
+    });
+  }
 })();
 </script>
 {% endblock %}

@@ -27,7 +27,7 @@
       <div class="detail-row"><span class="detail-key">Date Issued</span><span class="detail-val">{{ document.date_issued|date:"j F Y" }}</span></div>
       <div class="detail-row"><span class="detail-key">Issued By</span><span class="detail-val">{{ document.issued_by }}</span></div>
       {% if document.content %}
-      <div style="margin-top:16px;padding:14px;border-radius:10px;background:#f9fafb;border:1px solid #f1f5f9;font-size:13.5px;color:var(--text-2);white-space:pre-line;line-height:1.7;">{{ document.content }}</div>
+      <div style="margin-top:16px;padding:20px 24px;border-radius:10px;background:#f9fafb;border:1px solid #f1f5f9;font-size:14px;color:var(--text-2);line-height:1.8;">{{ document.content|safe }}</div>
       {% endif %}
       {% if document.attachment %}
       <div style="margin-top:14px;display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;border:1px solid #f1f5f9;background:#fafafa;">
