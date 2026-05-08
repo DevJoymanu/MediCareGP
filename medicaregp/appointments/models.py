@@ -10,11 +10,17 @@ class Appointment(models.Model):
         ('No-Show',    'No-Show'),
     ]
 
+    VISIT_TYPE_CHOICES = [
+        ('Scheduled', 'Scheduled'),
+        ('Walk-In',   'Walk-In'),
+    ]
+
     patient              = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='appointments')
     date                 = models.DateField()
     time                 = models.TimeField()
     reason               = models.CharField(max_length=255)
     status               = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Scheduled')
+    visit_type           = models.CharField(max_length=20, choices=VISIT_TYPE_CHOICES, default='Scheduled')
     notes                = models.TextField(blank=True, null=True)
 
     # ── Reception / admin ─────────────────────────────────────────────────────

@@ -76,6 +76,7 @@
         </div>
       </div>
 
+      <div class="detail-row"><span class="detail-key">Visit Type</span><span class="detail-val"><span class="badge badge-{{ appointment.visit_type|lower|cut:'-' }}">{{ appointment.visit_type }}</span></span></div>
       <div class="detail-row"><span class="detail-key">Date</span><span class="detail-val">{{ appointment.date|date:"l, j F Y" }}</span></div>
       <div class="detail-row"><span class="detail-key">Time</span><span class="detail-val">{{ appointment.time|time:"H:i" }}</span></div>
       <div class="detail-row"><span class="detail-key">Reason</span><span class="detail-val">{{ appointment.reason }}</span></div>

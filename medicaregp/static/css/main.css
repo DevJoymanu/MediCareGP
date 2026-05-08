@@ -591,6 +591,7 @@ button { cursor: pointer; }
 .badge-completed  { background: #f0fdf4; color: #15803d; }
 .badge-cancelled  { background: #fef2f2; color: #b91c1c; }
 .badge-noshow     { background: #fffbeb; color: #92400e; }
+.badge-walkin     { background: #fdf4ff; color: #7e22ce; }
 
 /* ═══ Tag chips ═══════════════════════════════════════════════════════════ */
 .tag {

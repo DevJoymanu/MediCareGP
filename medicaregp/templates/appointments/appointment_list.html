@@ -9,7 +9,10 @@
       <h1>Appointments</h1>
       <p>{{ appointments|length }} total record{{ appointments|length|pluralize }}</p>
     </div>
-    <a href="{% url 'appointment_create' %}" class="btn-primary"><i class="bi bi-plus-lg"></i> New Appointment</a>
+    <div style="display:flex;gap:8px;">
+      <a href="{% url 'walk_in_create' %}" class="btn-primary" style="background:#7e22ce;border-color:#7e22ce;"><i class="bi bi-person-walking"></i> Walk-In Patient</a>
+      <a href="{% url 'appointment_create' %}" class="btn-ghost"><i class="bi bi-plus-lg"></i> New Appointment</a>
+    </div>
   </div>
 
   <!-- Filters -->
@@ -48,7 +51,10 @@
         {% for a in appointments %}
         <tr onclick="window.location='{% url 'appointment_detail' a.pk %}'">
           <td>
-            <div class="appt-time" style="display:inline-flex;">{{ a.time|time:"H:i" }}</div>
+            <div style="display:flex;flex-direction:column;gap:3px;align-items:flex-start;">
+              <div class="appt-time" style="display:inline-flex;">{{ a.time|time:"H:i" }}</div>
+              {% if a.visit_type == 'Walk-In' %}<span class="badge badge-walkin" style="font-size:10px;padding:2px 7px;">Walk-in</span>{% endif %}
+            </div>
           </td>
           <td>
             <div style="display:flex;gap:10px;align-items:center;">
