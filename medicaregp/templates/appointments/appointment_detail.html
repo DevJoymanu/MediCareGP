@@ -2,6 +2,23 @@
 {% block title %}Appointment | G.P CRM{% endblock %}
 {% block page_title %}Appointment Details{% endblock %}
 {% block page_sub %}{{ appointment.patient }} — {{ appointment.date|date:"j F Y" }}{% endblock %}
+
+{% block extra_head %}
+<style>
+  .status-badge-btn { user-select:none; }
+  .status-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .status-scheduled  { background:#eff6ff; color:#1d4ed8; }
+  .status-scheduled  .status-dot { background:#1d4ed8; }
+  .status-completed  { background:#f0fdf4; color:#15803d; }
+  .status-completed  .status-dot { background:#15803d; }
+  .status-cancelled  { background:#fef2f2; color:#b91c1c; }
+  .status-cancelled  .status-dot { background:#b91c1c; }
+  .status-noshow     { background:#fffbeb; color:#92400e; }
+  .status-noshow     .status-dot { background:#92400e; }
+  .status-badge-btn:hover { filter:brightness(0.95); }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="page-body">
   <div style="max-width:680px;margin:0 auto;">
@@ -28,7 +45,35 @@
             </span>
           </div>
         </div>
-        <span class="badge badge-{{ appointment.status|lower|cut:'-' }}" style="font-size:13px;padding:5px 14px;">{{ appointment.status }}</span>
+        <!-- Status dropdown -->
+        <div style="position:relative;" id="statusWrap">
+          <button type="button" id="statusTrigger"
+            style="display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.13s;"
+            class="status-badge-btn status-{{ appointment.status|lower|cut:'-' }}">
+            <span class="status-dot"></span>
+            <span id="statusLabel">{{ appointment.status }}</span>
+            <i class="bi bi-chevron-down" id="statusChevron" style="font-size:11px;transition:transform 0.2s;"></i>
+          </button>
+          <div id="statusMenu" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1.5px solid var(--border);border-radius:12px;box-shadow:var(--shadow-md);min-width:170px;overflow:hidden;z-index:50;">
+            {% for status_val, status_label in appointment.STATUS_CHOICES %}
+            <form method="post" action="{% url 'appointment_set_status' appointment.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="status" value="{{ status_val }}">
+              <button type="submit"
+                style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px;background:{% if appointment.status == status_val %}#f5f3ff{% else %}transparent{% endif %};border:none;cursor:pointer;font-size:13px;font-weight:{% if appointment.status == status_val %}700{% else %}500{% endif %};color:var(--text-1);text-align:left;transition:background 0.12s;"
+                onmouseover="this.style.background='#f4f7fb'" onmouseout="this.style.background='{% if appointment.status == status_val %}#f5f3ff{% else %}transparent{% endif %}'">
+                <span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:
+                  {% if status_val == 'Scheduled' %}#1d4ed8
+                  {% elif status_val == 'Completed' %}#15803d
+                  {% elif status_val == 'Cancelled' %}#b91c1c
+                  {% else %}#92400e{% endif %};"></span>
+                {{ status_label }}
+                {% if appointment.status == status_val %}<i class="bi bi-check2" style="margin-left:auto;color:var(--accent);"></i>{% endif %}
+              </button>
+            </form>
+            {% endfor %}
+          </div>
+        </div>
       </div>
 
       <div class="detail-row"><span class="detail-key">Date</span><span class="detail-val">{{ appointment.date|date:"l, j F Y" }}</span></div>
@@ -49,23 +94,36 @@
     </div>
     {% endif %}
 
-    <!-- CHANGES: detail-actions stacks buttons full-width on mobile -->
     <div class="detail-actions">
       <a href="{% url 'consultation_create' %}?patient_id={{ appointment.patient.pk }}&appointment_id={{ appointment.pk }}" class="btn-primary">
         <i class="bi bi-clipboard2-plus"></i> Start Consultation
       </a>
-      {% if appointment.status == 'Scheduled' %}
-      <form method="post" action="{% url 'appointment_cancel' appointment.pk %}">
-        {% csrf_token %}
-        <button type="submit" class="btn-ghost" style="color:#ef4444;">
-          <i class="bi bi-x-circle"></i> Cancel
-        </button>
-      </form>
-      {% endif %}
       <a href="{% url 'appointment_delete' appointment.pk %}" class="btn-ghost" style="color:#ef4444;margin-left:auto;">
         <i class="bi bi-trash"></i> Delete
       </a>
     </div>
   </div>
 </div>
+
+<script>
+(function () {
+  const trigger  = document.getElementById('statusTrigger');
+  const menu     = document.getElementById('statusMenu');
+  const chevron  = document.getElementById('statusChevron');
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = menu.style.display === 'none';
+    menu.style.display = open ? '' : 'none';
+    chevron.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+  });
+
+  document.addEventListener('click', () => {
+    menu.style.display = 'none';
+    chevron.style.transform = 'rotate(0deg)';
+  });
+
+  menu.addEventListener('click', (e) => e.stopPropagation());
+})();
+</script>
 {% endblock %}

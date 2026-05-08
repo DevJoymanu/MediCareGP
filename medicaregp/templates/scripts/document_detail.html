@@ -7,8 +7,13 @@
   <div style="max-width:680px;margin:0 auto;">
     <div class="page-header">
       <div><h1>{{ document.doc_type }}</h1></div>
-      <div style="display:flex;gap:8px;">
-        <a href="{% url 'document_print' document.pk %}" class="btn-ghost"><i class="bi bi-printer"></i> Print</a>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        {% if document.attachment %}
+        <a href="{{ document.attachment.url }}" class="btn-primary" download><i class="bi bi-download"></i> Download</a>
+        {% else %}
+        <a href="{% url 'document_print' document.pk %}" class="btn-primary" target="_blank"><i class="bi bi-download"></i> Download PDF</a>
+        {% endif %}
+        <a href="{% url 'document_print' document.pk %}" class="btn-ghost" target="_blank"><i class="bi bi-printer"></i> Print</a>
         <a href="{% url 'document_edit' document.pk %}" class="btn-ghost"><i class="bi bi-pencil"></i> Edit</a>
         <a href="{% url 'document_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
       </div>
@@ -32,15 +37,13 @@
       {% if document.attachment %}
       <div style="margin-top:14px;display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;border:1px solid #f1f5f9;background:#fafafa;">
         <i class="bi bi-paperclip" style="font-size:18px;color:var(--text-3);"></i>
-        <span style="flex:1;font-size:13px;">Attachment</span>
-        <a href="{{ document.attachment.url }}" class="btn-ghost" style="font-size:12px;" target="_blank"><i class="bi bi-download"></i> Download</a>
+        <span style="flex:1;font-size:13px;color:var(--text-2);">{{ document.attachment.name|cut:"documents/"|cut:"2026/"|cut:"2025/" }}</span>
       </div>
       {% endif %}
     </div>
 
     <div style="display:flex;gap:10px;">
-      <a href="{% url 'document_print' document.pk %}" class="btn-primary"><i class="bi bi-printer"></i> Print</a>
-      <a href="{% url 'document_delete' document.pk %}" class="btn-ghost" style="color:#ef4444;margin-left:auto;"><i class="bi bi-trash"></i> Delete</a>
+      <a href="{% url 'document_delete' document.pk %}" class="btn-ghost" style="color:#ef4444;"><i class="bi bi-trash"></i> Delete</a>
     </div>
   </div>
 </div>

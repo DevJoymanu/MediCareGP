@@ -56,6 +56,17 @@ def appointment_edit(request, pk):
     return render(request, 'appointments/appointment_form.html', {'form':form,'title':'Edit Appointment'})
 
 @login_required
+def appointment_set_status(request, pk):
+    if request.method == 'POST':
+        appointment = get_object_or_404(Appointment, pk=pk)
+        new_status = request.POST.get('status', '')
+        if new_status in [s for s, _ in Appointment.STATUS_CHOICES]:
+            appointment.status = new_status
+            appointment.save(update_fields=['status'])
+            messages.success(request, f'Status updated to {new_status}.')
+    return redirect('appointment_detail', pk=pk)
+
+@login_required
 def appointment_cancel(request, pk):
     appointment = get_object_or_404(Appointment, pk=pk)
     if request.method == 'POST':
