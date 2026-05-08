@@ -56,7 +56,13 @@
           </td>
           <td class="col-hide-mobile" style="color:var(--text-2);white-space:nowrap;">{{ p.get_age }} yrs &middot; {{ p.get_gender_display }}</td>
           <td>
-            <div style="font-size:13px;">{{ p.phone }}</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:13px;">
+              {{ p.phone }}
+              <span class="phone-actions">
+                <a href="tel:{{ p.phone }}" class="phone-btn call" title="Call"><i class="bi bi-telephone-fill"></i></a>
+                <a href="#" data-phone="{{ p.phone }}" class="phone-btn whatsapp" title="WhatsApp" target="_blank"><i class="bi bi-whatsapp"></i></a>
+              </span>
+            </div>
             {% if p.email %}<div style="font-size:11px;color:var(--text-4);">{{ p.email }}</div>{% endif %}
           </td>
           <td class="col-hide-mobile" style="font-size:13px;color:{% if p.medical_aid_name %}var(--text-2){% else %}var(--text-4){% endif %};">

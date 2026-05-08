@@ -20,7 +20,13 @@
         </div>
         <div style="flex:1;">
           <h2 class="brand-heading" style="font-size:20px;margin:0 0 4px;">{{ appointment.patient }}</h2>
-          <div style="font-size:13px;color:var(--text-3);">{{ appointment.patient.phone }}</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-3);">
+            {{ appointment.patient.phone }}
+            <span class="phone-actions">
+              <a href="tel:{{ appointment.patient.phone }}" class="phone-btn call" title="Call"><i class="bi bi-telephone-fill"></i></a>
+              <a href="#" data-phone="{{ appointment.patient.phone }}" class="phone-btn whatsapp" title="WhatsApp" target="_blank"><i class="bi bi-whatsapp"></i></a>
+            </span>
+          </div>
         </div>
         <span class="badge badge-{{ appointment.status|lower|cut:'-' }}" style="font-size:13px;padding:5px 14px;">{{ appointment.status }}</span>
       </div>

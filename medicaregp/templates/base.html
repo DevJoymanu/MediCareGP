@@ -347,6 +347,13 @@
 
   document.querySelectorAll('select').forEach(makeSearchableSelect);
 
+  // Resolve WhatsApp links from data-phone attributes
+  document.querySelectorAll('.phone-btn.whatsapp, .phone-btn.whatsapp-hero').forEach(a => {
+    const raw = a.dataset.phone || '';
+    const num = raw.replace(/[^0-9]/g, '').replace(/^0/, '27');
+    if (num) a.href = 'https://wa.me/' + num;
+  });
+
   document.querySelectorAll('.js-task-toggle-form').forEach(form => {
     form.addEventListener('submit', event => {
       const row = form.closest('.task-row');

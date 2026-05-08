@@ -930,6 +930,23 @@ button { cursor: pointer; }
   .grid-4 { grid-template-columns: 1fr 1fr; }
 }
 
+/* ═══ Phone action buttons ════════════════════════════════════════════════ */
+.phone-actions { display:inline-flex; gap:4px; vertical-align:middle; }
+.phone-btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:26px; height:26px; border-radius:7px; font-size:12px;
+  text-decoration:none; flex-shrink:0; transition:all 0.13s;
+}
+.phone-btn.call      { background:#eff6ff; color:#2563eb; }
+.phone-btn.call:hover { background:#2563eb; color:#fff; }
+.phone-btn.whatsapp      { background:#f0fdf4; color:#16a34a; }
+.phone-btn.whatsapp:hover { background:#16a34a; color:#fff; }
+.phone-btn.call-hero      { background:rgba(255,255,255,0.15); color:#fff; }
+.phone-btn.call-hero:hover { background:rgba(255,255,255,0.32); }
+.phone-btn.whatsapp-hero      { background:rgba(37,211,102,0.18); color:#86efac; }
+.phone-btn.whatsapp-hero:hover { background:rgba(37,211,102,0.38); }
+@media print { .phone-actions { display:none !important; } }
+
 /* ═══ Patient detail — layout classes ════════════════════════════════════ */
 .patient-hero {
   border-radius: var(--radius); overflow: hidden; margin-bottom: 20px;

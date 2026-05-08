@@ -92,7 +92,13 @@
               </div>
               <div>
                 <div style="font-weight:600;">{{ inv.patient }}</div>
-                <div style="font-size:11px;color:var(--text-4);">{{ inv.patient.phone }}</div>
+                <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-4);">
+                  {{ inv.patient.phone }}
+                  <span class="phone-actions">
+                    <a href="tel:{{ inv.patient.phone }}" class="phone-btn call" title="Call" style="width:22px;height:22px;font-size:11px;"><i class="bi bi-telephone-fill"></i></a>
+                    <a href="#" data-phone="{{ inv.patient.phone }}" class="phone-btn whatsapp" title="WhatsApp" target="_blank" style="width:22px;height:22px;font-size:11px;"><i class="bi bi-whatsapp"></i></a>
+                  </span>
+                </div>
               </div>
             </div>
           </td>

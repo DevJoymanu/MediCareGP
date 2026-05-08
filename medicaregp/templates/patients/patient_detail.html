@@ -21,8 +21,22 @@
         </div>
         <div class="patient-hero-meta">
           <span><i class="bi bi-person" style="margin-right:4px;"></i>{{ patient.get_age }} yrs &middot; {{ patient.get_gender_display }}</span>
-          <span><i class="bi bi-telephone" style="margin-right:4px;"></i>{{ patient.phone }}</span>
-          {% if patient.alt_phone %}<span><i class="bi bi-telephone" style="margin-right:4px;opacity:0.6;"></i>{{ patient.alt_phone }}</span>{% endif %}
+          <span style="display:inline-flex;align-items:center;gap:5px;">
+            <i class="bi bi-telephone"></i>{{ patient.phone }}
+            <span class="phone-actions">
+              <a href="tel:{{ patient.phone }}" class="phone-btn call-hero" title="Call"><i class="bi bi-telephone-fill"></i></a>
+              <a href="#" data-phone="{{ patient.phone }}" class="phone-btn whatsapp-hero" title="WhatsApp" target="_blank"><i class="bi bi-whatsapp"></i></a>
+            </span>
+          </span>
+          {% if patient.alt_phone %}
+          <span style="display:inline-flex;align-items:center;gap:5px;">
+            <i class="bi bi-telephone" style="opacity:0.6;"></i>{{ patient.alt_phone }}
+            <span class="phone-actions">
+              <a href="tel:{{ patient.alt_phone }}" class="phone-btn call-hero" title="Call alt. number"><i class="bi bi-telephone-fill"></i></a>
+              <a href="#" data-phone="{{ patient.alt_phone }}" class="phone-btn whatsapp-hero" title="WhatsApp alt. number" target="_blank"><i class="bi bi-whatsapp"></i></a>
+            </span>
+          </span>
+          {% endif %}
           {% if patient.email %}<span><i class="bi bi-envelope" style="margin-right:4px;"></i>{{ patient.email }}</span>{% endif %}
         </div>
         <div class="patient-hero-badges">
