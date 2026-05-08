@@ -1,6 +1,28 @@
 {% extends "base.html" %}
 {% block title %}{{ title }} | G.P CRM{% endblock %}
 {% block page_title %}{{ title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+  .tpl-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .tpl-card {
+    padding:14px 10px; border:2px solid var(--border); border-radius:12px;
+    background:#fff; cursor:pointer; text-align:center;
+    transition:all 0.13s; -webkit-tap-highlight-color:transparent;
+  }
+  .tpl-card:hover { border-color:var(--accent); background:#f5f3ff; }
+  .tpl-card.active { border-color:var(--accent); background:#eef2ff; }
+  .tpl-card i { font-size:22px; display:block; margin-bottom:6px; color:var(--text-3); }
+  .tpl-card.active i { color:var(--accent); }
+  .tpl-card-label { font-size:12px; font-weight:600; color:var(--text-2); line-height:1.3; }
+  .tpl-section-label {
+    font-size:10.5px; font-weight:700; color:var(--text-4);
+    text-transform:uppercase; letter-spacing:0.07em; margin:14px 0 8px;
+  }
+  @media(max-width:640px){ .tpl-grid{ grid-template-columns:repeat(2,1fr); } }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="page-body">
   <div style="max-width:700px;margin:0 auto;">
@@ -11,12 +33,81 @@
 
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      <div class="card" style="margin-bottom:18px;">
-        <div class="form-grid-2">
-          <div class="form-group form-full">
-            <label>Patient</label>
-            {{ form.patient }}
+
+      <!-- ── Patient ──────────────────────────────────────────────────────── -->
+      <div class="card" style="margin-bottom:14px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Patient *</label>
+          {{ form.patient }}
+        </div>
+      </div>
+
+      <!-- ── Template picker ─────────────────────────────────────────────── -->
+      <div class="card" style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <div class="card-title">Choose a Template</div>
+          <button type="button" id="tplToggle" class="link-btn" style="font-size:12px;">
+            <i class="bi bi-chevron-up" id="tplChevron"></i> Hide
+          </button>
+        </div>
+        <div style="font-size:12px;color:var(--text-4);margin-bottom:14px;">
+          Select a template to auto-fill the document — or skip to write from scratch.
+        </div>
+
+        <div id="tplBody">
+          <div class="tpl-section-label">Clinical</div>
+          <div class="tpl-grid">
+            <button type="button" class="tpl-card" data-tpl="sick_note" data-type="Sick Note" data-cat="Administrative">
+              <i class="bi bi-file-medical"></i>
+              <div class="tpl-card-label">Sick Note</div>
+            </button>
+            <button type="button" class="tpl-card" data-tpl="referral" data-type="Referral Letter" data-cat="Clinical">
+              <i class="bi bi-arrow-right-circle"></i>
+              <div class="tpl-card-label">Referral Letter</div>
+            </button>
+            <button type="button" class="tpl-card" data-tpl="prescription" data-type="Prescription" data-cat="Clinical">
+              <i class="bi bi-capsule-pill"></i>
+              <div class="tpl-card-label">Prescription</div>
+            </button>
+            <button type="button" class="tpl-card" data-tpl="lab" data-type="Lab Request Form" data-cat="Clinical">
+              <i class="bi bi-droplet"></i>
+              <div class="tpl-card-label">Lab Request</div>
+            </button>
+            <button type="button" class="tpl-card" data-tpl="radiology" data-type="Radiology Request Form" data-cat="Clinical">
+              <i class="bi bi-camera"></i>
+              <div class="tpl-card-label">Radiology Request</div>
+            </button>
+            <button type="button" class="tpl-card" data-tpl="vaccination" data-type="Vaccination Record" data-cat="Administrative">
+              <i class="bi bi-shield-plus"></i>
+              <div class="tpl-card-label">Vaccination Record</div>
+            </button>
           </div>
+
+          <div class="tpl-section-label">Administrative &amp; Legal</div>
+          <div class="tpl-grid">
+            <button type="button" class="tpl-card" data-tpl="motivation" data-type="Motivation Letter" data-cat="Administrative">
+              <i class="bi bi-envelope-open"></i>
+              <div class="tpl-card-label">Motivation Letter</div>
+            </button>
+            <button type="button" class="tpl-card" data-tpl="consent" data-type="Consent Form" data-cat="Compliance">
+              <i class="bi bi-pen"></i>
+              <div class="tpl-card-label">Consent Form</div>
+            </button>
+            <button type="button" class="tpl-card" data-tpl="popia" data-type="POPIA Consent" data-cat="Compliance">
+              <i class="bi bi-shield-lock"></i>
+              <div class="tpl-card-label">POPIA Consent</div>
+            </button>
+            <button type="button" class="tpl-card" data-tpl="scratch" data-type="" data-cat="">
+              <i class="bi bi-pencil-square"></i>
+              <div class="tpl-card-label">From Scratch</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Document fields ─────────────────────────────────────────────── -->
+      <div class="card" style="margin-bottom:14px;">
+        <div class="form-grid-2">
           <div class="form-group">
             <label>Document Type</label>
             {{ form.doc_type }}
@@ -29,12 +120,16 @@
             <label>Issued By</label>
             {{ form.issued_by }}
           </div>
+          <div class="form-group">
+            <label>Notes <span style="font-weight:400;color:var(--text-4);">(optional)</span></label>
+            {{ form.notes }}
+          </div>
           <div class="form-group form-full">
             <label>Content</label>
             {{ form.content }}
           </div>
           <div class="form-group form-full">
-            <label>Attachment (optional)</label>
+            <label>Attachment <span style="font-weight:400;color:var(--text-4);">(optional — upload instead of or alongside typed content)</span></label>
             {{ form.attachment }}
           </div>
         </div>
@@ -44,6 +139,7 @@
         </div>
         {% endif %}
       </div>
+
       <div style="display:flex;gap:10px;">
         <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Document</button>
         <a href="{% url 'document_list' %}" class="btn-ghost">Cancel</a>
@@ -51,4 +147,282 @@
     </form>
   </div>
 </div>
+
+<script>
+(function () {
+  const DR   = 'Dr. Tamuka Chivonivoni';
+  const PRAC = 'General Practitioner';
+
+  // ── Template bodies ────────────────────────────────────────────────────
+  const TEMPLATES = {
+    sick_note: (p) => `SICK NOTE / MEDICAL CERTIFICATE
+
+This is to certify that ${p} was examined by me on [DATE] and is unfit for work / school for [NUMBER] days, from [START DATE] to [END DATE].
+
+Diagnosis: [DIAGNOSIS]
+
+Restrictions / Instructions:
+[ANY SPECIAL INSTRUCTIONS, e.g. bed rest, no heavy lifting]
+
+${DR}
+${PRAC}
+Date: [DATE]`,
+
+    referral: (p) => `REFERRAL LETTER
+
+Date: [DATE]
+
+Dear Colleague,
+
+I am referring ${p} (ID: [ID NUMBER], DOB: [DATE OF BIRTH]) to you for specialist assessment and management.
+
+Reason for Referral:
+[REASON]
+
+Relevant Clinical History:
+[HISTORY]
+
+Current Medications:
+[MEDICATIONS]
+
+Relevant Investigations:
+[INVESTIGATIONS / RESULTS]
+
+Please do not hesitate to contact me should you require any further information.
+
+Kind regards,
+
+${DR}
+${PRAC}`,
+
+    prescription: (p) => `PRESCRIPTION
+
+Patient: ${p}
+ID Number: [ID NUMBER]
+Date of Birth: [DATE OF BIRTH]
+Date: [DATE]
+
+Rx:
+1. [MEDICATION] [STRENGTH] — [DOSE] — [FREQUENCY] — [DURATION]
+2. [MEDICATION] [STRENGTH] — [DOSE] — [FREQUENCY] — [DURATION]
+3. [MEDICATION] [STRENGTH] — [DOSE] — [FREQUENCY] — [DURATION]
+
+Repeat: [Yes / No]    Quantity: [QTY]
+
+${DR}
+${PRAC}`,
+
+    lab: (p) => `LAB / BLOOD TEST REQUEST
+
+Patient: ${p}
+ID Number: [ID NUMBER]
+Date of Birth: [DATE OF BIRTH]
+Date: [DATE]
+
+Tests Requested:
+[ ] FBC (Full Blood Count)
+[ ] CMP (Urea, Creatinine, Electrolytes)
+[ ] HbA1c
+[ ] Fasting Glucose
+[ ] Lipogram (Total Cholesterol, LDL, HDL, Triglycerides)
+[ ] TSH / Free T4 (Thyroid Function)
+[ ] Uric Acid
+[ ] LFTs (Liver Function)
+[ ] Urine MCS
+[ ] Other: [SPECIFY]
+
+Clinical Notes / Indication:
+[CLINICAL NOTES]
+
+Urgency:  [ ] Routine   [ ] Urgent
+
+${DR}
+${PRAC}`,
+
+    radiology: (p) => `RADIOLOGY REQUEST
+
+Patient: ${p}
+ID Number: [ID NUMBER]
+Date of Birth: [DATE OF BIRTH]
+Date: [DATE]
+
+Investigation Requested:
+[ ] Chest X-Ray (PA view)
+[ ] Abdominal Ultrasound
+[ ] Pelvic Ultrasound
+[ ] Lumbar Spine X-Ray (AP + Lateral)
+[ ] Cervical Spine X-Ray
+[ ] Right / Left [SPECIFY LIMB] X-Ray
+[ ] Other: [SPECIFY]
+
+Clinical Indication:
+[INDICATION]
+
+Urgency:  [ ] Routine   [ ] Urgent
+
+${DR}
+${PRAC}`,
+
+    vaccination: (p) => `VACCINATION RECORD
+
+Patient: ${p}
+ID Number: [ID NUMBER]
+Date of Birth: [DATE OF BIRTH]
+
+Vaccine Name: [VACCINE]
+Manufacturer / Batch No.: [BATCH]
+Date Administered: [DATE]
+Route: [IM / SC / Oral]    Site: [LEFT / RIGHT DELTOID]
+Next Dose Due: [DATE or N/A]
+
+Adverse reaction observed:  [ ] None   [ ] Yes — [DESCRIBE]
+
+Notes:
+[ADDITIONAL NOTES]
+
+Administered by: ${DR}
+${PRAC}`,
+
+    motivation: (p) => `MOTIVATION LETTER FOR PRE-AUTHORISATION
+
+Date: [DATE]
+
+To: [MEDICAL AID NAME]
+Member Number: [MEMBER NUMBER]
+Dependant Code: [DEPENDANT CODE]
+
+RE: Pre-authorisation Request — ${p}
+
+Dear Sir / Madam,
+
+I am writing to motivate for pre-authorisation for the following treatment / procedure for my patient, ${p}.
+
+Proposed Procedure / Treatment:
+[PROCEDURE NAME]
+
+ICD-10 Code(s): [ICD-10]
+CPT / NHRPL Code(s): [CODE]
+
+Clinical Motivation:
+[CLINICAL MOTIVATION — describe symptoms, diagnosis, and why this treatment is medically necessary]
+
+Conservative Treatment Already Attempted:
+[LIST PRIOR TREATMENTS]
+
+I trust you will give this matter your urgent attention.
+
+Yours sincerely,
+
+${DR}
+${PRAC}`,
+
+    consent: (p) => `PATIENT CONSENT TO TREATMENT
+
+I, ${p} (ID: [ID NUMBER]), hereby confirm the following:
+
+[ ] I consent to examination and treatment by ${DR} and the staff of this practice.
+[ ] I understand the nature of my condition and the proposed treatment as explained to me.
+[ ] I have had the opportunity to ask questions and my questions have been answered satisfactorily.
+[ ] I understand I may withdraw consent at any time.
+[ ] I consent to the disclosure of relevant medical information to my medical aid for billing and claim purposes.
+[ ] I consent to referral to other healthcare providers as deemed clinically necessary.
+
+Patient / Guardian Signature: ___________________________   Date: [DATE]
+
+Relationship to patient (if guardian): ___________________________
+
+Witness Signature: ___________________________`,
+
+    popia: (p) => `POPIA INFORMATION AND CONSENT FORM
+
+Patient: ${p}
+ID Number: [ID NUMBER]
+Date: [DATE]
+
+In terms of the Protection of Personal Information Act 4 of 2013 (POPIA), we are required to inform you of the following:
+
+PURPOSE OF COLLECTION
+We collect your personal and health information for the purpose of providing medical care, managing your health records, and processing medical aid claims.
+
+INFORMATION COLLECTED
+Name, ID number, contact details, medical history, diagnoses, treatment records, and medical aid information.
+
+STORAGE AND SECURITY
+Your information is stored securely and accessed only by authorised healthcare staff.
+
+SHARING OF INFORMATION
+Your information may be shared with: your medical aid (for claims), specialists to whom you are referred, and laboratories / radiology facilities.
+
+YOUR RIGHTS
+You have the right to access, correct, and request deletion of your personal information.
+
+CONSENT
+I, ${p}, hereby consent to the collection, processing, storage, and use of my personal information by this practice as described above.
+
+Patient Signature: ___________________________   Date: [DATE]`,
+
+    scratch: () => '',
+  };
+
+  // ── DOM refs ───────────────────────────────────────────────────────────
+  const patientSel  = document.getElementById('{{ form.patient.id_for_label }}');
+  const typeSel     = document.getElementById('{{ form.doc_type.id_for_label }}');
+  const catSel      = document.getElementById('{{ form.category.id_for_label }}');
+  const contentArea = document.getElementById('{{ form.content.id_for_label }}');
+  const tplBody     = document.getElementById('tplBody');
+  const tplToggle   = document.getElementById('tplToggle');
+  const tplChevron  = document.getElementById('tplChevron');
+
+  // ── Collapse toggle ────────────────────────────────────────────────────
+  tplToggle.addEventListener('click', () => {
+    const hidden = tplBody.style.display === 'none';
+    tplBody.style.display = hidden ? '' : 'none';
+    tplToggle.innerHTML   = hidden
+      ? '<i class="bi bi-chevron-up" id="tplChevron"></i> Hide'
+      : '<i class="bi bi-chevron-down" id="tplChevron"></i> Show';
+  });
+
+  // ── Get current patient name from select ───────────────────────────────
+  function patientName() {
+    const opt = patientSel.options[patientSel.selectedIndex];
+    return (opt && opt.value) ? opt.text.trim() : '[PATIENT NAME]';
+  }
+
+  // ── Apply template ─────────────────────────────────────────────────────
+  document.querySelectorAll('.tpl-card').forEach(card => {
+    card.addEventListener('click', () => {
+      // Highlight selected card
+      document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+
+      const tplKey = card.dataset.tpl;
+      const type   = card.dataset.type;
+      const cat    = card.dataset.cat;
+
+      // Set doc type and category selects
+      if (type) typeSel.value = type;
+      if (cat)  catSel.value  = cat;
+
+      // Trigger typeahead sync if present (typeahead wraps selects)
+      [typeSel, catSel].forEach(sel => sel.dispatchEvent(new Event('change', { bubbles: true })));
+
+      // Fill content
+      const fn = TEMPLATES[tplKey];
+      if (fn) contentArea.value = fn(patientName());
+
+      // Scroll to content field and focus
+      contentArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      contentArea.focus();
+    });
+  });
+
+  // ── Re-substitute patient name if patient changes after template applied ─
+  patientSel.addEventListener('change', () => {
+    const active = document.querySelector('.tpl-card.active');
+    if (!active) return;
+    const fn = TEMPLATES[active.dataset.tpl];
+    if (fn) contentArea.value = fn(patientName());
+  });
+})();
+</script>
 {% endblock %}
