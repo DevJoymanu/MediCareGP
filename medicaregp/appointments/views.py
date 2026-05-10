@@ -1,9 +1,8 @@
-from datetime import date, datetime
-
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.utils import timezone
 from .models import Appointment
 from .forms import AppointmentForm, WalkInForm
 
@@ -98,8 +97,9 @@ def walk_in_create(request):
     form = WalkInForm(request.POST or None, initial=initial)
     if form.is_valid():
         appt = form.save(commit=False)
-        appt.date = date.today()
-        appt.time = datetime.now().time().replace(second=0, microsecond=0)
+        now = timezone.localtime()
+        appt.date = now.date()
+        appt.time = now.time().replace(second=0, microsecond=0)
         appt.visit_type = 'Walk-In'
         appt.status = 'Checked In'
         appt.save()
@@ -109,7 +109,7 @@ def walk_in_create(request):
 
 @login_required
 def waiting_room(request):
-    today = date.today()
+    today = timezone.localdate()
     waiting = (Appointment.objects
                .filter(date=today, status='Checked In')
                .select_related('patient')

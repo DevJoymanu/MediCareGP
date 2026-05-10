@@ -1,6 +1,5 @@
 import io
 import base64
-from datetime import date as date_cls, datetime
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -8,7 +7,7 @@ from django.db import IntegrityError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt  # noqa: F401 (kept for reference)
 from django.views.decorators.http import require_POST
 
 from patients.models import Patient
@@ -228,10 +227,11 @@ def checkin_accept(request, pk):
     else:
         patient = req.patient
 
+    now = timezone.localtime()
     Appointment.objects.create(
         patient=patient,
-        date=date_cls.today(),
-        time=datetime.now().time().replace(second=0, microsecond=0),
+        date=now.date(),
+        time=now.time().replace(second=0, microsecond=0),
         reason=req.reason_for_visit,
         status='Checked In',
         visit_type='Walk-In',

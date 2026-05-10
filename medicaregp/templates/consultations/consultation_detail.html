@@ -2,6 +2,30 @@
 {% block title %}Consultation | G.P CRM{% endblock %}
 {% block page_title %}Consultation Record{% endblock %}
 {% block page_sub %}{{ consultation.patient }} — {{ consultation.date|date:"j F Y" }}{% endblock %}
+
+{% block extra_head %}
+<style>
+  .sn-card { background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 100%); border:1.5px solid #c4b5fd; border-radius:14px; padding:22px 24px; margin-bottom:18px; }
+  .sn-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
+  .sn-title { font-size:13px; font-weight:700; color:#5b21b6; text-transform:uppercase; letter-spacing:.06em; display:flex; align-items:center; gap:8px; }
+  .sn-period { background:#7e22ce; color:#fff; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:700; display:inline-block; }
+  .sn-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:16px; }
+  .sn-field { background:rgba(255,255,255,.7); border-radius:8px; padding:10px 12px; }
+  .sn-label { font-size:10px; font-weight:700; color:#7c3aed; text-transform:uppercase; letter-spacing:.05em; margin-bottom:3px; }
+  .sn-value { font-size:13px; font-weight:700; color:#1e293b; }
+  .sn-actions { display:flex; gap:10px; flex-wrap:wrap; }
+  .btn-download { display:inline-flex; align-items:center; gap:7px; padding:10px 18px; background:#7e22ce; color:#fff; border:none; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none; cursor:pointer; }
+  .btn-download:hover { background:#6b21a8; }
+  .btn-email { display:inline-flex; align-items:center; gap:7px; padding:10px 18px; background:#fff; color:#7e22ce; border:1.5px solid #c4b5fd; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
+  .btn-email:hover { background:#f5f3ff; }
+  .btn-email:disabled { opacity:.5; cursor:not-allowed; }
+  .email-status { font-size:12px; margin-top:8px; padding:8px 12px; border-radius:7px; display:none; }
+  .email-status.ok  { background:#f0fdf4; color:#166534; border:1px solid #86efac; }
+  .email-status.err { background:#fef2f2; color:#b91c1c; border:1px solid #fca5a5; }
+  .no-email-note { font-size:12px; color:#94a3b8; margin-top:6px; }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="page-body">
   <div style="max-width:800px;margin:0 auto;">
@@ -63,7 +87,82 @@
     </div>
     {% endif %}
 
-    <!-- CHANGES: detail-actions stacks buttons full-width on mobile -->
+    <!-- ── Sick Note ──────────────────────────────────────────────────────── -->
+    {% if consultation.sick_note_issued %}
+    <div class="sn-card">
+      <div class="sn-header">
+        <div class="sn-title">
+          <i class="bi bi-file-medical-fill" style="font-size:16px;"></i>
+          Medical / Sick Certificate
+        </div>
+        {% if consultation.sick_note_start_date and consultation.sick_note_days %}
+        <div class="sn-period">
+          {{ consultation.sick_note_start_date|date:"j M" }}
+          —
+          {{ consultation.sick_note_start_date|date:"j M Y" }}
+          &nbsp;·&nbsp;
+          {{ consultation.sick_note_days }} day{{ consultation.sick_note_days|pluralize }}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="sn-grid">
+        <div class="sn-field">
+          <div class="sn-label">Patient</div>
+          <div class="sn-value">{{ consultation.patient }}</div>
+        </div>
+        {% if consultation.sick_note_start_date %}
+        <div class="sn-field">
+          <div class="sn-label">From</div>
+          <div class="sn-value">{{ consultation.sick_note_start_date|date:"j F Y" }}</div>
+        </div>
+        {% endif %}
+        {% if consultation.sick_note_days %}
+        <div class="sn-field">
+          <div class="sn-label">Duration</div>
+          <div class="sn-value">{{ consultation.sick_note_days }} day{{ consultation.sick_note_days|pluralize }}</div>
+        </div>
+        {% endif %}
+        {% if consultation.sick_note_employer %}
+        <div class="sn-field">
+          <div class="sn-label">Employer</div>
+          <div class="sn-value">{{ consultation.sick_note_employer }}</div>
+        </div>
+        {% endif %}
+        <div class="sn-field">
+          <div class="sn-label">Issued by</div>
+          <div class="sn-value">{{ PRACTICE_NAME }}</div>
+        </div>
+      </div>
+
+      <div class="sn-actions">
+        <a href="{% url 'sick_note_pdf' consultation.pk %}" class="btn-download">
+          <i class="bi bi-download"></i> Download PDF
+        </a>
+        {% if consultation.patient.email %}
+        <button class="btn-email" id="emailBtn" onclick="sendEmail()">
+          <i class="bi bi-envelope"></i> Email to {{ consultation.patient.email }}
+        </button>
+        {% else %}
+        <button class="btn-email" disabled title="No email address on file">
+          <i class="bi bi-envelope"></i> Email to Patient
+        </button>
+        {% endif %}
+      </div>
+
+      {% if not consultation.patient.email %}
+      <p class="no-email-note">
+        <i class="bi bi-info-circle"></i>
+        No email address on file for this patient.
+        <a href="{% url 'patient_edit' consultation.patient.pk %}" style="color:#7e22ce;font-weight:600;">Add one &rarr;</a>
+      </p>
+      {% endif %}
+
+      <div class="email-status" id="emailStatus"></div>
+    </div>
+    {% endif %}
+
+    <!-- Actions -->
     <div class="detail-actions">
       <a href="{% url 'consultation_print' consultation.pk %}" class="btn-primary"><i class="bi bi-printer"></i> Print Record</a>
       <a href="{% url 'consultation_edit' consultation.pk %}" class="btn-ghost"><i class="bi bi-pencil"></i> Edit</a>
@@ -71,4 +170,44 @@
     </div>
   </div>
 </div>
+
+{% if consultation.sick_note_issued and consultation.patient.email %}
+<script>
+function getCsrf() {
+  const v = `; ${document.cookie}`;
+  const p = v.split('; csrftoken=');
+  return p.length === 2 ? p.pop().split(';').shift() : '';
+}
+
+function sendEmail() {
+  const btn    = document.getElementById('emailBtn');
+  const status = document.getElementById('emailStatus');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Sending…';
+  status.style.display = 'none';
+
+  fetch('{% url "sick_note_email" consultation.pk %}', {
+    method: 'POST',
+    headers: { 'X-CSRFToken': getCsrf() },
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      status.className = 'email-status ok';
+      status.innerHTML = '<i class="bi bi-check-circle-fill"></i> Certificate sent to <strong>' + data.email + '</strong> successfully.';
+      btn.innerHTML = '<i class="bi bi-check-lg"></i> Sent';
+    } else {
+      throw new Error(data.error || 'Unknown error');
+    }
+  })
+  .catch(err => {
+    status.className = 'email-status err';
+    status.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> Failed to send: ' + err.message;
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-envelope"></i> Email to {{ consultation.patient.email }}';
+  })
+  .finally(() => { status.style.display = 'block'; });
+}
+</script>
+{% endif %}
 {% endblock %}
