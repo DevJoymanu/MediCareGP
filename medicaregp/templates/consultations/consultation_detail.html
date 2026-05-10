@@ -139,26 +139,7 @@
         <a href="{% url 'sick_note_pdf' consultation.pk %}" class="btn-download">
           <i class="bi bi-download"></i> Download PDF
         </a>
-        {% if consultation.patient.email %}
-        <button class="btn-email" id="emailBtn" onclick="sendEmail()">
-          <i class="bi bi-envelope"></i> Email to {{ consultation.patient.email }}
-        </button>
-        {% else %}
-        <button class="btn-email" disabled title="No email address on file">
-          <i class="bi bi-envelope"></i> Email to Patient
-        </button>
-        {% endif %}
       </div>
-
-      {% if not consultation.patient.email %}
-      <p class="no-email-note">
-        <i class="bi bi-info-circle"></i>
-        No email address on file for this patient.
-        <a href="{% url 'patient_edit' consultation.patient.pk %}" style="color:#7e22ce;font-weight:600;">Add one &rarr;</a>
-      </p>
-      {% endif %}
-
-      <div class="email-status" id="emailStatus"></div>
     </div>
     {% endif %}
 
@@ -171,43 +152,4 @@
   </div>
 </div>
 
-{% if consultation.sick_note_issued and consultation.patient.email %}
-<script>
-function getCsrf() {
-  const v = `; ${document.cookie}`;
-  const p = v.split('; csrftoken=');
-  return p.length === 2 ? p.pop().split(';').shift() : '';
-}
-
-function sendEmail() {
-  const btn    = document.getElementById('emailBtn');
-  const status = document.getElementById('emailStatus');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Sending…';
-  status.style.display = 'none';
-
-  fetch('{% url "sick_note_email" consultation.pk %}', {
-    method: 'POST',
-    headers: { 'X-CSRFToken': getCsrf() },
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (data.success) {
-      status.className = 'email-status ok';
-      status.innerHTML = '<i class="bi bi-check-circle-fill"></i> Certificate sent to <strong>' + data.email + '</strong> successfully.';
-      btn.innerHTML = '<i class="bi bi-check-lg"></i> Sent';
-    } else {
-      throw new Error(data.error || 'Unknown error');
-    }
-  })
-  .catch(err => {
-    status.className = 'email-status err';
-    status.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> Failed to send: ' + err.message;
-    btn.disabled = false;
-    btn.innerHTML = '<i class="bi bi-envelope"></i> Email to {{ consultation.patient.email }}';
-  })
-  .finally(() => { status.style.display = 'block'; });
-}
-</script>
-{% endif %}
 {% endblock %}
