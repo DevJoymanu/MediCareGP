@@ -17,6 +17,7 @@ urlpatterns = [
     path('documents/', include('scripts.urls')),
     path('tasks/', include('tasks.urls')),
     path('billing/', include('billing.urls')),
+    path('checkin/', include('appointments.checkin_urls')),
 ]
 
 if settings.DEBUG:

@@ -72,6 +72,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST_PASSWORD = 'your-app-password'       # Gmail App Password (not your login password)
 # DEFAULT_FROM_EMAIL  = 'GP CRM <your-gmail@gmail.com>'
 
+# ── Patient self check-in ─────────────────────────────────────────────────────
+CHECKIN_URL_TOKEN          = os.environ.get('CHECKIN_URL_TOKEN', 'gp-checkin-k7x9mq')
+CHECKIN_GEOLOCATION_ENABLED = False
+CHECKIN_PRACTICE_LAT       = float(os.environ.get('CHECKIN_PRACTICE_LAT', '0'))
+CHECKIN_PRACTICE_LNG       = float(os.environ.get('CHECKIN_PRACTICE_LNG', '0'))
+CHECKIN_RADIUS_METRES      = 300
+CHECKIN_OPEN_HOUR          = 7
+CHECKIN_CLOSE_HOUR         = 18
+
 # ── Practice details (used on invoices & emails) ───────────────────────────────
 PRACTICE_NAME    = 'Dr. Tamuka Chivonivoni'
 PRACTICE_SUBTITLE = 'General Practitioner'

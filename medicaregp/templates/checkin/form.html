@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Check-In</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 24px 16px 40px; }
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 28px 24px; width: 100%; max-width: 460px; }
+    .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+    .brand-icon { width: 40px; height: 40px; background: #7e22ce; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .brand-icon svg { display: block; }
+    .brand-name { font-weight: 700; font-size: 15px; color: #1e293b; line-height: 1.2; }
+    .brand-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+    h1 { font-size: 20px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+    .subtitle { font-size: 13px; color: #64748b; margin-bottom: 20px; }
+    .field { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    label .req { color: #ef4444; margin-left: 2px; }
+    input[type=text], input[type=tel], input[type=date], select, textarea {
+      width: 100%; padding: 11px 14px; border: 1.5px solid #d1d5db; border-radius: 8px;
+      font-size: 15px; color: #1e293b; background: #fff; transition: border-color .15s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #7e22ce; box-shadow: 0 0 0 3px rgba(126,34,206,.1); }
+    textarea { resize: vertical; min-height: 80px; }
+    .gender-row { display: flex; gap: 8px; }
+    .gender-btn { flex: 1; border: 1.5px solid #d1d5db; border-radius: 8px; padding: 10px 8px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 600; color: #374151; background: #fff; transition: all .15s; }
+    .gender-btn.active { border-color: #7e22ce; background: #f5f3ff; color: #7e22ce; }
+    input[type=radio].gender-radio { display: none; }
+    .lookup-banner { border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+    .lookup-banner.found { background: #f0fdf4; border: 1.5px solid #86efac; color: #166534; }
+    .lookup-banner.notfound { background: #fff7ed; border: 1.5px solid #fdba74; color: #9a3412; }
+    .divider { height: 1px; background: #e5e7eb; margin: 20px 0; }
+    .section-title { font-size: 13px; font-weight: 700; color: #7e22ce; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 14px; }
+    .popia-box { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; }
+    .popia-box label { font-size: 12px; font-weight: 400; color: #475569; display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+    .popia-box input[type=checkbox] { margin-top: 2px; flex-shrink: 0; width: 16px; height: 16px; accent-color: #7e22ce; }
+    .btn-submit { width: 100%; padding: 14px; background: #7e22ce; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background .15s; margin-top: 4px; }
+    .btn-submit:hover { background: #6b21a8; }
+    .btn-submit:active { transform: scale(.98); }
+    .error-box { background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: 8px; padding: 11px 14px; color: #b91c1c; font-size: 13px; margin-bottom: 16px; display: flex; gap: 8px; align-items: center; }
+    .hidden { display: none !important; }
+    .loading-indicator { text-align: center; color: #7e22ce; font-size: 13px; padding: 6px 0; }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #e9d5ff; border-top-color: #7e22ce; border-radius: 50%; animation: spin .6s linear infinite; margin-right: 6px; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M9 2v14M2 9h14" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="9" cy="9" r="7.5" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-name">{{ practice_name }}</div>
+      <div class="brand-sub">Patient Self Check-In</div>
+    </div>
+  </div>
+
+  <h1>Check In</h1>
+  <p class="subtitle">Enter your ID number to get started.</p>
+
+  {% if error %}
+  <div class="error-box"><i class="bi bi-exclamation-circle-fill"></i> {{ error }}</div>
+  {% endif %}
+
+  <form method="post" id="checkin-form">
+    {% csrf_token %}
+    <input type="hidden" name="daily_token" value="{{ daily_token }}">
+    <input type="hidden" name="latitude"    id="lat-field">
+    <input type="hidden" name="longitude"   id="lng-field">
+    <!-- Honeypot — must remain empty -->
+    <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+
+    <!-- Step 1: ID Number -->
+    <div class="field">
+      <label for="id_number">ID / Passport Number <span class="req">*</span></label>
+      <input type="text" id="id_number" name="id_number" placeholder="e.g. 8801015009087"
+             value="{{ request.POST.id_number }}" autocomplete="off" inputmode="numeric">
+    </div>
+
+    <div id="lookup-result" class="hidden"></div>
+    <div id="lookup-loading" class="loading-indicator hidden">
+      <span class="spinner"></span> Looking up your record…
+    </div>
+
+    <!-- New patient fields (hidden until lookup confirms not found) -->
+    <div id="new-patient-section" class="hidden">
+      <div class="divider"></div>
+      <div class="section-title">Your Details</div>
+
+      <div style="display:flex;gap:12px;">
+        <div class="field" style="flex:1;">
+          <label for="first_name">First Name <span class="req">*</span></label>
+          <input type="text" id="first_name" name="first_name" value="{{ request.POST.first_name }}" autocomplete="given-name">
+        </div>
+        <div class="field" style="flex:1;">
+          <label for="last_name">Last Name <span class="req">*</span></label>
+          <input type="text" id="last_name" name="last_name" value="{{ request.POST.last_name }}" autocomplete="family-name">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="date_of_birth">Date of Birth <span class="req">*</span></label>
+        <input type="date" id="date_of_birth" name="date_of_birth" value="{{ request.POST.date_of_birth }}">
+      </div>
+
+      <div class="field">
+        <label for="phone_number">Phone Number <span class="req">*</span></label>
+        <input type="tel" id="phone_number" name="phone_number" placeholder="e.g. 082 000 0000" value="{{ request.POST.phone_number }}" autocomplete="tel">
+      </div>
+
+      <div class="field">
+        <label>Gender <span class="req">*</span></label>
+        <div class="gender-row">
+          <label class="gender-btn {% if request.POST.gender == 'M' %}active{% endif %}" onclick="selectGender('M', this)">
+            <input type="radio" class="gender-radio" name="gender" value="M" {% if request.POST.gender == 'M' %}checked{% endif %}>Male
+          </label>
+          <label class="gender-btn {% if request.POST.gender == 'F' %}active{% endif %}" onclick="selectGender('F', this)">
+            <input type="radio" class="gender-radio" name="gender" value="F" {% if request.POST.gender == 'F' %}checked{% endif %}>Female
+          </label>
+          <label class="gender-btn {% if request.POST.gender == 'O' %}active{% endif %}" onclick="selectGender('O', this)">
+            <input type="radio" class="gender-radio" name="gender" value="O" {% if request.POST.gender == 'O' %}checked{% endif %}>Other
+          </label>
+        </div>
+      </div>
+
+      <div class="popia-box">
+        <label>
+          <input type="checkbox" name="popia_consent" {% if request.POST.popia_consent %}checked{% endif %}>
+          I consent to this practice collecting and processing my personal information in accordance with the Protection of Personal Information Act (POPIA).
+        </label>
+      </div>
+    </div>
+
+    <!-- Reason for visit (shown after lookup) -->
+    <div id="reason-section" class="hidden">
+      <div class="field">
+        <label for="reason_for_visit">Reason for Visit <span class="req">*</span></label>
+        <textarea id="reason_for_visit" name="reason_for_visit" placeholder="e.g. Headache and fever, follow-up on blood results…">{{ request.POST.reason_for_visit }}</textarea>
+      </div>
+      <button type="submit" class="btn-submit">
+        <i class="bi bi-box-arrow-in-right"></i> Submit Check-In
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const LOOKUP_URL = "{% url 'checkin_lookup' token=token %}";
+  let lookupTimeout = null;
+  let patientFound = null;
+
+  {% if geolocation_enabled %}
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      document.getElementById('lat-field').value = pos.coords.latitude;
+      document.getElementById('lng-field').value = pos.coords.longitude;
+    });
+  }
+  {% endif %}
+
+  function selectGender(val, el) {
+    document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    el.querySelector('input[type=radio]').checked = true;
+  }
+
+  function showLookupBanner(found, name) {
+    const el = document.getElementById('lookup-result');
+    if (found) {
+      el.className = 'lookup-banner found';
+      el.innerHTML = '<i class="bi bi-person-check-fill"></i> Welcome back, <strong>' + name + '</strong>! Please describe your reason for today\'s visit.';
+    } else {
+      el.className = 'lookup-banner notfound';
+      el.innerHTML = '<i class="bi bi-person-plus-fill"></i> No record found. Please fill in your details below.';
+    }
+    el.classList.remove('hidden');
+  }
+
+  function doLookup(idNumber) {
+    if (!idNumber || idNumber.length < 6) return;
+    document.getElementById('lookup-loading').classList.remove('hidden');
+    document.getElementById('lookup-result').classList.add('hidden');
+    fetch(LOOKUP_URL + '?id=' + encodeURIComponent(idNumber))
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById('lookup-loading').classList.add('hidden');
+        patientFound = data.found;
+        showLookupBanner(data.found, data.name || '');
+        document.getElementById('new-patient-section').classList.toggle('hidden', data.found);
+        document.getElementById('reason-section').classList.remove('hidden');
+      })
+      .catch(() => {
+        document.getElementById('lookup-loading').classList.add('hidden');
+      });
+  }
+
+  document.getElementById('id_number').addEventListener('input', function() {
+    clearTimeout(lookupTimeout);
+    const val = this.value.trim();
+    if (val.length < 6) {
+      document.getElementById('lookup-result').classList.add('hidden');
+      document.getElementById('new-patient-section').classList.add('hidden');
+      document.getElementById('reason-section').classList.add('hidden');
+      return;
+    }
+    lookupTimeout = setTimeout(() => doLookup(val), 600);
+  });
+
+  // If form returned with errors, restore state
+  {% if request.POST.id_number %}
+  doLookup('{{ request.POST.id_number|escapejs }}');
+  {% endif %}
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check-In Unavailable</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 36px 28px; width: 100%; max-width: 400px; text-align: center; }
+    .icon-circle { width: 68px; height: 68px; background: #fff7ed; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+    .icon-circle i { font-size: 32px; color: #d97706; }
+    h1 { font-size: 20px; font-weight: 800; color: #1e293b; margin-bottom: 10px; }
+    p { font-size: 14px; color: #64748b; line-height: 1.6; }
+    .divider { height: 1px; background: #f1f5f9; margin: 20px 0; }
+    .see-receptionist { font-size: 14px; color: #374151; font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="icon-circle">
+    {% if reason == 'location' %}
+      <i class="bi bi-geo-alt-fill"></i>
+    {% elif reason == 'rate_limit' %}
+      <i class="bi bi-slash-circle-fill"></i>
+    {% elif reason == 'expired' %}
+      <i class="bi bi-clock-fill"></i>
+    {% else %}
+      <i class="bi bi-exclamation-triangle-fill"></i>
+    {% endif %}
+  </div>
+
+  {% if reason == 'location' %}
+    <h1>Not at the Practice</h1>
+    <p>Online check-in is only available when you are physically at the practice. Please come in and see the receptionist.</p>
+  {% elif reason == 'rate_limit' %}
+    <h1>Too Many Requests</h1>
+    <p>You have submitted too many check-in requests. Please wait a few minutes or see the receptionist directly.</p>
+  {% elif reason == 'expired' %}
+    <h1>Session Expired</h1>
+    <p>This check-in link has expired. Please scan the QR code again to start a new check-in.</p>
+  {% else %}
+    <h1>Check-In Unavailable</h1>
+    <p>This check-in link is no longer valid. Please scan the QR code at reception again.</p>
+  {% endif %}
+
+  <div class="divider"></div>
+  <p class="see-receptionist">
+    <i class="bi bi-person-badge"></i> Please see the receptionist for assistance.
+  </p>
+</div>
+</body>
+</html>

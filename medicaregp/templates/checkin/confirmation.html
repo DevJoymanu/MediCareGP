@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checked In</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 36px 28px; width: 100%; max-width: 420px; text-align: center; }
+    .icon-circle { width: 72px; height: 72px; background: #f0fdf4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+    .icon-circle i { font-size: 34px; color: #16a34a; }
+    h1 { font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 8px; }
+    .subtitle { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 24px; }
+    .info-box { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; text-align: left; margin-bottom: 20px; }
+    .info-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; margin-bottom: 6px; }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-label { color: #64748b; font-weight: 500; }
+    .info-value { color: #1e293b; font-weight: 600; text-align: right; max-width: 60%; }
+    .badge-new { display: inline-block; background: #fff7ed; color: #c2410c; border: 1px solid #fdba74; border-radius: 6px; font-size: 11px; font-weight: 700; padding: 2px 8px; margin-bottom: 12px; }
+    .phase2-card { background: #f5f3ff; border: 1.5px solid #c4b5fd; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: left; }
+    .phase2-card h3 { font-size: 14px; font-weight: 700; color: #5b21b6; margin-bottom: 6px; }
+    .phase2-card p { font-size: 13px; color: #6d28d9; line-height: 1.5; margin-bottom: 12px; }
+    .btn-phase2 { display: block; width: 100%; padding: 12px; background: #7e22ce; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; text-decoration: none; text-align: center; cursor: pointer; }
+    .btn-phase2:hover { background: #6b21a8; }
+    .waiting-note { font-size: 12px; color: #94a3b8; margin-top: 16px; }
+    .waiting-note i { margin-right: 4px; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="icon-circle">
+    <i class="bi bi-check-circle-fill"></i>
+  </div>
+
+  <h1>You're Checked In!</h1>
+  <p class="subtitle">Your request has been received.<br>Please take a seat — a receptionist will confirm you shortly.</p>
+
+  {% if req %}
+  {% if req.is_new_patient %}<span class="badge-new">New Patient</span>{% endif %}
+
+  <div class="info-box">
+    {% if req.is_new_patient %}
+    <div class="info-row">
+      <span class="info-label">Name</span>
+      <span class="info-value">{{ req.first_name }} {{ req.last_name }}</span>
+    </div>
+    {% else %}
+    <div class="info-row">
+      <span class="info-label">Patient</span>
+      <span class="info-value">{{ req.display_name }}</span>
+    </div>
+    {% endif %}
+    <div class="info-row">
+      <span class="info-label">Reason</span>
+      <span class="info-value">{{ req.reason_for_visit }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Status</span>
+      <span class="info-value" style="color:#d97706;">Awaiting confirmation</span>
+    </div>
+  </div>
+
+  {% if req.is_new_patient %}
+  <div class="phase2-card">
+    <h3><i class="bi bi-clipboard2-plus"></i> Complete Your Profile</h3>
+    <p>While you wait, you can fill in additional details like your address, medical aid, and allergies. This saves time with the doctor.</p>
+    <a href="{{ phase2_url }}" class="btn-phase2">Complete My Profile &rarr;</a>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  <p class="waiting-note">
+    <i class="bi bi-hourglass-split"></i>
+    You can put your phone away — just wait to be called.
+  </p>
+</div>
+</body>
+</html>
