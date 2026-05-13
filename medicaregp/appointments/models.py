@@ -39,6 +39,28 @@ class Appointment(models.Model):
         ordering = ['date', 'time']
 
 
+class PendingReview(models.Model):
+    STATUS_CHOICES = [
+        ('pending',  'Pending Arrival'),
+        ('queued',   'Added to Queue'),
+        ('moved',    'Moved to Another Date'),
+        ('declined', 'Declined'),
+    ]
+    consultation     = models.ForeignKey('consultations.Consultation', on_delete=models.CASCADE, related_name='pending_reviews')
+    date             = models.DateField()
+    status           = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    notes            = models.TextField(blank=True, null=True)
+    rescheduled_date = models.DateField(blank=True, null=True)
+    created_at       = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+        unique_together = [('consultation', 'date')]
+
+    def __str__(self):
+        return f"Review — {self.consultation.patient} on {self.date}"
+
+
 class CheckInRequest(models.Model):
     STATUS_CHOICES = [
         ('pending',  'Pending'),

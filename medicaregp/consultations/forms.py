@@ -29,7 +29,7 @@ class ConsultationForm(forms.ModelForm):
         fields = [
             'patient', 'appointment',
             'weight_kg', 'bp_reading',
-            'chief_complaint', 'review', 'subjective', 'assessment',
+            'chief_complaint', 'subjective', 'assessment',
             'objective', 'differential_diagnosis', 'plan',
             'icd10_code', 'prescriptions', 'follow_up_date',
             'referral_to', 'referral_reason',
@@ -42,7 +42,6 @@ class ConsultationForm(forms.ModelForm):
             'weight_kg':             forms.NumberInput(attrs={'class': INPUT, 'step': '0.1', 'placeholder': 'kg'}),
             'bp_reading':            forms.TextInput(attrs={'class': INPUT, 'placeholder': '120/80'}),
             'chief_complaint':       forms.Textarea(attrs={'class': TEXTAREA, 'rows': 3, 'placeholder': 'Reason for visit…'}),
-            'review':                forms.Textarea(attrs={'class': TEXTAREA, 'rows': 4, 'placeholder': 'How is the patient progressing? Response to treatment, medication adherence, any concerns since last visit…'}),
             'subjective':            forms.Textarea(attrs={'class': TEXTAREA, 'rows': 10, 'placeholder': 'Clinical notes — presenting complaint, history, examination findings, results discussed…'}),
             'assessment':            forms.Textarea(attrs={'class': TEXTAREA, 'rows': 3, 'placeholder': 'Assessment / Diagnosis'}),
             'objective':             forms.Textarea(attrs={'class': TEXTAREA, 'rows': 3, 'placeholder': 'Objective findings'}),

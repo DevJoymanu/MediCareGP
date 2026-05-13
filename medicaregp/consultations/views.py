@@ -183,15 +183,35 @@ def _build_sick_note_pdf(consultation):
 @login_required
 def consultation_list(request):
     from django.db.models import Q
-    q = request.GET.get('q', '')
-    consultations = Consultation.objects.select_related('patient').all()
+    q   = request.GET.get('q', '')
+    tab = request.GET.get('tab', 'all')
+
+    qs = Consultation.objects.select_related('patient').all()
+
+    if tab == 'consultations':
+        qs = qs.filter(reviewed_consultation__isnull=True)
+    elif tab == 'reviews':
+        qs = qs.filter(reviewed_consultation__isnull=False)
+
     if q:
-        consultations = consultations.filter(
+        qs = qs.filter(
             Q(patient__first_name__icontains=q) |
             Q(patient__last_name__icontains=q) |
             Q(assessment__icontains=q)
         )
-    return render(request, 'consultations/consultation_list.html', {'consultations': consultations, 'q': q})
+
+    counts = {
+        'all':           Consultation.objects.count(),
+        'consultations': Consultation.objects.filter(reviewed_consultation__isnull=True).count(),
+        'reviews':       Consultation.objects.filter(reviewed_consultation__isnull=False).count(),
+    }
+
+    return render(request, 'consultations/consultation_list.html', {
+        'consultations': qs,
+        'q':      q,
+        'tab':    tab,
+        'counts': counts,
+    })
 
 
 @login_required

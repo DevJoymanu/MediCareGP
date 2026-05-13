@@ -109,7 +109,19 @@ def walk_in_create(request):
 
 @login_required
 def waiting_room(request):
+    from consultations.models import Consultation
+    from .models import PendingReview
     today = timezone.localdate()
+
+    # Auto-create PendingReview records for any follow-ups due today
+    due = Consultation.objects.filter(follow_up_date=today).select_related('patient')
+    for c in due:
+        PendingReview.objects.get_or_create(consultation=c, date=today)
+
+    pending_reviews = (PendingReview.objects
+                       .filter(date=today, status='pending')
+                       .select_related('consultation__patient', 'consultation'))
+
     waiting = (Appointment.objects
                .filter(date=today, status='Checked In')
                .select_related('patient')
@@ -119,10 +131,70 @@ def waiting_room(request):
                  .select_related('patient')
                  .order_by('time'))
     return render(request, 'appointments/waiting_room.html', {
-        'waiting': waiting,
-        'scheduled': scheduled,
-        'today': today,
+        'waiting':        waiting,
+        'scheduled':      scheduled,
+        'pending_reviews': pending_reviews,
+        'today':          today,
     })
+
+
+@login_required
+def pending_review_queue(request, pk):
+    from .models import PendingReview
+    pr = get_object_or_404(PendingReview, pk=pk)
+    if request.method == 'POST':
+        Appointment.objects.create(
+            patient=pr.consultation.patient,
+            date=timezone.localdate(),
+            time=timezone.localtime().time(),
+            reason=f'Review — follow-up from {pr.consultation.date}',
+            status='Checked In',
+            visit_type='Walk-In',
+        )
+        pr.status = 'queued'
+        pr.save(update_fields=['status'])
+        messages.success(request, f'{pr.consultation.patient} added to the waiting room queue.')
+    return redirect('waiting_room')
+
+
+@login_required
+def pending_review_move(request, pk):
+    from .models import PendingReview
+    pr = get_object_or_404(PendingReview, pk=pk)
+    if request.method == 'POST':
+        new_date = request.POST.get('new_date')
+        if new_date:
+            pr.consultation.follow_up_date = new_date
+            pr.consultation.save(update_fields=['follow_up_date'])
+            pr.status = 'moved'
+            pr.rescheduled_date = new_date
+            pr.save(update_fields=['status', 'rescheduled_date'])
+            messages.success(request, f'Review moved to {new_date}.')
+    return redirect('waiting_room')
+
+
+@login_required
+def pending_review_decline(request, pk):
+    from .models import PendingReview
+    pr = get_object_or_404(PendingReview, pk=pk)
+    if request.method == 'POST':
+        pr.status = 'declined'
+        pr.save(update_fields=['status'])
+        pr.consultation.follow_up_date = None
+        pr.consultation.save(update_fields=['follow_up_date'])
+        messages.success(request, f'Review for {pr.consultation.patient} declined.')
+    return redirect('waiting_room')
+
+
+@login_required
+def pending_review_notes(request, pk):
+    from .models import PendingReview
+    pr = get_object_or_404(PendingReview, pk=pk)
+    if request.method == 'POST':
+        pr.notes = request.POST.get('notes', '').strip()
+        pr.save(update_fields=['notes'])
+        messages.success(request, 'Notes saved.')
+    return redirect('waiting_room')
 
 @login_required
 def appointment_check_in(request, pk):

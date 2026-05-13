@@ -10,6 +10,10 @@ urlpatterns = [
     path('<int:pk>/edit/', views.appointment_edit, name='appointment_edit'),
     path('<int:pk>/status/', views.appointment_set_status, name='appointment_set_status'),
     path('<int:pk>/check-in/', views.appointment_check_in, name='appointment_check_in'),
+    path('pending-review/<int:pk>/queue/',   views.pending_review_queue,   name='pending_review_queue'),
+    path('pending-review/<int:pk>/move/',    views.pending_review_move,    name='pending_review_move'),
+    path('pending-review/<int:pk>/decline/', views.pending_review_decline, name='pending_review_decline'),
+    path('pending-review/<int:pk>/notes/',   views.pending_review_notes,   name='pending_review_notes'),
     path('<int:pk>/cancel/', views.appointment_cancel, name='appointment_cancel'),
     path('<int:pk>/delete/', views.appointment_delete, name='appointment_delete'),
     # ── Staff check-in management ─────────────────────────────────────────────

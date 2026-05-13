@@ -31,6 +31,26 @@
   #polling-indicator { font-size:11px; color:var(--text-4); display:flex; align-items:center; gap:5px; }
   .poll-dot { width:6px; height:6px; border-radius:50%; background:#22c55e; display:inline-block; animation:pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* ── Pending Customer Arrival ── */
+  .pr-row { padding:16px 20px; border-bottom:1px solid var(--border); }
+  .pr-row:last-child { border-bottom:none; }
+  .pr-patient { font-weight:700; font-size:15px; color:var(--text-1); }
+  .pr-meta    { font-size:12px; color:var(--text-3); margin-top:3px; }
+  .pr-diagnosis { font-size:13px; color:var(--text-2); margin-top:5px; font-style:italic; }
+  .pr-actions { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+  .pr-btn-queue   { padding:8px 16px; background:#1d4ed8; color:#fff; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+  .pr-btn-queue:hover { background:#1e40af; }
+  .pr-btn-move    { padding:8px 14px; background:#fff; color:var(--text-2); border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+  .pr-btn-move:hover  { border-color:#f59e0b; color:#d97706; }
+  .pr-btn-notes   { padding:8px 14px; background:#fff; color:var(--text-2); border:1.5px solid var(--border); border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+  .pr-btn-notes:hover { border-color:var(--accent); color:var(--accent); }
+  .pr-btn-decline { padding:8px 14px; background:#fff; color:#ef4444; border:1.5px solid #fecaca; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+  .pr-btn-decline:hover { background:#fef2f2; }
+  .pr-inline-form { display:none; margin-top:12px; padding:12px 14px; background:#f8fafc; border:1px solid var(--border); border-radius:10px; }
+  .pr-inline-form.open { display:block; }
+  .pr-inline-form label { font-size:11px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:5px; }
+  .pr-notes-chip { display:inline-block; font-size:12px; color:#7c3aed; background:#f5f3ff; border:1px solid #ddd6fe; border-radius:6px; padding:3px 9px; margin-top:6px; }
 </style>
 {% endblock %}
 
@@ -72,6 +92,123 @@
           <i class="bi bi-inbox no-pending-icon"></i> No pending check-in requests.
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ── Pending Customer Arrival (review follow-ups) ─────────────────── -->
+  <div style="margin-bottom:30px;">
+    <div class="waiting-section-label" style="display:flex;align-items:center;gap:8px;">
+      <i class="bi bi-arrow-repeat" style="color:#7c3aed;"></i>
+      Pending Customer Arrival
+      {% if pending_reviews %}
+        <span style="background:#7c3aed;color:#fff;font-size:11px;font-weight:700;border-radius:12px;padding:2px 8px;">{{ pending_reviews|length }}</span>
+      {% endif %}
+      <span style="font-size:11px;font-weight:400;color:var(--text-4);text-transform:none;letter-spacing:0;">— review follow-ups for today</span>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      {% if pending_reviews %}
+        {% for pr in pending_reviews %}
+        <div class="pr-row" id="pr-{{ pr.pk }}">
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <div class="avatar av-50 av-{{ forloop.counter }}">
+              {{ pr.consultation.patient.first_name|first|upper }}{{ pr.consultation.patient.last_name|first|upper }}
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div class="pr-patient">{{ pr.consultation.patient }}</div>
+              <div class="pr-meta">
+                <i class="bi bi-clock-history" style="margin-right:3px;"></i>
+                Review of visit on {{ pr.consultation.date|date:"j F Y" }}
+                {% if pr.consultation.patient.medical_aid_name %}
+                  &nbsp;·&nbsp; {{ pr.consultation.patient.medical_aid_name }}
+                {% endif %}
+              </div>
+              {% if pr.consultation.assessment %}
+                <div class="pr-diagnosis">
+                  <strong>Diagnosis:</strong> {{ pr.consultation.assessment|truncatechars:120 }}
+                </div>
+              {% endif %}
+              {% if pr.notes %}
+                <div class="pr-notes-chip"><i class="bi bi-sticky"></i> {{ pr.notes|truncatechars:80 }}</div>
+              {% endif %}
+
+              <!-- Action buttons -->
+              <div class="pr-actions">
+
+                <!-- Add to Queue -->
+                <form method="post" action="{% url 'pending_review_queue' pr.pk %}">
+                  {% csrf_token %}
+                  <button type="submit" class="pr-btn-queue">
+                    <i class="bi bi-person-check"></i> Add to Queue
+                  </button>
+                </form>
+
+                <!-- Move to Another Date (toggle inline form) -->
+                <button type="button" class="pr-btn-move"
+                        onclick="togglePrForm('move-{{ pr.pk }}')">
+                  <i class="bi bi-calendar-event"></i> Move Date
+                </button>
+
+                <!-- Add Notes (toggle inline form) -->
+                <button type="button" class="pr-btn-notes"
+                        onclick="togglePrForm('notes-{{ pr.pk }}')">
+                  <i class="bi bi-sticky"></i> Add Notes
+                </button>
+
+                <!-- Decline -->
+                <form method="post" action="{% url 'pending_review_decline' pr.pk %}"
+                      onsubmit="return confirm('Decline this review for {{ pr.consultation.patient }}?');">
+                  {% csrf_token %}
+                  <button type="submit" class="pr-btn-decline">
+                    <i class="bi bi-x-lg"></i> Decline
+                  </button>
+                </form>
+
+              </div>
+
+              <!-- Move Date inline form -->
+              <div id="move-{{ pr.pk }}" class="pr-inline-form">
+                <form method="post" action="{% url 'pending_review_move' pr.pk %}">
+                  {% csrf_token %}
+                  <label>New date for this review</label>
+                  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                    <input type="date" name="new_date" class="crm-input" style="width:180px;" required
+                           min="{{ today|date:'Y-m-d' }}">
+                    <button type="submit" class="btn-primary" style="font-size:13px;padding:8px 16px;">
+                      <i class="bi bi-check-lg"></i> Confirm
+                    </button>
+                    <button type="button" class="btn-ghost" style="font-size:13px;padding:8px 14px;"
+                            onclick="togglePrForm('move-{{ pr.pk }}')">Cancel</button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Notes inline form -->
+              <div id="notes-{{ pr.pk }}" class="pr-inline-form">
+                <form method="post" action="{% url 'pending_review_notes' pr.pk %}">
+                  {% csrf_token %}
+                  <label>Notes</label>
+                  <textarea name="notes" rows="3" class="crm-input" style="width:100%;margin-bottom:10px;"
+                            placeholder="e.g. Patient called to confirm, running 20 min late…">{{ pr.notes|default:'' }}</textarea>
+                  <div style="display:flex;gap:8px;">
+                    <button type="submit" class="btn-primary" style="font-size:13px;padding:8px 16px;">
+                      <i class="bi bi-check-lg"></i> Save Notes
+                    </button>
+                    <button type="button" class="btn-ghost" style="font-size:13px;padding:8px 14px;"
+                            onclick="togglePrForm('notes-{{ pr.pk }}')">Cancel</button>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-pending">
+          <i class="bi bi-calendar-check no-pending-icon"></i>
+          No review follow-ups scheduled for today.
+        </div>
+      {% endif %}
     </div>
   </div>
 
@@ -275,6 +412,12 @@ function pollPending() {
 // First poll on load, then every 10 seconds
 pollPending();
 setInterval(pollPending, 10000);
+
+// Pending review inline form toggle
+function togglePrForm(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
 
 // Unlock AudioContext on first user interaction (browser policy)
 document.addEventListener('click', function unlock() {
