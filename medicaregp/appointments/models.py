@@ -46,6 +46,7 @@ class PendingReview(models.Model):
         ('queued',       'Added to Queue'),
         ('moved',        'Moved to Another Date'),
         ('declined',     'Declined'),
+        ('completed',    'Review Completed'),
     ]
     consultation     = models.ForeignKey('consultations.Consultation', on_delete=models.CASCADE, related_name='pending_reviews')
     date             = models.DateField()

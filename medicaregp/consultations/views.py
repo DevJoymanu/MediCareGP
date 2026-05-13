@@ -238,9 +238,18 @@ def consultation_create(request):
     form = ConsultationForm(request.POST or None, initial=initial)
     if form.is_valid():
         consultation = form.save()
+        from appointments.models import Appointment
+        today = timezone.localdate()
         if consultation.appointment and consultation.appointment.status == 'Checked In':
             consultation.appointment.status = 'Completed'
             consultation.appointment.save(update_fields=['status'])
+        else:
+            # Fallback: complete any checked-in appointment for this patient today
+            Appointment.objects.filter(
+                patient=consultation.patient,
+                date=today,
+                status='Checked In',
+            ).update(status='Completed')
         messages.success(request, f'Consultation saved for {consultation.patient}.')
         return redirect('consultation_detail', pk=consultation.pk)
 
@@ -287,6 +296,25 @@ def consultation_review(request, pk):
         review.lab_requests   = request.POST.get('lab_requests') or None
         review.follow_up_date = request.POST.get('follow_up_date') or None
         review.save()
+
+        # Clear the patient from the waiting room queue
+        from appointments.models import Appointment, PendingReview
+        today = timezone.localdate()
+        pr = original.pending_reviews.filter(date=today).first()
+        if pr:
+            if pr.appointment and pr.appointment.status == 'Checked In':
+                pr.appointment.status = 'Completed'
+                pr.appointment.save(update_fields=['status'])
+            pr.status = 'completed'
+            pr.save(update_fields=['status'])
+        else:
+            # Fallback: complete any checked-in appointment for this patient today
+            Appointment.objects.filter(
+                patient=original.patient,
+                date=today,
+                status='Checked In',
+            ).update(status='Completed')
+
         messages.success(request, f'Review saved for {original.patient}.')
         return redirect('consultation_detail', pk=review.pk)
 
