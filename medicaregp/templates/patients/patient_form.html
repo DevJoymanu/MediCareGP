@@ -31,6 +31,7 @@
     border-bottom:1px solid var(--border);
   }
   .edit-section-body { padding:20px 24px; }
+  .section-num { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--accent); color:#fff; font-size:11px; font-weight:700; flex-shrink:0; }
 </style>
 {% endblock %}
 
@@ -62,29 +63,37 @@
       <div class="card {% if form.instance.pk %}edit-mode{% endif %}" style="padding:0;overflow:hidden;">
         <!-- Tab bar (hidden in edit mode via CSS) -->
         <div class="form-tab-bar">
-          <button type="button" class="form-tab active" data-section="personal"><i class="bi bi-person" style="margin-right:6px;"></i>Personal</button>
-          <button type="button" class="form-tab" data-section="contact"><i class="bi bi-telephone" style="margin-right:6px;"></i>Contact &amp; Next of Kin</button>
-          <button type="button" class="form-tab" data-section="medaid"><i class="bi bi-shield-check" style="margin-right:6px;"></i>Medical Aid</button>
-          <button type="button" class="form-tab" data-section="clinical"><i class="bi bi-heart-pulse" style="margin-right:6px;"></i>Clinical History</button>
-          <button type="button" class="form-tab" data-section="lifestyle"><i class="bi bi-activity" style="margin-right:6px;"></i>Lifestyle</button>
-          <button type="button" class="form-tab" data-section="family"><i class="bi bi-people" style="margin-right:6px;"></i>Family Members</button>
-          <button type="button" class="form-tab" data-section="consent"><i class="bi bi-file-check" style="margin-right:6px;"></i>Consent</button>
+          <button type="button" class="form-tab active" data-section="patient"><span class="section-num" style="margin-right:6px;">1</span>Patient Details</button>
+          <button type="button" class="form-tab" data-section="responsible"><span class="section-num" style="margin-right:6px;">2</span>Person Responsible</button>
+          <button type="button" class="form-tab" data-section="medaid"><span class="section-num" style="margin-right:6px;">3</span>Medical Aid</button>
+          <button type="button" class="form-tab" data-section="nextofkin"><span class="section-num" style="margin-right:6px;">4</span>Next of Kin</button>
+          <button type="button" class="form-tab" data-section="referredby"><span class="section-num" style="margin-right:6px;">5</span>Referred By</button>
+          <button type="button" class="form-tab" data-section="family"><span class="section-num" style="margin-right:6px;">6</span>Family Members</button>
+          <button type="button" class="form-tab" data-section="optional"><i class="bi bi-plus-circle" style="margin-right:6px;"></i>Optional</button>
         </div>
 
-        <!-- ── Personal ─────────────────────────────────────────────────── -->
-        <div id="section-personal" class="form-section active">
-          {% if form.instance.pk %}<div class="edit-section-title"><i class="bi bi-person"></i> Personal</div>{% endif %}
+        <!-- ── Section 1: Patient Details ──────────────────────────────────── -->
+        <div id="section-patient" class="form-section active">
+          {% if form.instance.pk %}<div class="edit-section-title"><span class="section-num">1</span> Patient Details</div>{% endif %}
           <div class="edit-section-body">
           <div class="form-grid-2">
+            <div class="form-group">
+              <label>Surname *</label>
+              {{ form.last_name }}
+              {% if form.last_name.errors %}<div style="color:#dc2626;font-size:12px;margin-top:4px;">{{ form.last_name.errors.0 }}</div>{% endif %}
+            </div>
             <div class="form-group">
               <label>First Name *</label>
               {{ form.first_name }}
               {% if form.first_name.errors %}<div style="color:#dc2626;font-size:12px;margin-top:4px;">{{ form.first_name.errors.0 }}</div>{% endif %}
             </div>
             <div class="form-group">
-              <label>Last Name / Surname *</label>
-              {{ form.last_name }}
-              {% if form.last_name.errors %}<div style="color:#dc2626;font-size:12px;margin-top:4px;">{{ form.last_name.errors.0 }}</div>{% endif %}
+              <label>Title <span style="font-weight:400;color:var(--text-4);">Mr/Mrs/Miss</span></label>
+              {{ form.title }}
+            </div>
+            <div class="form-group">
+              <label>Gender *</label>
+              {{ form.gender }}
             </div>
             <div class="form-group">
               <label>Date of Birth *</label>
@@ -94,14 +103,10 @@
                 <span style="color:var(--text-3);font-weight:600;">/</span>
                 <input type="number" id="dob_month" min="1"    max="12"   placeholder="MM"   class="crm-input" style="width:64px;text-align:center;padding-left:0;padding-right:0;" inputmode="numeric">
                 <span style="color:var(--text-3);font-weight:600;">/</span>
-                <input type="number" id="dob_year"  min="1900" max="2025" placeholder="YYYY" class="crm-input" style="width:84px;text-align:center;padding-left:0;padding-right:0;" inputmode="numeric">
+                <input type="number" id="dob_year"  min="1900" max="2026" placeholder="YYYY" class="crm-input" style="width:84px;text-align:center;padding-left:0;padding-right:0;" inputmode="numeric">
                 <span id="dob_age_badge" style="display:none;font-size:12px;font-weight:600;color:#fff;background:var(--accent);border-radius:20px;padding:2px 10px;margin-left:4px;white-space:nowrap;"></span>
               </div>
               {% if form.date_of_birth.errors %}<div style="color:#dc2626;font-size:12px;margin-top:4px;">{{ form.date_of_birth.errors.0 }}</div>{% endif %}
-            </div>
-            <div class="form-group">
-              <label>Gender *</label>
-              {{ form.gender }}
             </div>
             <div class="form-group">
               <label>ID Type *</label>
@@ -118,24 +123,9 @@
               </div>
             </div>
             <div class="form-group">
-              <label>ID / Passport Number *</label>
+              <label>I.D. Number *</label>
               {{ form.id_number }}
               {% if form.id_number.errors %}<div style="color:#dc2626;font-size:12px;margin-top:4px;">{{ form.id_number.errors.0 }}</div>{% endif %}
-            </div>
-            <div class="form-group">
-              <label>Blood Type</label>
-              <div style="display:none;">{{ form.blood_type }}</div>
-              <div class="blood-grid" id="blood-grid">
-                <button type="button" class="blood-btn" data-val="A+">A+</button>
-                <button type="button" class="blood-btn" data-val="A-">A−</button>
-                <button type="button" class="blood-btn" data-val="B+">B+</button>
-                <button type="button" class="blood-btn" data-val="B-">B−</button>
-                <button type="button" class="blood-btn" data-val="AB+">AB+</button>
-                <button type="button" class="blood-btn" data-val="AB-">AB−</button>
-                <button type="button" class="blood-btn" data-val="O+">O+</button>
-                <button type="button" class="blood-btn" data-val="O-">O−</button>
-                <button type="button" class="blood-btn unknown" data-val="">Not known</button>
-              </div>
             </div>
             <div class="form-group">
               <label>Occupation</label>
@@ -150,74 +140,63 @@
               {{ form.marital_status }}
             </div>
           </div>
-          </div>
-        </div>
-
-        <!-- ── Contact & Next of kin ────────────────────────────────────── -->
-        <div id="section-contact" class="form-section">
-          {% if form.instance.pk %}<div class="edit-section-title"><i class="bi bi-telephone"></i> Contact &amp; Next of Kin</div>{% endif %}
-          <div class="edit-section-body">
-          <div style="margin-bottom:20px;">
-            <div class="section-label" style="margin-bottom:14px;">Contact Details</div>
+          <div style="margin-top:20px;">
+            <div class="section-label" style="margin-bottom:14px;">Contact Numbers</div>
             <div class="form-grid-2">
               <div class="form-group">
-                <label>Cell Number *</label>
-                {{ form.phone }}
-              </div>
-              <div class="form-group">
-                <label>Home Number</label>
+                <label>Tel. (H) <span style="font-weight:400;color:var(--text-4);">Home</span></label>
                 {{ form.alt_phone }}
               </div>
               <div class="form-group">
-                <label>Work Number <span style="font-weight:400;color:var(--text-4);">Tel. (W)</span></label>
+                <label>Tel. (W) <span style="font-weight:400;color:var(--text-4);">Work</span></label>
                 {{ form.work_phone }}
               </div>
               <div class="form-group">
-                <label>Email Address</label>
+                <label>Cell Number *</label>
+                {{ form.phone }}
+                {% if form.phone.errors %}<div style="color:#dc2626;font-size:12px;margin-top:4px;">{{ form.phone.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="form-group">
+                <label>E-Mail Address</label>
                 {{ form.email }}
-              </div>
-              <div class="form-group form-full">
-                <label>Residential Address</label>
-                {{ form.address }}
-              </div>
-              <div class="form-group form-full">
-                <label>Postal Address <span style="font-weight:400;color:var(--text-4);">if different</span></label>
-                {{ form.postal_address }}
-              </div>
-            </div>
-          </div>
-          <div style="margin-bottom:20px;">
-            <div class="section-label" style="margin-bottom:14px;">Employment</div>
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label>Employer</label>
-                {{ form.employer }}
-              </div>
-              <div class="form-group form-full">
-                <label>Work Address</label>
-                {{ form.work_address }}
-              </div>
-            </div>
-          </div>
-          <div>
-            <div class="section-label" style="margin-bottom:14px;">Emergency Contact / Next of Kin</div>
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label>Full Name</label>
-                {{ form.next_of_kin_name }}
-              </div>
-              <div class="form-group">
-                <label>Contact Number</label>
-                {{ form.next_of_kin_phone }}
               </div>
             </div>
           </div>
           </div>
         </div>
 
-        <!-- ── Medical Aid ──────────────────────────────────────────────── -->
+        <!-- ── Section 2: Person Responsible for Account ─────────────────── -->
+        <div id="section-responsible" class="form-section">
+          {% if form.instance.pk %}<div class="edit-section-title"><span class="section-num">2</span> Person Responsible for Account</div>{% endif %}
+          <div class="edit-section-body">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:12px 14px;border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe;">
+            <i class="bi bi-info-circle" style="color:#2563eb;flex-shrink:0;"></i>
+            <span style="font-size:13px;color:#1d4ed8;">For adult patients, this is usually the patient themselves. For minors, enter the parent or guardian's details.</span>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group form-full">
+              <label>Postal Address</label>
+              {{ form.postal_address }}
+            </div>
+            <div class="form-group form-full">
+              <label>Residential Address</label>
+              {{ form.address }}
+            </div>
+            <div class="form-group">
+              <label>Employer</label>
+              {{ form.employer }}
+            </div>
+            <div class="form-group form-full">
+              <label>Work Address</label>
+              {{ form.work_address }}
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <!-- ── Section 3: Medical Aid ───────────────────────────────────── -->
         <div id="section-medaid" class="form-section">
-          {% if form.instance.pk %}<div class="edit-section-title"><i class="bi bi-shield-check"></i> Medical Aid</div>{% endif %}
+          {% if form.instance.pk %}<div class="edit-section-title"><span class="section-num">3</span> Medical Aid</div>{% endif %}
           <div class="edit-section-body">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:12px 14px;border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe;">
             <i class="bi bi-info-circle" style="color:#2563eb;flex-shrink:0;"></i>
@@ -225,19 +204,19 @@
           </div>
           <div class="form-grid-2">
             <div class="form-group">
-              <label>Medical Aid Scheme</label>
+              <label>Medical Aid Name</label>
               {{ form.medical_aid_name }}
-            </div>
-            <div class="form-group">
-              <label>Plan / Option</label>
-              {{ form.medical_aid_plan }}
             </div>
             <div class="form-group">
               <label>Membership Number</label>
               {{ form.medical_aid_number }}
             </div>
             <div class="form-group">
-              <label>Dependant Code</label>
+              <label>Plan / Option</label>
+              {{ form.medical_aid_plan }}
+            </div>
+            <div class="form-group">
+              <label>Dependants</label>
               {{ form.dependant_code }}
             </div>
             <div class="form-group">
@@ -245,68 +224,66 @@
               {{ form.principal_member_name }}
             </div>
             <div class="form-group">
-              <label>Principal Member's ID Number</label>
+              <label>Principal Member's I.D. Number</label>
               {{ form.principal_member_id }}
             </div>
           </div>
           </div>
         </div>
 
-        <!-- ── Clinical History ─────────────────────────────────────────── -->
-        <div id="section-clinical" class="form-section">
-          {% if form.instance.pk %}<div class="edit-section-title"><i class="bi bi-heart-pulse"></i> Clinical History</div>{% endif %}
+        <!-- ── Section 4: Next of Kin ──────────────────────────────────── -->
+        <div id="section-nextofkin" class="form-section">
+          {% if form.instance.pk %}<div class="edit-section-title"><span class="section-num">4</span> Next of Kin</div>{% endif %}
           <div class="edit-section-body">
           <div class="form-grid-2">
             <div class="form-group">
-              <label>Known Allergies</label>
-              {{ form.allergies }}
-              <div style="font-size:11px;color:var(--text-4);margin-top:4px;">Comma-separated: medication, food, environmental</div>
+              <label>Full Name</label>
+              {{ form.next_of_kin_name }}
             </div>
             <div class="form-group">
-              <label>Chronic Conditions</label>
-              {{ form.chronic_conditions }}
-              <div style="font-size:11px;color:var(--text-4);margin-top:4px;">Comma-separated: e.g. Hypertension, Type 2 Diabetes</div>
+              <label>Relationship</label>
+              {{ form.next_of_kin_relationship }}
             </div>
             <div class="form-group form-full">
-              <label>Current Chronic Medication &amp; Dosages</label>
-              {{ form.current_medication }}
+              <label>Address</label>
+              {{ form.next_of_kin_address }}
             </div>
-            <div class="form-group form-full">
-              <label>Previous Surgeries / Hospitalisations</label>
-              {{ form.previous_surgeries }}
+            <div class="form-group">
+              <label>Cell Number</label>
+              {{ form.next_of_kin_phone }}
             </div>
-            <div class="form-group form-full">
-              <label>Family Medical History</label>
-              {{ form.family_history }}
+            <div class="form-group">
+              <label>E-Mail Address</label>
+              {{ form.next_of_kin_email }}
             </div>
           </div>
           </div>
         </div>
 
-        <!-- ── Lifestyle ────────────────────────────────────────────────── -->
-        <div id="section-lifestyle" class="form-section">
-          {% if form.instance.pk %}<div class="edit-section-title"><i class="bi bi-activity"></i> Lifestyle</div>{% endif %}
+        <!-- ── Section 5: Referred By ──────────────────────────────────── -->
+        <div id="section-referredby" class="form-section">
+          {% if form.instance.pk %}<div class="edit-section-title"><span class="section-num">5</span> Referred By</div>{% endif %}
           <div class="edit-section-body">
           <div class="form-grid-2">
             <div class="form-group">
-              <label>Smoking Status</label>
-              {{ form.smoking_status }}
+              <label>Name</label>
+              {{ form.referred_by_name }}
             </div>
             <div class="form-group">
-              <label>Alcohol Use</label>
-              {{ form.alcohol_use }}
+              <label>Phone / Cell</label>
+              {{ form.referred_by_phone }}
             </div>
-            <div class="form-group form-full">
-              <label>Other Substance Use <span style="font-weight:400;color:var(--text-4);">(optional)</span></label>
-              {{ form.substance_use }}
+            <div class="form-group">
+              <label>E-Mail Address</label>
+              {{ form.referred_by_email }}
             </div>
           </div>
           </div>
         </div>
 
-        <!-- ── Family Members ──────────────────────────────────────────── -->
+        <!-- ── Section 6: Family Members ──────────────────────────────────── -->
         <div id="section-family" class="form-section">
-          {% if form.instance.pk %}<div class="edit-section-title"><i class="bi bi-people"></i> Family Members / Dependants</div>{% endif %}
+          {% if form.instance.pk %}<div class="edit-section-title"><span class="section-num">6</span> Family Members / Dependants</div>{% endif %}
           <div class="edit-section-body">
             <div style="font-size:13px;color:var(--text-3);margin-bottom:16px;">Record household members or medical aid dependants. Used for follow-up care and allergy flagging.</div>
             {{ formset.management_form }}
@@ -377,33 +354,104 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- ── Optional: Clinical, Lifestyle, Blood Type, Consent ─────────── -->
+        <div id="section-optional" class="form-section">
+          {% if form.instance.pk %}<div class="edit-section-title"><i class="bi bi-plus-circle"></i> Additional Information (Optional)</div>{% endif %}
+          <div class="edit-section-body">
+
+            <!-- Blood Type -->
+            <div style="margin-bottom:24px;">
+              <div class="section-label" style="margin-bottom:14px;">Blood Type</div>
+              <div style="display:none;">{{ form.blood_type }}</div>
+              <div class="blood-grid" id="blood-grid">
+                <button type="button" class="blood-btn" data-val="A+">A+</button>
+                <button type="button" class="blood-btn" data-val="A-">A−</button>
+                <button type="button" class="blood-btn" data-val="B+">B+</button>
+                <button type="button" class="blood-btn" data-val="B-">B−</button>
+                <button type="button" class="blood-btn" data-val="AB+">AB+</button>
+                <button type="button" class="blood-btn" data-val="AB-">AB−</button>
+                <button type="button" class="blood-btn" data-val="O+">O+</button>
+                <button type="button" class="blood-btn" data-val="O-">O−</button>
+                <button type="button" class="blood-btn unknown" data-val="">Not known</button>
+              </div>
+            </div>
+
+            <!-- Clinical History -->
+            <div style="margin-bottom:24px;">
+              <div class="section-label" style="margin-bottom:14px;">Clinical History</div>
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label>Known Allergies</label>
+                  {{ form.allergies }}
+                  <div style="font-size:11px;color:var(--text-4);margin-top:4px;">Comma-separated: medication, food, environmental</div>
+                </div>
+                <div class="form-group">
+                  <label>Chronic Conditions</label>
+                  {{ form.chronic_conditions }}
+                  <div style="font-size:11px;color:var(--text-4);margin-top:4px;">Comma-separated: e.g. Hypertension, Type 2 Diabetes</div>
+                </div>
+                <div class="form-group form-full">
+                  <label>Current Chronic Medication &amp; Dosages</label>
+                  {{ form.current_medication }}
+                </div>
+                <div class="form-group form-full">
+                  <label>Previous Surgeries / Hospitalisations</label>
+                  {{ form.previous_surgeries }}
+                </div>
+                <div class="form-group form-full">
+                  <label>Family Medical History</label>
+                  {{ form.family_history }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Lifestyle -->
+            <div style="margin-bottom:24px;">
+              <div class="section-label" style="margin-bottom:14px;">Lifestyle</div>
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label>Smoking Status</label>
+                  {{ form.smoking_status }}
+                </div>
+                <div class="form-group">
+                  <label>Alcohol Use</label>
+                  {{ form.alcohol_use }}
+                </div>
+                <div class="form-group form-full">
+                  <label>Other Substance Use <span style="font-weight:400;color:var(--text-4);">(optional)</span></label>
+                  {{ form.substance_use }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Consent -->
+            <div>
+              <div class="section-label" style="margin-bottom:14px;">Consent</div>
+              <div style="margin-bottom:14px;padding:14px;border-radius:10px;background:#fffbeb;border:1px solid #fde68a;">
+                <div style="font-size:13px;font-weight:600;color:#92400e;margin-bottom:6px;"><i class="bi bi-exclamation-triangle" style="margin-right:6px;"></i>Consent to treat</div>
+                <p style="font-size:13px;color:#78350f;margin:0;">By ticking the box below, the patient confirms they consent to examination and treatment by the practice. This must be confirmed verbally or in writing before any treatment is rendered.</p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div class="consent-row">
+                  {{ form.consent_to_treat }}
+                  <label for="{{ form.consent_to_treat.id_for_label }}">
+                    <strong>Consent to Treat</strong> — I consent to examination and treatment by this practice.
+                  </label>
+                </div>
+                <div class="consent-row">
+                  {{ form.popia_consent }}
+                  <label for="{{ form.popia_consent.id_for_label }}">
+                    <strong>POPIA Consent</strong> — I consent to the collection, storage, and use of my personal information in accordance with the Protection of Personal Information Act (POPIA).
+                  </label>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
-        <!-- ── Consent ──────────────────────────────────────────────────── -->
-        <div id="section-consent" class="form-section">
-          {% if form.instance.pk %}<div class="edit-section-title"><i class="bi bi-file-check"></i> Consent</div>{% endif %}
-          <div class="edit-section-body">
-          <div style="margin-bottom:20px;padding:14px;border-radius:10px;background:#fffbeb;border:1px solid #fde68a;">
-            <div style="font-size:13px;font-weight:600;color:#92400e;margin-bottom:6px;"><i class="bi bi-exclamation-triangle" style="margin-right:6px;"></i>Consent to treat</div>
-            <p style="font-size:13px;color:#78350f;margin:0;">By ticking the box below, the patient confirms they consent to examination and treatment by the practice. This must be confirmed verbally or in writing before any treatment is rendered.</p>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:12px;">
-            <div class="consent-row">
-              {{ form.consent_to_treat }}
-              <label for="{{ form.consent_to_treat.id_for_label }}">
-                <strong>Consent to Treat</strong> — I consent to examination and treatment by this practice.
-              </label>
-            </div>
-            <div class="consent-row">
-              {{ form.popia_consent }}
-              <label for="{{ form.popia_consent.id_for_label }}">
-                <strong>POPIA Consent</strong> — I consent to the collection, storage, and use of my personal information in accordance with the Protection of Personal Information Act (POPIA).
-              </label>
-            </div>
-          </div>
-          </div>
-        </div>
         <!-- ── Card footer navigation ──────────────────────────────────── -->
         {% if not form.instance.pk %}
         <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-top:1px solid var(--border);background:#fff;">
@@ -423,7 +471,7 @@
 <script>
 {% if not form.instance.pk %}
 (function () {
-  const tabs = ['personal', 'contact', 'medaid', 'clinical', 'lifestyle', 'family', 'consent'];
+  const tabs = ['patient', 'responsible', 'medaid', 'nextofkin', 'referredby', 'family', 'optional'];
   let current = 0;
 
   function showTab(idx) {
@@ -463,7 +511,6 @@
 
   buttons.forEach(btn => btn.addEventListener('click', () => activate(btn.dataset.val)));
 
-  // Pre-select when editing
   activate(select.value || 'SA_ID');
 })();
 
@@ -479,9 +526,8 @@
 
   buttons.forEach(btn => btn.addEventListener('click', () => activate(btn.dataset.val)));
 
-  // Pre-select when editing
   if (select.value) activate(select.value);
-  else activate('');   // highlight "Not known" by default
+  else activate('');
 })();
 
 // ── Family Members: add / remove rows ────────────────────────────────────
@@ -531,7 +577,7 @@
     const d = parseInt(dayEl.value, 10);
     const m = parseInt(monEl.value, 10);
     const y = parseInt(yrEl.value, 10);
-    if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1900 && y <= 2025) {
+    if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1900 && y <= 2026) {
       hidden.value = y + '-' + pad(m) + '-' + pad(d);
       const today = new Date();
       let age = today.getFullYear() - y;
@@ -546,7 +592,6 @@
     }
   }
 
-  // Auto-advance: move focus when field is filled
   dayEl.addEventListener('input', function () {
     if (this.value.length >= 2 || parseInt(this.value, 10) > 3) monEl.focus();
     updateHidden();
@@ -557,7 +602,6 @@
   });
   yrEl.addEventListener('input', updateHidden);
 
-  // Pre-populate when editing (value is YYYY-MM-DD)
   if (hidden && hidden.value) {
     const parts = hidden.value.split('-');
     if (parts.length === 3) {

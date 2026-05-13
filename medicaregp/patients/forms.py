@@ -13,8 +13,9 @@ class PatientForm(forms.ModelForm):
         exclude = ['date_registered', 'file_number']
         widgets = {
             # Personal
-            'first_name':           forms.TextInput(attrs={'class': INPUT}),
             'last_name':            forms.TextInput(attrs={'class': INPUT}),
+            'first_name':           forms.TextInput(attrs={'class': INPUT}),
+            'title':                forms.Select(attrs={'class': SELECT, 'style': 'width:100%;'}),
             'date_of_birth':        forms.DateInput(attrs={'class': INPUT, 'type': 'date'}),
             'gender':               forms.Select(attrs={'class': SELECT, 'style': 'width:100%;'}),
             'id_type':              forms.Select(attrs={'class': SELECT, 'style': 'width:100%;'}),
@@ -23,17 +24,25 @@ class PatientForm(forms.ModelForm):
             'home_language':        forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. Zulu, English'}),
             'marital_status':       forms.Select(attrs={'class': SELECT, 'style': 'width:100%;'}),
             # Contact
+            'alt_phone':            forms.TextInput(attrs={'class': INPUT, 'placeholder': 'Home number Tel. (H)'}),
+            'work_phone':           forms.TextInput(attrs={'class': INPUT, 'placeholder': 'Work number Tel. (W)'}),
             'phone':                forms.TextInput(attrs={'class': INPUT, 'placeholder': '+27 xx xxx xxxx'}),
-            'alt_phone':            forms.TextInput(attrs={'class': INPUT, 'placeholder': 'Home number'}),
-            'work_phone':           forms.TextInput(attrs={'class': INPUT, 'placeholder': 'Work number'}),
             'email':                forms.EmailInput(attrs={'class': INPUT}),
+            # Person responsible
+            'postal_address':       forms.Textarea(attrs={'class': TEXTAREA, 'rows': 2}),
             'address':              forms.Textarea(attrs={'class': TEXTAREA, 'rows': 2}),
-            'postal_address':       forms.Textarea(attrs={'class': TEXTAREA, 'rows': 2, 'placeholder': 'If different from residential'}),
             'employer':             forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. Dept. of Education'}),
             'work_address':         forms.Textarea(attrs={'class': TEXTAREA, 'rows': 2}),
             # Next of kin
-            'next_of_kin_name':     forms.TextInput(attrs={'class': INPUT}),
-            'next_of_kin_phone':    forms.TextInput(attrs={'class': INPUT, 'placeholder': '+27 xx xxx xxxx'}),
+            'next_of_kin_name':         forms.TextInput(attrs={'class': INPUT}),
+            'next_of_kin_relationship':  forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. Spouse, Parent, Sibling'}),
+            'next_of_kin_address':       forms.Textarea(attrs={'class': TEXTAREA, 'rows': 2}),
+            'next_of_kin_phone':         forms.TextInput(attrs={'class': INPUT, 'placeholder': '+27 xx xxx xxxx'}),
+            'next_of_kin_email':         forms.EmailInput(attrs={'class': INPUT}),
+            # Referred by
+            'referred_by_name':     forms.TextInput(attrs={'class': INPUT}),
+            'referred_by_phone':    forms.TextInput(attrs={'class': INPUT, 'placeholder': '+27 xx xxx xxxx'}),
+            'referred_by_email':    forms.EmailInput(attrs={'class': INPUT}),
             # Medical aid
             'medical_aid_name':     forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. Discovery Health'}),
             'medical_aid_plan':     forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. Coastal Core'}),

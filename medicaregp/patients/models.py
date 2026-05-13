@@ -30,10 +30,15 @@ class Patient(models.Model):
         ('Widowed',  'Widowed'),
         ('Other',    'Other'),
     ]
+    TITLE_CHOICES = [
+        ('Mr', 'Mr'), ('Mrs', 'Mrs'), ('Miss', 'Miss'),
+        ('Ms', 'Ms'), ('Dr', 'Dr'), ('Prof', 'Prof'),
+    ]
 
     # ── Personal ──────────────────────────────────────────────────────────────
-    first_name      = models.CharField(max_length=100)
     last_name       = models.CharField(max_length=100)
+    first_name      = models.CharField(max_length=100)
+    title           = models.CharField(max_length=10, choices=TITLE_CHOICES, blank=True, null=True)
     date_of_birth   = models.DateField()
     gender          = models.CharField(max_length=1, choices=GENDER_CHOICES)
     id_type         = models.CharField(max_length=10, choices=ID_TYPE_CHOICES, default='SA_ID')
@@ -54,8 +59,16 @@ class Patient(models.Model):
     work_address    = models.TextField(blank=True, null=True, verbose_name='Work address')
 
     # ── Next of kin ──────────────────────────────────────────────────────────
-    next_of_kin_name  = models.CharField(max_length=150, blank=True, null=True, verbose_name='Next of kin name')
-    next_of_kin_phone = models.CharField(max_length=20,  blank=True, null=True, verbose_name='Next of kin phone')
+    next_of_kin_name         = models.CharField(max_length=150, blank=True, null=True, verbose_name='Next of kin name')
+    next_of_kin_relationship = models.CharField(max_length=50,  blank=True, null=True, verbose_name='Relationship to patient')
+    next_of_kin_address      = models.TextField(blank=True, null=True, verbose_name='Next of kin address')
+    next_of_kin_phone        = models.CharField(max_length=20,  blank=True, null=True, verbose_name='Next of kin cell')
+    next_of_kin_email        = models.EmailField(blank=True, null=True, verbose_name='Next of kin email')
+
+    # ── Referred by ───────────────────────────────────────────────────────────
+    referred_by_name  = models.CharField(max_length=150, blank=True, null=True, verbose_name='Referred by')
+    referred_by_phone = models.CharField(max_length=20,  blank=True, null=True, verbose_name='Referrer phone/cell')
+    referred_by_email = models.EmailField(blank=True, null=True, verbose_name='Referrer email')
 
     # ── Medical aid ───────────────────────────────────────────────────────────
     medical_aid_name      = models.CharField(max_length=100, blank=True, null=True, verbose_name='Medical aid scheme')
