@@ -34,17 +34,29 @@ def _update_patient_from_checkin(patient, req):
     """Fill in any blank patient fields from a CheckInRequest (phase 2 data)."""
     updated = []
     mapping = {
-        'address':           req.address,
-        'medical_aid_name':  req.medical_aid_name,
-        'medical_aid_number':req.medical_aid_number,
-        'allergies':         req.allergies,
-        'chronic_conditions':req.chronic_conditions,
-        'next_of_kin_name':  req.next_of_kin_name,
-        'next_of_kin_phone': req.next_of_kin_phone,
-        'blood_type':        req.blood_type,
+        'title':                    req.title,
+        'email':                    req.email,
+        'alt_phone':                req.alt_phone,
+        'occupation':               req.occupation,
+        'employer':                 req.employer,
+        'work_phone':               req.work_phone,
+        'address':                  req.address,
+        'postal_address':           req.postal_address,
+        'blood_type':               req.blood_type,
+        'medical_aid_name':         req.medical_aid_name,
+        'medical_aid_plan':         req.medical_aid_plan,
+        'medical_aid_number':       req.medical_aid_number,
+        'allergies':                req.allergies,
+        'chronic_conditions':       req.chronic_conditions,
+        'current_medication':       req.current_medication,
+        'smoking_status':           req.smoking_status,
+        'alcohol_use':              req.alcohol_use,
+        'next_of_kin_name':         req.next_of_kin_name,
+        'next_of_kin_relationship': req.next_of_kin_relationship,
+        'next_of_kin_phone':        req.next_of_kin_phone,
     }
     for field, value in mapping.items():
-        if value and not getattr(patient, field):
+        if value and not getattr(patient, field, None):
             setattr(patient, field, value)
             updated.append(field)
     if updated:
@@ -228,17 +240,29 @@ def checkin_phase2(request, phase2_token):
 
     saved = False
     if request.method == 'POST':
-        req.address            = request.POST.get('address', '').strip()
-        req.blood_type         = request.POST.get('blood_type', '').strip()
-        req.medical_aid_name   = request.POST.get('medical_aid_name', '').strip()
-        req.medical_aid_number = request.POST.get('medical_aid_number', '').strip()
-        req.allergies          = request.POST.get('allergies', '').strip()
-        req.chronic_conditions = request.POST.get('chronic_conditions', '').strip()
-        req.next_of_kin_name   = request.POST.get('next_of_kin_name', '').strip()
-        req.next_of_kin_phone  = request.POST.get('next_of_kin_phone', '').strip()
-        req.phase2_completed   = True
+        def g(key): return request.POST.get(key, '').strip()
+        req.title                    = g('title')
+        req.email                    = g('email')
+        req.alt_phone                = g('alt_phone')
+        req.occupation               = g('occupation')
+        req.employer                 = g('employer')
+        req.work_phone               = g('work_phone')
+        req.address                  = g('address')
+        req.postal_address           = g('postal_address')
+        req.blood_type               = g('blood_type')
+        req.medical_aid_name         = g('medical_aid_name')
+        req.medical_aid_plan         = g('medical_aid_plan')
+        req.medical_aid_number       = g('medical_aid_number')
+        req.allergies                = g('allergies')
+        req.chronic_conditions       = g('chronic_conditions')
+        req.current_medication       = g('current_medication')
+        req.smoking_status           = g('smoking_status')
+        req.alcohol_use              = g('alcohol_use')
+        req.next_of_kin_name         = g('next_of_kin_name')
+        req.next_of_kin_relationship = g('next_of_kin_relationship')
+        req.next_of_kin_phone        = g('next_of_kin_phone')
+        req.phase2_completed         = True
         req.save()
-        # If the patient was already accepted, update their record now
         if req.patient:
             _update_patient_from_checkin(req.patient, req)
         saved = True

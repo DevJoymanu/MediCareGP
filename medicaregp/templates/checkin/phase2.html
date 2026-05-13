@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tell Us About Yourself</title>
+  <title>Complete Your Profile</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -15,249 +15,115 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 20px 16px;
+      justify-content: flex-start;
+      padding: 20px 16px 48px;
     }
 
-    /* ── Progress bar ── */
-    .progress-wrap {
-      width: 100%;
-      max-width: 480px;
-      margin-bottom: 16px;
-    }
-    .progress-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #7c3aed;
-    }
-    .progress-track {
-      height: 6px;
-      background: #ddd6fe;
-      border-radius: 20px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #7c3aed, #a855f7);
-      border-radius: 20px;
-      transition: width 0.5s cubic-bezier(.4,0,.2,1);
-    }
+    /* ── Progress ── */
+    .progress-wrap { width: 100%; max-width: 500px; margin-bottom: 14px; }
+    .progress-top  { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #7c3aed; margin-bottom: 7px; }
+    .progress-track { height: 7px; background: #ddd6fe; border-radius: 20px; overflow: hidden; }
+    .progress-fill  { height: 100%; background: linear-gradient(90deg,#7c3aed,#a855f7); border-radius: 20px; transition: width .5s cubic-bezier(.4,0,.2,1); }
 
     /* ── Card ── */
     .card {
-      background: #fff;
-      border-radius: 20px;
+      background: #fff; border-radius: 22px;
       box-shadow: 0 8px 40px rgba(124,58,237,.12);
-      padding: 32px 28px;
-      width: 100%;
-      max-width: 480px;
-      position: relative;
-      overflow: hidden;
+      padding: 28px 24px; width: 100%; max-width: 500px;
     }
+    .practice-brand { text-align: center; font-size: 12px; font-weight: 700; color: #7c3aed; margin-bottom: 18px; letter-spacing: .03em; }
 
-    /* ── Step slides ── */
-    .step {
-      display: none;
-      animation: slideIn 0.35s cubic-bezier(.4,0,.2,1);
-    }
-    .step.active { display: block; }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(40px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes slideBack {
-      from { opacity: 0; transform: translateX(-40px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-    .step.slide-back { animation: slideBack 0.35s cubic-bezier(.4,0,.2,1); }
+    /* ── Steps ── */
+    .step { display: none; }
+    .step.active { display: block; animation: slideIn .3s ease; }
+    .step.back   { animation: slideBack .3s ease; }
+    @keyframes slideIn  { from { opacity:0; transform:translateX(30px);  } to { opacity:1; transform:translateX(0); } }
+    @keyframes slideBack{ from { opacity:0; transform:translateX(-30px); } to { opacity:1; transform:translateX(0); } }
 
-    /* ── Step content ── */
-    .step-icon {
-      font-size: 52px;
-      margin-bottom: 16px;
-      display: block;
-      text-align: center;
-      animation: bounce 0.5s ease;
-    }
-    @keyframes bounce {
-      0%,100% { transform: translateY(0); }
-      40%      { transform: translateY(-10px); }
-    }
-    .step-question {
-      font-size: 22px;
-      font-weight: 800;
-      color: #1e293b;
-      text-align: center;
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-    .step-hint {
-      font-size: 13px;
-      color: #94a3b8;
-      text-align: center;
-      margin-bottom: 24px;
-      line-height: 1.5;
-    }
+    .step-icon     { font-size: 48px; text-align: center; display: block; margin-bottom: 14px; animation: bounce .4s ease; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 40%{transform:translateY(-8px)} }
+    .step-question { font-size: 21px; font-weight: 800; color: #1e293b; text-align: center; margin-bottom: 5px; line-height: 1.3; }
+    .step-hint     { font-size: 13px; color: #94a3b8; text-align: center; margin-bottom: 20px; line-height: 1.5; }
 
-    /* ── Inputs ── */
-    input[type=text], input[type=tel], select, textarea {
-      width: 100%;
-      padding: 14px 16px;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      font-size: 16px;
-      color: #1e293b;
-      background: #fff;
-      transition: border-color .2s;
-      -webkit-appearance: none;
-      appearance: none;
+    /* ── Fields ── */
+    .field-group { margin-bottom: 14px; }
+    .field-group:last-of-type { margin-bottom: 0; }
+    .field-label { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; display: block; }
+    input[type=text],input[type=tel],input[type=email],select,textarea {
+      width: 100%; padding: 13px 15px; border: 2px solid #e2e8f0; border-radius: 11px;
+      font-size: 16px; color: #1e293b; background: #fff; transition: border-color .2s;
+      -webkit-appearance: none; appearance: none;
     }
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #7c3aed;
-      box-shadow: 0 0 0 4px rgba(124,58,237,.08);
-    }
-    textarea { resize: none; min-height: 90px; }
+    input:focus,select:focus,textarea:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.08); }
+    textarea { resize: none; min-height: 80px; }
     select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      padding-right: 36px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
     }
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 700;
-      color: #475569;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
+    .two-col { display: flex; gap: 12px; }
+    .two-col .field-group { flex: 1; margin-bottom: 0; }
 
-    /* ── Quick-pick chips ── */
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    /* ── Chips ── */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
     .chip {
-      padding: 7px 14px;
-      border-radius: 20px;
-      border: 2px solid #e2e8f0;
-      background: #fff;
-      font-size: 13px;
-      font-weight: 600;
-      color: #475569;
-      cursor: pointer;
-      transition: all .15s;
-      user-select: none;
+      padding: 7px 14px; border-radius: 20px; border: 2px solid #e2e8f0;
+      background: #fff; font-size: 13px; font-weight: 600; color: #475569;
+      cursor: pointer; transition: all .15s; user-select: none;
     }
     .chip:hover  { border-color: #7c3aed; color: #7c3aed; }
     .chip.picked { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+    .chip.green.picked  { background: #16a34a; border-color: #16a34a; }
+    .chip.red.picked    { background: #dc2626; border-color: #dc2626; }
+    .chip.amber.picked  { background: #d97706; border-color: #d97706; }
 
-    /* ── Blood type grid ── */
-    .blood-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 8px;
-    }
+    /* ── Blood grid ── */
+    .blood-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 9px; margin-bottom: 8px; }
     .blood-btn {
-      padding: 14px 4px;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      background: #fff;
-      font-size: 17px;
-      font-weight: 800;
-      color: #475569;
-      cursor: pointer;
-      text-align: center;
-      transition: all .15s;
+      padding: 14px 4px; border: 2px solid #e2e8f0; border-radius: 11px;
+      background: #fff; font-size: 16px; font-weight: 800; color: #475569;
+      cursor: pointer; text-align: center; transition: all .15s;
     }
-    .blood-btn:hover  { border-color: #7c3aed; color: #7c3aed; }
+    .blood-btn:hover { border-color: #7c3aed; color: #7c3aed; }
     .blood-btn.picked { background: #7c3aed; border-color: #7c3aed; color: #fff; }
-    .blood-btn.unknown { font-size: 12px; grid-column: span 4; padding: 10px; }
+    .blood-btn.unknown { font-size: 11px; grid-column: span 4; padding: 9px; }
 
-    /* ── Navigation ── */
-    .step-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 24px;
-    }
-    .btn-skip {
-      background: none;
-      border: none;
-      font-size: 14px;
-      font-weight: 600;
-      color: #94a3b8;
-      cursor: pointer;
-      padding: 10px 4px;
-    }
+    /* ── Nav ── */
+    .step-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; }
+    .btn-skip { background: none; border: none; font-size: 14px; font-weight: 600; color: #94a3b8; cursor: pointer; padding: 10px 4px; }
     .btn-skip:hover { color: #64748b; }
     .btn-next {
-      padding: 14px 32px;
-      background: #7c3aed;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: background .15s;
+      padding: 13px 28px; background: #7c3aed; color: #fff; border: none;
+      border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; transition: background .15s;
     }
     .btn-next:hover { background: #6d28d9; }
     .btn-next:active { transform: scale(.97); }
 
-    /* ── Completion screen ── */
+    /* ── Done ── */
     #step-done { text-align: center; }
+    .confetti  { font-size: 30px; letter-spacing: 8px; margin-bottom: 12px; animation: fadeUp .5s .2s both; }
     .done-circle {
-      width: 90px; height: 90px;
-      background: linear-gradient(135deg, #7c3aed, #a855f7);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px;
-      font-size: 40px;
+      width: 88px; height: 88px; background: linear-gradient(135deg,#7c3aed,#a855f7);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px; font-size: 38px; color: #fff;
       animation: popIn .5s cubic-bezier(.36,.07,.19,.97);
     }
-    @keyframes popIn {
-      0%   { transform: scale(0); opacity: 0; }
-      70%  { transform: scale(1.15); }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .confetti-row { font-size: 28px; margin-bottom: 10px; letter-spacing: 6px; animation: fadeUp .6s .3s both; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .done-title { font-size: 26px; font-weight: 800; color: #1e293b; margin-bottom: 8px; animation: fadeUp .5s .4s both; }
-    .done-sub   { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 28px; animation: fadeUp .5s .5s both; }
-    .done-note  { font-size: 12px; color: #94a3b8; margin-top: 16px; }
-
-    /* ── Practice brand ── */
-    .practice-brand {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #7c3aed;
-      letter-spacing: .03em;
-    }
+    @keyframes popIn  { 0%{transform:scale(0);opacity:0} 70%{transform:scale(1.12)} 100%{transform:scale(1);opacity:1} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .done-title { font-size: 26px; font-weight: 800; color: #1e293b; margin-bottom: 8px; animation: fadeUp .5s .3s both; }
+    .done-sub   { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 24px; animation: fadeUp .5s .4s both; }
+    .done-note  { font-size: 12px; color: #94a3b8; }
   </style>
 </head>
 <body>
 
-<!-- Progress bar -->
 <div class="progress-wrap" id="progressWrap">
   <div class="progress-top">
-    <span id="stepLabel">Step 1 of 5</span>
-    <span id="stepPct">20%</span>
+    <span id="stepLabel">Step 1 of 9</span>
+    <span id="stepPct">11%</span>
   </div>
   <div class="progress-track">
-    <div class="progress-fill" id="progressFill" style="width:20%;"></div>
+    <div class="progress-fill" id="progressFill" style="width:11%;"></div>
   </div>
 </div>
 
@@ -266,103 +132,170 @@
 
   <form method="post" id="phase2Form">
     {% csrf_token %}
+    <!-- All hidden fields — populated by JS before submit -->
+    <input type="hidden" name="title"                    id="h_title">
+    <input type="hidden" name="email"                    id="h_email">
+    <input type="hidden" name="alt_phone"                id="h_alt_phone">
+    <input type="hidden" name="occupation"               id="h_occupation">
+    <input type="hidden" name="employer"                 id="h_employer">
+    <input type="hidden" name="work_phone"               id="h_work_phone">
+    <input type="hidden" name="address"                  id="h_address">
+    <input type="hidden" name="postal_address"           id="h_postal_address">
+    <input type="hidden" name="blood_type"               id="h_blood_type">
+    <input type="hidden" name="medical_aid_name"         id="h_med_name">
+    <input type="hidden" name="medical_aid_plan"         id="h_med_plan">
+    <input type="hidden" name="medical_aid_number"       id="h_med_number">
+    <input type="hidden" name="allergies"                id="h_allergies">
+    <input type="hidden" name="chronic_conditions"       id="h_chronic">
+    <input type="hidden" name="current_medication"       id="h_medication">
+    <input type="hidden" name="smoking_status"           id="h_smoking">
+    <input type="hidden" name="alcohol_use"              id="h_alcohol">
+    <input type="hidden" name="next_of_kin_name"         id="h_nok_name">
+    <input type="hidden" name="next_of_kin_relationship" id="h_nok_rel">
+    <input type="hidden" name="next_of_kin_phone"        id="h_nok_phone">
 
-    <!-- Hidden fields that collect all data -->
-    <input type="hidden" name="address"            id="h_address">
-    <input type="hidden" name="medical_aid_name"   id="h_med_name">
-    <input type="hidden" name="medical_aid_number" id="h_med_num">
-    <input type="hidden" name="allergies"          id="h_allergies">
-    <input type="hidden" name="chronic_conditions" id="h_chronic">
-    <input type="hidden" name="next_of_kin_name"   id="h_nok_name">
-    <input type="hidden" name="next_of_kin_phone"  id="h_nok_phone">
-    <input type="hidden" name="blood_type"         id="h_blood">
-
-    <!-- ══ STEP 1: Address ══════════════════════════════════════════════ -->
+    <!-- ══ STEP 1: Title & Contact extras ══════════════════════════════ -->
     <div class="step active" id="step-1">
+      <span class="step-icon">👋</span>
+      <div class="step-question">A few quick extras</div>
+      <div class="step-hint">These help us greet you properly and stay in touch.</div>
+
+      <div class="field-group">
+        <label class="field-label">Title</label>
+        <div class="chips" id="title-chips">
+          <span class="chip" onclick="pickOne(this,'title-chips')">Mr</span>
+          <span class="chip" onclick="pickOne(this,'title-chips')">Mrs</span>
+          <span class="chip" onclick="pickOne(this,'title-chips')">Miss</span>
+          <span class="chip" onclick="pickOne(this,'title-chips')">Ms</span>
+          <span class="chip" onclick="pickOne(this,'title-chips')">Dr</span>
+          <span class="chip" onclick="pickOne(this,'title-chips')">Prof</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Email Address</label>
+        <input type="email" id="in_email" placeholder="e.g. name@email.com" value="{{ req.email }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Home Phone <span style="font-weight:400;text-transform:none;color:#94a3b8;">optional</span></label>
+        <input type="tel" id="in_alt_phone" placeholder="Landline number" value="{{ req.alt_phone }}">
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="next()">Skip</button>
+        <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 2: Home Address ════════════════════════════════════════ -->
+    <div class="step" id="step-2">
       <span class="step-icon">🏠</span>
       <div class="step-question">Where do you live?</div>
-      <div class="step-hint">This helps us reach you and understand your area. Optional.</div>
-      <textarea id="in_address" rows="3"
-                placeholder="Street address, suburb, city…">{{ req.address }}</textarea>
+      <div class="step-hint">Your home address and postal address if different. All optional.</div>
+      <div class="field-group">
+        <label class="field-label">Residential Address</label>
+        <textarea id="in_address" rows="2" placeholder="Street, suburb, city">{{ req.address }}</textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Postal Address <span style="font-weight:400;text-transform:none;color:#94a3b8;">if different</span></label>
+        <textarea id="in_postal_address" rows="2" placeholder="P.O. Box or postal address">{{ req.postal_address }}</textarea>
+      </div>
       <div class="step-nav">
-        <button type="button" class="btn-skip" onclick="nextStep()">Skip</button>
-        <button type="button" class="btn-next" onclick="nextStep()">
-          Next <i class="bi bi-arrow-right"></i>
-        </button>
+        <button type="button" class="btn-skip" onclick="next()">Skip</button>
+        <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
       </div>
     </div>
 
-    <!-- ══ STEP 2: Medical Aid ══════════════════════════════════════════ -->
-    <div class="step" id="step-2">
+    <!-- ══ STEP 3: Employment ══════════════════════════════════════════ -->
+    <div class="step" id="step-3">
+      <span class="step-icon">💼</span>
+      <div class="step-question">What do you do for work?</div>
+      <div class="step-hint">Helps the doctor with occupational context. Completely optional.</div>
+      <div class="field-group">
+        <label class="field-label">Occupation</label>
+        <input type="text" id="in_occupation" placeholder="e.g. Teacher, Nurse, Engineer" value="{{ req.occupation }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Employer</label>
+        <input type="text" id="in_employer" placeholder="e.g. Dept. of Education" value="{{ req.employer }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Work Phone</label>
+        <input type="tel" id="in_work_phone" placeholder="Work number" value="{{ req.work_phone }}">
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="next()">Skip</button>
+        <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 4: Medical Aid ═════════════════════════════════════════ -->
+    <div class="step" id="step-4">
       <span class="step-icon">💳</span>
       <div class="step-question">Do you have medical aid?</div>
-      <div class="step-hint">This speeds up billing and authorisation. Optional — skip if you're a self-payer.</div>
-      <div style="margin-bottom:14px;">
-        <label>Medical Aid Name</label>
-        <input type="text" id="in_med_name"
-               placeholder="e.g. Discovery, GEMS, Bonitas"
-               value="{{ req.medical_aid_name }}">
+      <div class="step-hint">Speeds up billing and authorisation. Skip if you're a self-payer.</div>
+      <div class="field-group">
+        <label class="field-label">Scheme Name</label>
+        <input type="text" id="in_med_name" placeholder="e.g. Discovery, GEMS, Bonitas" value="{{ req.medical_aid_name }}">
       </div>
-      <div>
-        <label>Membership Number</label>
-        <input type="text" id="in_med_num"
-               placeholder="e.g. 001234567"
-               value="{{ req.medical_aid_number }}">
+      <div class="field-group">
+        <label class="field-label">Plan / Option</label>
+        <input type="text" id="in_med_plan" placeholder="e.g. Emerald Value, KeyCare Plus" value="{{ req.medical_aid_plan }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Membership Number</label>
+        <input type="text" id="in_med_number" placeholder="e.g. 001234567" value="{{ req.medical_aid_number }}">
       </div>
       <div class="step-nav">
-        <button type="button" class="btn-skip" onclick="nextStep()">Skip</button>
-        <button type="button" class="btn-next" onclick="nextStep()">
-          Next <i class="bi bi-arrow-right"></i>
-        </button>
+        <button type="button" class="btn-skip" onclick="next()">No medical aid</button>
+        <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
       </div>
     </div>
 
-    <!-- ══ STEP 3: Allergies ════════════════════════════════════════════ -->
-    <div class="step" id="step-3">
+    <!-- ══ STEP 5: Allergies ══════════════════════════════════════════ -->
+    <div class="step" id="step-5">
       <span class="step-icon">⚠️</span>
       <div class="step-question">Any known allergies?</div>
-      <div class="step-hint">Medication, food, or environmental. Tap the common ones or type your own.</div>
+      <div class="step-hint">Tap the common ones or type your own below.</div>
       <div class="chips" id="allergy-chips">
-        <span class="chip" onclick="toggleChip(this,'allergies')">Penicillin</span>
-        <span class="chip" onclick="toggleChip(this,'allergies')">Sulfa drugs</span>
-        <span class="chip" onclick="toggleChip(this,'allergies')">Aspirin</span>
-        <span class="chip" onclick="toggleChip(this,'allergies')">Ibuprofen</span>
-        <span class="chip" onclick="toggleChip(this,'allergies')">Peanuts</span>
-        <span class="chip" onclick="toggleChip(this,'allergies')">Latex</span>
-        <span class="chip" onclick="toggleChip(this,'allergies')">Shellfish</span>
-        <span class="chip" onclick="toggleChip(this,'allergies')">Dairy</span>
+        <span class="chip red" onclick="toggleChip(this)">Penicillin</span>
+        <span class="chip red" onclick="toggleChip(this)">Sulfa drugs</span>
+        <span class="chip red" onclick="toggleChip(this)">Aspirin</span>
+        <span class="chip red" onclick="toggleChip(this)">Ibuprofen</span>
+        <span class="chip red" onclick="toggleChip(this)">Codeine</span>
+        <span class="chip red" onclick="toggleChip(this)">Peanuts</span>
+        <span class="chip red" onclick="toggleChip(this)">Shellfish</span>
+        <span class="chip red" onclick="toggleChip(this)">Dairy</span>
+        <span class="chip red" onclick="toggleChip(this)">Latex</span>
+        <span class="chip red" onclick="toggleChip(this)">Bee stings</span>
       </div>
-      <textarea id="in_allergies" rows="2"
-                placeholder="Type any others here…">{{ req.allergies }}</textarea>
+      <textarea id="in_allergies" rows="2" placeholder="Any others not listed above…">{{ req.allergies }}</textarea>
       <div class="step-nav">
-        <button type="button" class="btn-skip" onclick="nextStep()">No allergies</button>
-        <button type="button" class="btn-next" onclick="nextStep()">
-          Next <i class="bi bi-arrow-right"></i>
-        </button>
+        <button type="button" class="btn-skip" onclick="next()">No allergies</button>
+        <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
       </div>
     </div>
 
-    <!-- ══ STEP 4: Chronic Conditions + Blood Type ══════════════════════ -->
-    <div class="step" id="step-4">
+    <!-- ══ STEP 6: Chronic Conditions + Blood Type ═════════════════════ -->
+    <div class="step" id="step-6">
       <span class="step-icon">🩺</span>
-      <div class="step-question">Any ongoing conditions?</div>
-      <div class="step-hint">Tap any that apply, or type your own. Also pick your blood type if you know it.</div>
+      <div class="step-question">Any ongoing health conditions?</div>
+      <div class="step-hint">Tap all that apply, or type your own. Also select your blood type if you know it.</div>
       <div class="chips" id="chronic-chips">
-        <span class="chip" onclick="toggleChip(this,'chronic')">Hypertension</span>
-        <span class="chip" onclick="toggleChip(this,'chronic')">Diabetes</span>
-        <span class="chip" onclick="toggleChip(this,'chronic')">Asthma</span>
-        <span class="chip" onclick="toggleChip(this,'chronic')">Epilepsy</span>
-        <span class="chip" onclick="toggleChip(this,'chronic')">Arthritis</span>
-        <span class="chip" onclick="toggleChip(this,'chronic')">Heart disease</span>
-        <span class="chip" onclick="toggleChip(this,'chronic')">Thyroid condition</span>
-        <span class="chip" onclick="toggleChip(this,'chronic')">HIV positive</span>
-        <span class="chip" onclick="toggleChip(this,'chronic')">Anxiety / Depression</span>
+        <span class="chip amber" onclick="toggleChip(this)">Hypertension</span>
+        <span class="chip amber" onclick="toggleChip(this)">Type 2 Diabetes</span>
+        <span class="chip amber" onclick="toggleChip(this)">Asthma</span>
+        <span class="chip amber" onclick="toggleChip(this)">Epilepsy</span>
+        <span class="chip amber" onclick="toggleChip(this)">Heart disease</span>
+        <span class="chip amber" onclick="toggleChip(this)">Arthritis</span>
+        <span class="chip amber" onclick="toggleChip(this)">Thyroid condition</span>
+        <span class="chip amber" onclick="toggleChip(this)">HIV positive</span>
+        <span class="chip amber" onclick="toggleChip(this)">Chronic back pain</span>
+        <span class="chip amber" onclick="toggleChip(this)">Anxiety / Depression</span>
+        <span class="chip amber" onclick="toggleChip(this)">COPD</span>
+        <span class="chip amber" onclick="toggleChip(this)">Kidney disease</span>
       </div>
-      <textarea id="in_chronic" rows="2"
-                placeholder="Any others…">{{ req.chronic_conditions }}</textarea>
-
-      <div style="margin-top:18px;">
-        <label>Blood Type <span style="font-weight:400;text-transform:none;color:#94a3b8;">— if you know it</span></label>
+      <textarea id="in_chronic" rows="2" placeholder="Any others…">{{ req.chronic_conditions }}</textarea>
+      <div style="margin-top:16px;">
+        <label class="field-label">Blood Type <span style="font-weight:400;text-transform:none;color:#94a3b8;">— if you know it</span></label>
         <div class="blood-grid">
           <button type="button" class="blood-btn" onclick="pickBlood(this,'A+')">A+</button>
           <button type="button" class="blood-btn" onclick="pickBlood(this,'A-')">A−</button>
@@ -372,152 +305,238 @@
           <button type="button" class="blood-btn" onclick="pickBlood(this,'AB-')">AB−</button>
           <button type="button" class="blood-btn" onclick="pickBlood(this,'O+')">O+</button>
           <button type="button" class="blood-btn" onclick="pickBlood(this,'O-')">O−</button>
-          <button type="button" class="blood-btn unknown" onclick="pickBlood(this,'')">I don't know</button>
+          <button type="button" class="blood-btn unknown" onclick="pickBlood(this,'')">Don't know</button>
         </div>
       </div>
-
       <div class="step-nav">
-        <button type="button" class="btn-skip" onclick="nextStep()">None / Skip</button>
-        <button type="button" class="btn-next" onclick="nextStep()">
-          Next <i class="bi bi-arrow-right"></i>
-        </button>
+        <button type="button" class="btn-skip" onclick="next()">None / Skip</button>
+        <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
       </div>
     </div>
 
-    <!-- ══ STEP 5: Emergency Contact ════════════════════════════════════ -->
-    <div class="step" id="step-5">
+    <!-- ══ STEP 7: Current Medication ════════════════════════════════ -->
+    <div class="step" id="step-7">
+      <span class="step-icon">💊</span>
+      <div class="step-question">Any current medication?</div>
+      <div class="step-hint">List any medicine you take regularly — name and dosage if you know it.</div>
+      <textarea id="in_medication" rows="4"
+                placeholder="e.g. Metformin 500mg — twice daily&#10;Amlodipine 5mg — once daily&#10;Ventolin inhaler — as needed">{{ req.current_medication }}</textarea>
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="next()">No medication</button>
+        <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 8: Lifestyle ══════════════════════════════════════════ -->
+    <div class="step" id="step-8">
+      <span class="step-icon">🌿</span>
+      <div class="step-question">A little about your lifestyle</div>
+      <div class="step-hint">This helps the doctor give you the best advice. All answers are private.</div>
+      <div class="field-group">
+        <label class="field-label">Smoking</label>
+        <div class="chips" id="smoking-chips">
+          <span class="chip green" onclick="pickOne(this,'smoking-chips')">Never smoked</span>
+          <span class="chip amber" onclick="pickOne(this,'smoking-chips')">Former smoker</span>
+          <span class="chip red"   onclick="pickOne(this,'smoking-chips')">Current smoker</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Alcohol</label>
+        <div class="chips" id="alcohol-chips">
+          <span class="chip green" onclick="pickOne(this,'alcohol-chips')">None</span>
+          <span class="chip green" onclick="pickOne(this,'alcohol-chips')">Occasional</span>
+          <span class="chip amber" onclick="pickOne(this,'alcohol-chips')">Moderate</span>
+          <span class="chip red"   onclick="pickOne(this,'alcohol-chips')">Heavy</span>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="next()">Prefer not to say</button>
+        <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 9: Emergency Contact ══════════════════════════════════ -->
+    <div class="step" id="step-9">
       <span class="step-icon">📞</span>
-      <div class="step-question">Emergency contact?</div>
-      <div class="step-hint">Who should we call if needed? A partner, parent, or close friend works.</div>
-      <div style="margin-bottom:14px;">
-        <label>Their Name</label>
-        <input type="text" id="in_nok_name"
-               placeholder="e.g. Thabo Dlamini"
-               value="{{ req.next_of_kin_name }}">
+      <div class="step-question">Emergency contact</div>
+      <div class="step-hint">Who should we call if something happens? A partner, parent, or close friend.</div>
+      <div class="field-group">
+        <label class="field-label">Their Full Name</label>
+        <input type="text" id="in_nok_name" placeholder="e.g. Thabo Dlamini" value="{{ req.next_of_kin_name }}">
       </div>
-      <div>
-        <label>Their Phone Number</label>
-        <input type="tel" id="in_nok_phone"
-               placeholder="e.g. 083 000 0000"
-               value="{{ req.next_of_kin_phone }}">
+      <div class="two-col" style="margin-bottom:14px;">
+        <div class="field-group">
+          <label class="field-label">Relationship</label>
+          <div class="chips" id="nok-rel-chips" style="margin-bottom:0;">
+            <span class="chip" onclick="pickOne(this,'nok-rel-chips')">Spouse</span>
+            <span class="chip" onclick="pickOne(this,'nok-rel-chips')">Parent</span>
+            <span class="chip" onclick="pickOne(this,'nok-rel-chips')">Sibling</span>
+            <span class="chip" onclick="pickOne(this,'nok-rel-chips')">Child</span>
+            <span class="chip" onclick="pickOne(this,'nok-rel-chips')">Friend</span>
+          </div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Their Phone Number</label>
+        <input type="tel" id="in_nok_phone" placeholder="e.g. 083 000 0000" value="{{ req.next_of_kin_phone }}">
       </div>
       <div class="step-nav">
-        <button type="button" class="btn-skip" onclick="submitForm()">Skip</button>
-        <button type="button" class="btn-next" onclick="submitForm()">
-          <i class="bi bi-check-lg"></i> Done!
+        <button type="button" class="btn-skip" onclick="submit()">Skip</button>
+        <button type="button" class="btn-next" onclick="submit()">
+          <i class="bi bi-check-lg"></i> All Done!
         </button>
       </div>
     </div>
 
-    <!-- ══ COMPLETION ════════════════════════════════════════════════════ -->
+    <!-- ══ COMPLETION ══════════════════════════════════════════════════ -->
     <div class="step" id="step-done">
-      <div class="confetti-row">🎉 🌟 🎊</div>
+      <div class="confetti">🎉 🌟 🎊</div>
       <div class="done-circle">✓</div>
-      <div class="done-title">You're all set!</div>
+      <div class="done-title">Profile complete!</div>
       <div class="done-sub">
-        Your details have been saved. The doctor has everything they need.<br>
-        Just relax — you'll be called shortly.
+        The doctor has everything they need.<br>
+        Please take a seat — you'll be called shortly.
       </div>
-      <div class="done-note">
-        <i class="bi bi-shield-check"></i>
-        Your information is kept private and used only for your care.
-      </div>
+      <div class="done-note"><i class="bi bi-shield-check"></i> Your info is private and used only for your care.</div>
     </div>
 
   </form>
 </div>
 
 <script>
-const TOTAL_STEPS = 5;
-let current = 1;
+const TOTAL = 9;
+let cur = 1;
 
-// Pre-populate chips from existing data
-(function() {
-  const allChips = document.querySelectorAll('#allergy-chips .chip');
-  const existing = '{{ req.allergies }}'.toLowerCase();
-  allChips.forEach(c => {
-    if (existing.includes(c.textContent.toLowerCase())) c.classList.add('picked');
+// ── Pre-populate chips from existing data ──────────────────────────────
+(function () {
+  const pre = {
+    title:    '{{ req.title|escapejs }}',
+    smoking:  '{{ req.smoking_status|escapejs }}',
+    alcohol:  '{{ req.alcohol_use|escapejs }}',
+    allergies:'{{ req.allergies|escapejs }}'.toLowerCase(),
+    chronic:  '{{ req.chronic_conditions|escapejs }}'.toLowerCase(),
+    nok_rel:  '{{ req.next_of_kin_relationship|escapejs }}',
+    blood:    '{{ req.blood_type|escapejs }}',
+  };
+
+  // Title
+  document.querySelectorAll('#title-chips .chip').forEach(c => {
+    if (c.textContent === pre.title) c.classList.add('picked');
   });
-  const chronicChips = document.querySelectorAll('#chronic-chips .chip');
-  const existingC = '{{ req.chronic_conditions }}'.toLowerCase();
-  chronicChips.forEach(c => {
-    if (existingC.includes(c.textContent.toLowerCase())) c.classList.add('picked');
+  // Smoking
+  const smokeMap = {'Never':'Never smoked','Former':'Former smoker','Current':'Current smoker'};
+  document.querySelectorAll('#smoking-chips .chip').forEach(c => {
+    if (c.textContent === smokeMap[pre.smoking]) c.classList.add('picked');
   });
-  // Pre-select blood type
-  const existingBT = '{{ req.blood_type }}';
-  if (existingBT) {
+  // Alcohol
+  document.querySelectorAll('#alcohol-chips .chip').forEach(c => {
+    if (c.textContent.toLowerCase() === pre.alcohol.toLowerCase()) c.classList.add('picked');
+  });
+  // Allergies
+  document.querySelectorAll('#allergy-chips .chip').forEach(c => {
+    if (pre.allergies.includes(c.textContent.toLowerCase())) c.classList.add('picked');
+  });
+  // Chronic
+  document.querySelectorAll('#chronic-chips .chip').forEach(c => {
+    if (pre.chronic.includes(c.textContent.toLowerCase())) c.classList.add('picked');
+  });
+  // NOK relationship
+  document.querySelectorAll('#nok-rel-chips .chip').forEach(c => {
+    if (c.textContent.toLowerCase() === pre.nok_rel.toLowerCase()) c.classList.add('picked');
+  });
+  // Blood type
+  if (pre.blood) {
     document.querySelectorAll('.blood-btn').forEach(b => {
-      if (b.textContent.trim().replace('−','-') === existingBT) b.classList.add('picked');
+      if (b.textContent.trim().replace('−','-') === pre.blood) b.classList.add('picked');
     });
   }
 })();
 
+// ── Progress ──────────────────────────────────────────────────────────
 function updateProgress() {
-  const pct = Math.round((current / TOTAL_STEPS) * 100);
+  const pct = Math.round((cur / TOTAL) * 100);
   document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('stepLabel').textContent = 'Step ' + current + ' of ' + TOTAL_STEPS;
+  document.getElementById('stepLabel').textContent = 'Step ' + cur + ' of ' + TOTAL;
   document.getElementById('stepPct').textContent = pct + '%';
 }
 
 function showStep(n, back) {
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active','slide-back'));
+  document.querySelectorAll('.step').forEach(s => { s.classList.remove('active','back'); });
   const el = document.getElementById('step-' + n) || document.getElementById('step-done');
-  if (el) {
-    if (back) el.classList.add('slide-back');
-    el.classList.add('active');
-  }
+  if (el) { if (back) el.classList.add('back'); el.classList.add('active'); }
 }
 
-function collectStep(n) {
+// ── Collect current step into hidden fields ───────────────────────────
+function collect(n) {
+  const v = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const picked = sel => [...document.querySelectorAll(sel + ' .chip.picked')].map(c => c.textContent);
+
   if (n === 1) {
-    document.getElementById('h_address').value = document.getElementById('in_address').value.trim();
+    const t = picked('#title-chips')[0] || '';
+    document.getElementById('h_title').value     = t;
+    document.getElementById('h_email').value     = v('in_email');
+    document.getElementById('h_alt_phone').value = v('in_alt_phone');
   } else if (n === 2) {
-    document.getElementById('h_med_name').value = document.getElementById('in_med_name').value.trim();
-    document.getElementById('h_med_num').value  = document.getElementById('in_med_num').value.trim();
+    document.getElementById('h_address').value        = v('in_address');
+    document.getElementById('h_postal_address').value = v('in_postal_address');
   } else if (n === 3) {
-    const chips = [...document.querySelectorAll('#allergy-chips .chip.picked')].map(c => c.textContent);
-    const typed = document.getElementById('in_allergies').value.trim();
-    const all   = [...chips, ...(typed ? [typed] : [])];
-    document.getElementById('h_allergies').value = all.join(', ');
+    document.getElementById('h_occupation').value = v('in_occupation');
+    document.getElementById('h_employer').value   = v('in_employer');
+    document.getElementById('h_work_phone').value = v('in_work_phone');
   } else if (n === 4) {
-    const chips = [...document.querySelectorAll('#chronic-chips .chip.picked')].map(c => c.textContent);
-    const typed = document.getElementById('in_chronic').value.trim();
-    const all   = [...chips, ...(typed ? [typed] : [])];
-    document.getElementById('h_chronic').value = all.join(', ');
+    document.getElementById('h_med_name').value   = v('in_med_name');
+    document.getElementById('h_med_plan').value   = v('in_med_plan');
+    document.getElementById('h_med_number').value = v('in_med_number');
   } else if (n === 5) {
-    document.getElementById('h_nok_name').value  = document.getElementById('in_nok_name').value.trim();
-    document.getElementById('h_nok_phone').value = document.getElementById('in_nok_phone').value.trim();
+    const chips = picked('#allergy-chips');
+    const typed = v('in_allergies');
+    document.getElementById('h_allergies').value = [...chips, ...(typed ? [typed] : [])].join(', ');
+  } else if (n === 6) {
+    const chips = picked('#chronic-chips');
+    const typed = v('in_chronic');
+    document.getElementById('h_chronic').value = [...chips, ...(typed ? [typed] : [])].join(', ');
+  } else if (n === 7) {
+    document.getElementById('h_medication').value = v('in_medication');
+  } else if (n === 8) {
+    const smokeMap = {'Never smoked':'Never','Former smoker':'Former','Current smoker':'Current'};
+    const s = picked('#smoking-chips')[0] || '';
+    const a = picked('#alcohol-chips')[0] || '';
+    document.getElementById('h_smoking').value = smokeMap[s] || s;
+    document.getElementById('h_alcohol').value = a;
+  } else if (n === 9) {
+    document.getElementById('h_nok_name').value  = v('in_nok_name');
+    document.getElementById('h_nok_rel').value   = (picked('#nok-rel-chips')[0] || '');
+    document.getElementById('h_nok_phone').value = v('in_nok_phone');
   }
 }
 
-function nextStep() {
-  collectStep(current);
-  current++;
-  if (current > TOTAL_STEPS) {
-    submitForm();
-    return;
-  }
+function next() {
+  collect(cur);
+  cur++;
+  if (cur > TOTAL) { submit(); return; }
   updateProgress();
-  showStep(current);
+  showStep(cur);
 }
 
-function submitForm() {
-  collectStep(current);
-  // Hide progress, show completion screen
+function submit() {
+  collect(cur);
   document.getElementById('progressWrap').style.display = 'none';
   showStep('done');
-  // Submit in background
   document.getElementById('phase2Form').submit();
 }
 
-function toggleChip(chip, group) {
-  chip.classList.toggle('picked');
+// ── Chip helpers ──────────────────────────────────────────────────────
+function toggleChip(chip) { chip.classList.toggle('picked'); }
+
+function pickOne(chip, groupId) {
+  document.querySelectorAll('#' + groupId + ' .chip').forEach(c => c.classList.remove('picked'));
+  chip.classList.add('picked');
 }
 
-function pickBlood(btn, value) {
+function pickBlood(btn, val) {
   document.querySelectorAll('.blood-btn').forEach(b => b.classList.remove('picked'));
   btn.classList.add('picked');
-  document.getElementById('h_blood').value = value;
+  document.getElementById('h_blood_type').value = val;
 }
 
 // Init

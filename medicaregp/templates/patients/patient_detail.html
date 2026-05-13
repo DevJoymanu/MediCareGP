@@ -81,90 +81,136 @@
     {% endif %}
   </div>
 
-  <!-- Detail grid — 3-col desktop, 1-col mobile -->
+  <!-- ── Section 1: Patient Details ──────────────────────────────────── -->
   <div class="patient-detail-grid">
-    <!-- Personal -->
     <div class="card">
-      <div class="card-title" style="margin-bottom:14px;">Personal</div>
+      <div class="card-title" style="margin-bottom:14px;">Patient Details</div>
+      {% if patient.title %}<div class="detail-row"><span class="detail-key">Title</span><span class="detail-val">{{ patient.title }}</span></div>{% endif %}
       <div class="detail-row"><span class="detail-key">Date of Birth</span><span class="detail-val">{{ patient.date_of_birth|date:"j F Y" }}</span></div>
       <div class="detail-row"><span class="detail-key">{{ patient.get_id_type_display }}</span><span class="detail-val" style="font-family:monospace;font-size:12px;">{{ patient.id_number }}</span></div>
       {% if patient.marital_status %}<div class="detail-row"><span class="detail-key">Marital Status</span><span class="detail-val">{{ patient.get_marital_status_display }}</span></div>{% endif %}
       {% if patient.occupation %}<div class="detail-row"><span class="detail-key">Occupation</span><span class="detail-val">{{ patient.occupation }}</span></div>{% endif %}
       {% if patient.home_language %}<div class="detail-row"><span class="detail-key">Home Language</span><span class="detail-val">{{ patient.home_language }}</span></div>{% endif %}
-      {% if patient.employer %}<div class="detail-row"><span class="detail-key">Employer</span><span class="detail-val">{{ patient.employer }}</span></div>{% endif %}
-      <div class="detail-row"><span class="detail-key">Residential Address</span><span class="detail-val">{{ patient.address|default:"—" }}</span></div>
-      {% if patient.postal_address %}<div class="detail-row"><span class="detail-key">Postal Address</span><span class="detail-val">{{ patient.postal_address }}</span></div>{% endif %}
-      {% if patient.work_phone %}<div class="detail-row"><span class="detail-key">Work Phone</span><span class="detail-val">{{ patient.work_phone }}</span></div>{% endif %}
-      {% if patient.next_of_kin_name %}
-      <div style="margin-top:12px;">
-        <div class="section-label" style="margin-bottom:8px;">Next of Kin</div>
-        <div class="detail-row"><span class="detail-key">Name</span><span class="detail-val">{{ patient.next_of_kin_name }}</span></div>
-        <div class="detail-row"><span class="detail-key">Phone</span><span class="detail-val">{{ patient.next_of_kin_phone|default:"—" }}</span></div>
-      </div>
-      {% endif %}
+      {% if patient.alt_phone %}<div class="detail-row"><span class="detail-key">Tel. (H)</span><span class="detail-val">{{ patient.alt_phone }}</span></div>{% endif %}
+      {% if patient.work_phone %}<div class="detail-row"><span class="detail-key">Tel. (W)</span><span class="detail-val">{{ patient.work_phone }}</span></div>{% endif %}
     </div>
 
-    <!-- Medical aid -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">Person Responsible for Account</div>
+      {% if patient.responsible_surname or patient.responsible_first_name %}
+      <div class="detail-row"><span class="detail-key">Name</span><span class="detail-val">{{ patient.responsible_title }} {{ patient.responsible_first_name }} {{ patient.responsible_surname }}</span></div>
+      {% endif %}
+      {% if patient.responsible_id_number %}<div class="detail-row"><span class="detail-key">ID Number</span><span class="detail-val" style="font-family:monospace;font-size:12px;">{{ patient.responsible_id_number }}</span></div>{% endif %}
+      {% if patient.responsible_email %}<div class="detail-row"><span class="detail-key">Email</span><span class="detail-val">{{ patient.responsible_email }}</span></div>{% endif %}
+      {% if patient.postal_address %}<div class="detail-row"><span class="detail-key">Postal Address</span><span class="detail-val">{{ patient.postal_address }}{% if patient.postal_code %} · {{ patient.postal_code }}{% endif %}</span></div>{% endif %}
+      <div class="detail-row"><span class="detail-key">Residential Address</span><span class="detail-val">{{ patient.address|default:"—" }}{% if patient.residential_code %} · {{ patient.residential_code }}{% endif %}</span></div>
+      {% if patient.responsible_tel_h %}<div class="detail-row"><span class="detail-key">Tel. (H)</span><span class="detail-val">{{ patient.responsible_tel_h }}</span></div>{% endif %}
+      {% if patient.responsible_tel_w %}<div class="detail-row"><span class="detail-key">Tel. (W)</span><span class="detail-val">{{ patient.responsible_tel_w }}</span></div>{% endif %}
+      {% if patient.responsible_cell %}<div class="detail-row"><span class="detail-key">Cell</span><span class="detail-val">{{ patient.responsible_cell }}</span></div>{% endif %}
+      {% if patient.employer %}<div class="detail-row"><span class="detail-key">Employer</span><span class="detail-val">{{ patient.employer }}</span></div>{% endif %}
+      {% if patient.work_address %}<div class="detail-row"><span class="detail-key">Work Address</span><span class="detail-val">{{ patient.work_address }}{% if patient.work_code %} · {{ patient.work_code }}{% endif %}</span></div>{% endif %}
+    </div>
+
+    <!-- Medical Aid -->
     <div class="card">
       <div class="card-title" style="margin-bottom:14px;">Medical Aid</div>
-      <div class="detail-row"><span class="detail-key">Scheme</span><span class="detail-val">{{ patient.medical_aid_name|default:"None" }}</span></div>
-      <div class="detail-row"><span class="detail-key">Plan</span><span class="detail-val">{{ patient.medical_aid_plan|default:"—" }}</span></div>
+      <div class="detail-row"><span class="detail-key">Scheme</span><span class="detail-val">{{ patient.medical_aid_name|default:"None / Self-pay" }}</span></div>
+      {% if patient.medical_aid_plan %}<div class="detail-row"><span class="detail-key">Plan / Option</span><span class="detail-val">{{ patient.medical_aid_plan }}</span></div>{% endif %}
       <div class="detail-row"><span class="detail-key">Member No.</span><span class="detail-val" style="font-family:monospace;font-size:12px;">{{ patient.medical_aid_number|default:"—" }}</span></div>
-      <div class="detail-row"><span class="detail-key">Dependant Code</span><span class="detail-val">{{ patient.dependant_code|default:"—" }}</span></div>
-      {% if patient.principal_member_name %}
-      <div class="detail-row"><span class="detail-key">Principal Member</span><span class="detail-val">{{ patient.principal_member_name }}</span></div>
-      {% endif %}
-      {% if patient.principal_member_id %}
-      <div class="detail-row"><span class="detail-key">Principal ID</span><span class="detail-val" style="font-family:monospace;font-size:12px;">{{ patient.principal_member_id }}</span></div>
-      {% endif %}
-    </div>
-
-    <!-- Clinical summary -->
-    <div class="card">
-      <div class="card-title" style="margin-bottom:14px;">Clinical Summary</div>
-      {% if patient.chronic_list %}
-      <div style="margin-bottom:12px;">
-        <div class="section-label" style="margin-bottom:6px;">Chronic Conditions</div>
-        <div style="display:flex;flex-wrap:wrap;gap:5px;">
-          {% for c in patient.chronic_list %}<span class="tag tag-chronic">{{ c }}</span>{% endfor %}
-        </div>
-      </div>
-      {% endif %}
-      {% if patient.current_medication %}
-      <div style="margin-bottom:12px;">
-        <div class="section-label" style="margin-bottom:6px;">Current Medication</div>
-        <p style="font-size:12.5px;color:var(--text-2);margin:0;white-space:pre-line;line-height:1.6;">{{ patient.current_medication }}</p>
-      </div>
-      {% endif %}
-      {% if patient.previous_surgeries %}
-      <div>
-        <div class="section-label" style="margin-bottom:6px;">Previous Surgeries</div>
-        <p style="font-size:12.5px;color:var(--text-2);margin:0;white-space:pre-line;">{{ patient.previous_surgeries }}</p>
-      </div>
-      {% endif %}
-      {% if not patient.chronic_list and not patient.current_medication and not patient.previous_surgeries %}
-      <p style="font-size:13px;color:var(--text-4);margin:0;">No clinical history recorded.</p>
-      {% endif %}
+      <div class="detail-row"><span class="detail-key">Dependants</span><span class="detail-val">{{ patient.dependant_code|default:"—" }}</span></div>
+      {% if patient.principal_member_name %}<div class="detail-row"><span class="detail-key">Principal Member</span><span class="detail-val">{{ patient.principal_member_name }}</span></div>{% endif %}
+      {% if patient.principal_member_id %}<div class="detail-row"><span class="detail-key">Principal ID</span><span class="detail-val" style="font-family:monospace;font-size:12px;">{{ patient.principal_member_id }}</span></div>{% endif %}
     </div>
   </div>
 
-  <!-- Lifestyle & family history -->
-  {% if patient.smoking_status or patient.alcohol_use or patient.family_history %}
+  <!-- ── Next of Kin + Referred By ─────────────────────────────────── -->
+  {% if patient.next_of_kin_name or patient.referred_by_name %}
+  <div class="patient-detail-grid" style="margin-bottom:18px;">
+    {% if patient.next_of_kin_name %}
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">Next of Kin</div>
+      <div class="detail-row"><span class="detail-key">Name</span><span class="detail-val">{{ patient.next_of_kin_name }}</span></div>
+      {% if patient.next_of_kin_relationship %}<div class="detail-row"><span class="detail-key">Relationship</span><span class="detail-val">{{ patient.next_of_kin_relationship }}</span></div>{% endif %}
+      {% if patient.next_of_kin_phone %}<div class="detail-row"><span class="detail-key">Cell</span><span class="detail-val">{{ patient.next_of_kin_phone }}</span></div>{% endif %}
+      {% if patient.next_of_kin_email %}<div class="detail-row"><span class="detail-key">Email</span><span class="detail-val">{{ patient.next_of_kin_email }}</span></div>{% endif %}
+      {% if patient.next_of_kin_address %}<div class="detail-row"><span class="detail-key">Address</span><span class="detail-val">{{ patient.next_of_kin_address }}</span></div>{% endif %}
+    </div>
+    {% endif %}
+    {% if patient.referred_by_name %}
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">Referred By</div>
+      <div class="detail-row"><span class="detail-key">Name</span><span class="detail-val">{{ patient.referred_by_name }}</span></div>
+      {% if patient.referred_by_phone %}<div class="detail-row"><span class="detail-key">Phone</span><span class="detail-val">{{ patient.referred_by_phone }}</span></div>{% endif %}
+      {% if patient.referred_by_email %}<div class="detail-row"><span class="detail-key">Email</span><span class="detail-val">{{ patient.referred_by_email }}</span></div>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- ── Clinical Summary ──────────────────────────────────────────── -->
   <div class="card" style="margin-bottom:18px;">
-    <div class="card-title" style="margin-bottom:14px;">Lifestyle &amp; Family History</div>
+    <div class="card-title" style="margin-bottom:14px;">Clinical Summary</div>
+    <div class="patient-detail-grid" style="margin-bottom:0;">
+      <div>
+        {% if patient.allergies_list %}
+        <div style="margin-bottom:14px;">
+          <div class="section-label" style="margin-bottom:6px;">Known Allergies</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;">
+            {% for a in patient.allergies_list %}<span style="background:#fff1f2;color:#be123c;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;">{{ a }}</span>{% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        {% if patient.chronic_list %}
+        <div style="margin-bottom:14px;">
+          <div class="section-label" style="margin-bottom:6px;">Chronic Conditions</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;">
+            {% for c in patient.chronic_list %}<span class="tag tag-chronic">{{ c }}</span>{% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        {% if patient.blood_type %}
+        <div>
+          <div class="section-label" style="margin-bottom:4px;">Blood Type</div>
+          <span style="font-size:16px;font-weight:800;color:var(--accent);">{{ patient.blood_type }}</span>
+        </div>
+        {% endif %}
+      </div>
+      <div>
+        {% if patient.current_medication %}
+        <div style="margin-bottom:14px;">
+          <div class="section-label" style="margin-bottom:6px;">Current Medication</div>
+          <p style="font-size:12.5px;color:var(--text-2);margin:0;white-space:pre-line;line-height:1.6;">{{ patient.current_medication }}</p>
+        </div>
+        {% endif %}
+        {% if patient.previous_surgeries %}
+        <div>
+          <div class="section-label" style="margin-bottom:6px;">Previous Surgeries / Hospitalisations</div>
+          <p style="font-size:12.5px;color:var(--text-2);margin:0;white-space:pre-line;">{{ patient.previous_surgeries }}</p>
+        </div>
+        {% endif %}
+      </div>
+      <div>
+        {% if patient.family_history %}
+        <div>
+          <div class="section-label" style="margin-bottom:6px;">Family Medical History</div>
+          <p style="font-size:12.5px;color:var(--text-2);margin:0;white-space:pre-line;line-height:1.6;">{{ patient.family_history }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% if not patient.allergies_list and not patient.chronic_list and not patient.current_medication and not patient.previous_surgeries and not patient.blood_type and not patient.family_history %}
+    <p style="font-size:13px;color:var(--text-4);margin:0;">No clinical history recorded.</p>
+    {% endif %}
+  </div>
+
+  <!-- ── Lifestyle ─────────────────────────────────────────────────── -->
+  {% if patient.smoking_status or patient.alcohol_use or patient.substance_use %}
+  <div class="card" style="margin-bottom:18px;">
+    <div class="card-title" style="margin-bottom:14px;">Lifestyle</div>
     <div class="lifestyle-grid">
-      {% if patient.smoking_status %}
-      <div><div class="section-label" style="margin-bottom:4px;">Smoking</div><span style="font-size:13px;">{{ patient.get_smoking_status_display }}</span></div>
-      {% endif %}
-      {% if patient.alcohol_use %}
-      <div><div class="section-label" style="margin-bottom:4px;">Alcohol</div><span style="font-size:13px;">{{ patient.get_alcohol_use_display }}</span></div>
-      {% endif %}
-      {% if patient.substance_use %}
-      <div><div class="section-label" style="margin-bottom:4px;">Other Substances</div><span style="font-size:13px;">{{ patient.substance_use }}</span></div>
-      {% endif %}
-      {% if patient.family_history %}
-      <div class="lifestyle-full"><div class="section-label" style="margin-bottom:4px;">Family Medical History</div><p style="font-size:13px;color:var(--text-2);margin:0;white-space:pre-line;">{{ patient.family_history }}</p></div>
-      {% endif %}
+      {% if patient.smoking_status %}<div><div class="section-label" style="margin-bottom:4px;">Smoking</div><span style="font-size:13px;">{{ patient.get_smoking_status_display }}</span></div>{% endif %}
+      {% if patient.alcohol_use %}<div><div class="section-label" style="margin-bottom:4px;">Alcohol</div><span style="font-size:13px;">{{ patient.get_alcohol_use_display }}</span></div>{% endif %}
+      {% if patient.substance_use %}<div><div class="section-label" style="margin-bottom:4px;">Other Substances</div><span style="font-size:13px;">{{ patient.substance_use }}</span></div>{% endif %}
     </div>
   </div>
   {% endif %}
