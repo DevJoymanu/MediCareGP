@@ -41,7 +41,7 @@ class ConsultationForm(forms.ModelForm):
             'appointment':           forms.Select(attrs={'class': SELECT, 'style': 'width:100%;'}),
             'weight_kg':             forms.NumberInput(attrs={'class': INPUT, 'step': '0.1', 'placeholder': 'kg'}),
             'bp_reading':            forms.TextInput(attrs={'class': INPUT, 'placeholder': '120/80'}),
-            'chief_complaint':       forms.TextInput(attrs={'class': INPUT, 'placeholder': 'Reason for visit…'}),
+            'chief_complaint':       forms.Textarea(attrs={'class': TEXTAREA, 'rows': 3, 'placeholder': 'Reason for visit…'}),
             'subjective':            forms.Textarea(attrs={'class': TEXTAREA, 'rows': 10, 'placeholder': 'Clinical notes — presenting complaint, history, examination findings, results discussed…'}),
             'assessment':            forms.Textarea(attrs={'class': TEXTAREA, 'rows': 3, 'placeholder': 'Assessment / Diagnosis'}),
             'objective':             forms.Textarea(attrs={'class': TEXTAREA, 'rows': 3, 'placeholder': 'Objective findings'}),
