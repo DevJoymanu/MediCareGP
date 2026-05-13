@@ -76,6 +76,51 @@
   .soap-extra { display:none; }
   .soap-extra.visible { display:block; }
 
+  /* ── Quick-tap panels ── */
+  .qt-toggle {
+    display:inline-flex; align-items:center; gap:5px;
+    margin-top:7px; padding:5px 11px; border-radius:7px;
+    border:1.5px solid var(--border); background:#fff;
+    font-size:11px; font-weight:700; color:var(--text-3);
+    cursor:pointer; transition:all .15s;
+  }
+  .qt-toggle:hover { border-color:var(--accent); color:var(--accent); }
+  .qt-toggle.open  { border-color:var(--accent); color:var(--accent); background:#f5f3ff; }
+
+  .qt-panel {
+    margin-top:8px; padding:12px 14px;
+    background:#f8fafc; border:1px solid var(--border); border-radius:10px;
+    display:none;
+  }
+  .qt-panel.open { display:block; }
+
+  .qt-cat {
+    font-size:10px; font-weight:700; color:var(--text-4);
+    text-transform:uppercase; letter-spacing:.06em;
+    margin:10px 0 5px;
+  }
+  .qt-cat:first-child { margin-top:0; }
+
+  .qt-chips { display:flex; flex-wrap:wrap; gap:6px; }
+
+  .qt-chip {
+    padding:5px 11px; border-radius:20px;
+    border:1.5px solid var(--border); background:#fff;
+    font-size:12px; font-weight:600; color:var(--text-2);
+    cursor:pointer; transition:all .12s; user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .qt-chip:hover  { border-color:var(--accent); color:var(--accent); }
+  .qt-chip.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+
+  .qt-chip.med  { border-color:#bbf7d0; color:#15803d; background:#f0fdf4; }
+  .qt-chip.med:hover  { background:#dcfce7; }
+  .qt-chip.med.active { background:#16a34a; border-color:#16a34a; color:#fff; }
+
+  .qt-chip.lab  { border-color:#bfdbfe; color:#1d4ed8; background:#eff6ff; }
+  .qt-chip.lab:hover  { background:#dbeafe; }
+  .qt-chip.lab.active { background:#1d4ed8; border-color:#1d4ed8; color:#fff; }
+
   @media (max-width:760px) {
     .consult-panels { grid-template-columns:1fr; }
     .consult-topbar { flex-direction:column; }
@@ -124,6 +169,10 @@
         <div class="form-group" style="margin:0;flex:3;min-width:180px;">
           <label style="font-size:12px;font-weight:600;color:var(--text-2);">Reason for visit</label>
           {{ form.chief_complaint }}
+          <button type="button" class="qt-toggle" onclick="toggleQt('qt-complaint')">
+            <i class="bi bi-lightning-charge-fill"></i> Quick symptoms
+          </button>
+          <div id="qt-complaint" class="qt-panel"></div>
         </div>
       </div>
 
@@ -153,6 +202,10 @@
               <div class="form-group" style="margin:0;">
                 <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">Assessment / Diagnosis</label>
                 {{ form.assessment }}
+                <button type="button" class="qt-toggle" onclick="toggleQt('qt-assessment-tp')">
+                  <i class="bi bi-lightning-charge-fill"></i> Quick diagnosis
+                </button>
+                <div id="qt-assessment-tp" class="qt-panel"></div>
               </div>
             </div>
           </div>
@@ -163,11 +216,19 @@
             <div class="panel-body">
               <div class="form-group" style="margin:0;flex:1;">
                 {{ form.prescriptions }}
+                <button type="button" class="qt-toggle" onclick="toggleQt('qt-rx-tp')">
+                  <i class="bi bi-lightning-charge-fill"></i> Quick medications
+                </button>
+                <div id="qt-rx-tp" class="qt-panel"></div>
               </div>
               <hr class="inv-divider">
               <div>
                 <div class="inv-label"><i class="bi bi-droplet-half"></i> Blood / Lab Requests</div>
                 {{ form.lab_requests }}
+                <button type="button" class="qt-toggle" onclick="toggleQt('qt-lab-tp')">
+                  <i class="bi bi-lightning-charge-fill"></i> Quick tests
+                </button>
+                <div id="qt-lab-tp" class="qt-panel"></div>
               </div>
               <div>
                 <div class="inv-label"><i class="bi bi-image"></i> Radiology</div>
@@ -194,6 +255,10 @@
                   <div class="soap-label">S — Subjective</div>
                   <div style="font-size:11px;color:#818cf8;margin-bottom:8px;">History of presenting illness</div>
                   {{ form.subjective }}
+                  <button type="button" class="qt-toggle" onclick="toggleQt('qt-subj-soap')">
+                    <i class="bi bi-lightning-charge-fill"></i> Quick symptoms
+                  </button>
+                  <div id="qt-subj-soap" class="qt-panel"></div>
                 </div>
                 <div class="soap-block soap-o">
                   <div class="soap-label">O — Objective</div>
@@ -204,6 +269,10 @@
                   <div class="soap-label">A — Assessment</div>
                   <div style="font-size:11px;color:#15803d;margin-bottom:8px;">Final diagnosis</div>
                   {{ form.assessment }}
+                  <button type="button" class="qt-toggle" onclick="toggleQt('qt-assessment-soap')">
+                    <i class="bi bi-lightning-charge-fill"></i> Quick diagnosis
+                  </button>
+                  <div id="qt-assessment-soap" class="qt-panel"></div>
                 </div>
                 <div class="soap-block soap-p">
                   <div class="soap-label">P — Plan</div>
@@ -229,6 +298,10 @@
               <div class="form-group form-full" style="margin-bottom:12px;">
                 <label>Prescriptions <span style="font-weight:400;color:var(--text-4);">— one per line</span></label>
                 {{ form.prescriptions }}
+                <button type="button" class="qt-toggle" onclick="toggleQt('qt-rx-soap')">
+                  <i class="bi bi-lightning-charge-fill"></i> Quick medications
+                </button>
+                <div id="qt-rx-soap" class="qt-panel"></div>
               </div>
               <div class="form-group" style="margin-bottom:0;">
                 <label>Follow-up Date</label>
@@ -260,6 +333,10 @@
                 <div class="form-group" style="margin-bottom:0;">
                   <label>Lab / Blood Test Requests</label>
                   {{ form.lab_requests }}
+                  <button type="button" class="qt-toggle" onclick="toggleQt('qt-lab-soap')">
+                    <i class="bi bi-lightning-charge-fill"></i> Quick tests
+                  </button>
+                  <div id="qt-lab-soap" class="qt-panel"></div>
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
                   <label>Radiology Requests</label>
@@ -366,6 +443,167 @@ document.getElementById('id_patient').addEventListener('change', function () {
   const saved = localStorage.getItem(STORAGE_KEY) || 'twopanel';
   activate(saved);
 })();
+
+// ══════════════════════════════════════════════════════════════════
+// QUICK-TAP SYSTEM
+// ══════════════════════════════════════════════════════════════════
+
+const QT = {
+  symptoms: {
+    'Respiratory':     ['Cough', 'Productive cough', 'Shortness of breath', 'Chest tightness', 'Wheezing', 'Haemoptysis'],
+    'General':         ['Fever', 'Chills', 'Fatigue', 'Malaise', 'Weight loss', 'Night sweats', 'Loss of appetite'],
+    'Pain':            ['Headache', 'Chest pain', 'Abdominal pain', 'Back pain', 'Joint pain', 'Muscle pain', 'Ear pain', 'Sore throat'],
+    'GI':              ['Nausea', 'Vomiting', 'Diarrhoea', 'Constipation', 'Heartburn', 'Bloating'],
+    'ENT / Skin':      ['Runny nose', 'Nasal congestion', 'Sneezing', 'Rash', 'Itching', 'Swelling'],
+    'Neurological':    ['Dizziness', 'Fainting', 'Confusion', 'Numbness', 'Tingling', 'Vision changes'],
+    'Urinary':         ['Burning urination', 'Frequency', 'Urgency', 'Blood in urine'],
+  },
+  diagnoses: {
+    'Respiratory':     ['URTI', 'Acute bronchitis', 'Pneumonia', 'Asthma exacerbation', 'Allergic rhinitis', 'Sinusitis', 'Pharyngitis', 'Tonsillitis', 'COPD exacerbation'],
+    'Cardiovascular':  ['Hypertension', 'Hypertensive urgency', 'Chest pain — non-cardiac', 'Palpitations', 'Peripheral oedema'],
+    'Endocrine':       ['Type 2 Diabetes mellitus', 'Hypothyroidism', 'Hyperthyroidism', 'Obesity', 'Metabolic syndrome'],
+    'GI':              ['Acute gastroenteritis', 'GERD', 'IBS', 'Peptic ulcer disease', 'Constipation'],
+    'Musculoskeletal': ['Acute lower back pain', 'Osteoarthritis', 'Gout', 'Muscle strain', 'Tendinitis'],
+    'Infections':      ['UTI', 'Skin infection / Cellulitis', 'Conjunctivitis', 'Otitis media', 'Viral illness NOS'],
+    'Mental Health':   ['Anxiety disorder', 'Depression', 'Insomnia', 'Stress reaction', 'Burnout'],
+    'Other':           ['Anaemia', 'Migraine', 'Dehydration', 'Allergic reaction', 'Vitamin deficiency'],
+  },
+  medications: {
+    'Antibiotics': [
+      { label: 'Azithromycin 500mg',    text: 'Azithromycin 500mg — 1 daily × 3/7' },
+      { label: 'Amoxicillin 500mg',     text: 'Amoxicillin 500mg — 1 three times daily × 5/7' },
+      { label: 'Augmentin 625mg',       text: 'Augmentin 625mg — 1 three times daily × 7/7' },
+      { label: 'Doxycycline 100mg',     text: 'Doxycycline 100mg — 1 twice daily × 7/7' },
+      { label: 'Ciprofloxacin 500mg',   text: 'Ciprofloxacin 500mg — 1 twice daily × 5/7' },
+      { label: 'Metronidazole 400mg',   text: 'Metronidazole 400mg — 1 three times daily × 5/7' },
+    ],
+    'Pain / Anti-inflammatory': [
+      { label: 'Paracetamol 500mg',     text: 'Paracetamol 500mg — 2 tablets every 6 hours PRN' },
+      { label: 'Ibuprofen 400mg',       text: 'Ibuprofen 400mg — 1 three times daily with food PRN' },
+      { label: 'Voltaren 50mg',         text: 'Voltaren 50mg — 1 twice daily with food' },
+      { label: 'Tramadol 50mg',         text: 'Tramadol 50mg — 1–2 every 6 hours PRN (max 400mg/day)' },
+    ],
+    'Respiratory': [
+      { label: 'Prednisone 20mg',       text: 'Prednisone 20mg — 1 daily × 5/7' },
+      { label: 'Benylin',               text: 'Benylin Chesty Coughs — 10ml three times daily' },
+      { label: 'Ventolin inhaler',      text: 'Ventolin inhaler — 2 puffs every 4–6 hours PRN' },
+      { label: 'Beconase',              text: 'Beconase nasal spray — 2 sprays each nostril twice daily' },
+      { label: 'Atrovent inhaler',      text: 'Atrovent inhaler — 2 puffs three times daily' },
+    ],
+    'Chronic / Long-term': [
+      { label: 'Metformin 500mg',       text: 'Metformin 500mg — 1 twice daily with meals' },
+      { label: 'Metformin 850mg',       text: 'Metformin 850mg — 1 twice daily with meals' },
+      { label: 'Amlodipine 5mg',        text: 'Amlodipine 5mg — 1 daily' },
+      { label: 'Amlodipine 10mg',       text: 'Amlodipine 10mg — 1 daily' },
+      { label: 'Enalapril 5mg',         text: 'Enalapril 5mg — 1 daily' },
+      { label: 'Enalapril 10mg',        text: 'Enalapril 10mg — 1 daily' },
+      { label: 'Atorvastatin 20mg',     text: 'Atorvastatin 20mg — 1 at night' },
+      { label: 'Omeprazole 20mg',       text: 'Omeprazole 20mg — 1 daily before breakfast' },
+      { label: 'Levothyroxine 50mcg',   text: 'Levothyroxine 50mcg — 1 daily on empty stomach' },
+    ],
+    'Antihistamine / Allergy': [
+      { label: 'Cetirizine 10mg',       text: 'Cetirizine 10mg — 1 daily' },
+      { label: 'Loratadine 10mg',       text: 'Loratadine 10mg — 1 daily' },
+      { label: 'Promethazine 25mg',     text: 'Promethazine 25mg — 1 at night' },
+    ],
+    'GI': [
+      { label: 'Buscopan 10mg',         text: 'Buscopan 10mg — 1–2 three times daily PRN' },
+      { label: 'Motilium 10mg',         text: 'Motilium 10mg — 1 three times daily before meals' },
+      { label: 'Loperamide 2mg',        text: 'Loperamide 2mg — 2 initially, then 1 after each loose stool (max 8/day)' },
+      { label: 'Gaviscon',              text: 'Gaviscon — 10–20ml after meals and at bedtime' },
+    ],
+  },
+  labs: {
+    'Blood': ['FBC', 'U/E + Creat', 'LFTs', 'TSH', 'HbA1c', 'Lipogram', 'Blood glucose (fasting)', 'CRP', 'ESR', 'INR / PT', 'Ferritin / Iron studies', 'Vitamin B12', 'Vitamin D', 'Uric acid', 'PSA', 'Blood culture', 'Malaria screen'],
+    'Screening': ['HIV screening', 'Syphilis (RPR)', 'Hepatitis B screen', 'Hepatitis C screen', 'Pregnancy test (urine)', 'Pap smear'],
+    'Urine / Micro': ['Urine dipstick', 'Urine MCS', 'TB GeneXpert (sputum)'],
+    'Radiology': ['Chest X-ray (PA)', 'Abdominal X-ray', 'Lumbar spine X-ray', 'Abdominal ultrasound', 'ECG'],
+  },
+};
+
+// Map each panel ID → { field ID, data key, data type }
+const QT_MAP = {
+  'qt-complaint':      { field: '{{ form.chief_complaint.id_for_label }}', data: 'symptoms',   type: 'text',  newline: true  },
+  'qt-assessment-tp':  { field: '{{ form.assessment.id_for_label }}',      data: 'diagnoses',  type: 'text',  newline: true  },
+  'qt-assessment-soap':{ field: '{{ form.assessment.id_for_label }}',      data: 'diagnoses',  type: 'text',  newline: true  },
+  'qt-subj-soap':      { field: '{{ form.subjective.id_for_label }}',      data: 'symptoms',   type: 'text',  newline: true  },
+  'qt-rx-tp':          { field: '{{ form.prescriptions.id_for_label }}',   data: 'medications',type: 'med',   newline: true  },
+  'qt-rx-soap':        { field: '{{ form.prescriptions.id_for_label }}',   data: 'medications',type: 'med',   newline: true  },
+  'qt-lab-tp':         { field: '{{ form.lab_requests.id_for_label }}',    data: 'labs',       type: 'lab',   newline: true  },
+  'qt-lab-soap':       { field: '{{ form.lab_requests.id_for_label }}',    data: 'labs',       type: 'lab',   newline: true  },
+};
+
+function buildQtPanel(panelId) {
+  const cfg  = QT_MAP[panelId];
+  if (!cfg) return;
+  const el   = document.getElementById(panelId);
+  if (!el || el.dataset.built) return;
+  el.dataset.built = '1';
+
+  const data = QT[cfg.data];
+  let html = '';
+
+  if (cfg.type === 'med') {
+    Object.entries(data).forEach(([cat, items]) => {
+      html += `<div class="qt-cat">${cat}</div><div class="qt-chips">`;
+      items.forEach(item => {
+        html += `<span class="qt-chip med" data-text="${escAttr(item.text)}" data-panel="${panelId}" data-field="${cfg.field}" onclick="qtTap(this)">${escHtml(item.label)}</span>`;
+      });
+      html += '</div>';
+    });
+  } else if (cfg.type === 'lab') {
+    Object.entries(data).forEach(([cat, items]) => {
+      html += `<div class="qt-cat">${cat}</div><div class="qt-chips">`;
+      items.forEach(item => {
+        html += `<span class="qt-chip lab" data-text="${escAttr(item)}" data-panel="${panelId}" data-field="${cfg.field}" onclick="qtTap(this)">${escHtml(item)}</span>`;
+      });
+      html += '</div>';
+    });
+  } else {
+    Object.entries(data).forEach(([cat, items]) => {
+      html += `<div class="qt-cat">${cat}</div><div class="qt-chips">`;
+      items.forEach(item => {
+        html += `<span class="qt-chip" data-text="${escAttr(item)}" data-panel="${panelId}" data-field="${cfg.field}" onclick="qtTap(this)">${escHtml(item)}</span>`;
+      });
+      html += '</div>';
+    });
+  }
+
+  el.innerHTML = html;
+}
+
+function toggleQt(panelId) {
+  buildQtPanel(panelId);
+  const panel  = document.getElementById(panelId);
+  const toggle = panel.previousElementSibling;
+  const open   = panel.classList.toggle('open');
+  if (toggle && toggle.classList.contains('qt-toggle')) {
+    toggle.classList.toggle('open', open);
+  }
+}
+
+function qtTap(chip) {
+  const fieldId = chip.dataset.field;
+  const text    = chip.dataset.text;
+  const field   = document.getElementById(fieldId);
+  if (!field) return;
+
+  if (chip.classList.contains('active')) {
+    // Deselect — remove the text from field
+    chip.classList.remove('active');
+    const lines = field.value.split('\n').filter(l => l.trim() !== text.trim());
+    field.value = lines.join('\n').replace(/^\n+/, '');
+    return;
+  }
+
+  chip.classList.add('active');
+  const current = field.value.trim();
+  field.value   = current ? current + '\n' + text : text;
+  field.dispatchEvent(new Event('input'));
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s) { return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 // ── Fix: disable hidden layout fields before submit so they don't override ──
 document.getElementById('consultForm').addEventListener('submit', function () {
