@@ -225,15 +225,31 @@ def consultation_create(request):
     initial = {}
     patient_id     = request.GET.get('patient_id')
     appointment_id = request.GET.get('appointment_id')
-    if patient_id:
-        patient = Patient.objects.filter(pk=patient_id).first()
-        if patient:
-            initial['patient'] = patient.pk
+
+    resolved_patient = None
+
     if appointment_id:
         apt = Appointment.objects.filter(pk=appointment_id).first()
         if apt:
-            initial['appointment'] = apt.pk
-            initial['patient']     = apt.patient.pk
+            initial['appointment']    = apt.pk
+            initial['patient']        = apt.patient.pk
+            initial['chief_complaint'] = apt.reason
+            resolved_patient = apt.patient
+
+    if patient_id and not resolved_patient:
+        resolved_patient = Patient.objects.filter(pk=patient_id).first()
+        if resolved_patient:
+            initial['patient'] = resolved_patient.pk
+
+    if resolved_patient:
+        last = Consultation.objects.filter(
+            patient=resolved_patient
+        ).order_by('-date').first()
+        if last:
+            if last.weight_kg:
+                initial['weight_kg']  = last.weight_kg
+            if last.bp_reading:
+                initial['bp_reading'] = last.bp_reading
 
     form = ConsultationForm(request.POST or None, initial=initial)
     if form.is_valid():
@@ -318,8 +334,14 @@ def consultation_review(request, pk):
         messages.success(request, f'Review saved for {original.patient}.')
         return redirect('consultation_detail', pk=review.pk)
 
+    last = Consultation.objects.filter(
+        patient=original.patient
+    ).order_by('-date').first()
+
     return render(request, 'consultations/consultation_review.html', {
-        'original': original,
+        'original':    original,
+        'last_weight': last.weight_kg  if last and last.weight_kg  else '',
+        'last_bp':     last.bp_reading if last and last.bp_reading else '',
     })
 
 

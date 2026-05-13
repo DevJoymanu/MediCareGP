@@ -36,10 +36,14 @@ def appointment_detail(request, pk):
 
 @login_required
 def appointment_create(request):
-    initial = {}
+    initial = {'date': timezone.localdate()}
     patient_id = request.GET.get('patient_id')
     if patient_id:
         initial['patient'] = patient_id
+        # Pre-fill referring doctor from patient's last appointment if available
+        last_apt = Appointment.objects.filter(patient_id=patient_id).order_by('-date').first()
+        if last_apt and last_apt.referring_doctor:
+            initial['referring_doctor'] = last_apt.referring_doctor
     form = AppointmentForm(request.POST or None, initial=initial)
     if form.is_valid():
         appointment = form.save()

@@ -154,12 +154,14 @@
         <div>
           <div class="vitals-label">Weight (kg)</div>
           <input type="number" name="weight_kg" step="0.1" placeholder="kg"
-                 class="crm-input" style="width:90px;">
+                 class="crm-input" style="width:90px;"
+                 value="{{ last_weight }}">
         </div>
         <div>
           <div class="vitals-label">BP (mmHg)</div>
           <input type="text" name="bp_reading" placeholder="120/80"
-                 class="crm-input" style="width:110px;">
+                 class="crm-input" style="width:110px;"
+                 value="{{ last_bp }}">
         </div>
         <div style="flex:1;min-width:200px;">
           <div class="vitals-label">Reason for today's visit</div>

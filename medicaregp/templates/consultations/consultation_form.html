@@ -78,7 +78,7 @@
 
   @media (max-width:760px) {
     .consult-panels { grid-template-columns:1fr; }
-    .consult-topbar { grid-template-columns:1fr; }
+    .consult-topbar { flex-direction:column; }
     .soap-grid { grid-template-columns:1fr; }
   }
 </style>
@@ -103,33 +103,27 @@
       {% endif %}
 
       <!-- ── Top bar: patient + vitals (always visible) ─────────────────── -->
-      <div class="consult-topbar">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div class="form-group" style="margin:0;">
-            <label>Patient *</label>
-            {{ form.patient }}
-            {% if form.patient.errors %}<div style="color:#dc2626;font-size:12px;margin-top:3px;">{{ form.patient.errors.0 }}</div>{% endif %}
-          </div>
-          <div class="form-group" style="margin:0;">
-            <label>Linked Appointment <span style="font-weight:400;color:var(--text-4);">optional</span></label>
-            {{ form.appointment }}
-          </div>
+      <div class="consult-topbar" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+        <div class="form-group" style="margin:0;flex:2;min-width:160px;">
+          <label>Patient *</label>
+          {{ form.patient }}
+          {% if form.patient.errors %}<div style="color:#dc2626;font-size:12px;margin-top:3px;">{{ form.patient.errors.0 }}</div>{% endif %}
         </div>
-        <div class="consult-vitals" style="align-items:flex-start;">
-          <div style="display:flex;flex-direction:column;gap:10px;flex-shrink:0;">
-            <div class="vitals-field" style="width:90px;">
-              <div class="vitals-label">Wt (kg)</div>
-              {{ form.weight_kg }}
-            </div>
-            <div class="vitals-field" style="width:110px;">
-              <div class="vitals-label">BP (mmHg)</div>
-              {{ form.bp_reading }}
-            </div>
-          </div>
-          <div class="form-group" style="margin:0;flex:1;">
-            <label style="font-size:12px;font-weight:600;color:var(--text-2);">Reason for visit</label>
-            {{ form.chief_complaint }}
-          </div>
+        <div class="form-group" style="margin:0;flex:2;min-width:160px;">
+          <label>Linked Appointment <span style="font-weight:400;color:var(--text-4);">optional</span></label>
+          {{ form.appointment }}
+        </div>
+        <div class="vitals-field" style="flex:0 0 90px;">
+          <div class="vitals-label">Wt (kg)</div>
+          {{ form.weight_kg }}
+        </div>
+        <div class="vitals-field" style="flex:0 0 110px;">
+          <div class="vitals-label">BP (mmHg)</div>
+          {{ form.bp_reading }}
+        </div>
+        <div class="form-group" style="margin:0;flex:3;min-width:180px;">
+          <label style="font-size:12px;font-weight:600;color:var(--text-2);">Reason for visit</label>
+          {{ form.chief_complaint }}
         </div>
       </div>
 
