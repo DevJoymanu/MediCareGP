@@ -143,7 +143,7 @@ def pending_review_queue(request, pk):
     from .models import PendingReview
     pr = get_object_or_404(PendingReview, pk=pk)
     if request.method == 'POST':
-        Appointment.objects.create(
+        appt = Appointment.objects.create(
             patient=pr.consultation.patient,
             date=timezone.localdate(),
             time=timezone.localtime().time(),
@@ -152,7 +152,8 @@ def pending_review_queue(request, pk):
             visit_type='Walk-In',
         )
         pr.status = 'queued'
-        pr.save(update_fields=['status'])
+        pr.appointment = appt
+        pr.save(update_fields=['status', 'appointment'])
         messages.success(request, f'{pr.consultation.patient} added to the waiting room queue.')
     return redirect('waiting_room')
 

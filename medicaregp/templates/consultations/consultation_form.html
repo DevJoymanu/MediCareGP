@@ -373,6 +373,18 @@ document.getElementById('id_patient').addEventListener('change', function () {
   activate(saved);
 })();
 
+// ── Fix: disable hidden layout fields before submit so they don't override ──
+document.getElementById('consultForm').addEventListener('submit', function () {
+  ['layout-twopanel', 'layout-soap', 'footer-twopanel', 'footer-soap'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el && el.style.display === 'none') {
+      el.querySelectorAll('input, textarea, select').forEach(function (field) {
+        field.disabled = true;
+      });
+    }
+  });
+});
+
 // ── Sick note toggle ──────────────────────────────────────────────────────
 const sickCb = document.getElementById('{{ form.sick_note_issued.id_for_label }}');
 function updateSickNote() {

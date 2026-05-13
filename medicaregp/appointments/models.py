@@ -51,6 +51,7 @@ class PendingReview(models.Model):
     status           = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     notes            = models.TextField(blank=True, null=True)
     rescheduled_date = models.DateField(blank=True, null=True)
+    appointment      = models.OneToOneField('Appointment', on_delete=models.SET_NULL, null=True, blank=True, related_name='pending_review')
     created_at       = models.DateTimeField(auto_now_add=True)
 
     class Meta:

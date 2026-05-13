@@ -246,10 +246,17 @@
               <div class="appt-time">{{ a.time|time:"H:i" }}</div>
               <div style="font-size:11px;color:var(--text-4);margin-top:2px;">arrived</div>
             </div>
+            {% if a.pending_review %}
+            <a href="{% url 'consultation_review' a.pending_review.consultation.pk %}"
+               class="btn-primary" style="padding:9px 16px;font-size:13px;white-space:nowrap;background:#7c3aed;border-color:#7c3aed;">
+              <i class="bi bi-arrow-repeat"></i> Start Review
+            </a>
+            {% else %}
             <a href="{% url 'consultation_create' %}?patient_id={{ a.patient.pk }}&appointment_id={{ a.pk }}"
                class="btn-primary" style="padding:9px 16px;font-size:13px;white-space:nowrap;">
               <i class="bi bi-clipboard2-plus"></i> Start Consultation
             </a>
+            {% endif %}
           </div>
         </div>
         {% if not forloop.last %}<div class="waiting-divider"></div>{% endif %}
