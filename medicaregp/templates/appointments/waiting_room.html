@@ -620,6 +620,10 @@ function renderPending(data) {
         '<button class="btn-accept-ci" onclick="acceptReq(' + r.pk + ')">' +
           '<i class="bi bi-check-lg"></i> Accept' +
         '</button>' +
+        '<a href="/appointments/checkin/' + r.pk + '/edit/" ' +
+           'style="display:inline-flex;align-items:center;gap:5px;padding:9px 14px;border-radius:9px;border:1.5px solid var(--border);background:#fff;color:var(--text-2);font-size:13px;font-weight:700;text-decoration:none;flex:1;justify-content:center;">' +
+          '<i class="bi bi-pencil"></i> Edit' +
+        '</a>' +
         '<button class="btn-decline-ci" onclick="declineReq(' + r.pk + ')">' +
           'Decline' +
         '</button>' +

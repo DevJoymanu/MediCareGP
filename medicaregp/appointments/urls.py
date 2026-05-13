@@ -21,4 +21,5 @@ urlpatterns = [
     path('checkin/pending/',         checkin_views.checkin_pending_json, name='checkin_pending_json'),
     path('checkin/<int:pk>/accept/', checkin_views.checkin_accept,      name='checkin_accept'),
     path('checkin/<int:pk>/decline/',checkin_views.checkin_decline,     name='checkin_decline'),
+    path('checkin/<int:pk>/edit/',   checkin_views.checkin_edit,        name='checkin_edit'),
 ]

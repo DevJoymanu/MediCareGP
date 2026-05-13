@@ -34,8 +34,8 @@
     <i class="bi bi-check-circle-fill"></i>
   </div>
 
-  <h1>You're Checked In!</h1>
-  <p class="subtitle">Your request has been received.<br>Please take a seat — a receptionist will confirm you shortly.</p>
+  <h1>Request Received!</h1>
+  <p class="subtitle">Your check-in request has been sent to reception.<br>Please take a seat — a staff member will confirm you shortly.</p>
 
   {% if req %}
   {% if req.is_new_patient %}<span class="badge-new">New Patient</span>{% endif %}
@@ -58,7 +58,7 @@
     </div>
     <div class="info-row">
       <span class="info-label">Status</span>
-      <span class="info-value" style="color:#d97706;">Awaiting confirmation</span>
+      <span class="info-value" style="color:#d97706;"><i class="bi bi-hourglass-split"></i> Awaiting confirmation</span>
     </div>
   </div>
 

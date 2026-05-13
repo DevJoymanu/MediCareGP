@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Review Check-In Request | G.P CRM{% endblock %}
+{% block page_title %}Review Check-In Request{% endblock %}
+{% block page_sub %}Submitted via QR code — review, edit if needed, then accept or decline{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div style="max-width:640px;margin:0 auto;">
+
+    <div class="page-header" style="margin-bottom:20px;">
+      <div>
+        <h1>Check-In Request</h1>
+        <p style="color:var(--text-3);font-size:13px;">
+          {% if req.is_new_patient %}
+            <span style="background:#fff7ed;color:#c2410c;border:1px solid #fdba74;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;margin-right:6px;">New Patient</span>
+          {% else %}
+            <span style="background:#f0fdf4;color:#15803d;border:1px solid #86efac;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;margin-right:6px;">Returning Patient</span>
+          {% endif %}
+          Submitted {{ req.minutes_ago }} min ago
+        </p>
+      </div>
+      <a href="{% url 'waiting_room' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="card" style="margin-bottom:16px;padding:20px 24px;">
+        <div class="section-label" style="margin-bottom:16px;">Patient Information</div>
+
+        <!-- ID Number (read-only) -->
+        <div class="form-group">
+          <label>ID / Passport Number</label>
+          <input type="text" value="{{ req.id_number }}" class="crm-input"
+                 readonly style="background:#f8fafc;color:var(--text-3);">
+          <div style="font-size:11px;color:var(--text-4);margin-top:4px;">Cannot be changed — submitted by patient</div>
+        </div>
+
+        {% if req.is_new_patient %}
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" name="first_name" value="{{ req.first_name }}" class="crm-input" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input type="text" name="last_name" value="{{ req.last_name }}" class="crm-input" required>
+          </div>
+          <div class="form-group">
+            <label>Date of Birth *</label>
+            <input type="date" name="date_of_birth"
+                   value="{{ req.date_of_birth|date:'Y-m-d' }}"
+                   class="crm-input" required>
+          </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" name="phone_number" value="{{ req.phone_number }}" class="crm-input" required>
+          </div>
+          <div class="form-group">
+            <label>Gender *</label>
+            <select name="gender" class="crm-select" style="width:100%;" required>
+              <option value="M" {% if req.gender == 'M' %}selected{% endif %}>Male</option>
+              <option value="F" {% if req.gender == 'F' %}selected{% endif %}>Female</option>
+              <option value="O" {% if req.gender == 'O' %}selected{% endif %}>Other</option>
+            </select>
+          </div>
+        </div>
+        {% else %}
+        <div class="form-group">
+          <label>Patient</label>
+          <input type="text" value="{{ req.display_name }}" class="crm-input"
+                 readonly style="background:#f8fafc;color:var(--text-3);">
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="card" style="margin-bottom:20px;padding:20px 24px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Reason for Visit *</label>
+          <textarea name="reason_for_visit" rows="3" class="crm-input"
+                    required>{{ req.reason_for_visit }}</textarea>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button type="submit" name="action" value="accept" class="btn-primary"
+                style="flex:1;justify-content:center;padding:12px;">
+          <i class="bi bi-check-lg"></i> Save &amp; Accept — Add to Waiting Room
+        </button>
+        <button type="submit" name="action" value="save" class="btn-ghost"
+                style="padding:12px 18px;">
+          <i class="bi bi-floppy"></i> Save Changes Only
+        </button>
+      </div>
+
+      <form method="post" action="{% url 'checkin_decline' req.pk %}" style="margin-top:10px;"
+            onsubmit="return confirm('Decline this check-in request from {{ req.display_name }}?');">
+        {% csrf_token %}
+        <button type="submit"
+                style="display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:9px;border:1.5px solid #fecaca;color:#ef4444;font-size:13px;font-weight:600;background:#fff;cursor:pointer;">
+          <i class="bi bi-x-lg"></i> Decline Request
+        </button>
+      </form>
+
+    </form>
+  </div>
+</div>
+{% endblock %}

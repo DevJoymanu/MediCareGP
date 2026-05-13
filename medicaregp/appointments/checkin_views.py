@@ -293,6 +293,66 @@ def checkin_decline(request, pk):
 
 
 @login_required
+def checkin_edit(request, pk):
+    """Staff: view and edit a pending check-in request before accepting."""
+    req = get_object_or_404(CheckInRequest, pk=pk, status='pending')
+
+    if request.method == 'POST':
+        # Save edits
+        req.reason_for_visit = request.POST.get('reason_for_visit', req.reason_for_visit).strip()
+        if req.is_new_patient:
+            req.first_name   = request.POST.get('first_name', req.first_name).strip()
+            req.last_name    = request.POST.get('last_name', req.last_name).strip()
+            req.phone_number = request.POST.get('phone_number', req.phone_number).strip()
+            req.gender       = request.POST.get('gender', req.gender)
+            dob_str = request.POST.get('date_of_birth', '').strip()
+            if dob_str:
+                try:
+                    req.date_of_birth = datetime.strptime(dob_str, '%Y-%m-%d').date()
+                except ValueError:
+                    pass
+        req.save()
+
+        if request.POST.get('action') == 'accept':
+            # Inline accept after editing
+            if req.is_new_patient:
+                try:
+                    patient = Patient.objects.create(
+                        id_number=req.id_number,
+                        first_name=req.first_name,
+                        last_name=req.last_name,
+                        date_of_birth=req.date_of_birth,
+                        phone=req.phone_number,
+                        gender=req.gender or 'O',
+                        popia_consent=req.popia_consent,
+                        consent_to_treat=True,
+                    )
+                except IntegrityError:
+                    patient = Patient.objects.get(id_number__iexact=req.id_number)
+                req.patient = patient
+            else:
+                patient = req.patient
+
+            now = timezone.localtime()
+            Appointment.objects.create(
+                patient=patient,
+                date=now.date(),
+                time=now.time().replace(second=0, microsecond=0),
+                reason=req.reason_for_visit,
+                status='Checked In',
+                visit_type='Walk-In',
+            )
+            req.status = 'accepted'
+            req.save(update_fields=['status', 'patient'])
+            from django.contrib import messages
+            messages.success(request, f'{req.display_name} checked in and added to the waiting room.')
+
+        return redirect('waiting_room')
+
+    return render(request, 'checkin/edit_request.html', {'req': req})
+
+
+@login_required
 def checkin_qr_page(request):
     import qrcode
     token = settings.CHECKIN_URL_TOKEN
