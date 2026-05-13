@@ -347,7 +347,6 @@ def consultation_create(request):
     form = ConsultationForm(request.POST or None, initial=initial)
     if form.is_valid():
         consultation = form.save()
-        from appointments.models import Appointment
         today = timezone.localdate()
         if consultation.appointment and consultation.appointment.status == 'Checked In':
             consultation.appointment.status = 'Completed'
@@ -409,7 +408,7 @@ def consultation_review(request, pk):
         _learn_from_consultation(review)
 
         # Clear the patient from the waiting room queue
-        from appointments.models import Appointment, PendingReview
+        from appointments.models import PendingReview
         today = timezone.localdate()
         pr = original.pending_reviews.filter(date=today).first()
         if pr:
