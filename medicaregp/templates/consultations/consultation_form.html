@@ -4,72 +4,82 @@
 
 {% block extra_head %}
 <style>
-  /* ── Two-panel consultation layout ── */
   .consult-wrap { max-width:1100px; margin:0 auto; }
 
+  /* ── Top bar ── */
   .consult-topbar {
     display:grid; grid-template-columns:1fr 1fr; gap:12px;
     background:#fff; border:1px solid var(--border); border-radius:14px;
     padding:16px 20px; margin-bottom:14px; align-items:end;
   }
-  .consult-vitals {
-    display:flex; gap:12px; align-items:end;
-  }
+  .consult-vitals { display:flex; gap:12px; align-items:end; }
   .vitals-field { display:flex; flex-direction:column; gap:4px; }
   .vitals-label { font-size:10px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:.06em; }
 
-  .consult-panels {
-    display:grid; grid-template-columns:1fr 380px; gap:14px;
-    margin-bottom:14px;
+  /* ── Layout toggle ── */
+  .layout-toggle {
+    display:flex; gap:0; background:#f1f5f9; border:1px solid var(--border);
+    border-radius:10px; padding:3px; margin-bottom:14px; width:fit-content;
   }
+  .layout-btn {
+    padding:7px 18px; border:none; background:none; border-radius:8px;
+    font-size:12px; font-weight:600; color:var(--text-3); cursor:pointer;
+    display:flex; align-items:center; gap:6px; transition:all .15s; white-space:nowrap;
+  }
+  .layout-btn.active { background:#fff; color:var(--accent); box-shadow:0 1px 4px rgba(0,0,0,.1); }
 
+  /* ── Two-panel layout ── */
+  .consult-panels {
+    display:grid; grid-template-columns:1fr 380px; gap:14px; margin-bottom:14px;
+  }
   .panel {
     background:#fff; border:1px solid var(--border); border-radius:14px;
     overflow:hidden; display:flex; flex-direction:column;
   }
   .panel-header {
-    display:flex; align-items:center; gap:8px;
-    padding:12px 18px; border-bottom:1px solid var(--border);
-    font-size:11px; font-weight:700; text-transform:uppercase;
-    letter-spacing:.07em; color:var(--text-3); background:#f9fafb;
+    display:flex; align-items:center; gap:8px; padding:12px 18px;
+    border-bottom:1px solid var(--border); font-size:11px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.07em; color:var(--text-3); background:#f9fafb;
   }
   .panel-body { padding:16px 18px; flex:1; display:flex; flex-direction:column; gap:14px; }
-
-  /* Left panel accent */
   .panel-notes .panel-header { color:#3730a3; background:#eef2ff; border-color:#c7d2fe; }
-
-  /* Right panel accent */
-  .panel-rx .panel-header { color:#15803d; background:#f0fdf4; border-color:#bbf7d0; }
+  .panel-rx    .panel-header { color:#15803d; background:#f0fdf4; border-color:#bbf7d0; }
   .rx-symbol { font-size:18px; font-weight:900; font-style:italic; color:#15803d; line-height:1; }
+  .inv-divider { border:none; border-top:1px dashed var(--border); margin:4px 0; }
+  .inv-label { font-size:10px; font-weight:700; color:var(--text-4); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
 
-  .inv-divider {
-    border:none; border-top:1px dashed var(--border); margin:4px 0;
-  }
-  .inv-label {
-    font-size:10px; font-weight:700; color:var(--text-4);
-    text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;
-  }
+  /* ── SOAP layout ── */
+  .soap-layout { margin-bottom:14px; display:flex; flex-direction:column; gap:14px; }
+  .soap-card { background:#fff; border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+  .soap-card-header { padding:12px 18px; border-bottom:1px solid var(--border); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; background:#f9fafb; }
+  .soap-card-body { padding:16px 18px; }
 
-  /* Footer bar */
+  /* ── Shared footer ── */
   .consult-footer {
     background:#fff; border:1px solid var(--border); border-radius:14px;
     padding:16px 20px; margin-bottom:14px;
   }
   .footer-row { display:flex; gap:14px; flex-wrap:wrap; align-items:end; margin-bottom:14px; }
   .footer-row:last-child { margin-bottom:0; }
-
   .sick-note-fields { display:none; }
   .sick-note-fields.visible { display:flex; flex-wrap:wrap; gap:12px; margin-top:14px; }
 
-  /* SOAP expand section */
-  .soap-extra { display:none; border-top:1px dashed var(--border); padding-top:14px; margin-top:4px; }
-  .soap-extra.visible { display:block; }
+  /* SOAP-specific styles (from base) */
+  .soap-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .soap-block { border-radius:10px; padding:14px; }
+  .soap-s { background:#f5f3ff; border:1px solid #ddd6fe; }
+  .soap-o { background:#e0f2fe; border:1px solid #bae6fd; }
+  .soap-a { background:#dcfce7; border:1px solid #bbf7d0; }
+  .soap-p { background:#fef9c3; border:1px solid #fde68a; }
+  .soap-label { font-size:11px; font-weight:700; color:var(--text-2); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
 
-  .consult-topbar textarea, .consult-panels textarea { resize:vertical; }
+  .soap-extra { display:none; }
+  .soap-extra.visible { display:block; }
 
   @media (max-width:760px) {
     .consult-panels { grid-template-columns:1fr; }
     .consult-topbar { grid-template-columns:1fr; }
+    .soap-grid { grid-template-columns:1fr; }
   }
 </style>
 {% endblock %}
@@ -80,9 +90,7 @@
 
     <div class="page-header" style="margin-bottom:14px;">
       <div><h1>{{ title }}</h1></div>
-      <div style="display:flex;gap:8px;">
-        <a href="{% url 'consultation_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
-      </div>
+      <a href="{% url 'consultation_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
     </div>
 
     <form method="post" id="consultForm">
@@ -94,7 +102,7 @@
       </div>
       {% endif %}
 
-      <!-- ── Top bar: patient + vitals ──────────────────────────────────── -->
+      <!-- ── Top bar: patient + vitals (always visible) ─────────────────── -->
       <div class="consult-topbar">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div class="form-group" style="margin:0;">
@@ -123,74 +131,154 @@
         </div>
       </div>
 
-      <!-- ── Two panels ─────────────────────────────────────────────────── -->
-      <div class="consult-panels">
+      <!-- ── Layout toggle ───────────────────────────────────────────────── -->
+      <div class="layout-toggle" id="layoutToggle">
+        <button type="button" class="layout-btn active" data-layout="twopanel">
+          <i class="bi bi-layout-split"></i> Quick Notes
+        </button>
+        <button type="button" class="layout-btn" data-layout="soap">
+          <i class="bi bi-card-list"></i> SOAP
+        </button>
+      </div>
 
-        <!-- LEFT: Notes -->
-        <div class="panel panel-notes">
-          <div class="panel-header">
-            <i class="bi bi-pencil-square"></i> Clinical Notes
+      <!-- ══════════════════════════════════════════════════════════════════ -->
+      <!-- LAYOUT A: Two-panel (Quick Notes)                                 -->
+      <!-- ══════════════════════════════════════════════════════════════════ -->
+      <div id="layout-twopanel">
+        <div class="consult-panels">
+
+          <!-- LEFT: Notes -->
+          <div class="panel panel-notes">
+            <div class="panel-header"><i class="bi bi-pencil-square"></i> Clinical Notes</div>
+            <div class="panel-body">
+              <div class="form-group" style="margin:0;flex:1;">
+                {{ form.subjective }}
+              </div>
+              <div class="form-group" style="margin:0;">
+                <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">Assessment / Diagnosis</label>
+                {{ form.assessment }}
+              </div>
+            </div>
           </div>
-          <div class="panel-body">
-            <div class="form-group" style="margin:0;flex:1;">
-              {{ form.subjective }}
-              {% if form.subjective.errors %}<div style="color:#dc2626;font-size:12px;margin-top:3px;">{{ form.subjective.errors.0 }}</div>{% endif %}
+
+          <!-- RIGHT: Rx + Investigations -->
+          <div class="panel panel-rx">
+            <div class="panel-header"><span class="rx-symbol">℞</span> Prescriptions</div>
+            <div class="panel-body">
+              <div class="form-group" style="margin:0;flex:1;">
+                {{ form.prescriptions }}
+              </div>
+              <hr class="inv-divider">
+              <div>
+                <div class="inv-label"><i class="bi bi-droplet-half"></i> Blood / Lab Requests</div>
+                {{ form.lab_requests }}
+              </div>
+              <div>
+                <div class="inv-label"><i class="bi bi-image"></i> Radiology</div>
+                {{ form.radiology_requests }}
+              </div>
             </div>
-            <div class="form-group" style="margin:0;">
-              <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">Assessment / Diagnosis</label>
-              {{ form.assessment }}
-            </div>
-            <!-- Optional SOAP expand -->
-            <div>
-              <button type="button" id="soapToggle" style="background:none;border:none;font-size:12px;color:var(--text-4);cursor:pointer;padding:0;display:flex;align-items:center;gap:5px;">
-                <i class="bi bi-chevron-down" id="soapChevron"></i> Structured SOAP fields
-              </button>
-              <div id="soapExtra" class="soap-extra">
-                <div class="form-group" style="margin-bottom:10px;">
-                  <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">O — Objective findings</label>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════════════ -->
+      <!-- LAYOUT B: SOAP (original)                                         -->
+      <!-- ══════════════════════════════════════════════════════════════════ -->
+      <div id="layout-soap" style="display:none;">
+        <div class="soap-layout">
+
+          <!-- SOAP grid -->
+          <div class="soap-card">
+            <div class="soap-card-header">SOAP Notes</div>
+            <div class="soap-card-body">
+              <div class="soap-grid" style="margin-bottom:14px;">
+                <div class="soap-block soap-s">
+                  <div class="soap-label">S — Subjective</div>
+                  <div style="font-size:11px;color:#818cf8;margin-bottom:8px;">History of presenting illness</div>
+                  {{ form.subjective }}
+                </div>
+                <div class="soap-block soap-o">
+                  <div class="soap-label">O — Objective</div>
+                  <div style="font-size:11px;color:#0891b2;margin-bottom:8px;">Examination findings, vitals, investigations</div>
                   {{ form.objective }}
                 </div>
-                <div class="form-group" style="margin-bottom:10px;">
-                  <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">P — Plan</label>
+                <div class="soap-block soap-a">
+                  <div class="soap-label">A — Assessment</div>
+                  <div style="font-size:11px;color:#15803d;margin-bottom:8px;">Final diagnosis</div>
+                  {{ form.assessment }}
+                </div>
+                <div class="soap-block soap-p">
+                  <div class="soap-label">P — Plan</div>
+                  <div style="font-size:11px;color:#d97706;margin-bottom:8px;">Treatment, management, follow-up</div>
                   {{ form.plan }}
                 </div>
+              </div>
+              <div class="form-group" style="margin-bottom:10px;">
+                <label>Differential Diagnosis <span style="font-weight:400;color:var(--text-4);">optional</span></label>
+                {{ form.differential_diagnosis }}
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label>ICD-10 Code</label>
+                {{ form.icd10_code }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Prescriptions & follow-up -->
+          <div class="soap-card">
+            <div class="soap-card-header">Prescriptions &amp; Follow-up</div>
+            <div class="soap-card-body">
+              <div class="form-group form-full" style="margin-bottom:12px;">
+                <label>Prescriptions <span style="font-weight:400;color:var(--text-4);">— one per line</span></label>
+                {{ form.prescriptions }}
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label>Follow-up Date</label>
+                {{ form.follow_up_date }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Referral -->
+          <div class="soap-card">
+            <div class="soap-card-header">Referral <span style="font-size:12px;font-weight:400;color:var(--text-4);">if applicable</span></div>
+            <div class="soap-card-body">
+              <div class="form-group" style="margin-bottom:10px;">
+                <label>Refer to</label>
+                {{ form.referral_to }}
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label>Reason for referral</label>
+                {{ form.referral_reason }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Lab & Radiology -->
+          <div class="soap-card">
+            <div class="soap-card-header">Lab &amp; Radiology Requests</div>
+            <div class="soap-card-body">
+              <div class="form-grid-2">
                 <div class="form-group" style="margin-bottom:0;">
-                  <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">Differential Diagnosis</label>
-                  {{ form.differential_diagnosis }}
+                  <label>Lab / Blood Test Requests</label>
+                  {{ form.lab_requests }}
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label>Radiology Requests</label>
+                  {{ form.radiology_requests }}
                 </div>
               </div>
             </div>
           </div>
+
         </div>
-
-        <!-- RIGHT: Rx + Investigations -->
-        <div class="panel panel-rx">
-          <div class="panel-header">
-            <span class="rx-symbol">℞</span> Prescriptions
-          </div>
-          <div class="panel-body">
-            <div class="form-group" style="margin:0;flex:1;">
-              {{ form.prescriptions }}
-            </div>
-
-            <hr class="inv-divider">
-
-            <div>
-              <div class="inv-label"><i class="bi bi-droplet-half"></i> Blood / Lab Requests</div>
-              {{ form.lab_requests }}
-            </div>
-
-            <div>
-              <div class="inv-label"><i class="bi bi-image"></i> Radiology</div>
-              {{ form.radiology_requests }}
-            </div>
-          </div>
-        </div>
-
       </div>
 
-      <!-- ── Footer: ICD-10, follow-up, referral, sick note ─────────────── -->
-      <div class="consult-footer">
+      <!-- ── Shared footer: ICD-10, follow-up, referral, sick note ─────── -->
+      <!-- (Quick Notes layout only — SOAP has these inline above) -->
+      <div id="footer-twopanel" class="consult-footer">
         <div class="footer-row">
           <div class="vitals-field" style="flex:0 0 130px;">
             <div class="vitals-label">ICD-10 Code</div>
@@ -201,19 +289,12 @@
             {{ form.follow_up_date }}
           </div>
           <div class="vitals-field" style="flex:1;min-width:200px;">
-            <div class="vitals-label">Referral to <span style="font-weight:400;text-transform:none;">(optional)</span></div>
+            <div class="vitals-label">Referral to <span style="font-weight:400;text-transform:none;">optional</span></div>
             {{ form.referral_to }}
           </div>
         </div>
 
-        {% if form.referral_to.value or form.referral_reason.value %}
-        <div class="form-group" style="margin-bottom:14px;">
-          <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">Referral Reason</label>
-          {{ form.referral_reason }}
-        </div>
-        {% endif %}
-
-        <!-- Sick note -->
+        <!-- Sick note (shared, always shown) -->
         <div style="display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid var(--border);">
           {{ form.sick_note_issued }}
           <label for="{{ form.sick_note_issued.id_for_label }}" style="font-size:13px;font-weight:600;cursor:pointer;margin:0;color:var(--text-2);">
@@ -236,6 +317,22 @@
         </div>
       </div>
 
+      <!-- Sick note for SOAP layout -->
+      <div id="footer-soap" class="consult-footer" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          {{ form.sick_note_issued }}
+          <label for="{{ form.sick_note_issued.id_for_label }}" style="font-size:13px;font-weight:600;cursor:pointer;margin:0;color:var(--text-2);">
+            <i class="bi bi-file-medical" style="margin-right:5px;color:var(--text-3);"></i>Issue sick / medical certificate
+          </label>
+        </div>
+        <div id="sickNoteFields2" class="sick-note-fields">
+          <div class="vitals-field" style="flex:0 0 150px;">
+            <div class="vitals-label">Start Date</div>
+            <input type="text" style="display:none;"><!-- mirror handled by JS -->
+          </div>
+        </div>
+      </div>
+
       <div style="display:flex;gap:10px;">
         <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Consultation</button>
         <a href="{% url 'consultation_list' %}" class="btn-ghost">Cancel</a>
@@ -246,33 +343,40 @@
 </div>
 
 <script>
-// Reload appointment list when patient changes
+// ── Reload appointments when patient changes ──────────────────────────────
 document.getElementById('id_patient').addEventListener('change', function () {
   document.getElementById('consultForm').submit();
 });
 
-// Sick note toggle
-const sickCb     = document.getElementById('{{ form.sick_note_issued.id_for_label }}');
-const sickFields = document.getElementById('sickNoteFields');
-function updateSickNote() { sickFields.classList.toggle('visible', sickCb.checked); }
+// ── Layout toggle ─────────────────────────────────────────────────────────
+(function () {
+  const STORAGE_KEY = 'consult_layout';
+  const panels = { twopanel: document.getElementById('layout-twopanel'), soap: document.getElementById('layout-soap') };
+  const footers = { twopanel: document.getElementById('footer-twopanel'), soap: document.getElementById('footer-soap') };
+  const buttons = document.querySelectorAll('#layoutToggle .layout-btn');
+
+  function activate(name) {
+    Object.keys(panels).forEach(k => {
+      panels[k].style.display  = k === name ? '' : 'none';
+      footers[k].style.display = k === name ? '' : 'none';
+    });
+    buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.layout === name));
+    localStorage.setItem(STORAGE_KEY, name);
+  }
+
+  buttons.forEach(btn => btn.addEventListener('click', () => activate(btn.dataset.layout)));
+
+  // Restore last used layout
+  const saved = localStorage.getItem(STORAGE_KEY) || 'twopanel';
+  activate(saved);
+})();
+
+// ── Sick note toggle ──────────────────────────────────────────────────────
+const sickCb = document.getElementById('{{ form.sick_note_issued.id_for_label }}');
+function updateSickNote() {
+  document.getElementById('sickNoteFields').classList.toggle('visible', sickCb.checked);
+}
 sickCb.addEventListener('change', updateSickNote);
 updateSickNote();
-
-// SOAP expand toggle
-const soapToggle  = document.getElementById('soapToggle');
-const soapExtra   = document.getElementById('soapExtra');
-const soapChevron = document.getElementById('soapChevron');
-// Auto-expand if any structured field has data
-const soapHasData = ['{{ form.objective.id_for_label }}','{{ form.plan.id_for_label }}','{{ form.differential_diagnosis.id_for_label }}']
-  .some(id => { const el = document.getElementById(id); return el && el.value.trim(); });
-if (soapHasData) {
-  soapExtra.classList.add('visible');
-  soapChevron.classList.replace('bi-chevron-down','bi-chevron-up');
-}
-soapToggle.addEventListener('click', function () {
-  const open = soapExtra.classList.toggle('visible');
-  soapChevron.classList.toggle('bi-chevron-down', !open);
-  soapChevron.classList.toggle('bi-chevron-up', open);
-});
 </script>
 {% endblock %}

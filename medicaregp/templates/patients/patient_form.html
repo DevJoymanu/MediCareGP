@@ -171,26 +171,95 @@
           <div class="edit-section-body">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:12px 14px;border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe;">
             <i class="bi bi-info-circle" style="color:#2563eb;flex-shrink:0;"></i>
-            <span style="font-size:13px;color:#1d4ed8;">For adult patients, this is usually the patient themselves. For minors, enter the parent or guardian's details.</span>
+            <span style="font-size:13px;color:#1d4ed8;">For adult patients this is usually the patient. For minors, enter the parent or guardian's details.</span>
           </div>
-          <div class="form-grid-2">
-            <div class="form-group form-full">
-              <label>Postal Address</label>
-              {{ form.postal_address }}
-            </div>
-            <div class="form-group form-full">
-              <label>Residential Address</label>
-              {{ form.address }}
+
+          <!-- Row 1: Surname | First Name | Title -->
+          <div class="form-grid-2" style="margin-bottom:14px;">
+            <div class="form-group">
+              <label>Surname <span style="font-weight:400;color:var(--text-4);">Van</span></label>
+              {{ form.responsible_surname }}
             </div>
             <div class="form-group">
-              <label>Employer</label>
-              {{ form.employer }}
+              <label>First Name <span style="font-weight:400;color:var(--text-4);">Voornaam</span></label>
+              {{ form.responsible_first_name }}
             </div>
-            <div class="form-group form-full">
-              <label>Work Address</label>
-              {{ form.work_address }}
+            <div class="form-group">
+              <label>Mr / Mrs / Miss</label>
+              {{ form.responsible_title }}
             </div>
           </div>
+
+          <!-- Row 2: ID Number | Email -->
+          <div class="form-grid-2" style="margin-bottom:14px;">
+            <div class="form-group">
+              <label>I.D. Number</label>
+              {{ form.responsible_id_number }}
+            </div>
+            <div class="form-group">
+              <label>E-Mail Address</label>
+              {{ form.responsible_email }}
+            </div>
+          </div>
+
+          <!-- Row 3: Postal Address + Code -->
+          <div style="display:grid;grid-template-columns:1fr 90px;gap:10px;margin-bottom:14px;">
+            <div class="form-group" style="margin:0;">
+              <label>Postal Address <span style="font-weight:400;color:var(--text-4);">Posadres</span></label>
+              {{ form.postal_address }}
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>Code</label>
+              {{ form.postal_code }}
+            </div>
+          </div>
+
+          <!-- Row 4: Residential Address + Code -->
+          <div style="display:grid;grid-template-columns:1fr 90px;gap:10px;margin-bottom:14px;">
+            <div class="form-group" style="margin:0;">
+              <label>Residential Address <span style="font-weight:400;color:var(--text-4);">Woonadres</span></label>
+              {{ form.address }}
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label>Code</label>
+              {{ form.residential_code }}
+            </div>
+          </div>
+
+          <!-- Row 5: Tel(H) | Tel(W) | Cell -->
+          <div class="form-grid-2" style="margin-bottom:14px;">
+            <div class="form-group">
+              <label>Tel. (H)</label>
+              {{ form.responsible_tel_h }}
+            </div>
+            <div class="form-group">
+              <label>Tel. (W)</label>
+              {{ form.responsible_tel_w }}
+            </div>
+            <div class="form-group">
+              <label>Cell Number <span style="font-weight:400;color:var(--text-4);">Sel Nommer</span></label>
+              {{ form.responsible_cell }}
+            </div>
+          </div>
+
+          <!-- Row 6: Employer | Work Address + Code -->
+          <div class="form-grid-2" style="margin-bottom:0;">
+            <div class="form-group">
+              <label>Employer <span style="font-weight:400;color:var(--text-4);">Werkgewer</span></label>
+              {{ form.employer }}
+            </div>
+            <div style="grid-column:span 2;display:grid;grid-template-columns:1fr 90px;gap:10px;">
+              <div class="form-group" style="margin:0;">
+                <label>Work Address <span style="font-weight:400;color:var(--text-4);">Werksadres</span></label>
+                {{ form.work_address }}
+              </div>
+              <div class="form-group" style="margin:0;">
+                <label>Code</label>
+                {{ form.work_code }}
+              </div>
+            </div>
+          </div>
+
           </div>
         </div>
 

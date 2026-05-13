@@ -48,15 +48,28 @@ class Patient(models.Model):
     home_language   = models.CharField(max_length=50, blank=True, null=True, verbose_name='Home language')
     marital_status  = models.CharField(max_length=10, choices=MARITAL_CHOICES, blank=True, null=True)
 
-    # ── Contact ───────────────────────────────────────────────────────────────
+    # ── Contact (Section 1 — patient's own) ──────────────────────────────────
     phone           = models.CharField(max_length=20)
-    alt_phone       = models.CharField(max_length=20, blank=True, null=True, verbose_name='Alt. phone (home)')
-    work_phone      = models.CharField(max_length=20, blank=True, null=True, verbose_name='Work phone')
+    alt_phone       = models.CharField(max_length=20, blank=True, null=True, verbose_name='Tel. (H)')
+    work_phone      = models.CharField(max_length=20, blank=True, null=True, verbose_name='Tel. (W)')
     email           = models.EmailField(blank=True, null=True)
-    address         = models.TextField(blank=True, null=True, verbose_name='Residential address')
-    postal_address  = models.TextField(blank=True, null=True, verbose_name='Postal address')
-    employer        = models.CharField(max_length=150, blank=True, null=True)
-    work_address    = models.TextField(blank=True, null=True, verbose_name='Work address')
+
+    # ── Person Responsible for Account (Section 2) ───────────────────────────
+    responsible_surname    = models.CharField(max_length=100, blank=True, null=True, verbose_name='Surname')
+    responsible_first_name = models.CharField(max_length=100, blank=True, null=True, verbose_name='First Name')
+    responsible_title      = models.CharField(max_length=10, choices=[('Mr','Mr'),('Mrs','Mrs'),('Miss','Miss'),('Ms','Ms'),('Dr','Dr'),('Prof','Prof')], blank=True, null=True, verbose_name='Mr/Mrs/Miss')
+    responsible_id_number  = models.CharField(max_length=30, blank=True, null=True, verbose_name='I.D. Number')
+    responsible_email      = models.EmailField(blank=True, null=True, verbose_name='E-Mail Address')
+    postal_address         = models.TextField(blank=True, null=True, verbose_name='Postal Address')
+    postal_code            = models.CharField(max_length=10, blank=True, null=True, verbose_name='Postal Code')
+    address                = models.TextField(blank=True, null=True, verbose_name='Residential Address')
+    residential_code       = models.CharField(max_length=10, blank=True, null=True, verbose_name='Residential Code')
+    responsible_tel_h      = models.CharField(max_length=20, blank=True, null=True, verbose_name='Tel. (H)')
+    responsible_tel_w      = models.CharField(max_length=20, blank=True, null=True, verbose_name='Tel. (W)')
+    responsible_cell       = models.CharField(max_length=20, blank=True, null=True, verbose_name='Cell Number')
+    employer               = models.CharField(max_length=150, blank=True, null=True, verbose_name='Employer')
+    work_address           = models.TextField(blank=True, null=True, verbose_name='Work Address')
+    work_code              = models.CharField(max_length=10, blank=True, null=True, verbose_name='Work Code')
 
     # ── Next of kin ──────────────────────────────────────────────────────────
     next_of_kin_name         = models.CharField(max_length=150, blank=True, null=True, verbose_name='Next of kin name')
