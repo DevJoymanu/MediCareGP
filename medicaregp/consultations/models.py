@@ -4,9 +4,10 @@ from appointments.models import Appointment
 
 
 class Consultation(models.Model):
-    patient     = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='consultations')
-    appointment = models.ForeignKey(Appointment, on_delete=models.SET_NULL, null=True, blank=True, related_name='consultations')
-    date        = models.DateField(auto_now_add=True)
+    patient               = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='consultations')
+    appointment           = models.ForeignKey(Appointment, on_delete=models.SET_NULL, null=True, blank=True, related_name='consultations')
+    date                  = models.DateField(auto_now_add=True)
+    reviewed_consultation = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='reviews', verbose_name='Review of')
 
     # ── Visit vitals (quick capture) ──────────────────────────────────────────
     weight_kg                = models.DecimalField(max_digits=5, decimal_places=1, blank=True, null=True, verbose_name='Weight (kg)')

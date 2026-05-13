@@ -250,6 +250,32 @@ def consultation_delete(request, pk):
 
 
 @login_required
+def consultation_review(request, pk):
+    """Start a new review consultation linked to an existing one."""
+    original = get_object_or_404(Consultation, pk=pk)
+
+    if request.method == 'POST':
+        review = Consultation(
+            patient=original.patient,
+            reviewed_consultation=original,
+        )
+        review.weight_kg      = request.POST.get('weight_kg') or None
+        review.bp_reading     = request.POST.get('bp_reading') or None
+        review.review         = request.POST.get('review') or None
+        review.assessment     = request.POST.get('assessment') or None
+        review.prescriptions  = request.POST.get('prescriptions') or None
+        review.lab_requests   = request.POST.get('lab_requests') or None
+        review.follow_up_date = request.POST.get('follow_up_date') or None
+        review.save()
+        messages.success(request, f'Review saved for {original.patient}.')
+        return redirect('consultation_detail', pk=review.pk)
+
+    return render(request, 'consultations/consultation_review.html', {
+        'original': original,
+    })
+
+
+@login_required
 def consultation_print(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
     return render(request, 'consultations/consultation_print.html', {'consultation': consultation})

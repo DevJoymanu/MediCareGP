@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% block title %}Review Consultation | G.P CRM{% endblock %}
+{% block page_title %}Review Consultation{% endblock %}
+{% block page_sub %}{{ original.patient }} — reviewing visit of {{ original.date|date:"j F Y" }}{% endblock %}
+
+{% block extra_head %}
+<style>
+  .review-wrap { max-width:1100px; margin:0 auto; }
+
+  /* ── Top bar ── */
+  .review-topbar {
+    background:#fff; border:1px solid var(--border); border-radius:14px;
+    padding:16px 20px; margin-bottom:16px;
+    display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap;
+  }
+  .vitals-label {
+    font-size:10px; font-weight:700; color:var(--text-3);
+    text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px;
+  }
+  .patient-badge {
+    display:flex; align-items:center; gap:12px; flex:1; min-width:200px;
+  }
+  .patient-badge .name { font-size:17px; font-weight:700; color:var(--text-1); }
+  .patient-badge .sub  { font-size:12px; color:var(--text-3); margin-top:1px; }
+
+  /* ── Two-column comparison ── */
+  .compare-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:0;
+    border:1px solid var(--border); border-radius:14px;
+    overflow:hidden; background:#fff; margin-bottom:16px;
+  }
+
+  /* Left — previous visit (read-only) */
+  .col-previous {
+    border-right:2px solid var(--border);
+    background:#f8fafc;
+  }
+  .col-previous .col-header {
+    background:#f1f5f9; border-bottom:1px solid var(--border);
+    padding:14px 20px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .col-previous .col-header .title {
+    font-size:12px; font-weight:700; color:var(--text-2);
+    text-transform:uppercase; letter-spacing:.07em;
+  }
+  .col-previous .col-header .date-badge {
+    margin-left:auto; font-size:11px; font-weight:600;
+    color:#fff; background:var(--text-3); border-radius:20px;
+    padding:3px 10px;
+  }
+
+  /* Right — new review (editable) */
+  .col-review { background:#fff; }
+  .col-review .col-header {
+    background:#ecfdf5; border-bottom:1px solid #bbf7d0;
+    padding:14px 20px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .col-review .col-header .title {
+    font-size:12px; font-weight:700; color:#15803d;
+    text-transform:uppercase; letter-spacing:.07em;
+  }
+  .col-review .col-header .today-badge {
+    margin-left:auto; font-size:11px; font-weight:600;
+    color:#fff; background:#16a34a; border-radius:20px;
+    padding:3px 10px;
+  }
+
+  /* Shared body / row styles */
+  .col-body { padding:20px; display:flex; flex-direction:column; gap:18px; }
+
+  .row-block { display:contents; }
+
+  .field-label {
+    font-size:10px; font-weight:700; color:var(--text-4);
+    text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px;
+  }
+  .field-value {
+    font-size:13.5px; color:var(--text-1); white-space:pre-line;
+    line-height:1.7; min-height:20px;
+  }
+  .field-value.rx { color:#166534; }
+  .field-value.empty { color:var(--text-4); font-style:italic; }
+
+  .section-divider {
+    border:none; border-top:1px dashed var(--border); margin:0;
+  }
+
+  /* Row-by-row alignment: each pair of cells lives in a matching grid row */
+  .compare-row {
+    display:grid; grid-template-columns:1fr 1fr;
+    border-bottom:1px solid var(--border);
+  }
+  .compare-row:last-child { border-bottom:none; }
+  .compare-cell {
+    padding:16px 20px;
+  }
+  .compare-cell.shaded { background:#f8fafc; }
+  .compare-cell.white  { background:#fff; }
+
+  /* Footer */
+  .review-footer {
+    background:#fff; border:1px solid var(--border); border-radius:14px;
+    padding:16px 20px; margin-bottom:16px;
+    display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap;
+  }
+
+  textarea.crm-input { resize:vertical; }
+
+  @media (max-width:700px) {
+    .compare-grid { grid-template-columns:1fr; }
+    .compare-row  { grid-template-columns:1fr; }
+    .col-previous { border-right:none; border-bottom:2px solid var(--border); }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div class="review-wrap">
+
+    <div class="page-header" style="margin-bottom:16px;">
+      <div>
+        <h1>Review Consultation</h1>
+        <p style="margin:0;color:var(--text-3);font-size:13px;">
+          Reviewing visit from <strong>{{ original.date|date:"j F Y" }}</strong>
+          {% if original.assessment %} — {{ original.assessment|truncatechars:60 }}{% endif %}
+        </p>
+      </div>
+      <a href="{% url 'consultation_detail' original.pk %}" class="btn-ghost">
+        <i class="bi bi-arrow-left"></i> Back
+      </a>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <!-- ── Top bar: patient + today's vitals ──────────────────────────── -->
+      <div class="review-topbar">
+        <div class="patient-badge">
+          <div class="avatar av-48 av-1">
+            {{ original.patient.first_name|first|upper }}{{ original.patient.last_name|first|upper }}
+          </div>
+          <div>
+            <div class="name">{{ original.patient }}</div>
+            <div class="sub">
+              {% if original.patient.get_age %}Age {{ original.patient.get_age }}{% endif %}
+              {% if original.patient.medical_aid_name %} · {{ original.patient.medical_aid_name }}{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="vitals-label">Weight (kg)</div>
+          <input type="number" name="weight_kg" step="0.1" placeholder="kg"
+                 class="crm-input" style="width:90px;">
+        </div>
+        <div>
+          <div class="vitals-label">BP (mmHg)</div>
+          <input type="text" name="bp_reading" placeholder="120/80"
+                 class="crm-input" style="width:110px;">
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <div class="vitals-label">Reason for today's visit</div>
+          <input type="text" name="chief_complaint_today" placeholder="e.g. Follow-up, medication review…"
+                 class="crm-input" style="width:100%;" disabled title="Stored automatically as a review">
+        </div>
+      </div>
+
+      <!-- ── Comparison grid ─────────────────────────────────────────────── -->
+      <div class="compare-grid">
+
+        <!-- Column headers -->
+        <div class="col-previous" style="border-bottom:none;">
+          <div class="col-header">
+            <i class="bi bi-clock-history" style="color:var(--text-3);"></i>
+            <span class="title">Previous Visit</span>
+            <span class="date-badge">{{ original.date|date:"j M Y" }}</span>
+          </div>
+        </div>
+        <div class="col-review" style="border-bottom:none;">
+          <div class="col-header">
+            <i class="bi bi-pencil-square" style="color:#15803d;"></i>
+            <span class="title">Today's Review</span>
+            <span class="today-badge">Today</span>
+          </div>
+        </div>
+
+        <!-- ── Row 1: Reason / Review notes ── -->
+        <div class="compare-cell shaded">
+          <div class="field-label">Reason for previous visit</div>
+          {% if original.chief_complaint %}
+            <div class="field-value">{{ original.chief_complaint }}</div>
+          {% else %}
+            <div class="field-value empty">Not recorded</div>
+          {% endif %}
+          {% if original.review %}
+          <div style="margin-top:12px;">
+            <div class="field-label">Review notes from that visit</div>
+            <div class="field-value">{{ original.review }}</div>
+          </div>
+          {% endif %}
+        </div>
+        <div class="compare-cell white">
+          <div class="field-label">How is the patient doing? <span style="font-weight:400;text-transform:none;color:var(--text-4);">— progress, concerns, adherence</span></div>
+          <textarea name="review" rows="5" class="crm-input"
+            placeholder="e.g. Patient reports improvement. Still experiencing some shortness of breath. Medication taken as prescribed…"
+            style="width:100%;"></textarea>
+        </div>
+
+        <!-- ── Row 2: Diagnosis ── -->
+        <div class="compare-cell shaded" style="border-top:1px solid var(--border);">
+          <div class="field-label">Diagnosis / Assessment</div>
+          {% if original.assessment %}
+            <div class="field-value">{{ original.assessment }}</div>
+          {% else %}
+            <div class="field-value empty">Not recorded</div>
+          {% endif %}
+        </div>
+        <div class="compare-cell white" style="border-top:1px solid var(--border);">
+          <div class="field-label">Updated assessment <span style="font-weight:400;text-transform:none;color:var(--text-4);">— leave blank if unchanged</span></div>
+          <textarea name="assessment" rows="3" class="crm-input"
+            placeholder="e.g. Resolving URTI. Hypertension — improving."
+            style="width:100%;"></textarea>
+        </div>
+
+        <!-- ── Row 3: Treatment / Rx ── -->
+        <div class="compare-cell shaded" style="border-top:1px solid var(--border);">
+          <div class="field-label">Previous treatment / prescriptions</div>
+          {% if original.prescriptions %}
+            <div class="field-value rx">{{ original.prescriptions }}</div>
+          {% else %}
+            <div class="field-value empty">None recorded</div>
+          {% endif %}
+        </div>
+        <div class="compare-cell white" style="border-top:1px solid var(--border);">
+          <div class="field-label" style="color:#15803d;">℞ Prescriptions today <span style="font-weight:400;text-transform:none;color:var(--text-4);">— leave blank if no change</span></div>
+          <textarea name="prescriptions" rows="5" class="crm-input"
+            placeholder="e.g. Amlodipine 10mg — continue&#10;Azithromycin — STOP&#10;Add: Salbutamol inhaler PRN"
+            style="width:100%;"></textarea>
+        </div>
+
+        <!-- ── Row 4: Tests ── -->
+        <div class="compare-cell shaded" style="border-top:1px solid var(--border);">
+          <div class="field-label">Tests previously ordered</div>
+          {% if original.lab_requests %}
+            <div class="field-value">{{ original.lab_requests }}</div>
+          {% else %}
+            <div class="field-value empty">None ordered</div>
+          {% endif %}
+        </div>
+        <div class="compare-cell white" style="border-top:1px solid var(--border);">
+          <div class="field-label">New tests ordered today <span style="font-weight:400;text-transform:none;color:var(--text-4);">— leave blank if none</span></div>
+          <textarea name="lab_requests" rows="3" class="crm-input"
+            placeholder="e.g. HbA1c&#10;Lipogram&#10;FBC"
+            style="width:100%;"></textarea>
+        </div>
+
+      </div>
+      <!-- end compare-grid -->
+
+      <!-- ── Footer: follow-up ──────────────────────────────────────────── -->
+      <div class="review-footer">
+        <div>
+          <div class="vitals-label">Follow-up Date</div>
+          <input type="date" name="follow_up_date" class="crm-input" style="width:170px;">
+        </div>
+        <div style="flex:1;display:flex;align-items:flex-end;gap:10px;justify-content:flex-end;">
+          <a href="{% url 'consultation_detail' original.pk %}" class="btn-ghost">Cancel</a>
+          <button type="submit" class="btn-primary" style="font-size:15px;padding:11px 28px;">
+            <i class="bi bi-check-lg"></i> Save Review
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
