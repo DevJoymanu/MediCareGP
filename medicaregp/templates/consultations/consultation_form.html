@@ -153,6 +153,16 @@
           <div class="panel panel-notes">
             <div class="panel-header"><i class="bi bi-pencil-square"></i> Clinical Notes</div>
             <div class="panel-body">
+              {% if form.review.value or not form.instance.pk %}
+              <div class="form-group" style="margin:0;">
+                <label style="font-size:11px;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px;">
+                  <i class="bi bi-arrow-repeat" style="font-size:13px;"></i> Review
+                  <span style="font-weight:400;color:var(--text-4);text-transform:none;letter-spacing:0;">— progress since last visit</span>
+                </label>
+                {{ form.review }}
+              </div>
+              <div style="border-top:1px dashed var(--border);margin:0 -2px;"></div>
+              {% endif %}
               <div class="form-group" style="margin:0;flex:1;">
                 {{ form.subjective }}
               </div>
@@ -190,6 +200,19 @@
       <!-- ══════════════════════════════════════════════════════════════════ -->
       <div id="layout-soap" style="display:none;">
         <div class="soap-layout">
+
+          <!-- Review -->
+          <div class="soap-card">
+            <div class="soap-card-header" style="color:#7c3aed;background:#f5f3ff;border-color:#ddd6fe;">
+              <i class="bi bi-arrow-repeat" style="margin-right:6px;"></i>Review
+              <span style="font-size:11px;font-weight:400;color:#a78bfa;margin-left:6px;">progress since last visit</span>
+            </div>
+            <div class="soap-card-body">
+              <div class="form-group" style="margin:0;">
+                {{ form.review }}
+              </div>
+            </div>
+          </div>
 
           <!-- SOAP grid -->
           <div class="soap-card">

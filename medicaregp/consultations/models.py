@@ -14,6 +14,7 @@ class Consultation(models.Model):
 
     # ── Clinical notes ────────────────────────────────────────────────────────
     chief_complaint          = models.TextField(blank=True, null=True, verbose_name='Reason for visit')
+    review                   = models.TextField(blank=True, null=True, verbose_name='Review', help_text='Progress since last visit — current treatment response, adherence, concerns')
     subjective               = models.TextField(blank=True, null=True, verbose_name='Clinical Notes')
     objective                = models.TextField(blank=True, null=True, verbose_name='O — Objective (Examination findings)')
     assessment               = models.TextField(blank=True, null=True, verbose_name='Assessment / Diagnosis')
