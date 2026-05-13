@@ -23,26 +23,13 @@ def get_client_ip(request):
 
 
 def check_ip_rate_limit(ip_address):
-    """Returns True if under limit, False if exceeded (max 3 per 15 min per IP)."""
-    key = f'checkin_ip_{ip_address}'
-    count = cache.get(key, 0)
-    if count >= 3:
-        return False
-    cache.set(key, count + 1, 60 * 15)
+    # Rate limiting paused
     return True
 
 
 def check_id_rate_limit(id_number):
-    """Returns True if under limit, False if exceeded (max 2 pending per ID per day)."""
-    from .models import CheckInRequest
-    from django.utils import timezone
-    today_start = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    count = CheckInRequest.objects.filter(
-        id_number=id_number,
-        status='pending',
-        created_at__gte=today_start,
-    ).count()
-    return count < 2
+    # Rate limiting paused
+    return True
 
 
 def expire_old_requests():
