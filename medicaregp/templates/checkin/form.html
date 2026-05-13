@@ -107,8 +107,31 @@
       </div>
 
       <div class="field">
-        <label for="date_of_birth">Date of Birth <span class="req">*</span></label>
-        <input type="date" id="date_of_birth" name="date_of_birth" value="{{ request.POST.date_of_birth }}">
+        <label>Date of Birth <span class="req">*</span></label>
+        <input type="hidden" id="date_of_birth" name="date_of_birth" value="{{ request.POST.date_of_birth }}">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;">Day</span>
+            <input type="number" id="dob_dd" min="1" max="31" placeholder="DD"
+                   inputmode="numeric" autocomplete="off"
+                   style="text-align:center;font-size:20px;font-weight:700;padding:12px 8px;border:1.5px solid #d1d5db;border-radius:8px;width:100%;">
+          </div>
+          <span style="font-size:24px;font-weight:300;color:#94a3b8;padding-top:18px;">/</span>
+          <div style="display:flex;flex-direction:column;gap:4px;flex:1;">
+            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;">Month</span>
+            <input type="number" id="dob_mm" min="1" max="12" placeholder="MM"
+                   inputmode="numeric" autocomplete="off"
+                   style="text-align:center;font-size:20px;font-weight:700;padding:12px 8px;border:1.5px solid #d1d5db;border-radius:8px;width:100%;">
+          </div>
+          <span style="font-size:24px;font-weight:300;color:#94a3b8;padding-top:18px;">/</span>
+          <div style="display:flex;flex-direction:column;gap:4px;flex:2;">
+            <span style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;">Year</span>
+            <input type="number" id="dob_yyyy" min="1900" max="2026" placeholder="YYYY"
+                   inputmode="numeric" autocomplete="off"
+                   style="text-align:center;font-size:20px;font-weight:700;padding:12px 8px;border:1.5px solid #d1d5db;border-radius:8px;width:100%;">
+          </div>
+        </div>
+        <div id="dob_display" style="margin-top:6px;font-size:13px;font-weight:600;color:#16a34a;display:none;"></div>
       </div>
 
       <div class="field">
@@ -269,6 +292,56 @@
   {% if request.POST.id_number %}
   doLookup('{{ request.POST.id_number|escapejs }}');
   {% endif %}
+
+  // ── Date of Birth split inputs ──────────────────────────────────────────
+  (function () {
+    const dd   = document.getElementById('dob_dd');
+    const mm   = document.getElementById('dob_mm');
+    const yyyy = document.getElementById('dob_yyyy');
+    const hidden  = document.getElementById('date_of_birth');
+    const display = document.getElementById('dob_display');
+
+    const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function update() {
+      const d = parseInt(dd.value);
+      const m = parseInt(mm.value);
+      const y = parseInt(yyyy.value);
+      if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1900 && y <= 2026) {
+        hidden.value = y + '-' + pad(m) + '-' + pad(d);
+        display.textContent = d + ' ' + MONTHS[m - 1] + ' ' + y;
+        display.style.display = 'block';
+        [dd, mm, yyyy].forEach(el => el.style.borderColor = '#86efac');
+      } else {
+        hidden.value = '';
+        display.style.display = 'none';
+        [dd, mm, yyyy].forEach(el => el.style.borderColor = '#d1d5db');
+      }
+    }
+
+    dd.addEventListener('input', function () {
+      if (this.value.length >= 2 || parseInt(this.value) > 3) mm.focus();
+      update();
+    });
+    mm.addEventListener('input', function () {
+      if (this.value.length >= 2 || parseInt(this.value) > 1) yyyy.focus();
+      update();
+    });
+    yyyy.addEventListener('input', update);
+
+    // Pre-populate if form returned with errors
+    {% if request.POST.date_of_birth %}
+    const parts = '{{ request.POST.date_of_birth }}'.split('-');
+    if (parts.length === 3) {
+      yyyy.value = parts[0];
+      mm.value   = parseInt(parts[1]);
+      dd.value   = parseInt(parts[2]);
+      update();
+    }
+    {% endif %}
+  })();
 </script>
 </body>
 </html>
