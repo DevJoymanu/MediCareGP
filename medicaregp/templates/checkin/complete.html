@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You — {{ practice_name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #166534 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 28px;
+      padding: 44px 32px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    /* ── Green circle with white tick ── */
+    .tick-circle {
+      width: 110px;
+      height: 110px;
+      background: #16a34a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      animation: popIn .6s cubic-bezier(.36,.07,.19,.97) both;
+      box-shadow: 0 8px 32px rgba(22,163,74,.35);
+    }
+    .tick-circle i {
+      font-size: 52px;
+      color: #fff;
+      font-weight: 900;
+    }
+
+    @keyframes popIn {
+      0%   { transform: scale(0); opacity: 0; }
+      60%  { transform: scale(1.1); }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+
+    /* ── Confetti row ── */
+    .confetti {
+      font-size: 26px;
+      letter-spacing: 8px;
+      margin-bottom: 20px;
+      animation: fadeUp .5s .4s both;
+    }
+
+    /* ── Text ── */
+    .thank-you {
+      font-size: 32px;
+      font-weight: 900;
+      color: #14532d;
+      margin-bottom: 8px;
+      animation: fadeUp .5s .3s both;
+    }
+
+    .name-line {
+      font-size: 20px;
+      font-weight: 700;
+      color: #16a34a;
+      margin-bottom: 20px;
+      animation: fadeUp .5s .35s both;
+    }
+
+    .message {
+      font-size: 15px;
+      color: #374151;
+      line-height: 1.7;
+      margin-bottom: 28px;
+      animation: fadeUp .5s .4s both;
+    }
+
+    /* ── Info cards ── */
+    .info-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      border-radius: 12px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      margin-bottom: 10px;
+      text-align: left;
+      animation: fadeUp .5s .5s both;
+    }
+    .info-row i {
+      font-size: 20px;
+      color: #16a34a;
+      flex-shrink: 0;
+    }
+    .info-row-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #166534;
+      line-height: 1.4;
+    }
+    .info-row-sub {
+      font-size: 12px;
+      color: #4ade80;
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    /* ── Phone away tip ── */
+    .phone-tip {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      animation: fadeUp .5s .6s both;
+    }
+
+    /* ── Practice ── */
+    .practice {
+      margin-top: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #d1d5db;
+      animation: fadeUp .5s .65s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <div class="tick-circle">
+    <i class="bi bi-check-lg"></i>
+  </div>
+
+  <div class="confetti">🎉 🌟 🎊</div>
+
+  <div class="thank-you">Thank You!</div>
+
+  {% if name %}
+  <div class="name-line">{{ name }}, you're all set.</div>
+  {% endif %}
+
+  <p class="message">
+    Your profile is complete and you are checked in.<br>
+    Please make yourself comfortable — a staff member will call your name shortly.
+  </p>
+
+  <div class="info-row" style="animation-delay:.45s;">
+    <i class="bi bi-person-check-fill"></i>
+    <div>
+      <div class="info-row-text">You are in the waiting room</div>
+      <div class="info-row-sub">Reception has been notified of your arrival</div>
+    </div>
+  </div>
+
+  <div class="info-row" style="animation-delay:.5s;">
+    <i class="bi bi-shield-check"></i>
+    <div>
+      <div class="info-row-text">Your information is safe</div>
+      <div class="info-row-sub">Protected under POPIA — used only for your care</div>
+    </div>
+  </div>
+
+  {% if is_new %}
+  <div class="info-row" style="animation-delay:.55s;">
+    <i class="bi bi-file-earmark-person"></i>
+    <div>
+      <div class="info-row-text">Patient record created</div>
+      <div class="info-row-sub">Your details have been saved for future visits</div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="phone-tip">
+    <i class="bi bi-phone"></i>
+    You can put your phone away — we'll call your name.
+  </div>
+
+  <div class="practice">{{ practice_name }}</div>
+
+</div>
+</body>
+</html>

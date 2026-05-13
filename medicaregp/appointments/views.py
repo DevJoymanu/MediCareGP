@@ -208,6 +208,17 @@ def pending_review_notes(request, pk):
     return redirect('waiting_room')
 
 @login_required
+def appointment_start_consultation(request, pk):
+    """Mark appointment as With Doctor then open the consultation form."""
+    appointment = get_object_or_404(Appointment, pk=pk)
+    appointment.status = 'With Doctor'
+    appointment.save(update_fields=['status'])
+    from django.urls import reverse
+    url = reverse('consultation_create') + f'?patient_id={appointment.patient_id}&appointment_id={appointment.pk}'
+    return redirect(url)
+
+
+@login_required
 def appointment_check_in(request, pk):
     if request.method == 'POST':
         appointment = get_object_or_404(Appointment, pk=pk)

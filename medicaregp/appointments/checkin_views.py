@@ -225,10 +225,18 @@ def checkin_confirmation(request, token, pk):
     if not _token_valid(token):
         return render(request, 'checkin/blocked.html', {'reason': 'invalid_token'}, status=404)
     req = get_object_or_404(CheckInRequest, pk=pk)
-    return render(request, 'checkin/confirmation.html', {
-        'req': req,
+    if req.is_new_patient:
+        # New patients: prompt them to complete their profile, then lands on complete.html
+        return render(request, 'checkin/confirmation.html', {
+            'req': req,
+            'practice_name': settings.PRACTICE_NAME,
+            'phase2_url': f'/checkin/phase2/{req.phase2_token}/',
+        })
+    # Returning patients: go straight to the thank-you screen
+    return render(request, 'checkin/complete.html', {
+        'name':          req.display_name.split()[0],
         'practice_name': settings.PRACTICE_NAME,
-        'phase2_url': f'/checkin/phase2/{req.phase2_token}/',
+        'is_new':        False,
     })
 
 
@@ -265,13 +273,22 @@ def checkin_phase2(request, phase2_token):
         req.save()
         if req.patient:
             _update_patient_from_checkin(req.patient, req)
-        saved = True
+        return redirect('checkin_phase2_done', phase2_token=req.phase2_token)
 
     return render(request, 'checkin/phase2.html', {
         'req': req,
-        'saved': saved,
         'practice_name': settings.PRACTICE_NAME,
         'blood_types': ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    })
+
+
+def checkin_phase2_done(request, phase2_token):
+    """Final thank-you screen after phase 2 profile completion."""
+    req = get_object_or_404(CheckInRequest, phase2_token=phase2_token)
+    return render(request, 'checkin/complete.html', {
+        'name':          req.first_name or req.display_name,
+        'practice_name': settings.PRACTICE_NAME,
+        'is_new':        req.is_new_patient,
     })
 
 
