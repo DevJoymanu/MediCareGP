@@ -38,22 +38,48 @@ def _update_patient_from_checkin(patient, req):
         'email':                    req.email,
         'alt_phone':                req.alt_phone,
         'occupation':               req.occupation,
+        'home_language':            req.home_language,
+        'marital_status':           req.marital_status,
         'employer':                 req.employer,
         'work_phone':               req.work_phone,
         'address':                  req.address,
+        'residential_code':         req.residential_code,
         'postal_address':           req.postal_address,
+        'postal_code':              req.postal_code,
+        'responsible_surname':      req.responsible_surname,
+        'responsible_first_name':   req.responsible_first_name,
+        'responsible_title':        req.responsible_title,
+        'responsible_id_number':    req.responsible_id_number,
+        'responsible_email':        req.responsible_email,
+        'responsible_tel_h':        req.responsible_tel_h,
+        'responsible_tel_w':        req.responsible_tel_w,
+        'responsible_cell':         req.responsible_cell,
+        'work_address':             req.work_address,
+        'work_code':                req.work_code,
         'blood_type':               req.blood_type,
         'medical_aid_name':         req.medical_aid_name,
         'medical_aid_plan':         req.medical_aid_plan,
         'medical_aid_number':       req.medical_aid_number,
+        'principal_member_name':    req.principal_member_name,
+        'principal_member_id':      req.principal_member_id,
+        'dependant_code':           req.dependant_code,
         'allergies':                req.allergies,
         'chronic_conditions':       req.chronic_conditions,
         'current_medication':       req.current_medication,
+        'previous_surgeries':       req.previous_surgeries,
+        'family_history':           req.family_history,
         'smoking_status':           req.smoking_status,
         'alcohol_use':              req.alcohol_use,
+        'substance_use':            req.substance_use,
         'next_of_kin_name':         req.next_of_kin_name,
         'next_of_kin_relationship': req.next_of_kin_relationship,
+        'next_of_kin_address':      req.next_of_kin_address,
         'next_of_kin_phone':        req.next_of_kin_phone,
+        'next_of_kin_email':        req.next_of_kin_email,
+        'referred_by_name':         req.referred_by_name,
+        'referred_by_phone':        req.referred_by_phone,
+        'referred_by_email':        req.referred_by_email,
+        'consent_to_treat':         req.consent_to_treat,
     }
     for field, value in mapping.items():
         if value and not getattr(patient, field, None):
@@ -253,22 +279,48 @@ def checkin_phase2(request, phase2_token):
         req.email                    = g('email')
         req.alt_phone                = g('alt_phone')
         req.occupation               = g('occupation')
+        req.home_language            = g('home_language')
+        req.marital_status           = g('marital_status')
         req.employer                 = g('employer')
         req.work_phone               = g('work_phone')
         req.address                  = g('address')
+        req.residential_code         = g('residential_code')
         req.postal_address           = g('postal_address')
+        req.postal_code              = g('postal_code')
+        req.responsible_surname      = g('responsible_surname')
+        req.responsible_first_name   = g('responsible_first_name')
+        req.responsible_title        = g('responsible_title')
+        req.responsible_id_number    = g('responsible_id_number')
+        req.responsible_email        = g('responsible_email')
+        req.responsible_tel_h        = g('responsible_tel_h')
+        req.responsible_tel_w        = g('responsible_tel_w')
+        req.responsible_cell         = g('responsible_cell')
+        req.work_address             = g('work_address')
+        req.work_code                = g('work_code')
         req.blood_type               = g('blood_type')
         req.medical_aid_name         = g('medical_aid_name')
         req.medical_aid_plan         = g('medical_aid_plan')
         req.medical_aid_number       = g('medical_aid_number')
+        req.principal_member_name    = g('principal_member_name')
+        req.principal_member_id      = g('principal_member_id')
+        req.dependant_code           = g('dependant_code')
         req.allergies                = g('allergies')
         req.chronic_conditions       = g('chronic_conditions')
         req.current_medication       = g('current_medication')
+        req.previous_surgeries       = g('previous_surgeries')
+        req.family_history           = g('family_history')
         req.smoking_status           = g('smoking_status')
         req.alcohol_use              = g('alcohol_use')
+        req.substance_use            = g('substance_use')
         req.next_of_kin_name         = g('next_of_kin_name')
         req.next_of_kin_relationship = g('next_of_kin_relationship')
+        req.next_of_kin_address      = g('next_of_kin_address')
         req.next_of_kin_phone        = g('next_of_kin_phone')
+        req.next_of_kin_email        = g('next_of_kin_email')
+        req.referred_by_name         = g('referred_by_name')
+        req.referred_by_phone        = g('referred_by_phone')
+        req.referred_by_email        = g('referred_by_email')
+        req.consent_to_treat         = request.POST.get('consent_to_treat') == 'on'
         req.phase2_completed         = True
         req.save()
         if req.patient:
@@ -325,16 +377,53 @@ def checkin_accept(request, pk):
                 date_of_birth=req.date_of_birth,
                 phone=req.phone_number,
                 gender=req.gender or 'O',
+                title=req.title or None,
+                email=req.email or None,
+                alt_phone=req.alt_phone or None,
+                work_phone=req.work_phone or None,
+                occupation=req.occupation or None,
+                home_language=req.home_language or None,
+                marital_status=req.marital_status or None,
                 address=req.address or '',
+                residential_code=req.residential_code or None,
+                postal_address=req.postal_address or None,
+                postal_code=req.postal_code or None,
+                responsible_surname=req.responsible_surname or None,
+                responsible_first_name=req.responsible_first_name or None,
+                responsible_title=req.responsible_title or None,
+                responsible_id_number=req.responsible_id_number or None,
+                responsible_email=req.responsible_email or None,
+                responsible_tel_h=req.responsible_tel_h or None,
+                responsible_tel_w=req.responsible_tel_w or None,
+                responsible_cell=req.responsible_cell or None,
+                employer=req.employer or None,
+                work_address=req.work_address or None,
+                work_code=req.work_code or None,
                 blood_type=req.blood_type or None,
                 medical_aid_name=req.medical_aid_name or None,
+                medical_aid_plan=req.medical_aid_plan or None,
                 medical_aid_number=req.medical_aid_number or None,
+                principal_member_name=req.principal_member_name or None,
+                principal_member_id=req.principal_member_id or None,
+                dependant_code=req.dependant_code or None,
                 allergies=req.allergies or None,
                 chronic_conditions=req.chronic_conditions or None,
+                current_medication=req.current_medication or None,
+                previous_surgeries=req.previous_surgeries or None,
+                family_history=req.family_history or None,
+                smoking_status=req.smoking_status or None,
+                alcohol_use=req.alcohol_use or None,
+                substance_use=req.substance_use or None,
                 next_of_kin_name=req.next_of_kin_name or None,
+                next_of_kin_relationship=req.next_of_kin_relationship or None,
+                next_of_kin_address=req.next_of_kin_address or None,
                 next_of_kin_phone=req.next_of_kin_phone or None,
+                next_of_kin_email=req.next_of_kin_email or None,
+                referred_by_name=req.referred_by_name or None,
+                referred_by_phone=req.referred_by_phone or None,
+                referred_by_email=req.referred_by_email or None,
                 popia_consent=req.popia_consent,
-                consent_to_treat=True,
+                consent_to_treat=req.consent_to_treat,
             )
         except IntegrityError:
             # Patient already exists — update with any new phase 2 data
@@ -403,16 +492,53 @@ def checkin_edit(request, pk):
                         date_of_birth=req.date_of_birth,
                         phone=req.phone_number,
                         gender=req.gender or 'O',
+                        title=req.title or None,
+                        email=req.email or None,
+                        alt_phone=req.alt_phone or None,
+                        work_phone=req.work_phone or None,
+                        occupation=req.occupation or None,
+                        home_language=req.home_language or None,
+                        marital_status=req.marital_status or None,
                         address=req.address or None,
+                        residential_code=req.residential_code or None,
+                        postal_address=req.postal_address or None,
+                        postal_code=req.postal_code or None,
+                        responsible_surname=req.responsible_surname or None,
+                        responsible_first_name=req.responsible_first_name or None,
+                        responsible_title=req.responsible_title or None,
+                        responsible_id_number=req.responsible_id_number or None,
+                        responsible_email=req.responsible_email or None,
+                        responsible_tel_h=req.responsible_tel_h or None,
+                        responsible_tel_w=req.responsible_tel_w or None,
+                        responsible_cell=req.responsible_cell or None,
+                        employer=req.employer or None,
+                        work_address=req.work_address or None,
+                        work_code=req.work_code or None,
                         blood_type=req.blood_type or None,
                         medical_aid_name=req.medical_aid_name or None,
+                        medical_aid_plan=req.medical_aid_plan or None,
                         medical_aid_number=req.medical_aid_number or None,
+                        principal_member_name=req.principal_member_name or None,
+                        principal_member_id=req.principal_member_id or None,
+                        dependant_code=req.dependant_code or None,
                         allergies=req.allergies or None,
                         chronic_conditions=req.chronic_conditions or None,
+                        current_medication=req.current_medication or None,
+                        previous_surgeries=req.previous_surgeries or None,
+                        family_history=req.family_history or None,
+                        smoking_status=req.smoking_status or None,
+                        alcohol_use=req.alcohol_use or None,
+                        substance_use=req.substance_use or None,
                         next_of_kin_name=req.next_of_kin_name or None,
+                        next_of_kin_relationship=req.next_of_kin_relationship or None,
+                        next_of_kin_address=req.next_of_kin_address or None,
                         next_of_kin_phone=req.next_of_kin_phone or None,
+                        next_of_kin_email=req.next_of_kin_email or None,
+                        referred_by_name=req.referred_by_name or None,
+                        referred_by_phone=req.referred_by_phone or None,
+                        referred_by_email=req.referred_by_email or None,
                         popia_consent=req.popia_consent,
-                        consent_to_treat=True,
+                        consent_to_treat=req.consent_to_treat,
                     )
                 except IntegrityError:
                     patient = Patient.objects.get(id_number__iexact=req.id_number)

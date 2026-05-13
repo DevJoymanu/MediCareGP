@@ -119,11 +119,11 @@
 
 <div class="progress-wrap" id="progressWrap">
   <div class="progress-top">
-    <span id="stepLabel">Step 1 of 9</span>
-    <span id="stepPct">11%</span>
+    <span id="stepLabel">Step 1 of 12</span>
+    <span id="stepPct">8%</span>
   </div>
   <div class="progress-track">
-    <div class="progress-fill" id="progressFill" style="width:11%;"></div>
+    <div class="progress-fill" id="progressFill" style="width:8%;"></div>
   </div>
 </div>
 
@@ -137,22 +137,47 @@
     <input type="hidden" name="email"                    id="h_email">
     <input type="hidden" name="alt_phone"                id="h_alt_phone">
     <input type="hidden" name="occupation"               id="h_occupation">
+    <input type="hidden" name="home_language"            id="h_home_language">
+    <input type="hidden" name="marital_status"           id="h_marital_status">
     <input type="hidden" name="employer"                 id="h_employer">
     <input type="hidden" name="work_phone"               id="h_work_phone">
     <input type="hidden" name="address"                  id="h_address">
+    <input type="hidden" name="residential_code"         id="h_residential_code">
     <input type="hidden" name="postal_address"           id="h_postal_address">
+    <input type="hidden" name="postal_code"              id="h_postal_code">
+    <input type="hidden" name="responsible_surname"      id="h_resp_surname">
+    <input type="hidden" name="responsible_first_name"   id="h_resp_first_name">
+    <input type="hidden" name="responsible_title"        id="h_resp_title">
+    <input type="hidden" name="responsible_id_number"    id="h_resp_id">
+    <input type="hidden" name="responsible_email"        id="h_resp_email">
+    <input type="hidden" name="responsible_tel_h"        id="h_resp_tel_h">
+    <input type="hidden" name="responsible_tel_w"        id="h_resp_tel_w">
+    <input type="hidden" name="responsible_cell"         id="h_resp_cell">
+    <input type="hidden" name="work_address"             id="h_work_address">
+    <input type="hidden" name="work_code"                id="h_work_code">
     <input type="hidden" name="blood_type"               id="h_blood_type">
     <input type="hidden" name="medical_aid_name"         id="h_med_name">
     <input type="hidden" name="medical_aid_plan"         id="h_med_plan">
     <input type="hidden" name="medical_aid_number"       id="h_med_number">
+    <input type="hidden" name="principal_member_name"    id="h_principal_name">
+    <input type="hidden" name="principal_member_id"      id="h_principal_id">
+    <input type="hidden" name="dependant_code"           id="h_dependant_code">
     <input type="hidden" name="allergies"                id="h_allergies">
     <input type="hidden" name="chronic_conditions"       id="h_chronic">
     <input type="hidden" name="current_medication"       id="h_medication">
+    <input type="hidden" name="previous_surgeries"       id="h_surgeries">
+    <input type="hidden" name="family_history"           id="h_family_history">
     <input type="hidden" name="smoking_status"           id="h_smoking">
     <input type="hidden" name="alcohol_use"              id="h_alcohol">
+    <input type="hidden" name="substance_use"            id="h_substance">
     <input type="hidden" name="next_of_kin_name"         id="h_nok_name">
     <input type="hidden" name="next_of_kin_relationship" id="h_nok_rel">
+    <input type="hidden" name="next_of_kin_address"      id="h_nok_address">
     <input type="hidden" name="next_of_kin_phone"        id="h_nok_phone">
+    <input type="hidden" name="next_of_kin_email"        id="h_nok_email">
+    <input type="hidden" name="referred_by_name"         id="h_ref_name">
+    <input type="hidden" name="referred_by_phone"        id="h_ref_phone">
+    <input type="hidden" name="referred_by_email"        id="h_ref_email">
 
     <!-- ══ STEP 1: Title & Contact extras ══════════════════════════════ -->
     <div class="step active" id="step-1">
@@ -179,6 +204,23 @@
         <label class="field-label">Home Phone <span style="font-weight:400;text-transform:none;color:#94a3b8;">optional</span></label>
         <input type="tel" id="in_alt_phone" placeholder="Landline number" value="{{ req.alt_phone }}">
       </div>
+      <div class="two-col" style="margin-top:14px;">
+        <div class="field-group">
+          <label class="field-label">Home Language</label>
+          <input type="text" id="in_home_language" placeholder="e.g. English, Zulu" value="{{ req.home_language }}">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Marital Status</label>
+          <select id="in_marital_status">
+            <option value="">Choose...</option>
+            <option value="Single" {% if req.marital_status == "Single" %}selected{% endif %}>Single</option>
+            <option value="Married" {% if req.marital_status == "Married" %}selected{% endif %}>Married</option>
+            <option value="Divorced" {% if req.marital_status == "Divorced" %}selected{% endif %}>Divorced</option>
+            <option value="Widowed" {% if req.marital_status == "Widowed" %}selected{% endif %}>Widowed</option>
+            <option value="Other" {% if req.marital_status == "Other" %}selected{% endif %}>Other</option>
+          </select>
+        </div>
+      </div>
       <div class="step-nav">
         <button type="button" class="btn-skip" onclick="next()">Skip</button>
         <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
@@ -195,8 +237,16 @@
         <textarea id="in_address" rows="2" placeholder="Street, suburb, city">{{ req.address }}</textarea>
       </div>
       <div class="field-group">
+        <label class="field-label">Residential Code</label>
+        <input type="text" id="in_residential_code" placeholder="Postal code" value="{{ req.residential_code }}">
+      </div>
+      <div class="field-group">
         <label class="field-label">Postal Address <span style="font-weight:400;text-transform:none;color:#94a3b8;">if different</span></label>
         <textarea id="in_postal_address" rows="2" placeholder="P.O. Box or postal address">{{ req.postal_address }}</textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Postal Code</label>
+        <input type="text" id="in_postal_code" placeholder="Postal code" value="{{ req.postal_code }}">
       </div>
       <div class="step-nav">
         <button type="button" class="btn-skip" onclick="next()">Skip</button>
@@ -221,6 +271,14 @@
         <label class="field-label">Work Phone</label>
         <input type="tel" id="in_work_phone" placeholder="Work number" value="{{ req.work_phone }}">
       </div>
+      <div class="field-group">
+        <label class="field-label">Work Address</label>
+        <textarea id="in_work_address" rows="2" placeholder="Work address">{{ req.work_address }}</textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Work Code</label>
+        <input type="text" id="in_work_code" placeholder="Work postal code" value="{{ req.work_code }}">
+      </div>
       <div class="step-nav">
         <button type="button" class="btn-skip" onclick="next()">Skip</button>
         <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
@@ -243,6 +301,18 @@
       <div class="field-group">
         <label class="field-label">Membership Number</label>
         <input type="text" id="in_med_number" placeholder="e.g. 001234567" value="{{ req.medical_aid_number }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Dependant Code</label>
+        <input type="text" id="in_dependant_code" placeholder="e.g. 01" value="{{ req.dependant_code }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Principal Member Full Name</label>
+        <input type="text" id="in_principal_name" placeholder="Main member name" value="{{ req.principal_member_name }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Principal Member ID</label>
+        <input type="text" id="in_principal_id" placeholder="Main member ID number" value="{{ req.principal_member_id }}">
       </div>
       <div class="step-nav">
         <button type="button" class="btn-skip" onclick="next()">No medical aid</button>
@@ -321,6 +391,14 @@
       <div class="step-hint">List any medicine you take regularly — name and dosage if you know it.</div>
       <textarea id="in_medication" rows="4"
                 placeholder="e.g. Metformin 500mg — twice daily&#10;Amlodipine 5mg — once daily&#10;Ventolin inhaler — as needed">{{ req.current_medication }}</textarea>
+      <div class="field-group" style="margin-top:14px;">
+        <label class="field-label">Previous Surgeries / Hospitalisations</label>
+        <textarea id="in_surgeries" rows="3" placeholder="e.g. Appendectomy 2015, hospital admission 2021">{{ req.previous_surgeries }}</textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Family Medical History</label>
+        <textarea id="in_family_history" rows="3" placeholder="e.g. Father - diabetes; Mother - hypertension">{{ req.family_history }}</textarea>
+      </div>
       <div class="step-nav">
         <button type="button" class="btn-skip" onclick="next()">No medication</button>
         <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
@@ -348,6 +426,10 @@
           <span class="chip amber" onclick="pickOne(this,'alcohol-chips')">Moderate</span>
           <span class="chip red"   onclick="pickOne(this,'alcohol-chips')">Heavy</span>
         </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Other Substance Use <span style="font-weight:400;text-transform:none;color:#94a3b8;">optional</span></label>
+        <textarea id="in_substance" rows="2" placeholder="Anything else the doctor should know">{{ req.substance_use }}</textarea>
       </div>
       <div class="step-nav">
         <button type="button" class="btn-skip" onclick="next()">Prefer not to say</button>
@@ -380,6 +462,104 @@
         <label class="field-label">Their Phone Number</label>
         <input type="tel" id="in_nok_phone" placeholder="e.g. 083 000 0000" value="{{ req.next_of_kin_phone }}">
       </div>
+      <div class="field-group">
+        <label class="field-label">Their Address</label>
+        <textarea id="in_nok_address" rows="2" placeholder="Address">{{ req.next_of_kin_address }}</textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Their Email</label>
+        <input type="email" id="in_nok_email" placeholder="email@example.com" value="{{ req.next_of_kin_email }}">
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="next()">Skip</button>
+        <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- STEP 10: Person Responsible -->
+    <div class="step" id="step-10">
+      <span class="step-icon"><i class="bi bi-person-badge"></i></span>
+      <div class="step-question">Who is responsible for the account?</div>
+      <div class="step-hint">For adults this is usually you. For children, enter the parent or guardian.</div>
+      <div class="two-col" style="margin-bottom:14px;">
+        <div class="field-group">
+          <label class="field-label">Surname</label>
+          <input type="text" id="in_resp_surname" value="{{ req.responsible_surname }}">
+        </div>
+        <div class="field-group">
+          <label class="field-label">First Name</label>
+          <input type="text" id="in_resp_first_name" value="{{ req.responsible_first_name }}">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Title</label>
+        <div class="chips" id="resp-title-chips">
+          <span class="chip" onclick="pickOne(this,'resp-title-chips')">Mr</span>
+          <span class="chip" onclick="pickOne(this,'resp-title-chips')">Mrs</span>
+          <span class="chip" onclick="pickOne(this,'resp-title-chips')">Miss</span>
+          <span class="chip" onclick="pickOne(this,'resp-title-chips')">Ms</span>
+          <span class="chip" onclick="pickOne(this,'resp-title-chips')">Dr</span>
+          <span class="chip" onclick="pickOne(this,'resp-title-chips')">Prof</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">ID Number</label>
+        <input type="text" id="in_resp_id" value="{{ req.responsible_id_number }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <input type="email" id="in_resp_email" value="{{ req.responsible_email }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Home Phone</label>
+        <input type="tel" id="in_resp_tel_h" value="{{ req.responsible_tel_h }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Work Phone</label>
+        <input type="tel" id="in_resp_tel_w" value="{{ req.responsible_tel_w }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Cell Number</label>
+        <input type="tel" id="in_resp_cell" value="{{ req.responsible_cell }}">
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="next()">Skip</button>
+        <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- STEP 11: Referred By -->
+    <div class="step" id="step-11">
+      <span class="step-icon"><i class="bi bi-arrow-left-right"></i></span>
+      <div class="step-question">Were you referred?</div>
+      <div class="step-hint">If another doctor or clinic sent you here, add their details.</div>
+      <div class="field-group">
+        <label class="field-label">Referrer Name</label>
+        <input type="text" id="in_ref_name" placeholder="Doctor, clinic, or person" value="{{ req.referred_by_name }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Referrer Phone</label>
+        <input type="tel" id="in_ref_phone" value="{{ req.referred_by_phone }}">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Referrer Email</label>
+        <input type="email" id="in_ref_email" value="{{ req.referred_by_email }}">
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="next()">No referral</button>
+        <button type="button" class="btn-next" onclick="next()">Next <i class="bi bi-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- STEP 12: Consent -->
+    <div class="step" id="step-12">
+      <span class="step-icon"><i class="bi bi-shield-check"></i></span>
+      <div class="step-question">Consent to treatment</div>
+      <div class="step-hint">Please confirm that you consent to examination and treatment by the practice.</div>
+      <label style="display:flex;gap:12px;align-items:flex-start;padding:14px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;color:#334155;font-size:14px;line-height:1.5;">
+        <input type="checkbox" name="consent_to_treat" style="width:20px;height:20px;margin-top:2px;accent-color:#7c3aed;" {% if req.consent_to_treat %}checked{% endif %}>
+        <span>I consent to examination and treatment by this practice.</span>
+      </label>
       <div class="step-nav">
         <button type="button" class="btn-skip" onclick="submit()">Skip</button>
         <button type="button" class="btn-next" onclick="submit()">
@@ -404,7 +584,7 @@
 </div>
 
 <script>
-const TOTAL = 9;
+const TOTAL = 12;
 let cur = 1;
 
 // ── Pre-populate chips from existing data ──────────────────────────────
@@ -413,6 +593,7 @@ let cur = 1;
     title:    '{{ req.title|escapejs }}',
     smoking:  '{{ req.smoking_status|escapejs }}',
     alcohol:  '{{ req.alcohol_use|escapejs }}',
+    resp_title: '{{ req.responsible_title|escapejs }}',
     allergies:'{{ req.allergies|escapejs }}'.toLowerCase(),
     chronic:  '{{ req.chronic_conditions|escapejs }}'.toLowerCase(),
     nok_rel:  '{{ req.next_of_kin_relationship|escapejs }}',
@@ -422,6 +603,9 @@ let cur = 1;
   // Title
   document.querySelectorAll('#title-chips .chip').forEach(c => {
     if (c.textContent === pre.title) c.classList.add('picked');
+  });
+  document.querySelectorAll('#resp-title-chips .chip').forEach(c => {
+    if (c.textContent === pre.resp_title) c.classList.add('picked');
   });
   // Smoking
   const smokeMap = {'Never':'Never smoked','Former':'Former smoker','Current':'Current smoker'};
@@ -473,20 +657,29 @@ function collect(n) {
 
   if (n === 1) {
     const t = picked('#title-chips')[0] || '';
-    document.getElementById('h_title').value     = t;
-    document.getElementById('h_email').value     = v('in_email');
-    document.getElementById('h_alt_phone').value = v('in_alt_phone');
+    document.getElementById('h_title').value          = t;
+    document.getElementById('h_email').value          = v('in_email');
+    document.getElementById('h_alt_phone').value      = v('in_alt_phone');
+    document.getElementById('h_home_language').value  = v('in_home_language');
+    document.getElementById('h_marital_status').value = v('in_marital_status');
   } else if (n === 2) {
-    document.getElementById('h_address').value        = v('in_address');
-    document.getElementById('h_postal_address').value = v('in_postal_address');
+    document.getElementById('h_address').value          = v('in_address');
+    document.getElementById('h_residential_code').value = v('in_residential_code');
+    document.getElementById('h_postal_address').value   = v('in_postal_address');
+    document.getElementById('h_postal_code').value      = v('in_postal_code');
   } else if (n === 3) {
-    document.getElementById('h_occupation').value = v('in_occupation');
-    document.getElementById('h_employer').value   = v('in_employer');
-    document.getElementById('h_work_phone').value = v('in_work_phone');
+    document.getElementById('h_occupation').value   = v('in_occupation');
+    document.getElementById('h_employer').value     = v('in_employer');
+    document.getElementById('h_work_phone').value   = v('in_work_phone');
+    document.getElementById('h_work_address').value = v('in_work_address');
+    document.getElementById('h_work_code').value    = v('in_work_code');
   } else if (n === 4) {
-    document.getElementById('h_med_name').value   = v('in_med_name');
-    document.getElementById('h_med_plan').value   = v('in_med_plan');
-    document.getElementById('h_med_number').value = v('in_med_number');
+    document.getElementById('h_med_name').value       = v('in_med_name');
+    document.getElementById('h_med_plan').value       = v('in_med_plan');
+    document.getElementById('h_med_number').value     = v('in_med_number');
+    document.getElementById('h_dependant_code').value = v('in_dependant_code');
+    document.getElementById('h_principal_name').value = v('in_principal_name');
+    document.getElementById('h_principal_id').value   = v('in_principal_id');
   } else if (n === 5) {
     const chips = picked('#allergy-chips');
     const typed = v('in_allergies');
@@ -497,16 +690,34 @@ function collect(n) {
     document.getElementById('h_chronic').value = [...chips, ...(typed ? [typed] : [])].join(', ');
   } else if (n === 7) {
     document.getElementById('h_medication').value = v('in_medication');
+    document.getElementById('h_surgeries').value = v('in_surgeries');
+    document.getElementById('h_family_history').value = v('in_family_history');
   } else if (n === 8) {
     const smokeMap = {'Never smoked':'Never','Former smoker':'Former','Current smoker':'Current'};
     const s = picked('#smoking-chips')[0] || '';
     const a = picked('#alcohol-chips')[0] || '';
     document.getElementById('h_smoking').value = smokeMap[s] || s;
     document.getElementById('h_alcohol').value = a;
+    document.getElementById('h_substance').value = v('in_substance');
   } else if (n === 9) {
-    document.getElementById('h_nok_name').value  = v('in_nok_name');
-    document.getElementById('h_nok_rel').value   = (picked('#nok-rel-chips')[0] || '');
-    document.getElementById('h_nok_phone').value = v('in_nok_phone');
+    document.getElementById('h_nok_name').value    = v('in_nok_name');
+    document.getElementById('h_nok_rel').value     = (picked('#nok-rel-chips')[0] || '');
+    document.getElementById('h_nok_phone').value   = v('in_nok_phone');
+    document.getElementById('h_nok_address').value = v('in_nok_address');
+    document.getElementById('h_nok_email').value   = v('in_nok_email');
+  } else if (n === 10) {
+    document.getElementById('h_resp_surname').value    = v('in_resp_surname');
+    document.getElementById('h_resp_first_name').value = v('in_resp_first_name');
+    document.getElementById('h_resp_title').value      = (picked('#resp-title-chips')[0] || '');
+    document.getElementById('h_resp_id').value         = v('in_resp_id');
+    document.getElementById('h_resp_email').value      = v('in_resp_email');
+    document.getElementById('h_resp_tel_h').value      = v('in_resp_tel_h');
+    document.getElementById('h_resp_tel_w').value      = v('in_resp_tel_w');
+    document.getElementById('h_resp_cell').value       = v('in_resp_cell');
+  } else if (n === 11) {
+    document.getElementById('h_ref_name').value  = v('in_ref_name');
+    document.getElementById('h_ref_phone').value = v('in_ref_phone');
+    document.getElementById('h_ref_email').value = v('in_ref_email');
   }
 }
 
