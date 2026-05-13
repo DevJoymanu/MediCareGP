@@ -585,7 +585,9 @@
 
 <script>
 const TOTAL = 12;
+const SAVE_URL = "{% url 'checkin_phase2_save' phase2_token=req.phase2_token %}";
 let cur = 1;
+let saving = false;
 
 // ── Pre-populate chips from existing data ──────────────────────────────
 (function () {
@@ -721,8 +723,70 @@ function collect(n) {
   }
 }
 
-function next() {
+function csrfToken() {
+  const token = document.querySelector('input[name=csrfmiddlewaretoken]');
+  return token ? token.value : '';
+}
+
+function setSaving(isSaving) {
+  saving = isSaving;
+  document.querySelectorAll('.btn-next,.btn-skip').forEach(btn => {
+    btn.disabled = isSaving;
+    btn.style.opacity = isSaving ? '.65' : '';
+    btn.style.cursor = isSaving ? 'wait' : '';
+  });
+}
+
+async function saveStep(n) {
+  const fieldsByStep = {
+    1: ['title', 'email', 'alt_phone', 'home_language', 'marital_status'],
+    2: ['address', 'residential_code', 'postal_address', 'postal_code'],
+    3: ['occupation', 'employer', 'work_phone', 'work_address', 'work_code'],
+    4: ['medical_aid_name', 'medical_aid_plan', 'medical_aid_number', 'dependant_code', 'principal_member_name', 'principal_member_id'],
+    5: ['allergies'],
+    6: ['chronic_conditions', 'blood_type'],
+    7: ['current_medication', 'previous_surgeries', 'family_history'],
+    8: ['smoking_status', 'alcohol_use', 'substance_use'],
+    9: ['next_of_kin_name', 'next_of_kin_relationship', 'next_of_kin_address', 'next_of_kin_phone', 'next_of_kin_email'],
+    10: ['responsible_surname', 'responsible_first_name', 'responsible_title', 'responsible_id_number', 'responsible_email', 'responsible_tel_h', 'responsible_tel_w', 'responsible_cell'],
+    11: ['referred_by_name', 'referred_by_phone', 'referred_by_email'],
+    12: ['consent_to_treat'],
+  };
+  const data = new FormData();
+  data.append('csrfmiddlewaretoken', csrfToken());
+
+  (fieldsByStep[n] || []).forEach(name => {
+    if (name === 'consent_to_treat') {
+      const checkbox = document.querySelector('input[name=consent_to_treat]');
+      data.append(name, checkbox && checkbox.checked ? 'on' : '');
+      return;
+    }
+    const input = document.querySelector('[name="' + name + '"]');
+    data.append(name, input ? input.value : '');
+  });
+
+  const response = await fetch(SAVE_URL, {
+    method: 'POST',
+    body: data,
+    headers: {'X-Requested-With': 'XMLHttpRequest'},
+  });
+  if (!response.ok) throw new Error('save_failed');
+  const payload = await response.json();
+  if (!payload.success) throw new Error(payload.error || 'save_failed');
+}
+
+async function next() {
+  if (saving) return;
   collect(cur);
+  setSaving(true);
+  try {
+    await saveStep(cur);
+  } catch (err) {
+    alert('We could not save this page. Please check your connection and try again.');
+    setSaving(false);
+    return;
+  }
+  setSaving(false);
   cur++;
   if (cur > TOTAL) { submit(); return; }
   updateProgress();

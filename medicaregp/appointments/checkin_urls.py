@@ -7,5 +7,6 @@ urlpatterns = [
     path('<slug:token>/confirm/<int:pk>/',        checkin_views.checkin_confirmation,  name='checkin_confirmation'),
     path('<slug:token>/review/<int:pk>/confirm/', checkin_views.checkin_review_confirm, name='checkin_review_confirm'),
     path('phase2/<uuid:phase2_token>/', checkin_views.checkin_phase2,       name='checkin_phase2'),
+    path('phase2/<uuid:phase2_token>/save/', checkin_views.checkin_phase2_save, name='checkin_phase2_save'),
     path('phase2/<uuid:phase2_token>/done/', checkin_views.checkin_phase2_done, name='checkin_phase2_done'),
 ]

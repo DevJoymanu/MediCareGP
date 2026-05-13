@@ -89,6 +89,75 @@ def _update_patient_from_checkin(patient, req):
         patient.save(update_fields=updated)
 
 
+def _save_phase2_fields(req, post_data, complete=False):
+    """Persist any phase 2 fields present in this request."""
+    text_fields = [
+        'title',
+        'email',
+        'alt_phone',
+        'occupation',
+        'home_language',
+        'marital_status',
+        'employer',
+        'work_phone',
+        'address',
+        'residential_code',
+        'postal_address',
+        'postal_code',
+        'responsible_surname',
+        'responsible_first_name',
+        'responsible_title',
+        'responsible_id_number',
+        'responsible_email',
+        'responsible_tel_h',
+        'responsible_tel_w',
+        'responsible_cell',
+        'work_address',
+        'work_code',
+        'blood_type',
+        'medical_aid_name',
+        'medical_aid_plan',
+        'medical_aid_number',
+        'principal_member_name',
+        'principal_member_id',
+        'dependant_code',
+        'allergies',
+        'chronic_conditions',
+        'current_medication',
+        'previous_surgeries',
+        'family_history',
+        'smoking_status',
+        'alcohol_use',
+        'substance_use',
+        'next_of_kin_name',
+        'next_of_kin_relationship',
+        'next_of_kin_address',
+        'next_of_kin_phone',
+        'next_of_kin_email',
+        'referred_by_name',
+        'referred_by_phone',
+        'referred_by_email',
+    ]
+    updated = []
+
+    for field in text_fields:
+        if field in post_data:
+            setattr(req, field, post_data.get(field, '').strip())
+            updated.append(field)
+
+    if 'consent_to_treat' in post_data or complete:
+        req.consent_to_treat = post_data.get('consent_to_treat') == 'on'
+        updated.append('consent_to_treat')
+
+    if complete:
+        req.phase2_completed = True
+        updated.append('phase2_completed')
+
+    if updated:
+        req.save(update_fields=updated)
+    return updated
+
+
 # ── Public views (no login required) ─────────────────────────────────────────
 
 def checkin_form(request, token):
@@ -274,55 +343,7 @@ def checkin_phase2(request, phase2_token):
 
     saved = False
     if request.method == 'POST':
-        def g(key): return request.POST.get(key, '').strip()
-        req.title                    = g('title')
-        req.email                    = g('email')
-        req.alt_phone                = g('alt_phone')
-        req.occupation               = g('occupation')
-        req.home_language            = g('home_language')
-        req.marital_status           = g('marital_status')
-        req.employer                 = g('employer')
-        req.work_phone               = g('work_phone')
-        req.address                  = g('address')
-        req.residential_code         = g('residential_code')
-        req.postal_address           = g('postal_address')
-        req.postal_code              = g('postal_code')
-        req.responsible_surname      = g('responsible_surname')
-        req.responsible_first_name   = g('responsible_first_name')
-        req.responsible_title        = g('responsible_title')
-        req.responsible_id_number    = g('responsible_id_number')
-        req.responsible_email        = g('responsible_email')
-        req.responsible_tel_h        = g('responsible_tel_h')
-        req.responsible_tel_w        = g('responsible_tel_w')
-        req.responsible_cell         = g('responsible_cell')
-        req.work_address             = g('work_address')
-        req.work_code                = g('work_code')
-        req.blood_type               = g('blood_type')
-        req.medical_aid_name         = g('medical_aid_name')
-        req.medical_aid_plan         = g('medical_aid_plan')
-        req.medical_aid_number       = g('medical_aid_number')
-        req.principal_member_name    = g('principal_member_name')
-        req.principal_member_id      = g('principal_member_id')
-        req.dependant_code           = g('dependant_code')
-        req.allergies                = g('allergies')
-        req.chronic_conditions       = g('chronic_conditions')
-        req.current_medication       = g('current_medication')
-        req.previous_surgeries       = g('previous_surgeries')
-        req.family_history           = g('family_history')
-        req.smoking_status           = g('smoking_status')
-        req.alcohol_use              = g('alcohol_use')
-        req.substance_use            = g('substance_use')
-        req.next_of_kin_name         = g('next_of_kin_name')
-        req.next_of_kin_relationship = g('next_of_kin_relationship')
-        req.next_of_kin_address      = g('next_of_kin_address')
-        req.next_of_kin_phone        = g('next_of_kin_phone')
-        req.next_of_kin_email        = g('next_of_kin_email')
-        req.referred_by_name         = g('referred_by_name')
-        req.referred_by_phone        = g('referred_by_phone')
-        req.referred_by_email        = g('referred_by_email')
-        req.consent_to_treat         = request.POST.get('consent_to_treat') == 'on'
-        req.phase2_completed         = True
-        req.save()
+        _save_phase2_fields(req, request.POST, complete=True)
         if req.patient:
             _update_patient_from_checkin(req.patient, req)
         return redirect('checkin_phase2_done', phase2_token=req.phase2_token)
@@ -332,6 +353,20 @@ def checkin_phase2(request, phase2_token):
         'practice_name': settings.PRACTICE_NAME,
         'blood_types': ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
     })
+
+
+@require_POST
+def checkin_phase2_save(request, phase2_token):
+    """Save one phase 2 page without marking the profile complete."""
+    req = get_object_or_404(CheckInRequest, phase2_token=phase2_token, is_new_patient=True)
+
+    if req.status == 'expired':
+        return JsonResponse({'success': False, 'error': 'expired'}, status=410)
+
+    updated = _save_phase2_fields(req, request.POST, complete=False)
+    if req.patient:
+        _update_patient_from_checkin(req.patient, req)
+    return JsonResponse({'success': True, 'updated': updated})
 
 
 def checkin_phase2_done(request, phase2_token):
