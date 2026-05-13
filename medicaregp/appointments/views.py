@@ -126,6 +126,11 @@ def waiting_room(request):
                        .filter(date=today, status__in=['pending', 'self_arrived'])
                        .select_related('consultation__patient', 'consultation'))
 
+    in_consultation = (Appointment.objects
+                       .filter(date=today, status='With Doctor')
+                       .select_related('patient')
+                       .order_by('time')
+                       .first())
     waiting = (Appointment.objects
                .filter(date=today, status='Checked In')
                .select_related('patient')
@@ -135,10 +140,11 @@ def waiting_room(request):
                  .select_related('patient')
                  .order_by('time'))
     return render(request, 'appointments/waiting_room.html', {
-        'waiting':        waiting,
-        'scheduled':      scheduled,
+        'in_consultation': in_consultation,
+        'waiting':         waiting,
+        'scheduled':       scheduled,
         'pending_reviews': pending_reviews,
-        'today':          today,
+        'today':           today,
     })
 
 

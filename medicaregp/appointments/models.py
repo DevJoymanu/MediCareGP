@@ -7,11 +7,12 @@ from patients.models import Patient
 
 class Appointment(models.Model):
     STATUS_CHOICES = [
-        ('Scheduled',  'Scheduled'),
-        ('Checked In', 'Checked In'),
-        ('Completed',  'Completed'),
-        ('Cancelled',  'Cancelled'),
-        ('No-Show',    'No-Show'),
+        ('Scheduled',    'Scheduled'),
+        ('Checked In',   'Checked In'),
+        ('With Doctor',  'With Doctor'),
+        ('Completed',    'Completed'),
+        ('Cancelled',    'Cancelled'),
+        ('No-Show',      'No-Show'),
     ]
 
     VISIT_TYPE_CHOICES = [

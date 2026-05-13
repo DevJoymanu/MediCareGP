@@ -328,6 +328,9 @@ def consultation_create(request):
             initial['patient']        = apt.patient.pk
             initial['chief_complaint'] = apt.reason
             resolved_patient = apt.patient
+            if request.method == 'GET' and apt.status == 'Checked In':
+                apt.status = 'With Doctor'
+                apt.save(update_fields=['status'])
 
     if patient_id and not resolved_patient:
         resolved_patient = Patient.objects.filter(pk=patient_id).first()
@@ -348,7 +351,7 @@ def consultation_create(request):
     if form.is_valid():
         consultation = form.save()
         today = timezone.localdate()
-        if consultation.appointment and consultation.appointment.status == 'Checked In':
+        if consultation.appointment and consultation.appointment.status in ('Checked In', 'With Doctor'):
             consultation.appointment.status = 'Completed'
             consultation.appointment.save(update_fields=['status'])
         else:
@@ -356,7 +359,7 @@ def consultation_create(request):
             Appointment.objects.filter(
                 patient=consultation.patient,
                 date=today,
-                status='Checked In',
+                status__in=('Checked In', 'With Doctor'),
             ).update(status='Completed')
         _learn_from_consultation(consultation)
         messages.success(request, f'Consultation saved for {consultation.patient}.')
@@ -412,7 +415,7 @@ def consultation_review(request, pk):
         today = timezone.localdate()
         pr = original.pending_reviews.filter(date=today).first()
         if pr:
-            if pr.appointment and pr.appointment.status == 'Checked In':
+            if pr.appointment and pr.appointment.status in ('Checked In', 'With Doctor'):
                 pr.appointment.status = 'Completed'
                 pr.appointment.save(update_fields=['status'])
             pr.status = 'completed'
@@ -422,11 +425,19 @@ def consultation_review(request, pk):
             Appointment.objects.filter(
                 patient=original.patient,
                 date=today,
-                status='Checked In',
+                status__in=('Checked In', 'With Doctor'),
             ).update(status='Completed')
 
         messages.success(request, f'Review saved for {original.patient}.')
         return redirect('consultation_detail', pk=review.pk)
+
+    if request.method == 'GET':
+        from appointments.models import Appointment as Appt
+        today = timezone.localdate()
+        pr = original.pending_reviews.filter(date=today).first()
+        if pr and pr.appointment and pr.appointment.status == 'Checked In':
+            pr.appointment.status = 'With Doctor'
+            pr.appointment.save(update_fields=['status'])
 
     last = Consultation.objects.filter(
         patient=original.patient

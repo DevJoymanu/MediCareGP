@@ -3,126 +3,526 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Complete Your Profile</title>
+  <title>Tell Us About Yourself</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f8; padding: 24px 16px 48px; }
-    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 28px 24px; width: 100%; max-width: 460px; margin: 0 auto; }
-    .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-    .brand-icon { width: 36px; height: 36px; background: #7e22ce; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .brand-icon svg { display: block; }
-    .brand-name { font-weight: 700; font-size: 14px; color: #1e293b; }
-    h1 { font-size: 19px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
-    .subtitle { font-size: 13px; color: #64748b; margin-bottom: 22px; line-height: 1.5; }
-    .section-title { font-size: 11px; font-weight: 700; color: #7e22ce; text-transform: uppercase; letter-spacing: .06em; margin: 20px 0 12px; }
-    .divider { height: 1px; background: #f1f5f9; margin: 18px 0; }
-    .field { margin-bottom: 14px; }
-    label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 5px; }
-    .optional { font-size: 11px; font-weight: 400; color: #94a3b8; margin-left: 4px; }
-    input[type=text], input[type=tel], select, textarea {
-      width: 100%; padding: 10px 13px; border: 1.5px solid #d1d5db; border-radius: 8px;
-      font-size: 15px; color: #1e293b; background: #fff; -webkit-appearance: none; appearance: none;
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f3ff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
     }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: #7e22ce; box-shadow: 0 0 0 3px rgba(126,34,206,.1); }
-    textarea { resize: vertical; min-height: 70px; }
-    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
-    .btn-submit { width: 100%; padding: 14px; background: #7e22ce; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px; }
-    .btn-submit:hover { background: #6b21a8; }
-    .success-box { background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 10px; padding: 14px 16px; color: #166534; font-size: 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-    .note { font-size: 12px; color: #94a3b8; text-align: center; margin-top: 14px; line-height: 1.5; }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 16px;
+    }
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #7c3aed;
+    }
+    .progress-track {
+      height: 6px;
+      background: #ddd6fe;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #7c3aed, #a855f7);
+      border-radius: 20px;
+      transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 40px rgba(124,58,237,.12);
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── Step slides ── */
+    .step {
+      display: none;
+      animation: slideIn 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    .step.active { display: block; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideBack {
+      from { opacity: 0; transform: translateX(-40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .step.slide-back { animation: slideBack 0.35s cubic-bezier(.4,0,.2,1); }
+
+    /* ── Step content ── */
+    .step-icon {
+      font-size: 52px;
+      margin-bottom: 16px;
+      display: block;
+      text-align: center;
+      animation: bounce 0.5s ease;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      40%      { transform: translateY(-10px); }
+    }
+    .step-question {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1e293b;
+      text-align: center;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .step-hint {
+      font-size: 13px;
+      color: #94a3b8;
+      text-align: center;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    /* ── Inputs ── */
+    input[type=text], input[type=tel], select, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 16px;
+      color: #1e293b;
+      background: #fff;
+      transition: border-color .2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 4px rgba(124,58,237,.08);
+    }
+    textarea { resize: none; min-height: 90px; }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    /* ── Quick-pick chips ── */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .chip {
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 2px solid #e2e8f0;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all .15s;
+      user-select: none;
+    }
+    .chip:hover  { border-color: #7c3aed; color: #7c3aed; }
+    .chip.picked { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+
+    /* ── Blood type grid ── */
+    .blood-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .blood-btn {
+      padding: 14px 4px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      background: #fff;
+      font-size: 17px;
+      font-weight: 800;
+      color: #475569;
+      cursor: pointer;
+      text-align: center;
+      transition: all .15s;
+    }
+    .blood-btn:hover  { border-color: #7c3aed; color: #7c3aed; }
+    .blood-btn.picked { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+    .blood-btn.unknown { font-size: 12px; grid-column: span 4; padding: 10px; }
+
+    /* ── Navigation ── */
+    .step-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+    }
+    .btn-skip {
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 10px 4px;
+    }
+    .btn-skip:hover { color: #64748b; }
+    .btn-next {
+      padding: 14px 32px;
+      background: #7c3aed;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background .15s;
+    }
+    .btn-next:hover { background: #6d28d9; }
+    .btn-next:active { transform: scale(.97); }
+
+    /* ── Completion screen ── */
+    #step-done { text-align: center; }
+    .done-circle {
+      width: 90px; height: 90px;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 40px;
+      animation: popIn .5s cubic-bezier(.36,.07,.19,.97);
+    }
+    @keyframes popIn {
+      0%   { transform: scale(0); opacity: 0; }
+      70%  { transform: scale(1.15); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .confetti-row { font-size: 28px; margin-bottom: 10px; letter-spacing: 6px; animation: fadeUp .6s .3s both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .done-title { font-size: 26px; font-weight: 800; color: #1e293b; margin-bottom: 8px; animation: fadeUp .5s .4s both; }
+    .done-sub   { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 28px; animation: fadeUp .5s .5s both; }
+    .done-note  { font-size: 12px; color: #94a3b8; margin-top: 16px; }
+
+    /* ── Practice brand ── */
+    .practice-brand {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #7c3aed;
+      letter-spacing: .03em;
+    }
   </style>
 </head>
 <body>
+
+<!-- Progress bar -->
+<div class="progress-wrap" id="progressWrap">
+  <div class="progress-top">
+    <span id="stepLabel">Step 1 of 5</span>
+    <span id="stepPct">20%</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width:20%;"></div>
+  </div>
+</div>
+
 <div class="card">
-  <div class="brand">
-    <div class="brand-icon">
-      <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
-        <path d="M9 2v14M2 9h14" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
-        <circle cx="9" cy="9" r="7.5" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
-      </svg>
-    </div>
-    <div class="brand-name">{{ practice_name }}</div>
-  </div>
+  <div class="practice-brand">{{ practice_name }}</div>
 
-  <h1>Complete Your Profile</h1>
-  <p class="subtitle">All fields are optional — fill in what you can while you wait. This saves time with the doctor.</p>
-
-  {% if saved %}
-  <div class="success-box">
-    <i class="bi bi-check-circle-fill" style="font-size:18px;flex-shrink:0;"></i>
-    <span><strong>Profile updated.</strong> Thank you — your details have been saved.</span>
-  </div>
-  {% endif %}
-
-  <form method="post">
+  <form method="post" id="phase2Form">
     {% csrf_token %}
 
-    <div class="section-title">Address</div>
-    <div class="field">
-      <label>Residential Address <span class="optional">(optional)</span></label>
-      <textarea name="address" placeholder="Street, suburb, city, postal code">{{ req.address }}</textarea>
-    </div>
+    <!-- Hidden fields that collect all data -->
+    <input type="hidden" name="address"            id="h_address">
+    <input type="hidden" name="medical_aid_name"   id="h_med_name">
+    <input type="hidden" name="medical_aid_number" id="h_med_num">
+    <input type="hidden" name="allergies"          id="h_allergies">
+    <input type="hidden" name="chronic_conditions" id="h_chronic">
+    <input type="hidden" name="next_of_kin_name"   id="h_nok_name">
+    <input type="hidden" name="next_of_kin_phone"  id="h_nok_phone">
+    <input type="hidden" name="blood_type"         id="h_blood">
 
-    <div class="divider"></div>
-    <div class="section-title">Medical Details</div>
-
-    <div class="field">
-      <label>Blood Type <span class="optional">(optional)</span></label>
-      <select name="blood_type">
-        <option value="">— Select —</option>
-        {% for bt in blood_types %}
-        <option value="{{ bt }}" {% if req.blood_type == bt %}selected{% endif %}>{{ bt }}</option>
-        {% endfor %}
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Allergies <span class="optional">(optional)</span></label>
-      <textarea name="allergies" placeholder="e.g. Penicillin, Sulfa drugs">{{ req.allergies }}</textarea>
-    </div>
-
-    <div class="field">
-      <label>Chronic Conditions <span class="optional">(optional)</span></label>
-      <textarea name="chronic_conditions" placeholder="e.g. Hypertension, Diabetes">{{ req.chronic_conditions }}</textarea>
-    </div>
-
-    <div class="divider"></div>
-    <div class="section-title">Medical Aid</div>
-
-    <div class="field">
-      <label>Medical Aid Scheme <span class="optional">(optional)</span></label>
-      <input type="text" name="medical_aid_name" placeholder="e.g. Discovery Health" value="{{ req.medical_aid_name }}">
-    </div>
-
-    <div class="field">
-      <label>Membership Number <span class="optional">(optional)</span></label>
-      <input type="text" name="medical_aid_number" placeholder="e.g. 001234567" value="{{ req.medical_aid_number }}">
-    </div>
-
-    <div class="divider"></div>
-    <div class="section-title">Emergency Contact</div>
-
-    <div style="display:flex;gap:12px;">
-      <div class="field" style="flex:1;">
-        <label>Next of Kin Name <span class="optional">(optional)</span></label>
-        <input type="text" name="next_of_kin_name" placeholder="Full name" value="{{ req.next_of_kin_name }}">
-      </div>
-      <div class="field" style="flex:1;">
-        <label>Their Phone <span class="optional">(optional)</span></label>
-        <input type="tel" name="next_of_kin_phone" placeholder="e.g. 083 000 0000" value="{{ req.next_of_kin_phone }}">
+    <!-- ══ STEP 1: Address ══════════════════════════════════════════════ -->
+    <div class="step active" id="step-1">
+      <span class="step-icon">🏠</span>
+      <div class="step-question">Where do you live?</div>
+      <div class="step-hint">This helps us reach you and understand your area. Optional.</div>
+      <textarea id="in_address" rows="3"
+                placeholder="Street address, suburb, city…">{{ req.address }}</textarea>
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="nextStep()">Skip</button>
+        <button type="button" class="btn-next" onclick="nextStep()">
+          Next <i class="bi bi-arrow-right"></i>
+        </button>
       </div>
     </div>
 
-    <button type="submit" class="btn-submit">
-      <i class="bi bi-floppy"></i> Save My Details
-    </button>
+    <!-- ══ STEP 2: Medical Aid ══════════════════════════════════════════ -->
+    <div class="step" id="step-2">
+      <span class="step-icon">💳</span>
+      <div class="step-question">Do you have medical aid?</div>
+      <div class="step-hint">This speeds up billing and authorisation. Optional — skip if you're a self-payer.</div>
+      <div style="margin-bottom:14px;">
+        <label>Medical Aid Name</label>
+        <input type="text" id="in_med_name"
+               placeholder="e.g. Discovery, GEMS, Bonitas"
+               value="{{ req.medical_aid_name }}">
+      </div>
+      <div>
+        <label>Membership Number</label>
+        <input type="text" id="in_med_num"
+               placeholder="e.g. 001234567"
+               value="{{ req.medical_aid_number }}">
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="nextStep()">Skip</button>
+        <button type="button" class="btn-next" onclick="nextStep()">
+          Next <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 3: Allergies ════════════════════════════════════════════ -->
+    <div class="step" id="step-3">
+      <span class="step-icon">⚠️</span>
+      <div class="step-question">Any known allergies?</div>
+      <div class="step-hint">Medication, food, or environmental. Tap the common ones or type your own.</div>
+      <div class="chips" id="allergy-chips">
+        <span class="chip" onclick="toggleChip(this,'allergies')">Penicillin</span>
+        <span class="chip" onclick="toggleChip(this,'allergies')">Sulfa drugs</span>
+        <span class="chip" onclick="toggleChip(this,'allergies')">Aspirin</span>
+        <span class="chip" onclick="toggleChip(this,'allergies')">Ibuprofen</span>
+        <span class="chip" onclick="toggleChip(this,'allergies')">Peanuts</span>
+        <span class="chip" onclick="toggleChip(this,'allergies')">Latex</span>
+        <span class="chip" onclick="toggleChip(this,'allergies')">Shellfish</span>
+        <span class="chip" onclick="toggleChip(this,'allergies')">Dairy</span>
+      </div>
+      <textarea id="in_allergies" rows="2"
+                placeholder="Type any others here…">{{ req.allergies }}</textarea>
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="nextStep()">No allergies</button>
+        <button type="button" class="btn-next" onclick="nextStep()">
+          Next <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 4: Chronic Conditions + Blood Type ══════════════════════ -->
+    <div class="step" id="step-4">
+      <span class="step-icon">🩺</span>
+      <div class="step-question">Any ongoing conditions?</div>
+      <div class="step-hint">Tap any that apply, or type your own. Also pick your blood type if you know it.</div>
+      <div class="chips" id="chronic-chips">
+        <span class="chip" onclick="toggleChip(this,'chronic')">Hypertension</span>
+        <span class="chip" onclick="toggleChip(this,'chronic')">Diabetes</span>
+        <span class="chip" onclick="toggleChip(this,'chronic')">Asthma</span>
+        <span class="chip" onclick="toggleChip(this,'chronic')">Epilepsy</span>
+        <span class="chip" onclick="toggleChip(this,'chronic')">Arthritis</span>
+        <span class="chip" onclick="toggleChip(this,'chronic')">Heart disease</span>
+        <span class="chip" onclick="toggleChip(this,'chronic')">Thyroid condition</span>
+        <span class="chip" onclick="toggleChip(this,'chronic')">HIV positive</span>
+        <span class="chip" onclick="toggleChip(this,'chronic')">Anxiety / Depression</span>
+      </div>
+      <textarea id="in_chronic" rows="2"
+                placeholder="Any others…">{{ req.chronic_conditions }}</textarea>
+
+      <div style="margin-top:18px;">
+        <label>Blood Type <span style="font-weight:400;text-transform:none;color:#94a3b8;">— if you know it</span></label>
+        <div class="blood-grid">
+          <button type="button" class="blood-btn" onclick="pickBlood(this,'A+')">A+</button>
+          <button type="button" class="blood-btn" onclick="pickBlood(this,'A-')">A−</button>
+          <button type="button" class="blood-btn" onclick="pickBlood(this,'B+')">B+</button>
+          <button type="button" class="blood-btn" onclick="pickBlood(this,'B-')">B−</button>
+          <button type="button" class="blood-btn" onclick="pickBlood(this,'AB+')">AB+</button>
+          <button type="button" class="blood-btn" onclick="pickBlood(this,'AB-')">AB−</button>
+          <button type="button" class="blood-btn" onclick="pickBlood(this,'O+')">O+</button>
+          <button type="button" class="blood-btn" onclick="pickBlood(this,'O-')">O−</button>
+          <button type="button" class="blood-btn unknown" onclick="pickBlood(this,'')">I don't know</button>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="nextStep()">None / Skip</button>
+        <button type="button" class="btn-next" onclick="nextStep()">
+          Next <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ STEP 5: Emergency Contact ════════════════════════════════════ -->
+    <div class="step" id="step-5">
+      <span class="step-icon">📞</span>
+      <div class="step-question">Emergency contact?</div>
+      <div class="step-hint">Who should we call if needed? A partner, parent, or close friend works.</div>
+      <div style="margin-bottom:14px;">
+        <label>Their Name</label>
+        <input type="text" id="in_nok_name"
+               placeholder="e.g. Thabo Dlamini"
+               value="{{ req.next_of_kin_name }}">
+      </div>
+      <div>
+        <label>Their Phone Number</label>
+        <input type="tel" id="in_nok_phone"
+               placeholder="e.g. 083 000 0000"
+               value="{{ req.next_of_kin_phone }}">
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn-skip" onclick="submitForm()">Skip</button>
+        <button type="button" class="btn-next" onclick="submitForm()">
+          <i class="bi bi-check-lg"></i> Done!
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ COMPLETION ════════════════════════════════════════════════════ -->
+    <div class="step" id="step-done">
+      <div class="confetti-row">🎉 🌟 🎊</div>
+      <div class="done-circle">✓</div>
+      <div class="done-title">You're all set!</div>
+      <div class="done-sub">
+        Your details have been saved. The doctor has everything they need.<br>
+        Just relax — you'll be called shortly.
+      </div>
+      <div class="done-note">
+        <i class="bi bi-shield-check"></i>
+        Your information is kept private and used only for your care.
+      </div>
+    </div>
+
   </form>
-
-  <p class="note">
-    <i class="bi bi-shield-check"></i>
-    Your information is kept private and used only for your medical care.
-  </p>
 </div>
+
+<script>
+const TOTAL_STEPS = 5;
+let current = 1;
+
+// Pre-populate chips from existing data
+(function() {
+  const allChips = document.querySelectorAll('#allergy-chips .chip');
+  const existing = '{{ req.allergies }}'.toLowerCase();
+  allChips.forEach(c => {
+    if (existing.includes(c.textContent.toLowerCase())) c.classList.add('picked');
+  });
+  const chronicChips = document.querySelectorAll('#chronic-chips .chip');
+  const existingC = '{{ req.chronic_conditions }}'.toLowerCase();
+  chronicChips.forEach(c => {
+    if (existingC.includes(c.textContent.toLowerCase())) c.classList.add('picked');
+  });
+  // Pre-select blood type
+  const existingBT = '{{ req.blood_type }}';
+  if (existingBT) {
+    document.querySelectorAll('.blood-btn').forEach(b => {
+      if (b.textContent.trim().replace('−','-') === existingBT) b.classList.add('picked');
+    });
+  }
+})();
+
+function updateProgress() {
+  const pct = Math.round((current / TOTAL_STEPS) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('stepLabel').textContent = 'Step ' + current + ' of ' + TOTAL_STEPS;
+  document.getElementById('stepPct').textContent = pct + '%';
+}
+
+function showStep(n, back) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active','slide-back'));
+  const el = document.getElementById('step-' + n) || document.getElementById('step-done');
+  if (el) {
+    if (back) el.classList.add('slide-back');
+    el.classList.add('active');
+  }
+}
+
+function collectStep(n) {
+  if (n === 1) {
+    document.getElementById('h_address').value = document.getElementById('in_address').value.trim();
+  } else if (n === 2) {
+    document.getElementById('h_med_name').value = document.getElementById('in_med_name').value.trim();
+    document.getElementById('h_med_num').value  = document.getElementById('in_med_num').value.trim();
+  } else if (n === 3) {
+    const chips = [...document.querySelectorAll('#allergy-chips .chip.picked')].map(c => c.textContent);
+    const typed = document.getElementById('in_allergies').value.trim();
+    const all   = [...chips, ...(typed ? [typed] : [])];
+    document.getElementById('h_allergies').value = all.join(', ');
+  } else if (n === 4) {
+    const chips = [...document.querySelectorAll('#chronic-chips .chip.picked')].map(c => c.textContent);
+    const typed = document.getElementById('in_chronic').value.trim();
+    const all   = [...chips, ...(typed ? [typed] : [])];
+    document.getElementById('h_chronic').value = all.join(', ');
+  } else if (n === 5) {
+    document.getElementById('h_nok_name').value  = document.getElementById('in_nok_name').value.trim();
+    document.getElementById('h_nok_phone').value = document.getElementById('in_nok_phone').value.trim();
+  }
+}
+
+function nextStep() {
+  collectStep(current);
+  current++;
+  if (current > TOTAL_STEPS) {
+    submitForm();
+    return;
+  }
+  updateProgress();
+  showStep(current);
+}
+
+function submitForm() {
+  collectStep(current);
+  // Hide progress, show completion screen
+  document.getElementById('progressWrap').style.display = 'none';
+  showStep('done');
+  // Submit in background
+  document.getElementById('phase2Form').submit();
+}
+
+function toggleChip(chip, group) {
+  chip.classList.toggle('picked');
+}
+
+function pickBlood(btn, value) {
+  document.querySelectorAll('.blood-btn').forEach(b => b.classList.remove('picked'));
+  btn.classList.add('picked');
+  document.getElementById('h_blood').value = value;
+}
+
+// Init
+updateProgress();
+showStep(1);
+</script>
 </body>
 </html>

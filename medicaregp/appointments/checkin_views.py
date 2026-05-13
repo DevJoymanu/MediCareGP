@@ -28,6 +28,29 @@ def _token_valid(token):
     return token == settings.CHECKIN_URL_TOKEN
 
 
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+def _update_patient_from_checkin(patient, req):
+    """Fill in any blank patient fields from a CheckInRequest (phase 2 data)."""
+    updated = []
+    mapping = {
+        'address':           req.address,
+        'medical_aid_name':  req.medical_aid_name,
+        'medical_aid_number':req.medical_aid_number,
+        'allergies':         req.allergies,
+        'chronic_conditions':req.chronic_conditions,
+        'next_of_kin_name':  req.next_of_kin_name,
+        'next_of_kin_phone': req.next_of_kin_phone,
+        'blood_type':        req.blood_type,
+    }
+    for field, value in mapping.items():
+        if value and not getattr(patient, field):
+            setattr(patient, field, value)
+            updated.append(field)
+    if updated:
+        patient.save(update_fields=updated)
+
+
 # ── Public views (no login required) ─────────────────────────────────────────
 
 def checkin_form(request, token):
@@ -76,6 +99,14 @@ def checkin_form(request, token):
                 phone      = request.POST.get('phone_number', '').strip()
                 gender     = request.POST.get('gender', '').strip()
                 popia      = request.POST.get('popia_consent') == 'on'
+
+                # Build date from hidden field or individual DD/MM/YYYY inputs
+                if not dob_str:
+                    dd   = request.POST.get('dob_dd',   '').strip()
+                    mm   = request.POST.get('dob_mm',   '').strip()
+                    yyyy = request.POST.get('dob_yyyy', '').strip()
+                    if dd and mm and yyyy:
+                        dob_str = f"{yyyy}-{mm.zfill(2)}-{dd.zfill(2)}"
 
                 if not all([first_name, last_name, dob_str, phone, gender]):
                     error = 'Please fill in all required fields.'
@@ -207,6 +238,9 @@ def checkin_phase2(request, phase2_token):
         req.next_of_kin_phone  = request.POST.get('next_of_kin_phone', '').strip()
         req.phase2_completed   = True
         req.save()
+        # If the patient was already accepted, update their record now
+        if req.patient:
+            _update_patient_from_checkin(req.patient, req)
         saved = True
 
     return render(request, 'checkin/phase2.html', {
@@ -262,10 +296,14 @@ def checkin_accept(request, pk):
                 consent_to_treat=True,
             )
         except IntegrityError:
-            patient = Patient.objects.get(id_number=req.id_number)
+            # Patient already exists — update with any new phase 2 data
+            patient = Patient.objects.get(id_number__iexact=req.id_number)
+            _update_patient_from_checkin(patient, req)
         req.patient = patient
     else:
         patient = req.patient
+        # Returning patient — still update with any new phase 2 data submitted
+        _update_patient_from_checkin(patient, req)
 
     now = timezone.localtime()
     Appointment.objects.create(
@@ -324,6 +362,14 @@ def checkin_edit(request, pk):
                         date_of_birth=req.date_of_birth,
                         phone=req.phone_number,
                         gender=req.gender or 'O',
+                        address=req.address or None,
+                        blood_type=req.blood_type or None,
+                        medical_aid_name=req.medical_aid_name or None,
+                        medical_aid_number=req.medical_aid_number or None,
+                        allergies=req.allergies or None,
+                        chronic_conditions=req.chronic_conditions or None,
+                        next_of_kin_name=req.next_of_kin_name or None,
+                        next_of_kin_phone=req.next_of_kin_phone or None,
                         popia_consent=req.popia_consent,
                         consent_to_treat=True,
                     )

@@ -161,6 +161,31 @@
   .btn-decline-sm:hover { background: #fef2f2; }
 
   /* ═══════════════════════════════════════════════
+     CONSULTATION IN PROGRESS CARD
+  ═══════════════════════════════════════════════ */
+  .consult-progress-card {
+    padding: 16px 18px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-bottom: 2px solid #86efac;
+    position: relative;
+  }
+  .consult-progress-label {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 11px; font-weight: 800; color: #15803d;
+    text-transform: uppercase; letter-spacing: .07em;
+    margin-bottom: 10px;
+  }
+  .consult-progress-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #16a34a;
+    animation: pulse 1.5s infinite;
+    flex-shrink: 0;
+  }
+  .consult-progress-desc {
+    font-size: 12px; color: #166534; margin-top: 3px;
+  }
+
+  /* ═══════════════════════════════════════════════
      BADGES
   ═══════════════════════════════════════════════ */
   .badge {
@@ -269,8 +294,8 @@
       <h1>Waiting Room</h1>
       <p style="color:var(--text-3);font-size:13px;">
         {% with n=waiting|length %}
-          {% if n %}
-            <span style="color:#1d4ed8;font-weight:600;">{{ n }} patient{{ n|pluralize }}</span> in the waiting room right now
+          {% if in_consultation or n %}
+            <span style="color:#1d4ed8;font-weight:600;">{% if in_consultation %}{{ n|add:1 }}{% else %}{{ n }}{% endif %} patient{% if in_consultation and n or n > 1 %}s{% endif %}</span> in the waiting room right now
           {% else %}
             Nobody waiting yet today
           {% endif %}
@@ -305,11 +330,37 @@
             <div class="wr-section-title">In the Waiting Room</div>
             <div class="wr-section-sub">Patients waiting to see the doctor</div>
           </div>
-          {% if waiting %}
-          <span class="wr-section-count">{{ waiting|length }}</span>
+          {% if in_consultation or waiting %}
+          <span class="wr-section-count">{% if in_consultation %}{{ waiting|length|add:1 }}{% else %}{{ waiting|length }}{% endif %}</span>
           {% endif %}
         </div>
         <div class="wr-scroll">
+          {% if in_consultation %}
+          <div class="consult-progress-card">
+            <div class="consult-progress-label">
+              <span class="consult-progress-dot"></span>
+              Consultation in Progress
+            </div>
+            <div class="pt-top">
+              <div class="avatar av-46 av-1">
+                {{ in_consultation.patient.first_name|first|upper }}{{ in_consultation.patient.last_name|first|upper }}
+              </div>
+              <div class="pt-info">
+                <div class="pt-name">{{ in_consultation.patient }}</div>
+                <div class="pt-reason">{{ in_consultation.reason }}</div>
+                <div class="consult-progress-desc">
+                  <i class="bi bi-person-check-fill"></i> Currently seeing the doctor
+                </div>
+              </div>
+            </div>
+            {% if in_consultation.patient.allergies %}
+            <div class="pt-allergy" style="margin-top:8px;">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              Allergy: {{ in_consultation.patient.allergies }}
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
           {% if waiting %}
             {% for a in waiting %}
             <div class="pt-card">
