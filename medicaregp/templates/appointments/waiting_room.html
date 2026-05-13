@@ -653,8 +653,6 @@ function declineReq(pk) {
 }
 
 function pollPending() {
-  const h = new Date().getHours();
-  if (h < 7 || h >= 18) return;
   fetch(PENDING_URL).then(r => r.json()).then(renderPending).catch(() => {});
 }
 

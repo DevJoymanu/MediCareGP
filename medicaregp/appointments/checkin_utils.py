@@ -33,11 +33,11 @@ def check_id_rate_limit(id_number):
 
 
 def expire_old_requests():
-    """Mark pending requests older than 2 hours as expired."""
+    """Mark pending requests older than 8 hours as expired."""
     from .models import CheckInRequest
     from django.utils import timezone
     from datetime import timedelta
-    cutoff = timezone.now() - timedelta(hours=2)
+    cutoff = timezone.now() - timedelta(hours=8)
     CheckInRequest.objects.filter(status='pending', created_at__lt=cutoff).update(status='expired')
 
 
