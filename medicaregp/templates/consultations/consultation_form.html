@@ -1,159 +1,236 @@
 {% extends "base.html" %}
 {% block title %}{{ title }} | G.P CRM{% endblock %}
 {% block page_title %}{{ title }}{% endblock %}
+
 {% block extra_head %}
 <style>
+  /* ── Two-panel consultation layout ── */
+  .consult-wrap { max-width:1100px; margin:0 auto; }
+
+  .consult-topbar {
+    display:grid; grid-template-columns:1fr 1fr; gap:12px;
+    background:#fff; border:1px solid var(--border); border-radius:14px;
+    padding:16px 20px; margin-bottom:14px; align-items:end;
+  }
+  .consult-vitals {
+    display:flex; gap:12px; align-items:end;
+  }
+  .vitals-field { display:flex; flex-direction:column; gap:4px; }
+  .vitals-label { font-size:10px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:.06em; }
+
+  .consult-panels {
+    display:grid; grid-template-columns:1fr 380px; gap:14px;
+    margin-bottom:14px;
+  }
+
+  .panel {
+    background:#fff; border:1px solid var(--border); border-radius:14px;
+    overflow:hidden; display:flex; flex-direction:column;
+  }
+  .panel-header {
+    display:flex; align-items:center; gap:8px;
+    padding:12px 18px; border-bottom:1px solid var(--border);
+    font-size:11px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.07em; color:var(--text-3); background:#f9fafb;
+  }
+  .panel-body { padding:16px 18px; flex:1; display:flex; flex-direction:column; gap:14px; }
+
+  /* Left panel accent */
+  .panel-notes .panel-header { color:#3730a3; background:#eef2ff; border-color:#c7d2fe; }
+
+  /* Right panel accent */
+  .panel-rx .panel-header { color:#15803d; background:#f0fdf4; border-color:#bbf7d0; }
+  .rx-symbol { font-size:18px; font-weight:900; font-style:italic; color:#15803d; line-height:1; }
+
+  .inv-divider {
+    border:none; border-top:1px dashed var(--border); margin:4px 0;
+  }
+  .inv-label {
+    font-size:10px; font-weight:700; color:var(--text-4);
+    text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;
+  }
+
+  /* Footer bar */
+  .consult-footer {
+    background:#fff; border:1px solid var(--border); border-radius:14px;
+    padding:16px 20px; margin-bottom:14px;
+  }
+  .footer-row { display:flex; gap:14px; flex-wrap:wrap; align-items:end; margin-bottom:14px; }
+  .footer-row:last-child { margin-bottom:0; }
+
   .sick-note-fields { display:none; }
-  .sick-note-fields.visible { display:grid; }
+  .sick-note-fields.visible { display:flex; flex-wrap:wrap; gap:12px; margin-top:14px; }
+
+  /* SOAP expand section */
+  .soap-extra { display:none; border-top:1px dashed var(--border); padding-top:14px; margin-top:4px; }
+  .soap-extra.visible { display:block; }
+
+  .consult-topbar textarea, .consult-panels textarea { resize:vertical; }
+
+  @media (max-width:760px) {
+    .consult-panels { grid-template-columns:1fr; }
+    .consult-topbar { grid-template-columns:1fr; }
+  }
 </style>
 {% endblock %}
+
 {% block content %}
 <div class="page-body">
-  <div style="max-width:960px;margin:0 auto;">
-    <div class="page-header">
+  <div class="consult-wrap">
+
+    <div class="page-header" style="margin-bottom:14px;">
       <div><h1>{{ title }}</h1></div>
-      <a href="{% url 'consultation_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+      <div style="display:flex;gap:8px;">
+        <a href="{% url 'consultation_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+      </div>
     </div>
 
     <form method="post" id="consultForm">
       {% csrf_token %}
 
-      <!-- Patient & appointment -->
-      <div class="card" style="margin-bottom:18px;">
-        <div class="card-title" style="margin-bottom:16px;">Patient &amp; Appointment</div>
-        <div class="form-grid-2">
-          <div class="form-group">
+      {% if form.non_field_errors %}
+      <div class="alert alert-error" style="margin-bottom:14px;">
+        {% for e in form.non_field_errors %}<div>{{ e }}</div>{% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- ── Top bar: patient + vitals ──────────────────────────────────── -->
+      <div class="consult-topbar">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-group" style="margin:0;">
             <label>Patient *</label>
             {{ form.patient }}
+            {% if form.patient.errors %}<div style="color:#dc2626;font-size:12px;margin-top:3px;">{{ form.patient.errors.0 }}</div>{% endif %}
           </div>
-          <div class="form-group">
-            <label>Linked Appointment (optional)</label>
+          <div class="form-group" style="margin:0;">
+            <label>Linked Appointment <span style="font-weight:400;color:var(--text-4);">optional</span></label>
             {{ form.appointment }}
           </div>
         </div>
-      </div>
-
-      <!-- Chief complaint -->
-      <div class="card" style="margin-bottom:18px;">
-        <div class="card-title" style="margin-bottom:4px;">Chief Complaint</div>
-        <div style="font-size:12px;color:var(--text-4);margin-bottom:12px;">Reason for visit in the patient's own words</div>
-        <div class="form-group" style="margin-bottom:0;">
-          {{ form.chief_complaint }}
-        </div>
-      </div>
-
-      <!-- SOAP -->
-      <div class="card" style="margin-bottom:18px;">
-        <div class="card-title" style="margin-bottom:16px;">SOAP Notes</div>
-        <div class="soap-grid" style="margin-bottom:16px;">
-          <div class="soap-block soap-s" style="padding:0;">
-            <div style="padding:14px 16px 8px;">
-              <div class="soap-label">S — Subjective</div>
-              <div style="font-size:11px;color:#818cf8;margin-bottom:8px;">History of presenting illness — onset, duration, severity, progression</div>
-            </div>
-            <div style="padding:0 16px 16px;">{{ form.subjective }}</div>
+        <div class="consult-vitals">
+          <div class="vitals-field" style="flex:0 0 90px;">
+            <div class="vitals-label">Wt (kg)</div>
+            {{ form.weight_kg }}
           </div>
-          <div class="soap-block soap-o" style="padding:0;">
-            <div style="padding:14px 16px 8px;">
-              <div class="soap-label">O — Objective</div>
-              <div style="font-size:11px;color:#0891b2;margin-bottom:8px;">Examination findings, vital signs, investigations</div>
-            </div>
-            <div style="padding:0 16px 16px;">{{ form.objective }}</div>
+          <div class="vitals-field" style="flex:0 0 110px;">
+            <div class="vitals-label">BP (mmHg)</div>
+            {{ form.bp_reading }}
           </div>
-          <div class="soap-block soap-a" style="padding:0;">
-            <div style="padding:14px 16px 8px;">
-              <div class="soap-label">A — Assessment / Diagnosis</div>
-              <div style="font-size:11px;color:#15803d;margin-bottom:8px;">Final diagnosis</div>
-            </div>
-            <div style="padding:0 16px 16px;">{{ form.assessment }}</div>
+          <div class="form-group" style="margin:0;flex:1;">
+            <label style="font-size:12px;font-weight:600;color:var(--text-2);">Reason for visit</label>
+            {{ form.chief_complaint }}
           </div>
-          <div class="soap-block soap-p" style="padding:0;">
-            <div style="padding:14px 16px 8px;">
-              <div class="soap-label">P — Plan</div>
-              <div style="font-size:11px;color:#d97706;margin-bottom:8px;">Treatment, management, follow-up</div>
-            </div>
-            <div style="padding:0 16px 16px;">{{ form.plan }}</div>
-          </div>
-        </div>
-        <!-- Differential diagnosis -->
-        <div class="form-group">
-          <label>Differential Diagnosis <span style="font-weight:400;color:var(--text-4);">(optional)</span></label>
-          {{ form.differential_diagnosis }}
-        </div>
-        <!-- ICD-10 -->
-        <div class="form-group" style="margin-bottom:0;">
-          <label>ICD-10 Code</label>
-          {{ form.icd10_code }}
         </div>
       </div>
 
-      <!-- Prescriptions & follow-up -->
-      <div class="card" style="margin-bottom:18px;">
-        <div class="card-title" style="margin-bottom:16px;">Prescriptions &amp; Follow-up</div>
-        <div class="form-grid-2">
-          <div class="form-group form-full">
-            <label>Prescriptions <span style="font-weight:400;color:var(--text-4);">— one per line</span></label>
-            {{ form.prescriptions }}
+      <!-- ── Two panels ─────────────────────────────────────────────────── -->
+      <div class="consult-panels">
+
+        <!-- LEFT: Notes -->
+        <div class="panel panel-notes">
+          <div class="panel-header">
+            <i class="bi bi-pencil-square"></i> Clinical Notes
           </div>
-          <div class="form-group">
-            <label>Follow-up Date</label>
+          <div class="panel-body">
+            <div class="form-group" style="margin:0;flex:1;">
+              {{ form.subjective }}
+              {% if form.subjective.errors %}<div style="color:#dc2626;font-size:12px;margin-top:3px;">{{ form.subjective.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="form-group" style="margin:0;">
+              <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">Assessment / Diagnosis</label>
+              {{ form.assessment }}
+            </div>
+            <!-- Optional SOAP expand -->
+            <div>
+              <button type="button" id="soapToggle" style="background:none;border:none;font-size:12px;color:var(--text-4);cursor:pointer;padding:0;display:flex;align-items:center;gap:5px;">
+                <i class="bi bi-chevron-down" id="soapChevron"></i> Structured SOAP fields
+              </button>
+              <div id="soapExtra" class="soap-extra">
+                <div class="form-group" style="margin-bottom:10px;">
+                  <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">O — Objective findings</label>
+                  {{ form.objective }}
+                </div>
+                <div class="form-group" style="margin-bottom:10px;">
+                  <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">P — Plan</label>
+                  {{ form.plan }}
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">Differential Diagnosis</label>
+                  {{ form.differential_diagnosis }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Rx + Investigations -->
+        <div class="panel panel-rx">
+          <div class="panel-header">
+            <span class="rx-symbol">℞</span> Prescriptions
+          </div>
+          <div class="panel-body">
+            <div class="form-group" style="margin:0;flex:1;">
+              {{ form.prescriptions }}
+            </div>
+
+            <hr class="inv-divider">
+
+            <div>
+              <div class="inv-label"><i class="bi bi-droplet-half"></i> Blood / Lab Requests</div>
+              {{ form.lab_requests }}
+            </div>
+
+            <div>
+              <div class="inv-label"><i class="bi bi-image"></i> Radiology</div>
+              {{ form.radiology_requests }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Footer: ICD-10, follow-up, referral, sick note ─────────────── -->
+      <div class="consult-footer">
+        <div class="footer-row">
+          <div class="vitals-field" style="flex:0 0 130px;">
+            <div class="vitals-label">ICD-10 Code</div>
+            {{ form.icd10_code }}
+          </div>
+          <div class="vitals-field" style="flex:0 0 160px;">
+            <div class="vitals-label">Follow-up Date</div>
             {{ form.follow_up_date }}
           </div>
-        </div>
-      </div>
-
-      <!-- Referral -->
-      <div class="card" style="margin-bottom:18px;">
-        <div class="card-title" style="margin-bottom:4px;">Referral <span style="font-size:12px;font-weight:400;color:var(--text-4);">(if applicable)</span></div>
-        <div style="font-size:12px;color:var(--text-4);margin-bottom:14px;">Complete if you are referring the patient to a specialist or facility</div>
-        <div class="form-grid-2">
-          <div class="form-group form-full">
-            <label>Refer to</label>
+          <div class="vitals-field" style="flex:1;min-width:200px;">
+            <div class="vitals-label">Referral to <span style="font-weight:400;text-transform:none;">(optional)</span></div>
             {{ form.referral_to }}
           </div>
-          <div class="form-group form-full">
-            <label>Reason for referral</label>
-            {{ form.referral_reason }}
-          </div>
         </div>
-      </div>
 
-      <!-- Lab & radiology -->
-      <div class="card" style="margin-bottom:18px;">
-        <div class="card-title" style="margin-bottom:16px;">Lab &amp; Radiology Requests</div>
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label>Lab / Blood Test Requests</label>
-            {{ form.lab_requests }}
-          </div>
-          <div class="form-group">
-            <label>Radiology Requests</label>
-            {{ form.radiology_requests }}
-          </div>
+        {% if form.referral_to.value or form.referral_reason.value %}
+        <div class="form-group" style="margin-bottom:14px;">
+          <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;">Referral Reason</label>
+          {{ form.referral_reason }}
         </div>
-      </div>
+        {% endif %}
 
-      <!-- Sick note -->
-      <div class="card" style="margin-bottom:18px;">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:{% if form.sick_note_issued.value %}16{% else %}0{% endif %}px;">
-          <div style="position:relative;">
-            {{ form.sick_note_issued }}
-          </div>
-          <label for="{{ form.sick_note_issued.id_for_label }}" style="font-size:14px;font-weight:600;cursor:pointer;margin:0;">
-            <i class="bi bi-file-medical" style="margin-right:6px;color:var(--text-3);"></i>Issue a sick / medical certificate
+        <!-- Sick note -->
+        <div style="display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid var(--border);">
+          {{ form.sick_note_issued }}
+          <label for="{{ form.sick_note_issued.id_for_label }}" style="font-size:13px;font-weight:600;cursor:pointer;margin:0;color:var(--text-2);">
+            <i class="bi bi-file-medical" style="margin-right:5px;color:var(--text-3);"></i>Issue sick / medical certificate
           </label>
         </div>
-        <div id="sickNoteFields" class="sick-note-fields form-grid-2" style="margin-top:16px;">
-          <div class="form-group">
-            <label>Start Date</label>
+        <div id="sickNoteFields" class="sick-note-fields">
+          <div class="vitals-field" style="flex:0 0 150px;">
+            <div class="vitals-label">Start Date</div>
             {{ form.sick_note_start_date }}
           </div>
-          <div class="form-group">
-            <label>Number of Days</label>
+          <div class="vitals-field" style="flex:0 0 100px;">
+            <div class="vitals-label">Days</div>
             {{ form.sick_note_days }}
           </div>
-          <div class="form-group form-full">
-            <label>Employer / Company Name</label>
+          <div class="vitals-field" style="flex:1;min-width:180px;">
+            <div class="vitals-label">Employer</div>
             {{ form.sick_note_employer }}
           </div>
         </div>
@@ -163,6 +240,7 @@
         <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Consultation</button>
         <a href="{% url 'consultation_list' %}" class="btn-ghost">Cancel</a>
       </div>
+
     </form>
   </div>
 </div>
@@ -173,13 +251,28 @@ document.getElementById('id_patient').addEventListener('change', function () {
   document.getElementById('consultForm').submit();
 });
 
-// Toggle sick note fields
-const sickCb = document.getElementById('{{ form.sick_note_issued.id_for_label }}');
+// Sick note toggle
+const sickCb     = document.getElementById('{{ form.sick_note_issued.id_for_label }}');
 const sickFields = document.getElementById('sickNoteFields');
-function updateSickNote() {
-  sickFields.classList.toggle('visible', sickCb.checked);
-}
+function updateSickNote() { sickFields.classList.toggle('visible', sickCb.checked); }
 sickCb.addEventListener('change', updateSickNote);
 updateSickNote();
+
+// SOAP expand toggle
+const soapToggle  = document.getElementById('soapToggle');
+const soapExtra   = document.getElementById('soapExtra');
+const soapChevron = document.getElementById('soapChevron');
+// Auto-expand if any structured field has data
+const soapHasData = ['{{ form.objective.id_for_label }}','{{ form.plan.id_for_label }}','{{ form.differential_diagnosis.id_for_label }}']
+  .some(id => { const el = document.getElementById(id); return el && el.value.trim(); });
+if (soapHasData) {
+  soapExtra.classList.add('visible');
+  soapChevron.classList.replace('bi-chevron-down','bi-chevron-up');
+}
+soapToggle.addEventListener('click', function () {
+  const open = soapExtra.classList.toggle('visible');
+  soapChevron.classList.toggle('bi-chevron-down', !open);
+  soapChevron.classList.toggle('bi-chevron-up', open);
+});
 </script>
 {% endblock %}
