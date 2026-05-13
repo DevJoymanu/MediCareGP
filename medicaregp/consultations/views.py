@@ -5,14 +5,56 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
+from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from appointments.models import Appointment
 from patients.models import Patient
-from .models import Consultation
+from .models import Consultation, ConditionPrescriptionLink
 from .forms import ConsultationForm
+
+
+# ── Prescription suggestion helpers ──────────────────────────────────────────
+
+def _parse_conditions(text):
+    """Split an assessment field into individual condition strings."""
+    import re
+    if not text:
+        return []
+    # Split on newline, comma, semicolon, or numbered list markers
+    parts = re.split(r'[\n,;]|\d+\.', text)
+    return [p.strip() for p in parts if len(p.strip()) > 3]
+
+
+def _parse_prescriptions(text):
+    """Split a prescriptions field into individual lines."""
+    if not text:
+        return []
+    return [p.strip() for p in text.splitlines() if p.strip()]
+
+
+def _learn_from_consultation(consultation):
+    """
+    Update ConditionPrescriptionLink counts based on a saved consultation.
+    Called after every consultation save.
+    """
+    conditions    = _parse_conditions(consultation.assessment)
+    prescriptions = _parse_prescriptions(consultation.prescriptions)
+    if not conditions or not prescriptions:
+        return
+    for condition in conditions:
+        for prescription in prescriptions:
+            obj, created = ConditionPrescriptionLink.objects.get_or_create(
+                condition=condition,
+                prescription=prescription,
+                defaults={'count': 1, 'is_seeded': False},
+            )
+            if not created:
+                ConditionPrescriptionLink.objects.filter(pk=obj.pk).update(
+                    count=obj.count + 1
+                )
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -181,6 +223,57 @@ def _build_sick_note_pdf(consultation):
 # ── Standard views ────────────────────────────────────────────────────────────
 
 @login_required
+def suggest_prescriptions(request):
+    """
+    AJAX: given assessment text, return ranked prescription suggestions.
+    Matches against ConditionPrescriptionLink using the conditions parsed
+    from the assessment field.
+    """
+    assessment = request.GET.get('assessment', '').strip()
+    if not assessment:
+        return JsonResponse({'suggestions': []})
+
+    conditions = _parse_conditions(assessment)
+    if not conditions:
+        # Fallback: treat whole assessment as one condition
+        conditions = [assessment[:200]]
+
+    # Build query: match any condition substring
+    q = Q()
+    for c in conditions:
+        q |= Q(condition__icontains=c)
+
+    links = (
+        ConditionPrescriptionLink.objects
+        .filter(q)
+        .order_by('-count')
+        .values('prescription', 'count', 'condition')[:10]
+    )
+
+    # Deduplicate by prescription text, keeping highest count
+    seen = {}
+    for link in links:
+        rx = link['prescription']
+        if rx not in seen or link['count'] > seen[rx]['count']:
+            seen[rx] = link
+
+    suggestions = sorted(seen.values(), key=lambda x: -x['count'])[:6]
+    total_consultations = Consultation.objects.count()
+
+    return JsonResponse({
+        'suggestions': [
+            {
+                'prescription': s['prescription'],
+                'count':        s['count'],
+                'condition':    s['condition'],
+            }
+            for s in suggestions
+        ],
+        'total_consultations': total_consultations,
+    })
+
+
+@login_required
 def consultation_list(request):
     from django.db.models import Q
     q   = request.GET.get('q', '')
@@ -266,6 +359,7 @@ def consultation_create(request):
                 date=today,
                 status='Checked In',
             ).update(status='Completed')
+        _learn_from_consultation(consultation)
         messages.success(request, f'Consultation saved for {consultation.patient}.')
         return redirect('consultation_detail', pk=consultation.pk)
 
@@ -312,6 +406,7 @@ def consultation_review(request, pk):
         review.lab_requests   = request.POST.get('lab_requests') or None
         review.follow_up_date = request.POST.get('follow_up_date') or None
         review.save()
+        _learn_from_consultation(review)
 
         # Clear the patient from the waiting room queue
         from appointments.models import Appointment, PendingReview

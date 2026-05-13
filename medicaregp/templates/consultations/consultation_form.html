@@ -76,6 +76,33 @@
   .soap-extra { display:none; }
   .soap-extra.visible { display:block; }
 
+  /* ── Prescription suggestions ── */
+  .rx-suggest {
+    margin-top:10px; padding:12px 14px;
+    background:linear-gradient(135deg,#f0fdf4,#ecfdf5);
+    border:1.5px solid #86efac; border-radius:10px;
+    display:none;
+  }
+  .rx-suggest.visible { display:block; }
+  .rx-suggest-header {
+    font-size:11px; font-weight:700; color:#15803d;
+    display:flex; align-items:center; gap:6px; margin-bottom:9px;
+  }
+  .rx-suggest-chips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:9px; }
+  .rx-suggest-chip {
+    padding:5px 12px; border-radius:20px;
+    background:#fff; border:1.5px solid #86efac;
+    font-size:12px; font-weight:600; color:#15803d;
+    cursor:pointer; transition:all .12s;
+  }
+  .rx-suggest-chip:hover  { background:#dcfce7; }
+  .rx-suggest-chip.added  { background:#16a34a; border-color:#16a34a; color:#fff; }
+  .rx-suggest-add-all {
+    font-size:11px; font-weight:700; color:#15803d;
+    background:none; border:none; cursor:pointer;
+    text-decoration:underline; padding:0;
+  }
+
   /* ── Quick-tap panels ── */
   .qt-toggle {
     display:inline-flex; align-items:center; gap:5px;
@@ -216,6 +243,7 @@
             <div class="panel-body">
               <div class="form-group" style="margin:0;flex:1;">
                 {{ form.prescriptions }}
+                <div id="rx-suggestions" class="rx-suggest"></div>
                 <button type="button" class="qt-toggle" onclick="toggleQt('qt-rx-tp')">
                   <i class="bi bi-lightning-charge-fill"></i> Quick medications
                 </button>
@@ -443,6 +471,89 @@ document.getElementById('id_patient').addEventListener('change', function () {
   const saved = localStorage.getItem(STORAGE_KEY) || 'twopanel';
   activate(saved);
 })();
+
+// ══════════════════════════════════════════════════════════════════
+// PRESCRIPTION SUGGESTION SYSTEM
+// ══════════════════════════════════════════════════════════════════
+
+const SUGGEST_URL = "{% url 'suggest_prescriptions' %}";
+const rxField     = document.getElementById('{{ form.prescriptions.id_for_label }}');
+const suggestBox  = document.getElementById('rx-suggestions');
+let   suggestTimeout = null;
+
+function fetchSuggestions(assessmentText) {
+  if (!assessmentText || assessmentText.trim().length < 4) {
+    hideSuggestions();
+    return;
+  }
+  fetch(SUGGEST_URL + '?assessment=' + encodeURIComponent(assessmentText))
+    .then(r => r.json())
+    .then(data => renderSuggestions(data))
+    .catch(() => {});
+}
+
+function renderSuggestions(data) {
+  if (!data.suggestions || data.suggestions.length === 0) {
+    hideSuggestions();
+    return;
+  }
+  const label = data.total_consultations >= 100
+    ? `Based on ${data.total_consultations} consultations`
+    : data.total_consultations >= 20
+      ? `SA guidelines + ${data.total_consultations} consultations`
+      : 'Based on SA Standard Treatment Guidelines';
+
+  const chips = data.suggestions.map(s =>
+    `<span class="rx-suggest-chip" onclick="rxSuggestAdd(this, ${JSON.stringify(s.prescription)})" title="${escHtml(s.condition)} — used ${s.count}×">` +
+    escHtml(s.prescription.split(' — ')[0]) +
+    '</span>'
+  ).join('');
+
+  suggestBox.innerHTML =
+    `<div class="rx-suggest-header">` +
+      `<i class="bi bi-stars"></i> Suggested — ${escHtml(label)}:` +
+    `</div>` +
+    `<div class="rx-suggest-chips">${chips}</div>` +
+    `<button type="button" class="rx-suggest-add-all" onclick="rxSuggestAddAll()">` +
+      `Add all suggestions` +
+    `</button>`;
+  suggestBox.classList.add('visible');
+  suggestBox._data = data.suggestions;
+}
+
+function hideSuggestions() {
+  suggestBox.classList.remove('visible');
+  suggestBox.innerHTML = '';
+  suggestBox._data = [];
+}
+
+function rxSuggestAdd(chip, prescription) {
+  if (chip.classList.contains('added')) return;
+  chip.classList.add('added');
+  const current = rxField.value.trim();
+  rxField.value = current ? current + '\n' + prescription : prescription;
+}
+
+function rxSuggestAddAll() {
+  (suggestBox._data || []).forEach(s => {
+    const current = rxField.value.trim();
+    if (!current.includes(s.prescription)) {
+      rxField.value = current ? current + '\n' + s.prescription : s.prescription;
+    }
+  });
+  suggestBox.querySelectorAll('.rx-suggest-chip').forEach(c => c.classList.add('added'));
+}
+
+// Watch assessment field in both layouts — debounced 900ms
+['{{ form.assessment.id_for_label }}'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', function () {
+      clearTimeout(suggestTimeout);
+      suggestTimeout = setTimeout(() => fetchSuggestions(this.value), 900);
+    });
+  }
+});
 
 // ══════════════════════════════════════════════════════════════════
 // QUICK-TAP SYSTEM

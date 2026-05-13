@@ -46,3 +46,23 @@ class Consultation(models.Model):
 
     class Meta:
         ordering = ['-date']
+
+
+class ConditionPrescriptionLink(models.Model):
+    """
+    Tally of how often a condition is paired with a prescription.
+    Pre-seeded from SA Standard Treatment Guidelines.
+    Grows as the doctor uses the system.
+    """
+    condition    = models.CharField(max_length=200, db_index=True)
+    prescription = models.CharField(max_length=500)
+    count        = models.IntegerField(default=1)
+    is_seeded    = models.BooleanField(default=False)
+    last_seen    = models.DateField(auto_now=True)
+
+    class Meta:
+        unique_together = [('condition', 'prescription')]
+        ordering        = ['-count']
+
+    def __str__(self):
+        return f"{self.condition} → {self.prescription[:60]} ({self.count})"
