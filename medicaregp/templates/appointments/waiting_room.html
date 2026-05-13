@@ -738,12 +738,19 @@ function toggleRv(id) {
 pollPending();
 setInterval(pollPending, 10000);
 
-// Auto-refresh the full page every 30s to reflect status changes
-// (skips if an inline edit form is open to avoid interrupting staff)
+// ── Instant refresh when a consultation is saved (cross-tab signal) ──────────
+window.addEventListener('storage', function (e) {
+  if (e.key === 'wr_refresh') {
+    const anyOpen = document.querySelector('.rv-inline.open, .pr-inline-form.open');
+    if (!anyOpen) location.reload();
+  }
+});
+
+// ── Fallback: refresh every 15s in case signal was missed ────────────────────
 setInterval(function () {
   const anyOpen = document.querySelector('.rv-inline.open, .pr-inline-form.open');
   if (!anyOpen) location.reload();
-}, 30000);
+}, 15000);
 
 document.addEventListener('click', function unlock() {
   if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();

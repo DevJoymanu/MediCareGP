@@ -89,6 +89,13 @@
 
     /* ── Nav ── */
     .step-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; }
+    .step-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-back {
+      background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px;
+      color: #64748b; cursor: pointer; font-size: 14px; font-weight: 700;
+      padding: 11px 14px; display: none; align-items: center; gap: 7px;
+    }
+    .btn-back:hover { border-color: #c4b5fd; color: #7c3aed; }
     .btn-skip { background: none; border: none; font-size: 14px; font-weight: 600; color: #94a3b8; cursor: pointer; padding: 10px 4px; }
     .btn-skip:hover { color: #64748b; }
     .btn-next {
@@ -646,10 +653,40 @@ function updateProgress() {
   document.getElementById('stepPct').textContent = pct + '%';
 }
 
+function ensureBackButtons() {
+  document.querySelectorAll('.step-nav').forEach(nav => {
+    if (!nav.querySelector('.btn-back')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn-back';
+      btn.innerHTML = '<i class="bi bi-arrow-left"></i> Back';
+      btn.addEventListener('click', previous);
+      nav.insertBefore(btn, nav.firstChild);
+    }
+
+    let actions = nav.querySelector('.step-actions');
+    if (!actions) {
+      actions = document.createElement('div');
+      actions.className = 'step-actions';
+      [...nav.children].forEach(child => {
+        if (!child.classList.contains('btn-back')) actions.appendChild(child);
+      });
+      nav.appendChild(actions);
+    }
+  });
+}
+
+function updateBackButtons() {
+  document.querySelectorAll('.btn-back').forEach(btn => {
+    btn.style.display = cur > 1 && cur <= TOTAL ? 'flex' : 'none';
+  });
+}
+
 function showStep(n, back) {
   document.querySelectorAll('.step').forEach(s => { s.classList.remove('active','back'); });
   const el = document.getElementById('step-' + n) || document.getElementById('step-done');
   if (el) { if (back) el.classList.add('back'); el.classList.add('active'); }
+  updateBackButtons();
 }
 
 // ── Collect current step into hidden fields ───────────────────────────
@@ -730,7 +767,7 @@ function csrfToken() {
 
 function setSaving(isSaving) {
   saving = isSaving;
-  document.querySelectorAll('.btn-next,.btn-skip').forEach(btn => {
+  document.querySelectorAll('.btn-next,.btn-skip,.btn-back').forEach(btn => {
     btn.disabled = isSaving;
     btn.style.opacity = isSaving ? '.65' : '';
     btn.style.cursor = isSaving ? 'wait' : '';
@@ -793,6 +830,14 @@ async function next() {
   showStep(cur);
 }
 
+function previous() {
+  if (saving || cur <= 1) return;
+  collect(cur);
+  cur--;
+  updateProgress();
+  showStep(cur, true);
+}
+
 function submit() {
   collect(cur);
   document.getElementById('progressWrap').style.display = 'none';
@@ -815,6 +860,7 @@ function pickBlood(btn, val) {
 }
 
 // Init
+ensureBackButtons();
 updateProgress();
 showStep(1);
 </script>
