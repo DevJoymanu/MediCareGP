@@ -28,6 +28,15 @@
             <label>Patient *</label>
             {{ form.patient }}
             {% if form.patient.errors %}<div class="field-error">{{ form.patient.errors.0 }}</div>{% endif %}
+            <div style="margin-top:8px;padding:10px 12px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:8px;font-size:12px;color:#5b21b6;">
+              <i class="bi bi-person-plus" style="margin-right:5px;"></i>
+              Patient not in the system?
+              <a href="{% url 'patient_create' %}" target="_blank"
+                 style="color:#7e22ce;font-weight:700;text-decoration:underline;">
+                Register them here
+              </a>
+              — then return to this form and select them.
+            </div>
           </div>
           <div class="form-group">
             <label>Reason for Visit *</label>

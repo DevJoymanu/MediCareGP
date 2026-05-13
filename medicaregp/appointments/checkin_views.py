@@ -47,7 +47,7 @@ def checkin_form(request, token):
         if not check_ip_rate_limit(ip):
             return render(request, 'checkin/blocked.html', {'reason': 'rate_limit'})
 
-        id_number = request.POST.get('id_number', '').strip()
+        id_number = request.POST.get('id_number', '').strip().upper()
         if not id_number:
             error = 'Please enter your ID or passport number.'
         else:
@@ -62,7 +62,7 @@ def checkin_form(request, token):
             # Expire stale requests before processing
             expire_old_requests()
 
-            existing = Patient.objects.filter(id_number=id_number).first()
+            existing = Patient.objects.filter(id_number__iexact=id_number).first()
             is_new = existing is None
             reason = request.POST.get('reason_for_visit', '').strip()
 
@@ -129,11 +129,11 @@ def checkin_lookup(request, token):
     """AJAX: returns patient record and any pending review for today."""
     if not _token_valid(token):
         return JsonResponse({'found': False})
-    id_number = request.GET.get('id', '').strip()
+    id_number = request.GET.get('id', '').strip().upper()
     if not id_number:
         return JsonResponse({'found': False})
 
-    patient = Patient.objects.filter(id_number=id_number).first()
+    patient = Patient.objects.filter(id_number__iexact=id_number).first()
     if not patient:
         return JsonResponse({'found': False})
 
