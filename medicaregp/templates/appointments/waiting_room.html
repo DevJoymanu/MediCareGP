@@ -738,19 +738,35 @@ function toggleRv(id) {
 pollPending();
 setInterval(pollPending, 10000);
 
-// ── Instant refresh when a consultation is saved (cross-tab signal) ──────────
+// ── Smart status poll — detects consultation completion immediately ────────────
+const STATUS_URL = "{% url 'waiting_room_status' %}";
+let lastInProgress = {{ in_consultation|yesno:'true,false' }};
+let lastWaiting    = {{ waiting|length }};
+
+function checkStatus() {
+  fetch(STATUS_URL)
+    .then(r => r.json())
+    .then(function (d) {
+      const anyOpen = document.querySelector('.rv-inline.open');
+      if (anyOpen) return; // don't interrupt an open inline form
+
+      // Reload as soon as in-progress clears OR waiting count changes
+      if (lastInProgress !== d.in_progress || lastWaiting !== d.waiting) {
+        location.reload();
+      }
+    })
+    .catch(function () {});
+}
+
+setInterval(checkStatus, 5000);
+
+// ── Cross-tab instant signal (consultation saved in another tab) ──────────────
 window.addEventListener('storage', function (e) {
   if (e.key === 'wr_refresh') {
-    const anyOpen = document.querySelector('.rv-inline.open, .pr-inline-form.open');
+    const anyOpen = document.querySelector('.rv-inline.open');
     if (!anyOpen) location.reload();
   }
 });
-
-// ── Fallback: refresh every 15s in case signal was missed ────────────────────
-setInterval(function () {
-  const anyOpen = document.querySelector('.rv-inline.open, .pr-inline-form.open');
-  if (!anyOpen) location.reload();
-}, 15000);
 
 document.addEventListener('click', function unlock() {
   if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();

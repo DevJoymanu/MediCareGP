@@ -208,6 +208,16 @@ def pending_review_notes(request, pk):
     return redirect('waiting_room')
 
 @login_required
+def waiting_room_status(request):
+    """Lightweight JSON endpoint — polled every 5 s by the waiting room."""
+    from django.http import JsonResponse
+    today = timezone.localdate()
+    in_progress = Appointment.objects.filter(date=today, status='With Doctor').exists()
+    waiting_count = Appointment.objects.filter(date=today, status='Checked In').count()
+    return JsonResponse({'in_progress': in_progress, 'waiting': waiting_count})
+
+
+@login_required
 def appointment_start_consultation(request, pk):
     """Mark appointment as With Doctor then open the consultation form."""
     appointment = get_object_or_404(Appointment, pk=pk)

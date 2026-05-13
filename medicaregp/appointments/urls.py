@@ -6,6 +6,7 @@ urlpatterns = [
     path('new/', views.appointment_create, name='appointment_create'),
     path('walk-in/', views.walk_in_create, name='walk_in_create'),
     path('waiting-room/', views.waiting_room, name='waiting_room'),
+    path('waiting-room/status/', views.waiting_room_status, name='waiting_room_status'),
     path('<int:pk>/', views.appointment_detail, name='appointment_detail'),
     path('<int:pk>/edit/', views.appointment_edit, name='appointment_edit'),
     path('<int:pk>/status/', views.appointment_set_status, name='appointment_set_status'),
