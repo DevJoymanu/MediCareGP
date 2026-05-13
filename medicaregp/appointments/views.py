@@ -119,7 +119,7 @@ def waiting_room(request):
         PendingReview.objects.get_or_create(consultation=c, date=today)
 
     pending_reviews = (PendingReview.objects
-                       .filter(date=today, status='pending')
+                       .filter(date=today, status__in=['pending', 'self_arrived'])
                        .select_related('consultation__patient', 'consultation'))
 
     waiting = (Appointment.objects

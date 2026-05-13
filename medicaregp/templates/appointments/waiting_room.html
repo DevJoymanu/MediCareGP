@@ -239,13 +239,21 @@
       <div class="wr-card">
         {% if pending_reviews %}
           {% for pr in pending_reviews %}
-          <div class="pr-row" id="pr-{{ pr.pk }}">
+          <div class="pr-row" id="pr-{{ pr.pk }}"
+               {% if pr.status == 'self_arrived' %}style="background:#f0fdf4;border-left:3px solid #16a34a;"{% endif %}>
             <div style="display:flex;gap:11px;align-items:flex-start;">
               <div class="avatar av-42 av-{{ forloop.counter }}">
                 {{ pr.consultation.patient.first_name|first|upper }}{{ pr.consultation.patient.last_name|first|upper }}
               </div>
               <div style="flex:1;min-width:0;">
-                <div class="pr-patient">{{ pr.consultation.patient }}</div>
+                <div class="pr-patient" style="display:flex;align-items:center;gap:7px;">
+                  {{ pr.consultation.patient }}
+                  {% if pr.status == 'self_arrived' %}
+                  <span style="font-size:10px;font-weight:700;background:#16a34a;color:#fff;border-radius:20px;padding:2px 8px;white-space:nowrap;">
+                    <i class="bi bi-check-lg"></i> Arrived
+                  </span>
+                  {% endif %}
+                </div>
                 <div class="pr-meta">
                   Review of {{ pr.consultation.date|date:"j M Y" }}
                 </div>

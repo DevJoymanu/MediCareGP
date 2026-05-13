@@ -126,16 +126,55 @@ def checkin_form(request, token):
 
 
 def checkin_lookup(request, token):
-    """AJAX: returns whether a patient exists for the given ID number."""
+    """AJAX: returns patient record and any pending review for today."""
     if not _token_valid(token):
         return JsonResponse({'found': False})
     id_number = request.GET.get('id', '').strip()
     if not id_number:
         return JsonResponse({'found': False})
+
     patient = Patient.objects.filter(id_number=id_number).first()
-    if patient:
-        return JsonResponse({'found': True, 'name': patient.first_name})
-    return JsonResponse({'found': False})
+    if not patient:
+        return JsonResponse({'found': False})
+
+    from .models import PendingReview
+    today = timezone.localdate()
+    pr = PendingReview.objects.filter(
+        consultation__patient=patient,
+        date=today,
+        status='pending',
+    ).select_related('consultation').first()
+
+    if pr:
+        return JsonResponse({
+            'found':         True,
+            'name':          patient.first_name,
+            'has_review':    True,
+            'review_pk':     pr.pk,
+            'review_for':    pr.consultation.assessment or '',
+            'original_date': pr.consultation.date.strftime('%-d %B %Y'),
+        })
+
+    return JsonResponse({'found': True, 'name': patient.first_name, 'has_review': False})
+
+
+def checkin_review_confirm(request, token, pk):
+    """Patient self-confirms arrival for a scheduled review."""
+    if not _token_valid(token):
+        return render(request, 'checkin/blocked.html', {'reason': 'invalid_token'}, status=404)
+
+    from .models import PendingReview
+    pr = get_object_or_404(PendingReview, pk=pk, status='pending')
+
+    if request.method == 'POST':
+        pr.status = 'self_arrived'
+        pr.save(update_fields=['status'])
+        return render(request, 'checkin/review_confirmed.html', {
+            'patient':       pr.consultation.patient,
+            'practice_name': settings.PRACTICE_NAME,
+        })
+
+    return redirect('checkin_form', token=token)
 
 
 def checkin_confirmation(request, token, pk):

@@ -41,10 +41,11 @@ class Appointment(models.Model):
 
 class PendingReview(models.Model):
     STATUS_CHOICES = [
-        ('pending',  'Pending Arrival'),
-        ('queued',   'Added to Queue'),
-        ('moved',    'Moved to Another Date'),
-        ('declined', 'Declined'),
+        ('pending',      'Pending Arrival'),
+        ('self_arrived', 'Self Check-In Confirmed'),
+        ('queued',       'Added to Queue'),
+        ('moved',        'Moved to Another Date'),
+        ('declined',     'Declined'),
     ]
     consultation     = models.ForeignKey('consultations.Consultation', on_delete=models.CASCADE, related_name='pending_reviews')
     date             = models.DateField()

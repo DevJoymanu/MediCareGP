@@ -139,7 +139,10 @@
       </div>
     </div>
 
-    <!-- Reason for visit (shown after lookup) -->
+    <!-- Review check-in (shown when patient has a review today) -->
+    <div id="review-section" class="hidden"></div>
+
+    <!-- Reason for visit (shown for returning/new patients without a review) -->
     <div id="reason-section" class="hidden">
       <div class="field">
         <label for="reason_for_visit">Reason for Visit <span class="req">*</span></label>
@@ -172,11 +175,13 @@
     el.querySelector('input[type=radio]').checked = true;
   }
 
+  const TOKEN = '{{ token }}';
+
   function showLookupBanner(found, name) {
     const el = document.getElementById('lookup-result');
     if (found) {
       el.className = 'lookup-banner found';
-      el.innerHTML = '<i class="bi bi-person-check-fill"></i> Welcome back, <strong>' + name + '</strong>! Please describe your reason for today\'s visit.';
+      el.innerHTML = '<i class="bi bi-person-check-fill"></i> Welcome back, <strong>' + name + '</strong>!';
     } else {
       el.className = 'lookup-banner notfound';
       el.innerHTML = '<i class="bi bi-person-plus-fill"></i> No record found. Please fill in your details below.';
@@ -184,18 +189,62 @@
     el.classList.remove('hidden');
   }
 
+  function showReviewSection(data) {
+    const el = document.getElementById('review-section');
+    const diagLine = data.review_for
+      ? '<p style="font-size:13px;color:#166534;margin:8px 0 0;">' +
+        '<strong>Reason:</strong> ' + data.review_for + '</p>'
+      : '';
+    el.innerHTML =
+      '<div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:18px 16px;margin-bottom:16px;">' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">' +
+          '<i class="bi bi-arrow-repeat" style="font-size:20px;color:#16a34a;"></i>' +
+          '<div>' +
+            '<div style="font-weight:700;font-size:15px;color:#14532d;">You have a review today</div>' +
+            '<div style="font-size:12px;color:#16a34a;">Follow-up from ' + data.original_date + '</div>' +
+          '</div>' +
+        '</div>' +
+        diagLine +
+      '</div>' +
+      '<form method="post" action="/checkin/' + TOKEN + '/review/' + data.review_pk + '/confirm/">' +
+        '<input type="hidden" name="csrfmiddlewaretoken" value="' + getCsrfToken() + '">' +
+        '<button type="submit" class="btn-submit" style="background:#16a34a;">' +
+          '<i class="bi bi-check-circle"></i> Confirm My Arrival' +
+        '</button>' +
+      '</form>';
+    el.classList.remove('hidden');
+  }
+
+  function getCsrfToken() {
+    const v = '; ' + document.cookie;
+    const parts = v.split('; csrftoken=');
+    return parts.length === 2 ? parts.pop().split(';').shift() : '';
+  }
+
   function doLookup(idNumber) {
     if (!idNumber || idNumber.length < 6) return;
     document.getElementById('lookup-loading').classList.remove('hidden');
     document.getElementById('lookup-result').classList.add('hidden');
+    document.getElementById('review-section').classList.add('hidden');
+    document.getElementById('review-section').innerHTML = '';
     fetch(LOOKUP_URL + '?id=' + encodeURIComponent(idNumber))
       .then(r => r.json())
       .then(data => {
         document.getElementById('lookup-loading').classList.add('hidden');
         patientFound = data.found;
-        showLookupBanner(data.found, data.name || '');
-        document.getElementById('new-patient-section').classList.toggle('hidden', data.found);
-        document.getElementById('reason-section').classList.remove('hidden');
+
+        if (data.found && data.has_review) {
+          // Review patient — show dedicated review confirmation UI
+          showLookupBanner(true, data.name);
+          document.getElementById('new-patient-section').classList.add('hidden');
+          document.getElementById('reason-section').classList.add('hidden');
+          showReviewSection(data);
+        } else {
+          // Regular check-in
+          showLookupBanner(data.found, data.name || '');
+          document.getElementById('new-patient-section').classList.toggle('hidden', data.found);
+          document.getElementById('reason-section').classList.remove('hidden');
+        }
       })
       .catch(() => {
         document.getElementById('lookup-loading').classList.add('hidden');
