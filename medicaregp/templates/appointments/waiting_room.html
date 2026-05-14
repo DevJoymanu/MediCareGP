@@ -755,11 +755,11 @@ setInterval(pollPending, 10000);
 
 // ── Smart status poll — detects any waiting room change immediately ──────────
 const STATUS_URL = "{% url 'waiting_room_status' %}";
-let lastInProgress    = {{ in_consultation|yesno:'true,false' }};
-let lastWaiting       = {{ waiting|length }};
-let lastCheckins      = 0;
-let lastRevPending    = {{ pending_reviews|length }};
-let lastRevArrived    = 0;
+let lastInProgress = {{ in_consultation|yesno:'true,false' }};
+let lastWaiting    = {{ waiting|length }};
+let lastCheckins   = {{ init_checkins }};
+let lastRevPending = {{ init_reviews_pending }};
+let lastRevArrived = {{ init_reviews_arrived }};
 
 function checkStatus() {
   fetch(STATUS_URL)

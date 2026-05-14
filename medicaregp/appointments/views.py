@@ -139,12 +139,19 @@ def waiting_room(request):
                  .filter(date=today, status='Scheduled')
                  .select_related('patient')
                  .order_by('time'))
+    from .models import CheckInRequest
+    reviews_pending = pending_reviews.filter(status='pending').count()
+    reviews_arrived = pending_reviews.filter(status='self_arrived').count()
+
     return render(request, 'appointments/waiting_room.html', {
         'in_consultation': in_consultation,
         'waiting':         waiting,
         'scheduled':       scheduled,
         'pending_reviews': pending_reviews,
         'today':           today,
+        'init_reviews_pending': reviews_pending,
+        'init_reviews_arrived': reviews_arrived,
+        'init_checkins':        CheckInRequest.objects.filter(status='pending').count(),
     })
 
 
@@ -211,7 +218,7 @@ def pending_review_notes(request, pk):
 def waiting_room_status(request):
     """Lightweight JSON endpoint — polled every 5 s by the waiting room."""
     from django.http import JsonResponse
-    from .models import PendingReview
+    from .models import PendingReview, CheckInRequest
     today = timezone.localdate()
     in_progress      = Appointment.objects.filter(date=today, status='With Doctor').exists()
     waiting_count    = Appointment.objects.filter(date=today, status='Checked In').count()

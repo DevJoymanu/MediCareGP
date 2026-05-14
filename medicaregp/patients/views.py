@@ -13,8 +13,7 @@ def patient_list(request):
     if q:
         patients = patients.filter(
             Q(id_number__icontains=q) |
-            Q(phone__icontains=q) |
-            Q(first_name__icontains=q) | Q(last_name__icontains=q)
+            Q(phone__icontains=q)
         )
     return render(request, 'patients/patient_list.html', {'patients': patients, 'q': q})
 
