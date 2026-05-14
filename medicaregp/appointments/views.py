@@ -213,15 +213,17 @@ def waiting_room_status(request):
     from django.http import JsonResponse
     from .models import PendingReview
     today = timezone.localdate()
-    in_progress    = Appointment.objects.filter(date=today, status='With Doctor').exists()
-    waiting_count  = Appointment.objects.filter(date=today, status='Checked In').count()
-    checkin_count  = CheckInRequest.objects.filter(status='pending').count()
-    review_count   = PendingReview.objects.filter(date=today, status__in=['pending', 'self_arrived']).count()
+    in_progress      = Appointment.objects.filter(date=today, status='With Doctor').exists()
+    waiting_count    = Appointment.objects.filter(date=today, status='Checked In').count()
+    checkin_count    = CheckInRequest.objects.filter(status='pending').count()
+    reviews_pending  = PendingReview.objects.filter(date=today, status='pending').count()
+    reviews_arrived  = PendingReview.objects.filter(date=today, status='self_arrived').count()
     return JsonResponse({
-        'in_progress': in_progress,
-        'waiting':     waiting_count,
-        'checkins':    checkin_count,
-        'reviews':     review_count,
+        'in_progress':     in_progress,
+        'waiting':         waiting_count,
+        'checkins':        checkin_count,
+        'reviews_pending': reviews_pending,
+        'reviews_arrived': reviews_arrived,
     })
 
 

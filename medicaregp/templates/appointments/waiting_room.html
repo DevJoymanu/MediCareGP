@@ -755,10 +755,11 @@ setInterval(pollPending, 10000);
 
 // ── Smart status poll — detects any waiting room change immediately ──────────
 const STATUS_URL = "{% url 'waiting_room_status' %}";
-let lastInProgress = {{ in_consultation|yesno:'true,false' }};
-let lastWaiting    = {{ waiting|length }};
-let lastReviews    = {{ pending_reviews|length }};
-let lastCheckins   = 0;
+let lastInProgress    = {{ in_consultation|yesno:'true,false' }};
+let lastWaiting       = {{ waiting|length }};
+let lastCheckins      = 0;
+let lastRevPending    = {{ pending_reviews|length }};
+let lastRevArrived    = 0;
 
 function checkStatus() {
   fetch(STATUS_URL)
@@ -767,10 +768,11 @@ function checkStatus() {
       const anyOpen = document.querySelector('.rv-inline.open');
       if (anyOpen) return;
 
-      if (lastInProgress !== d.in_progress ||
-          lastWaiting    !== d.waiting     ||
-          lastReviews    !== d.reviews     ||
-          lastCheckins   !== d.checkins) {
+      if (lastInProgress !== d.in_progress     ||
+          lastWaiting    !== d.waiting          ||
+          lastCheckins   !== d.checkins         ||
+          lastRevPending !== d.reviews_pending  ||
+          lastRevArrived !== d.reviews_arrived) {
         location.reload();
       }
     })
