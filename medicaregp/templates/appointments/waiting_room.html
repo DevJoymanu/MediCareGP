@@ -160,8 +160,18 @@
   }
   .btn-decline-sm:hover { background: #fef2f2; }
 
+  /* ── Role labels ── */
+  .role-label {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: .07em; border-radius: 20px; padding: 3px 10px;
+    margin-bottom: 10px;
+  }
+  .role-receptionist { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .role-doctor       { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
+
   /* ═══════════════════════════════════════════════
-     CONSULTATION IN PROGRESS BANNER (full-width)
+     UP NEXT BANNER (full-width)
   ═══════════════════════════════════════════════ */
   .consult-banner {
     width: 100%;
@@ -338,30 +348,41 @@
 
 
   <!-- ═══════════════════════════════════════════════════════
-       CONSULTATION IN PROGRESS BANNER
+       UP NEXT BANNER — patient sent to doctor by receptionist
   ═══════════════════════════════════════════════════════ -->
   {% if in_consultation %}
-  <div class="consult-banner">
+  <div class="consult-banner" style="margin-bottom:20px;">
     <div class="consult-banner-icon">
-      <i class="bi bi-person-check-fill"></i>
+      <i class="bi bi-arrow-right-circle-fill"></i>
     </div>
     <div class="consult-banner-body">
       <div class="consult-banner-label">
         <span class="consult-banner-dot"></span>
-        Consultation in Progress
+        Up Next — Ready for the Doctor
       </div>
       <div class="consult-banner-name">{{ in_consultation.patient }}</div>
       <div class="consult-banner-meta">{{ in_consultation.reason }}</div>
-      <div class="consult-banner-desc">
-        <i class="bi bi-stethoscope"></i> Currently seeing the doctor
+      {% if in_consultation.patient.allergies %}
+      <div class="pt-allergy" style="margin-top:6px;">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        Allergy: {{ in_consultation.patient.allergies }}
       </div>
+      {% endif %}
     </div>
-    {% if in_consultation.patient.allergies %}
-    <div class="pt-allergy" style="align-self:center;margin-top:0;">
-      <i class="bi bi-exclamation-triangle-fill"></i>
-      Allergy: {{ in_consultation.patient.allergies }}
+    <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0;">
+      <span class="role-label role-doctor"><i class="bi bi-stethoscope"></i> Doctor's Action</span>
+      {% if in_consultation.pending_review %}
+      <a href="{% url 'consultation_review' in_consultation.pending_review.consultation.pk %}"
+         class="btn-primary" style="white-space:nowrap;font-size:15px;padding:12px 22px;">
+        <i class="bi bi-arrow-repeat"></i> Start Review
+      </a>
+      {% else %}
+      <a href="{% url 'consultation_create' %}?patient_id={{ in_consultation.patient.pk }}&appointment_id={{ in_consultation.pk }}"
+         class="btn-primary" style="white-space:nowrap;font-size:15px;padding:12px 22px;">
+        <i class="bi bi-clipboard2-plus"></i> Start Consultation
+      </a>
+      {% endif %}
     </div>
-    {% endif %}
   </div>
   {% endif %}
 
@@ -376,8 +397,8 @@
         <div class="wr-section-header hdr-waiting">
           <div class="wr-section-icon"><i class="bi bi-people-fill"></i></div>
           <div>
-            <div class="wr-section-title">In the Waiting Room</div>
-            <div class="wr-section-sub">Patients waiting to see the doctor</div>
+            <div class="wr-section-title">Waiting to Be Seen</div>
+            <div class="wr-section-sub">Press "Send to Doctor" when the doctor is ready</div>
           </div>
           {% if waiting %}
           <span class="wr-section-count">{{ waiting|length }}</span>
@@ -411,17 +432,11 @@
               </div>
               {% endif %}
               <div class="pt-action">
-                {% if a.pending_review %}
-                <a href="{% url 'consultation_review' a.pending_review.consultation.pk %}"
-                   class="btn-start-review">
-                  <i class="bi bi-arrow-repeat"></i> Start Review
-                </a>
-                {% else %}
+                <span class="role-label role-receptionist" style="margin-bottom:6px;"><i class="bi bi-person-badge"></i> Receptionist</span>
                 <a href="{% url 'appointment_start_consultation' a.pk %}"
-                   class="btn-start-consult">
-                  <i class="bi bi-clipboard2-plus"></i> Start Consultation
+                   class="btn-start-consult" style="background:#1d4ed8;">
+                  <i class="bi bi-arrow-right-circle"></i> Send to Doctor
                 </a>
-                {% endif %}
               </div>
             </div>
             {% endfor %}

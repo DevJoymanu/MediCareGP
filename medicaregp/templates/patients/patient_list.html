@@ -17,7 +17,7 @@
     <form method="get" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
       <div style="flex:1;position:relative;min-width:200px;">
         <i class="bi bi-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-4);font-size:13px;pointer-events:none;"></i>
-        <input name="q" value="{{ q }}" placeholder="Search by name, phone, ID, medical aid or condition…" class="crm-input" style="padding-left:36px;">
+        <input name="q" value="{{ q }}" placeholder="Enter ID number or phone number…" class="crm-input" style="padding-left:36px;" inputmode="numeric" autocomplete="off">
       </div>
       <button type="submit" class="btn-ghost"><i class="bi bi-funnel"></i> Filter</button>
       {% if q %}<a href="{% url 'patient_list' %}" class="btn-ghost">Clear</a>{% endif %}

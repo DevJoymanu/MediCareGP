@@ -128,7 +128,7 @@ def waiting_room(request):
 
     in_consultation = (Appointment.objects
                        .filter(date=today, status='With Doctor')
-                       .select_related('patient')
+                       .select_related('patient', 'pending_review__consultation')
                        .order_by('time')
                        .first())
     waiting = (Appointment.objects
@@ -219,13 +219,11 @@ def waiting_room_status(request):
 
 @login_required
 def appointment_start_consultation(request, pk):
-    """Mark appointment as With Doctor then open the consultation form."""
+    """Receptionist hands off patient to doctor — marks With Doctor, stays on waiting room."""
     appointment = get_object_or_404(Appointment, pk=pk)
     appointment.status = 'With Doctor'
     appointment.save(update_fields=['status'])
-    from django.urls import reverse
-    url = reverse('consultation_create') + f'?patient_id={appointment.patient_id}&appointment_id={appointment.pk}'
-    return redirect(url)
+    return redirect('waiting_room')
 
 
 @login_required

@@ -121,8 +121,8 @@
       {% if patient.medical_aid_plan %}<div class="detail-row"><span class="detail-key">Plan / Option</span><span class="detail-val">{{ patient.medical_aid_plan }}</span></div>{% endif %}
       <div class="detail-row"><span class="detail-key">Member No.</span><span class="detail-val" style="font-family:monospace;font-size:12px;">{{ patient.medical_aid_number|default:"—" }}</span></div>
       <div class="detail-row"><span class="detail-key">Dependants</span><span class="detail-val">{{ patient.dependant_code|default:"—" }}</span></div>
-      {% if patient.principal_member_name %}<div class="detail-row"><span class="detail-key">Principal Member</span><span class="detail-val">{{ patient.principal_member_name }}</span></div>{% endif %}
-      {% if patient.principal_member_id %}<div class="detail-row"><span class="detail-key">Principal ID</span><span class="detail-val" style="font-family:monospace;font-size:12px;">{{ patient.principal_member_id }}</span></div>{% endif %}
+      {% if patient.principal_member_name %}<div class="detail-row"><span class="detail-key">Main Member</span><span class="detail-val">{{ patient.principal_member_name }}</span></div>{% endif %}
+      {% if patient.principal_member_id %}<div class="detail-row"><span class="detail-key">Main Member ID</span><span class="detail-val" style="font-family:monospace;font-size:12px;">{{ patient.principal_member_id }}</span></div>{% endif %}
     </div>
   </div>
 

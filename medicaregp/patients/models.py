@@ -87,8 +87,8 @@ class Patient(models.Model):
     medical_aid_name      = models.CharField(max_length=100, blank=True, null=True, verbose_name='Medical aid scheme')
     medical_aid_plan      = models.CharField(max_length=100, blank=True, null=True, verbose_name='Plan / option')
     medical_aid_number    = models.CharField(max_length=50,  blank=True, null=True, verbose_name='Membership number')
-    principal_member_name = models.CharField(max_length=150, blank=True, null=True)
-    principal_member_id   = models.CharField(max_length=30,  blank=True, null=True, verbose_name='Principal member ID')
+    principal_member_name = models.CharField(max_length=150, blank=True, null=True, verbose_name='Main member name')
+    principal_member_id   = models.CharField(max_length=30,  blank=True, null=True, verbose_name='Main member ID')
     dependant_code        = models.CharField(max_length=10,  blank=True, null=True)
 
     # ── Clinical ──────────────────────────────────────────────────────────────
