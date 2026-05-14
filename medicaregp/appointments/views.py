@@ -211,10 +211,18 @@ def pending_review_notes(request, pk):
 def waiting_room_status(request):
     """Lightweight JSON endpoint — polled every 5 s by the waiting room."""
     from django.http import JsonResponse
+    from .models import PendingReview
     today = timezone.localdate()
-    in_progress = Appointment.objects.filter(date=today, status='With Doctor').exists()
-    waiting_count = Appointment.objects.filter(date=today, status='Checked In').count()
-    return JsonResponse({'in_progress': in_progress, 'waiting': waiting_count})
+    in_progress    = Appointment.objects.filter(date=today, status='With Doctor').exists()
+    waiting_count  = Appointment.objects.filter(date=today, status='Checked In').count()
+    checkin_count  = CheckInRequest.objects.filter(status='pending').count()
+    review_count   = PendingReview.objects.filter(date=today, status__in=['pending', 'self_arrived']).count()
+    return JsonResponse({
+        'in_progress': in_progress,
+        'waiting':     waiting_count,
+        'checkins':    checkin_count,
+        'reviews':     review_count,
+    })
 
 
 @login_required

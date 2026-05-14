@@ -753,20 +753,24 @@ function toggleRv(id) {
 pollPending();
 setInterval(pollPending, 10000);
 
-// ── Smart status poll — detects consultation completion immediately ────────────
+// ── Smart status poll — detects any waiting room change immediately ──────────
 const STATUS_URL = "{% url 'waiting_room_status' %}";
 let lastInProgress = {{ in_consultation|yesno:'true,false' }};
 let lastWaiting    = {{ waiting|length }};
+let lastReviews    = {{ pending_reviews|length }};
+let lastCheckins   = 0;
 
 function checkStatus() {
   fetch(STATUS_URL)
     .then(r => r.json())
     .then(function (d) {
       const anyOpen = document.querySelector('.rv-inline.open');
-      if (anyOpen) return; // don't interrupt an open inline form
+      if (anyOpen) return;
 
-      // Reload as soon as in-progress clears OR waiting count changes
-      if (lastInProgress !== d.in_progress || lastWaiting !== d.waiting) {
+      if (lastInProgress !== d.in_progress ||
+          lastWaiting    !== d.waiting     ||
+          lastReviews    !== d.reviews     ||
+          lastCheckins   !== d.checkins) {
         location.reload();
       }
     })
