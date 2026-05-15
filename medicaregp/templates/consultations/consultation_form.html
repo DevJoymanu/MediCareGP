@@ -122,6 +122,7 @@
 
     <form method="post" id="consultForm">
       {% csrf_token %}
+      <input type="hidden" name="form_action" id="formAction" value="save">
 
       {% if form.non_field_errors %}
       <div class="alert alert-error" style="margin-bottom:14px;">
@@ -369,6 +370,7 @@
 <script>
 // ── Reload appointments when patient changes ──────────────────────────────
 document.getElementById('id_patient').addEventListener('change', function () {
+  document.getElementById('formAction').value = 'reload';
   document.getElementById('consultForm').submit();
 });
 

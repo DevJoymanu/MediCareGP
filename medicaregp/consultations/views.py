@@ -347,6 +347,12 @@ def consultation_create(request):
             if last.bp_reading:
                 initial['bp_reading'] = last.bp_reading
 
+    if request.method == 'POST' and request.POST.get('form_action') == 'reload':
+        selected_patient_id = request.POST.get('patient')
+        if selected_patient_id:
+            return redirect(f"{request.path}?patient_id={selected_patient_id}")
+        return redirect(request.path)
+
     form = ConsultationForm(request.POST or None, initial=initial)
     if form.is_valid():
         consultation = form.save()
