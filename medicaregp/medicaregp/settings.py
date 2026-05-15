@@ -31,6 +31,11 @@ DATABASES = {
         conn_health_checks=True,
     )
 }
+
+# Give SQLite up to 30 seconds to acquire a write lock before raising
+# "database is locked" — eliminates contention errors at low concurrency.
+if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    DATABASES['default'].setdefault('OPTIONS', {})['timeout'] = 30
 AUTH_PASSWORD_VALIDATORS = []
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Africa/Johannesburg'
@@ -89,3 +94,9 @@ PRACTICE_PHONE   = '+27 21 555 0100'
 PRACTICE_ADDRESS = '1 Medical Park, Cape Town, 8001'
 PRACTICE_REG     = 'HPCSA: MP 0123456'
 VAT_RATE         = 15   # percentage
+
+# ── Healthbridge / BHF claim submission ────────────────────────────────────────
+# Set these to the practice number issued by Healthbridge.
+# The doctor should retrieve this from their Healthbridge account.
+PRACTICE_NUMBER           = os.environ.get('PRACTICE_NUMBER', 'MP0123456')
+HEALTHBRIDGE_PRACTICE_NO  = os.environ.get('HEALTHBRIDGE_PRACTICE_NO', PRACTICE_NUMBER)

@@ -34,7 +34,15 @@
         <div style="font-size:11px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:3px;">Due Date</div>
         <div style="font-size:14px;font-weight:600;color:{% if invoice.status == 'Overdue' %}#dc2626{% else %}var(--text-1){% endif %};">{{ invoice.due_date|date:"j F Y" }}</div>
       </div>
-      <div style="margin-left:auto;display:flex;gap:8px;">
+      <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
+        {% if invoice.patient.medical_aid_name %}
+        <a href="{% url 'bhf_export' invoice.pk %}"
+           class="btn-ghost"
+           style="color:#1d4ed8;border-color:#bfdbfe;"
+           title="Download BHF claim file for upload to Healthbridge portal">
+          <i class="bi bi-cloud-upload"></i> Healthbridge File
+        </a>
+        {% endif %}
         {% if invoice.status != 'Paid' and invoice.status != 'Cancelled' %}
         <form method="post" action="{% url 'invoice_mark_paid' invoice.pk %}">
           {% csrf_token %}
@@ -137,6 +145,115 @@
       <p style="font-size:13px;color:var(--text-2);margin:0;white-space:pre-line;">{{ invoice.notes }}</p>
     </div>
     {% endif %}
+
+    <!-- Payments ledger -->
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;">
+      <div style="padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div class="section-label">Payments Received</div>
+        <a href="{% url 'payment_add' invoice.pk %}" class="btn-ghost" style="font-size:13px;"><i class="bi bi-plus"></i> Add Payment</a>
+      </div>
+      {% with payments=invoice.payments.all %}
+      {% if payments %}
+      <table class="crm-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Method</th>
+            <th>Reference</th>
+            <th style="text-align:right;">Amount</th>
+            <th style="text-align:center;">Receipt</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in payments %}
+          <tr style="cursor:default;">
+            <td>{{ p.date|date:"j M Y" }}</td>
+            <td>{{ p.method }}</td>
+            <td style="color:var(--text-3);font-size:12px;">{{ p.reference|default:"—" }}</td>
+            <td style="text-align:right;font-weight:600;">R {{ p.amount|floatformat:2 }}</td>
+            <td style="text-align:center;">
+              <a href="{% url 'receipt_print' p.pk %}" target="_blank" class="btn-ghost" style="font-size:11px;padding:3px 8px;">
+                <i class="bi bi-printer"></i> REC-{{ p.receipt_number }}
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div style="padding:12px 20px;border-top:1px solid #f1f5f9;display:flex;justify-content:flex-end;">
+        <div style="min-width:220px;">
+          <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;">
+            <span style="color:var(--text-3);">Total received</span>
+            <span style="font-weight:600;">R {{ invoice.amount_received|floatformat:2 }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding:8px 0 0;border-top:2px solid var(--border);margin-top:4px;color:{% if invoice.balance_due <= 0 %}#15803d{% else %}#dc2626{% endif %};">
+            <span>Balance due</span>
+            <span>R {{ invoice.balance_due|floatformat:2 }}</span>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div style="padding:20px;text-align:center;color:var(--text-3);font-size:13px;">No payments recorded yet.</div>
+      {% endif %}
+      {% endwith %}
+    </div>
+
+    <!-- Claim submissions -->
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;">
+      <div style="padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div class="section-label">Medical Aid Claim Submissions</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="{% url 'claim_submit' invoice.pk %}" class="btn-ghost" style="font-size:13px;"><i class="bi bi-send"></i> Log Submission</a>
+          <a href="{% url 'edi_export' invoice.pk %}" class="btn-ghost" style="font-size:13px;"><i class="bi bi-download"></i> Export CSV</a>
+        </div>
+      </div>
+      {% with claims=invoice.claim_submissions.all %}
+      {% if claims %}
+      <table class="crm-table">
+        <thead>
+          <tr>
+            <th>Submitted</th>
+            <th>Scheme</th>
+            <th>Reference</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in claims %}
+          <tr style="cursor:default;">
+            <td style="font-size:12px;color:var(--text-3);">{{ c.submitted_at|date:"j M Y" }}</td>
+            <td style="font-weight:600;">{{ c.scheme_name }}</td>
+            <td style="font-size:12px;color:var(--text-3);">{{ c.submission_reference|default:"—" }}</td>
+            <td>
+              <span class="badge" style="font-size:11px;padding:2px 8px;
+                background:{% if c.status == 'Rejected' %}#fef2f2{% elif c.status == 'Accepted' or c.status == 'Paid' %}#f0fdf4{% elif c.status == 'Resubmitted' %}#fefce8{% else %}#eff6ff{% endif %};
+                color:{% if c.status == 'Rejected' %}#b91c1c{% elif c.status == 'Accepted' or c.status == 'Paid' %}#15803d{% elif c.status == 'Resubmitted' %}#854d0e{% else %}#1d4ed8{% endif %};">
+                {{ c.status }}
+              </span>
+              {% if c.rejection_code %}
+              <span style="font-size:11px;color:#dc2626;margin-left:4px;" title="{{ c.rejection_reason }}">{{ c.rejection_code }}</span>
+              {% endif %}
+            </td>
+            <td style="text-align:right;">
+              <a href="{% url 'claim_update' c.pk %}" class="btn-ghost" style="font-size:11px;padding:3px 8px;">Update</a>
+            </td>
+          </tr>
+          {% if c.rejection_reason %}
+          <tr style="cursor:default;background:#fef2f2;">
+            <td colspan="5" style="font-size:12px;color:#b91c1c;padding:6px 16px;">
+              <i class="bi bi-exclamation-triangle"></i> {{ c.rejection_reason }}
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div style="padding:20px;text-align:center;color:var(--text-3);font-size:13px;">No claim submissions logged yet.</div>
+      {% endif %}
+      {% endwith %}
+    </div>
 
     <!-- CHANGES: detail-actions class makes buttons stack full-width on mobile -->
     <div class="detail-actions">

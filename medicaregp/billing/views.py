@@ -1,13 +1,20 @@
-from django.contrib import messages
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.utils import timezone
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from .models import Invoice, InvoiceItem
-from .forms import InvoiceForm, InvoiceItemFormSet, SendEmailForm
+import csv
 import datetime
+import io
 import re
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMultiAlternatives
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import render_to_string
+from django.utils import timezone
+
+from .models import Invoice, InvoiceItem, Payment, ClaimSubmission
+from .forms import (InvoiceForm, InvoiceItemFormSet, SendEmailForm,
+                    PaymentForm, ClaimSubmissionForm, ClaimUpdateForm, ERAImportForm)
+from . import bhf as bhf_generator
 
 
 def _next_invoice_number():
@@ -198,3 +205,173 @@ def invoice_mark_paid(request, pk):
         invoice.save(update_fields=['status'])
         messages.success(request, f'Invoice {invoice.invoice_number} marked as paid.')
     return redirect('invoice_detail', pk=invoice.pk)
+
+
+# ── Payments / receipts ───────────────────────────────────────────────────────
+
+@login_required
+def payment_add(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            payment = form.save(commit=False)
+            payment.invoice = invoice
+            payment.save()
+            if invoice.balance_due() <= 0 and invoice.status != 'Paid':
+                invoice.status = 'Paid'
+                invoice.save(update_fields=['status'])
+            messages.success(request, f'Payment of R{payment.amount} recorded. Receipt {payment.receipt_number}.')
+            return redirect('invoice_detail', pk=invoice.pk)
+    else:
+        form = PaymentForm(initial={'date': timezone.now().date(), 'method': 'Cash'})
+    return render(request, 'billing/payment_form.html', {'form': form, 'invoice': invoice})
+
+
+@login_required
+def receipt_print(request, payment_pk):
+    payment = get_object_or_404(Payment, pk=payment_pk)
+    return render(request, 'billing/receipt_print.html', {'payment': payment})
+
+
+# ── Claim submissions ─────────────────────────────────────────────────────────
+
+@login_required
+def claim_submit(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+    if request.method == 'POST':
+        form = ClaimSubmissionForm(request.POST)
+        if form.is_valid():
+            claim = form.save(commit=False)
+            claim.invoice = invoice
+            claim.save()
+            messages.success(request, f'Claim logged as submitted to {claim.scheme_name}.')
+            return redirect('invoice_detail', pk=invoice.pk)
+    else:
+        scheme = invoice.patient.medical_aid_name or ''
+        form = ClaimSubmissionForm(initial={'scheme_name': scheme})
+    return render(request, 'billing/claim_form.html', {'form': form, 'invoice': invoice})
+
+
+@login_required
+def claim_update(request, claim_pk):
+    claim = get_object_or_404(ClaimSubmission, pk=claim_pk)
+    if request.method == 'POST':
+        form = ClaimUpdateForm(request.POST, instance=claim)
+        if form.is_valid():
+            updated = form.save(commit=False)
+            if updated.status in ('Accepted', 'Paid', 'Rejected') and not updated.resolved_at:
+                updated.resolved_at = timezone.now()
+            if updated.status == 'Resubmitted':
+                ClaimSubmission.objects.create(
+                    invoice=claim.invoice,
+                    scheme_name=claim.scheme_name,
+                    status='Submitted',
+                    resubmission_notes=updated.resubmission_notes,
+                    parent=claim,
+                )
+                updated.status = 'Resubmitted'
+            updated.save()
+            messages.success(request, 'Claim status updated.')
+            return redirect('invoice_detail', pk=claim.invoice.pk)
+    else:
+        form = ClaimUpdateForm(instance=claim)
+    return render(request, 'billing/claim_update.html', {'form': form, 'claim': claim})
+
+
+# ── ERA import ────────────────────────────────────────────────────────────────
+
+@login_required
+def era_import(request):
+    results = []
+    if request.method == 'POST':
+        form = ERAImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            f = request.FILES['csv_file']
+            decoded = f.read().decode('utf-8-sig')
+            reader = csv.DictReader(io.StringIO(decoded))
+            for row in reader:
+                inv_num   = (row.get('invoice_number') or '').strip()
+                amount    = (row.get('amount_paid')    or '').strip()
+                date_paid = (row.get('date_paid')      or '').strip()
+                reference = (row.get('reference')      or '').strip()
+                notes_val = (row.get('notes')          or '').strip()
+
+                if not inv_num or not amount or not date_paid:
+                    results.append({'row': inv_num or '?', 'status': 'error', 'msg': 'Missing required fields'})
+                    continue
+                try:
+                    invoice = Invoice.objects.get(invoice_number=inv_num)
+                except Invoice.DoesNotExist:
+                    results.append({'row': inv_num, 'status': 'error', 'msg': 'Invoice not found'})
+                    continue
+                try:
+                    paid_date = datetime.date.fromisoformat(date_paid)
+                except ValueError:
+                    results.append({'row': inv_num, 'status': 'error', 'msg': f'Bad date format: {date_paid}'})
+                    continue
+                payment = Payment.objects.create(
+                    invoice=invoice,
+                    date=paid_date,
+                    amount=float(amount),
+                    method='Medical Aid',
+                    reference=reference or None,
+                    notes=notes_val or None,
+                )
+                if invoice.balance_due() <= 0 and invoice.status != 'Paid':
+                    invoice.status = 'Paid'
+                    invoice.save(update_fields=['status'])
+                results.append({'row': inv_num, 'status': 'ok', 'msg': f'Payment R{amount} recorded (REC-{payment.receipt_number})'})
+    else:
+        form = ERAImportForm()
+    return render(request, 'billing/era_import.html', {'form': form, 'results': results})
+
+
+# ── EDI export ────────────────────────────────────────────────────────────────
+
+@login_required
+def bhf_export(request, pk):
+    """Generate and download a BHF-format claim file for Healthbridge portal upload."""
+    invoice  = get_object_or_404(Invoice, pk=pk)
+    content  = bhf_generator.generate(invoice)
+    filename = f'claim_{invoice.invoice_number}.bhf'
+    response = HttpResponse(content, content_type='text/plain; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+
+@login_required
+def edi_export(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+    patient = invoice.patient
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="claim_{invoice.invoice_number}.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Field', 'Value'])
+    writer.writerow(['Invoice Number',      invoice.invoice_number])
+    writer.writerow(['Date Issued',         invoice.date_issued])
+    writer.writerow(['Doctor',              invoice.issued_by])
+    writer.writerow(['ICD-10 Code',         invoice.icd10_code or ''])
+    writer.writerow(['Authorization Number', invoice.authorization_number or ''])
+    writer.writerow(['Patient Surname',     patient.last_name])
+    writer.writerow(['Patient First Name',  patient.first_name])
+    writer.writerow(['Patient ID Number',   patient.id_number])
+    writer.writerow(['Patient DOB',         patient.date_of_birth])
+    writer.writerow(['Medical Aid Scheme',  patient.medical_aid_name or ''])
+    writer.writerow(['Medical Aid Plan',    patient.medical_aid_plan or ''])
+    writer.writerow(['Membership Number',   patient.medical_aid_number or ''])
+    writer.writerow(['Principal Member',    patient.principal_member_name or ''])
+    writer.writerow(['Principal Member ID', patient.principal_member_id or ''])
+    writer.writerow(['Dependant Code',      patient.dependant_code or ''])
+    writer.writerow([])
+    writer.writerow(['Procedure Code', 'Description', 'Qty', 'Unit Price (R)', 'Line Total (R)'])
+    for item in invoice.items.all():
+        writer.writerow([item.procedure_code or '', item.description,
+                         item.quantity, item.unit_price, item.line_total()])
+    writer.writerow([])
+    writer.writerow(['Subtotal', invoice.subtotal()])
+    writer.writerow(['VAT (15%)', invoice.vat_amount()])
+    writer.writerow(['Total', invoice.total()])
+    return response

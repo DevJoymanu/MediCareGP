@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Submit Claim | G.P CRM{% endblock %}
+{% block page_title %}Submit Claim{% endblock %}
+{% block page_sub %}{{ invoice.invoice_number }} — {{ invoice.patient }}{% endblock %}
+{% block content %}
+<div class="page-body">
+  <div style="max-width:560px;margin:0 auto;">
+
+    <div class="card" style="margin-bottom:18px;background:#eff6ff;border:1px solid #bfdbfe;">
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:11px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Invoice</div>
+          <div style="font-weight:700;">{{ invoice.invoice_number }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">ICD-10</div>
+          <div style="font-weight:700;">{{ invoice.icd10_code|default:"—" }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Auth. No.</div>
+          <div style="font-weight:700;">{{ invoice.authorization_number|default:"—" }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Total</div>
+          <div style="font-weight:700;">R {{ invoice.total|floatformat:2 }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label" style="margin-bottom:16px;">Log Claim Submission</div>
+      <p style="font-size:13px;color:var(--text-3);margin:0 0 16px;">
+        Record that this claim was submitted to the medical aid scheme. Use "Update Status" later to mark it accepted, rejected, or paid.
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group" style="margin-bottom:14px;">
+          <label class="form-label">Scheme *</label>
+          {{ form.scheme_name }}
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label class="form-label">Submission / Batch Reference</label>
+          {{ form.submission_reference }}
+        </div>
+        {% for field in form %}
+          {% if field.errors %}
+            <div style="color:#dc2626;font-size:12px;margin-top:4px;">{{ field.label }}: {{ field.errors|join:", " }}</div>
+          {% endif %}
+        {% endfor %}
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button type="submit" class="btn-primary"><i class="bi bi-send"></i> Log Submission</button>
+          <a href="{% url 'invoice_detail' invoice.pk %}" class="btn-ghost">Cancel</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="card" style="margin-top:18px;background:#eff6ff;border:1px solid #bfdbfe;">
+      <div class="section-label" style="margin-bottom:10px;color:#1d4ed8;">
+        <i class="bi bi-cloud-upload"></i> Healthbridge Portal Upload
+      </div>
+      <p style="font-size:13px;color:var(--text-2);margin:0 0 12px;">
+        Download the BHF claim file, then log into the Healthbridge portal and upload it under
+        <strong>Claims → Upload Batch File</strong>. This is the file format Healthbridge requires.
+      </p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a href="{% url 'bhf_export' invoice.pk %}" class="btn-primary" style="background:#1d4ed8;">
+          <i class="bi bi-cloud-upload"></i> Download BHF File
+        </a>
+        <a href="{% url 'edi_export' invoice.pk %}" class="btn-ghost">
+          <i class="bi bi-download"></i> Download CSV (generic)
+        </a>
+      </div>
+      <div style="font-size:11px;color:#64748b;margin-top:10px;">
+        <strong>After uploading:</strong> come back and use "Log Submission" above to record that the claim was sent.
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
