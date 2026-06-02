@@ -1,0 +1,2026 @@
+Discovery Health formularies and benchmark pricing
+Period: 2025
+Expected implementation date: 1 January 2025
+Follow the link for more information: discovery-health-pharmacy-network-guide.pdf
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+3005441 Abevmy concentrate for solution for infusion vial 20ml 400mg/16mLINF - - 14833.78000 14833.78000 Yes Yes Oncology Non-PBR Yes No
+3005442 Abevmy concentrate for solution for infusion vial 6ml 100mg/4mL INF - - 3708.44000 3708.44000 Yes Yes Oncology Non-PBR Yes No
+3001455 Abipip 10mg TAB 10.50000 10.50000 12.00000 12.00000 Yes Yes CDL PBR Yes Yes
+3001456 Abipip 15mg TAB 17.67000 17.67000 18.00000 18.00000 Yes Yes CDL PBR Yes Yes
+3001454 Abipip 5mg TAB 6.30000 6.30000 6.30000 6.30000 Yes Yes CDL PBR Yes Yes
+3002660 Abiraterone cipla 250mg TAB - - 136.79000 136.79000 Yes Yes Oncology Non-PBR Yes No
+712504 Abitrexate 2,5mg TAB 1.57000 1.57000 1.60000 1.60000 Yes Yes CDL-Oncology PBR Yes Yes
+782556 Abitrexate vial 20ml 25mg/1mL INJ - - 189.95000 189.95000 Yes Yes Oncology Non-PBR Yes No
+3006934 Abizista 500mg TAB - - 214.28000 214.28000 Yes Yes Oncology Non-PBR Yes No
+3006933 Abizista 250mg TAB - - 136.79000 136.79000 Yes Yes Oncology Non-PBR Yes No
+3004308 Accoran concentrate for sol for inf vial 10ml 60mg/10mL INF - - 431.25000 431.25000 Yes Yes Oncology Non-PBR Yes No
+715703 Accord anastrozole 1mg TAB - - 6.13000 6.13000 Yes Yes Oncology Non-PBR Yes No
+715705 Accord bicalutamide 50mg TAB - - 17.76000 17.76000 Yes Yes Oncology Non-PBR Yes No
+716228 Accord epirubicin 10 vial 5ml 10mg/5mL INJ - - 155.75000 155.75000 Yes Yes Oncology Non-PBR Yes No
+716239 Accord epirubicin 50 vial 25ml 50mg/25mL INJ - - 794.59000 794.59000 Yes Yes Oncology Non-PBR Yes No
+719547 Accord escitalopram 10mg TAB 2.00000 2.00000 2.00000 2.00000 Yes Yes CDL PBR Yes Yes
+719548 Accord escitalopram 20mg TAB 2.70000 2.70000 2.70000 2.70000 Yes Yes CDL PBR Yes Yes
+713874 Accord gemcitabine powder for reconstitution 10ml vial 200mg INJ - - 175.19000 175.19000 Yes Yes Oncology Non-PBR Yes No
+713873 Accord gemcitabine powder for reconstitution 50ml vial 1g INJ - - 875.97000 875.97000 Yes Yes Oncology Non-PBR Yes No
+712603 Accord irinotecan 2ml vial 40mg/2mL INF - - 336.23000 336.23000 Yes Yes Oncology Non-PBR Yes No
+712872 Accord irinotecan 5ml vial 100mg/5mL INF - - 840.60000 840.60000 Yes Yes Oncology Non-PBR Yes No
+715704 Accord letrozole 2,5mg TAB - - 15.39000 15.39000 Yes Yes Oncology Non-PBR Yes No
+714427 Accord metformin 500mg TAB 0.40000 0.40000 0.42000 0.42000 Yes Yes CDL PBR Yes Yes
+714426 Accord metformin 850mg TAB 0.73000 0.73000 0.74000 0.74000 Yes Yes CDL PBR Yes Yes
+718136 Accord temozolomide 250mg CAP - - 1236.57000 1236.57000 Yes Yes Oncology Non-PBR Yes No
+718135 Accord temozolomide 100mg CAP - - 500.08000 500.08000 Yes Yes Oncology Non-PBR Yes No
+718134 Accord temozolomide 20mg CAP - - 100.02000 100.02000 Yes Yes Oncology Non-PBR Yes No
+718133 Accord temozolomide 5mg CAP - - 24.77000 24.77000 Yes Yes Oncology Non-PBR Yes No
+713432 Accord vincristine 2ml vial 1mg/1mL INJ - - 155.14000 155.14000 Yes Yes Oncology Non-PBR Yes No
+711367 Accord-carboplatin vial 15ml 150mg/15mLINJ - - 267.55000 267.55000 Yes Yes Oncology Non-PBR Yes No
+711368 Accord-carboplatin vial 45ml 450mg/45mLINJ - - 802.64000 802.64000 Yes Yes Oncology Non-PBR Yes No
+249561 Accu check test strip glucose active ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR No No
+264098 Accu check test strip glucose instant ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR No No
+3005236 Acenten 20/12.5 TAB 2.65000 2.65000 2.65000 2.65000 Yes Yes CDL PBR Yes Yes
+873551 Acitop 0.05 CRE - - - - No No KeyCare acute Non-PBR Yes Yes
+709787 Aclasta bottle 100ml 5mg/100mL INF - - 2621.95000 2621.95000 Yes Yes Oncology Non-PBR Yes No
+3000426 Acriptega TAB - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes Yes
+3004032 Actamasin 25mg TAB - - 31.82000 31.82000 Yes Yes Oncology Non-PBR Yes No
+792101 Actamol red (boxed) 120mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+704093 Actamol red (un-boxed) 120mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+881112 Activelle TAB - - 10.28000 10.28000 Yes Yes Menopause Non-PBR Yes Yes
+703853 Acuflu p (alcohol and sugar free) SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+708722 Aculax 3,3g/5mL SYR - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 1 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+793124 Adalat xl 30mg SRT 3.57000 3.57000 3.60000 3.60000 Yes Yes CDL PBR No No
+720866 Adco abacavir 20mg/1mL SOL - - 1.33000 1.33000 Yes Yes HIV Non-PBR Yes Yes
+719128 Adco allopurinol 300mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+3000747 Adco amoxyclav 375mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+715997 Adco emtevir 200mg/300mg TAB - - 6.50000 6.50000 Yes Yes HIV Non-PBR Yes Yes
+715992 Adco lamivudine & zidovudine 150mg/300mg TAB - - 3.16000 3.16000 Yes Yes HIV Non-PBR Yes Yes
+856134 Adco metoclopramide amp 2ml 5mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+716381 Adco prednisolone 15mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+715993 Adco tenofovir 300mg TAB - - 4.28000 4.28000 Yes Yes HIV Non-PBR Yes Yes
+715347 Adco-abacavir 300mg TAB - - 9.67000 9.67000 Yes Yes HIV Non-PBR Yes No
+824674 Adco-acyclovir CRE - - - - No No KeyCare acute Non-PBR Yes Yes
+703914 Adco-bisocor 10mg TAB 2.71000 2.71000 2.71000 2.71000 Yes Yes CDL PBR Yes Yes
+703913 Adco-bisocor 5mg TAB 1.57000 1.57000 1.57000 1.57000 Yes Yes CDL PBR Yes Yes
+800252 Adco-cimetidine 400mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+811459 Adco-cimetidine 200mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+783064 Adco-contromet 5mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+715875 Adco-contromet 10mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+808954 Adco-cyclizine 50mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+819417 Adco-dapamax 2,5mg TAB 0.61000 0.61000 0.61000 0.61000 Yes Yes CDL PBR Yes Yes
+709545 Adco-efavirenz 600mg TAB - - 3.59000 3.59000 Yes Yes HIV Non-PBR Yes Yes
+712932 Adco-efavirenz 200mg CAP - - 2.41000 2.41000 Yes Yes HIV Non-PBR Yes Yes
+715585 Adco-efavirenz 50mg CAP - - 0.81000 0.81000 Yes Yes HIV Non-PBR Yes Yes
+780561 Adco-erythromycin 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+806218 Adco-flupain SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+707962 Adco-lamivudine 150mg TAB - - 0.77000 0.77000 Yes Yes HIV Non-PBR Yes Yes
+708708 Adco-lamivudine 10mg/1mL SOL - - 0.27000 0.27000 Yes Yes HIV Non-PBR Yes Yes
+740551 Adco-mayogel SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+875643 Adco-mefenamic acid 50mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+705376 Adco-meloxicam 15mg TAB 1.54000 1.54000 1.54000 1.54000 Yes Yes CDL-Oncology PBR Yes Yes
+742872 Adco-metronidazole 200mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+745707 Adco-napacod 500mg/10mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+745723 Adco-napamol bucket 500mg TAB 0.11000 0.11000 0.12000 0.12000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+707961 Adco-nevirapine 200mg TAB - - 2.60000 2.60000 Yes Yes HIV Non-PBR Yes Yes
+791768 Adco-prodium 2mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+757403 Adco-prolief 500mg TAB 0.11000 0.11000 0.12000 0.12000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+704668 Adco-roznal 30mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+809055 Adco-salterpyn TAB - - - - Yes Yes Oncology Non-PBR Yes No
+702769 Adco-talomil 20mg TAB 2.31000 2.31000 2.31000 2.31000 Yes Yes CDL PBR Yes Yes
+723947 Adco-valsartan 160mg TAB 2.71000 2.71000 2.71000 2.71000 Yes Yes CDL PBR No No
+723946 Adco-valsartan 80mg TAB 2.71000 2.71000 2.71000 2.71000 Yes Yes CDL PBR No No
+703063 Adco-wormex 100mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+862053 Adco-zetomax 10mg TAB 0.91000 0.91000 0.92000 0.92000 Yes Yes CDL PBR Yes Yes
+862061 Adco-zetomax 20mg TAB 0.91000 0.91000 0.92000 0.92000 Yes Yes CDL PBR Yes Yes
+862045 Adco-zetomax 5mg TAB 0.91000 0.91000 0.92000 0.92000 Yes Yes CDL PBR Yes Yes
+707960 Adco-zidovudine 300mg TAB - - 2.88000 2.88000 Yes Yes HIV Non-PBR Yes Yes
+708709 Adco-zidovudine 50mg/5mL SYR - - 0.33000 0.33000 Yes Yes HIV Non-PBR Yes Yes
+839183 Adco-zildem sr 180mg SRC - - 12.28000 12 Yes Yes CDL Non-PBR Yes Yes
+839191 Adco-zildem sr 240mg SRC - - 12.33000 12.33000 Yes Yes CDL Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 2 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+3006754 Aeromide 300 dose 200mcg INH 172.50000 172.50000 182.09000 182.09000 Yes Yes CDL PBR Yes Yes
+3005956 Aglatan 2.5ml OPD 207.74000 207.74000 207.81000 207.81000 Yes Yes CDL PBR Yes Yes
+3006589 Agobrim 5ml 0,2% OPD 163.78000 163.78000 163.78000 163.78000 Yes Yes CDL PBR Yes Yes
+875112 Agrylin 0,5mg CAP - - 54.12000 54.12000 Yes Yes Oncology Non-PBR Yes No
+3008261 Airathon 10mg TAB 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+3008259 Airathon 4mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+3008260 Airathon 5mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+701491 Akineton 2mg TAB - - 4.76000 4.76000 Yes Yes CDL Non-PBR Yes Yes
+701742 Alcophyllex SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+701750 Alcophyllin 26,67mg/5mLSYR - - - - No No KeyCare acute Non-PBR Yes Yes
+701793 Aldactone 25mg TAB 1.77000 1.77000 1.77000 1.77000 Yes Yes CDL PBR Yes Yes
+3005147 Alebon 10mg TAB 10.50000 10.50000 12.00000 12.00000 Yes Yes CDL PBR Yes Yes
+3005148 Alebon 15mg TAB 17.67000 17.67000 18.00000 18.00000 Yes Yes CDL PBR Yes Yes
+3005146 Alebon 5mg TAB 6.30000 6.30000 6.30000 6.30000 Yes Yes CDL PBR Yes Yes
+893391 A-lennon diclofenac 50mg TAB 0.34000 0.34000 0.71000 0.71000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+893390 A-lennon diclofenac 25mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+893402 A-lennon doxycycline hcl 100mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+825352 A-lennon hyoscine butylbromide 1ml (was Q-med hyoscine 1ml) 20mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+717049 Alepet ampoule 2ml 4mg/2mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+717050 Alepet ampoule 4ml 8mg/4mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+702145 Allergex 2mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+874922 Allergex 15ml OPD - - - - No No KeyCare acute Non-PBR Yes Yes
+800511 Allergex mepyramine (was mepyrimal) 0.02 CRE - - - - No No KeyCare acute Non-PBR Yes Yes
+704444 Allmox 500mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+704443 Allmox 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+714179 Allmox s 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+714180 Allmox sf 250mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+738778 Allopurinol 100 cipla 100mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+738786 Allopurinol 300 cipla 300mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+3005271 Alonza 10mg TAB 11.50000 11.50000 11.94000 11.94000 Yes Yes CDL PBR Yes Yes
+3005270 Alonza 5mg TAB 9.63000 9.63000 9.96000 9.96000 Yes Yes CDL PBR Yes Yes
+700205 Alpha benzyl benzoate application 0.25 LOT - - - - No No KeyCare acute Non-PBR Yes Yes
+709410 Alphagan purite 5ml 1,5mg/1mL OPD - - 178.63000 178.63000 Yes Yes CDL Non-PBR Yes Yes
+703640 Alumag d SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+715433 Aluvia 100mg/25mg TAB - - 1.81000 1.81000 Yes Yes HIV Non-PBR Yes Yes
+710028 Aluvia 200mg/50mg TAB - - 3.07000 3.07000 Yes Yes HIV Non-PBR Yes Yes
+3005127 Amderip 10mg TAB 0.95000 0.95000 1.24000 1.24000 Yes Yes CDL-Oncology PBR Yes Yes
+3005128 Amderip 25mg TAB 0.84000 0.84000 0.92000 0.92000 Yes Yes CDL-Oncology PBR Yes Yes
+701891 Amdocin 25mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+3002709 Amitriptyline 10 mg austell 10mg TAB 0.95000 0.95000 1.24000 1.24000 Yes Yes CDL-Oncology PBR Yes Yes
+784230 Amitriptyline hcl kiara (was sandoz amitriptyline) 25mg TAB 0.84000 0.84000 0.92000 0.92000 Yes Yes CDL-Oncology PBR Yes Yes
+3006380 Amlessa 4mg/10mg TAB 4.20000 4.20000 4.21000 4.21000 Yes Yes CDL PBR Yes Yes
+3006379 Amlessa 4mg/5mg TAB 3.30000 3.30000 3.31000 3.31000 Yes Yes CDL PBR Yes Yes
+3006382 Amlessa 8mg/10mg TAB 4.83333 4.83333 4.84000 4.84000 Yes Yes CDL PBR Yes Yes
+3006381 Amlessa 8mg/5mg TAB 4.21000 4.21000 4.21000 4.21000 Yes Yes CDL PBR Yes Yes
+703917 Amloc 10mg TAB 2.49000 2.49000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+703916 Amloc 5mg TAB 1.73000 1.73000 1.73000 1.73000 Yes Yes CDL PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 3 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+708051 Amlodac 10mg TAB 2.49000 2.49000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+708050 Amlodac 5mg TAB 1.73000 1.73000 1.73000 1.73000 Yes Yes CDL PBR Yes Yes
+723784 Amlodipine unicorn 10mg TAB 2.49000 2.49000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+723783 Amlodipine unicorn 5mg TAB 1.73000 1.73000 1.73000 1.73000 Yes Yes CDL PBR Yes Yes
+707186 Amoclan S 156,25mg/5mSLUS - - - - No No KeyCare acute Non-PBR Yes Yes
+707187 Amoclan SF 312,5mg/5mLSUS - - - - No No KeyCare acute Non-PBR Yes Yes
+704401 Amoxicap 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+701383 Amoxicillin unimed 250mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+701380 Amoxicillin unimed 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+713972 Amtas 10mg TAB 2.49000 2.49000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+713971 Amtas 5mg TAB 1.73000 1.73000 1.73000 1.73000 Yes Yes CDL PBR Yes Yes
+714182 Amyn s 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+714183 Amyn sf 250mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+3004533 Anabrex 100mg CAP 1.27000 1.27000 1.35000 1.35000 Yes Yes CDL enhanced PBR No No
+3004534 Anabrex 200mg CAP 2.54000 2.54000 2.69000 2.69000 Yes Yes CDL enhanced PBR No No
+715866 Anaerobyl 400mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+703389 Anaerobyl 200mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+716495 Annin 100mg TAB 2.22000 2.22000 2.93000 2.93000 Yes Yes CDL PBR Yes Yes
+716494 Annin 50mg TAB 2.22000 2.22000 2.50000 2.50000 Yes Yes CDL PBR Yes Yes
+3007076 Annin co 100/25mg TAB 2.98000 2.98000 2.98000 2.98000 Yes Yes CDL PBR Yes Yes
+3007075 Annin co 50/12.5mg TAB 2.63000 2.63000 2.64000 2.64000 Yes Yes CDL PBR Yes Yes
+805467 Antalgic 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+826375 Anusol OIN - - - - No No KeyCare acute Non-PBR Yes Yes
+797553 Apen 500mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+829250 Apen s 250mg SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+707670 Apex-metformin 500mg TAB 0.40000 0.40000 0.42000 0.42000 Yes Yes CDL PBR Yes Yes
+706039 Apidra cartridges 3ml 100iu/1mL INJ - - 82.71000 83 Yes Yes CDL Non-PBR Yes Yes
+3005136 Apimex 500 powder concentrate for solution vial 500mg INF - - 8383.50000 8383.50000 Yes Yes Oncology Non-PBR Yes No
+3007599 Apixaban 2.5 accord 2,5mg TAB 10.66000 - 10.66000 0.00000 Yes No CDL enhanced PBR No No
+3007954 Apixaban 2.5 drl 2,5mg TAB 10.66000 - 10.66000 0.00000 Yes No CDL enhanced PBR No No
+3007602 Apixaban 5 accord 5mg TAB 10.66000 - 10.66000 0.00000 Yes No CDL enhanced PBR No No
+3007955 Apixaban 5 drl 5mg TAB 10.66000 - 10.66000 0.00000 Yes No CDL enhanced PBR No No
+885588 App benzyl benz - Allied 0.25 SCL - - - - No No KeyCare acute Non-PBR Yes Yes
+707716 App benzyl benz bpc LOT - - - - No No KeyCare acute Non-PBR Yes Yes
+714311 Aprate 10mg TAB 2.49000 2.49000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+714310 Aprate 5mg TAB 1.73000 1.73000 1.73000 1.73000 Yes Yes CDL PBR Yes Yes
+3005658 Aprepitant combipack cipla (1 x 125mg cap & 2 x 80mg cap) KIT - - - - Yes Yes Oncology Non-PBR Yes No
+3002611 Aprepitant combipack eurolab (1x125mg cap & 2x80mg cap) KIT - - - - Yes Yes Oncology Non-PBR Yes No
+3002605 Aprepitant eurolab 80mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3002610 Aprepitant eurolab 125mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3002935 Aprizon 10mg TAB 10.50000 10.50000 12.00000 12.00000 Yes Yes CDL PBR Yes Yes
+3002936 Aprizon 15mg TAB 17.67000 17.67000 18.00000 18.00000 Yes Yes CDL PBR Yes Yes
+3002934 Aprizon 5mg TAB 6.30000 6.30000 6.30000 6.30000 Yes Yes CDL PBR Yes Yes
+714019 Aranesp prefilled syringe 0.3ml 30mcg/0,3mLINJ - - 626.55000 626.55000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+714020 Aranesp prefilled syringe 0.3ml 60mcg/0,3mLINJ - - 1253.13000 1253.13000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+714017 Aranesp prefilled syringe 0.4ml 10mcg/0,4mLINJ - - 208.85000 208.85000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+715971 Aranesp prefilled syringe 0.4ml 40mcg/0,4mLINJ - - 835.40000 835.40000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+714018 Aranesp prefilled syringe 0.5ml 20mcg/0,5mLINJ - - 417.71000 417.71000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 4 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+715973 Aranesp prefilled syringe 0.5ml 50mcg/0,5mLINJ - - 1044.28000 1044.28000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+3005664 Arenta 80mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3005665 Arenta 125mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3005666 Arenta combi pack (1 x 125mg cap & 2 x 80mg cap) KIT - - - - Yes Yes Oncology Non-PBR Yes No
+723962 Arizofy 10mg TAB 10.50000 10.50000 12.00000 12.00000 Yes Yes CDL PBR Yes Yes
+723963 Arizofy 15mg TAB 17.67000 17.67000 18.00000 18.00000 Yes Yes CDL PBR Yes Yes
+723961 Arizofy 5mg TAB 6.30000 6.30000 6.30000 6.30000 Yes Yes CDL PBR Yes Yes
+3005298 Arlozyb 10/160 TAB 4.65000 4.65000 5.26000 5.26000 Yes Yes CDL PBR No No
+3005297 Arlozyb 5/160 TAB 4.65000 4.65000 4.88000 4.88000 Yes Yes CDL PBR No No
+3007386 Arlozyb co 10/160/12.5mg TAB 5.96000 5.96000 5.96000 5.96000 Yes Yes CDL PBR No No
+3007387 Arlozyb co 10/160/25mg TAB 5.96000 5.96000 5.96000 5.96000 Yes Yes CDL PBR No No
+3007384 Arlozyb co 5/160/12.5mg TAB 5.33000 5.33000 5.33000 5 Yes Yes CDL PBR No No
+3007385 Arlozyb co 5/160/25mg TAB 5.33000 5.33000 5.33000 5 Yes Yes CDL PBR No No
+3003598 Aroquet 100mg TAB 4.54000 4.54000 4.68000 4.68000 Yes Yes CDL PBR Yes Yes
+3003600 Aroquet 200mg TAB 7.05000 7.05000 7.28000 7.28000 Yes Yes CDL PBR Yes Yes
+3003597 Aroquet 25mg TAB 1.65000 1.65000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+3003601 Aroquet 300mg TAB 8.63000 8.63000 8.91000 8.91000 Yes Yes CDL PBR Yes Yes
+704741 Arthrexin 100mg SUP - - - - Yes Yes Oncology Non-PBR Yes No
+783668 Asacol 400mg TAB - - 6.40000 6.40000 Yes Yes CDL Non-PBR Yes Yes
+824135 Asacol 500mg SUP - - 16.72000 16.72000 Yes Yes CDL Non-PBR No No
+709076 Asacol 800mg TAB - - 12.80000 12.80000 Yes Yes CDL Non-PBR Yes Yes
+708121 Aspavor 10mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+708122 Aspavor 20mg TAB 1.05000 1.05000 1.05000 1.05000 Yes Yes CDL PBR Yes Yes
+710912 Aspavor 40mg TAB 1.32000 1.32000 1.32000 1.32000 Yes Yes CDL PBR Yes Yes
+714552 Aspelone 15mg/5mL LIQ - - - - No No KeyCare acute Non-PBR Yes Yes
+3005881 Astelair 10mg TAB 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+3005111 Astelair 4mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+3005112 Astelair 5mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+823538 Astrapain forte TAB - - - - Yes Yes Oncology Non-PBR Yes No
+720971 Atana 2.5ml 50mcg/1mL OPD 198.72000 198.72000 198.72000 198.72000 Yes Yes CDL PBR Yes Yes
+3005042 Atenolol 100 arya 100mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+3005041 Atenolol 50 arya 50mg TAB 0.60000 0.60000 0.60000 0.60000 Yes Yes CDL PBR Yes Yes
+706543 Atrovent HFA 200dose 20mcg INH - - 214.71000 214.71000 Yes Yes CDL Non-PBR Yes Yes
+3005306 Aubamide 14mg TAB 143.13000 143.13000 143.13000 143.13000 Yes Yes CDL enhanced PBR Yes No
+713382 Auro-amoxiclav 625mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+713381 Auro-amoxiclav 375mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+713358 Auro-amoxiclav 156,25mg/5mSLUS - - - - No No KeyCare acute Non-PBR Yes Yes
+721624 Austell allopurinol 300mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+704351 Austell ciprofloxacin 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+722938 Austell co-amoxiclav bd sf 457mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+717069 Austell losartan 100mg TAB 2.22000 2.22000 2.93000 2.93000 Yes Yes CDL PBR Yes Yes
+717068 Austell losartan 50mg TAB 2.22000 2.22000 2.50000 2.50000 Yes Yes CDL PBR Yes Yes
+717070 Austell losartan co 50mg/12.5mg TAB 2.63000 2.63000 2.64000 2.64000 Yes Yes CDL PBR Yes Yes
+708095 Austell-amlodipine 10mg TAB 2.49000 2.49000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+708094 Austell-amlodipine 5mg TAB 1.73000 1.73000 1.73000 1.73000 Yes Yes CDL PBR Yes Yes
+705637 Austell-amoxicillin 500mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+707499 Austell-amoxicillin 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+707408 Austell-co-amoxiclav 625mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 5 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+707407 Austell-co-amoxiclav 375mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+705464 Austell-simvastatin 10mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+705465 Austell-simvastatin 20mg TAB 1.00000 1.00000 1.08000 1.08000 Yes Yes CDL PBR Yes Yes
+705467 Austell-simvastatin 40mg TAB 1.21000 1.21000 1.21000 1.21000 Yes Yes CDL PBR Yes Yes
+3005262 Aviolix 75mg TAB 3.26000 3.26000 3.26000 3.26000 Yes Yes CDL enhanced PBR Yes No
+3002433 Azacitidine drl powder for injection vial 100mg INJ - - 2129.60000 2129.60000 Yes Yes Oncology Non-PBR Yes No
+701252 Azamun 50mg TAB 6.76000 6.76000 7.29000 7.29000 Yes Yes CDL PBR Yes Yes
+717260 Azarga 5ml OPD - - 220.60000 220.60000 Yes Yes CDL Non-PBR Yes Yes
+712609 Azathioprine 50 pch 50mg TAB 6.76000 6.76000 7.29000 7.29000 Yes Yes CDL PBR Yes Yes
+711769 Azilect 1mg TAB 13.81000 13.81000 14.91000 14.91000 Yes Yes CDL PBR Yes Yes
+3000849 Azimax forte 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3002137 Azithromycin 500 biotech 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+715934 Azrotrin (was zimol) 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+717217 Barrs povidone-iodine 0.1 OIN - - - - No No KeyCare acute Non-PBR Yes Yes
+3006391 Baximo powder for concentrate for sol for infusion vial 100mg INF - - 2847.45000 2847.45000 Yes Yes Oncology Non-PBR Yes No
+3006390 Baximo powder for concentrate for sol for infusion vial 25mg INF - - 831.00000 831.00000 Yes Yes Oncology Non-PBR Yes No
+704651 B-block 100mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+704653 B-block 50mg TAB 0.60000 0.60000 0.60000 0.60000 Yes Yes CDL PBR Yes Yes
+828289 B-cal CHU - - 1.33000 1.33000 Yes Yes CDL Non-PBR Yes Yes
+819638 Beclate 200dose 100mcg INH 137.39000 137.39000 137.39000 137.39000 Yes Yes CDL PBR Yes Yes
+820083 Beclate 200dose 200mcg INH 137.39000 137.39000 137.39000 137.39000 Yes Yes CDL PBR Yes Yes
+819611 Beclate 200dose 50mcg INH 92.48000 92.48000 92.48000 92.48000 Yes Yes CDL PBR Yes Yes
+820709 Beclate aquanase 150dose 50mcg AQS - - 46.00000 46.00000 Yes Yes CDL enhanced-KeyCare acute Non-PBR Yes Yes
+3004196 Beclomethasone glenmark 200 dose 100mcg INH 137.39000 137.39000 137.39000 137.39000 Yes Yes CDL PBR Yes Yes
+3004197 Beclomethasone glenmark 200 dose 200mcg INH 137.39000 137.39000 137.39000 137.39000 Yes Yes CDL PBR Yes Yes
+3004189 Beclomethasone glenmark 200 dose 50mcg INH 92.48000 92.48000 92.48000 92.48000 Yes Yes CDL PBR Yes Yes
+3005618 Belanex 25mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+788708 Bemetrazole 400mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+821705 Bemetrazole 200mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3007040 Bendahet powder for concentrate for solution for inf vial 100mg INF - - 2847.45000 2847.45000 Yes Yes Oncology Non-PBR Yes No
+3007039 Bendahet powder for concentrate for solution for inf vial 25mg INF - - 831.00000 831.00000 Yes Yes Oncology Non-PBR Yes No
+716778 Beniprosin sr 0,4mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+3000245 Benzyl benzoate bp 25g/100mL LOT - - - - No No KeyCare acute Non-PBR Yes Yes
+3000842 Bertred lyophilised powder for injection vial 3,5mg INJ - - 2941.25000 2941.25000 Yes Yes Oncology Non-PBR Yes No
+810967 Be-tabs folic acid 5mg TAB 0.79000 0.79000 0.82000 0.82000 Yes Yes CDL PBR Yes Yes
+788783 Be-tabs prednisone 5mg TAB 0.19000 0.19000 0.27000 0.27000 Yes Yes CDL-KeyCare acute PBR Yes Yes
+787833 Betacin 25mg CAP 0.10000 0.10000 0.20000 0.20000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+853003 Betafed SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+700474 Betaferon pre-filled syringe 1ml 9600000u/1mILNJ - - 506.67000 506.67000 Yes Yes CDL Non-PBR Yes Yes
+788155 Betamox 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+829358 Betamox s 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+708062 Betapam 5mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+708151 Betaphlem 250mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+787426 Betaprofen 200mg TAB 0.17000 0.17000 0.19000 0.19000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+701975 Betaprofen fc 400mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+713942 Beta-vira 0.05 CRE - - - - No No KeyCare acute Non-PBR Yes Yes
+3005459 Bevamyl concentration for solution for infusion 20ml vial 400mg/16mLINF - - 14833.78000 14833.78000 Yes Yes Oncology Non-PBR Yes No
+3005458 Bevamyl concentration for solution for infusion 6ml vial 100mg/4mL INF - - 3708.44000 3708.44000 Yes Yes Oncology Non-PBR Yes No
+Discovery Health formularies and PBR benchmark pricing 6 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+779644 Bezalip retard 400mg SRT 8.11000 8.11000 8.11000 8.11000 Yes Yes CDL PBR Yes Yes
+712506 Bicalox 50mg TAB - - 17.76000 17.76000 Yes Yes Oncology Non-PBR Yes No
+3005004 Bicalutamide 150 accord 150mg TAB - - 90.79000 90.79000 Yes Yes Oncology Non-PBR Yes No
+3004942 Bicalutamide 50 mg hetero TAB - - 17.76000 17.76000 Yes Yes Oncology Non-PBR Yes No
+709172 Bigsens 1000mg TAB 0.81000 0.81000 0.83000 0.83000 Yes Yes CDL PBR Yes Yes
+708281 Bigsens 500mg TAB 0.40000 0.40000 0.42000 0.42000 Yes Yes CDL PBR Yes Yes
+708282 Bigsens 850mg TAB 0.73000 0.73000 0.74000 0.74000 Yes Yes CDL PBR Yes Yes
+3006404 Biloblok 10mg TAB 2.71000 2.71000 2.71000 2.71000 Yes Yes CDL PBR Yes Yes
+3006403 Biloblok 5mg TAB 1.57000 1.57000 1.57000 1.57000 Yes Yes CDL PBR Yes Yes
+704373 Bilocor 10mg TAB 2.71000 2.71000 2.71000 2.71000 Yes Yes CDL PBR Yes Yes
+704372 Bilocor 5mg TAB 1.57000 1.57000 1.57000 1.57000 Yes Yes CDL PBR Yes Yes
+3007452 Bilura 150mg TAB - - 509.80000 509.80000 Yes Yes Oncology Non-PBR Yes No
+3007451 Bilura 100mg TAB - - 429.27000 429.27000 Yes Yes Oncology Non-PBR Yes No
+716124 Bindoclav 375mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+717891 Bio metoclopramide 10mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+865532 Bio-amoksiklav 375mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+865540 Bio-amoksiklav s 156,25mg/5mSLUS - - - - No No KeyCare acute Non-PBR Yes Yes
+887003 Bio-cimetidine 400mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+886978 Bio-cimetidine 200mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+807834 Biocort (stx) CRE - - - - No No KeyCare acute Non-PBR Yes Yes
+703386 Biolyse paclitaxel vial 5ml 30mg/5mL INF - - 125.84000 125.84000 Yes Yes Oncology Non-PBR Yes No
+707242 Bio-metronidazole 400mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+713793 Biotech ciprofloxacin 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+713792 Biotech ciprofloxacin 250mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+721741 Biotech gabapentin 300mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+721742 Biotech gabapentin 400mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+721740 Biotech gabapentin 100mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+719155 Bislo 10mg TAB 2.71000 2.71000 2.71000 2.71000 Yes Yes CDL PBR Yes Yes
+719154 Bislo 5mg TAB 1.57000 1.57000 1.57000 1.57000 Yes Yes CDL PBR Yes Yes
+716166 Bisoprolol unicorn 10mg TAB 2.71000 2.71000 2.71000 2.71000 Yes Yes CDL PBR Yes Yes
+716167 Bisoprolol unicorn 5mg TAB 1.57000 1.57000 1.57000 1.57000 Yes Yes CDL PBR Yes Yes
+3002656 Blitzima concentrate for solution for infusion vial 10ml 100mg/10mLINF - - 2337.82000 2337.82000 Yes Yes Oncology Non-PBR Yes No
+3002657 Blitzima concentrate for solution for infusion vial 50ml 500mg/50mLINF - - 11688.60000 11688.60000 Yes Yes Oncology Non-PBR Yes No
+3004803 Bortiv powder for solution for injection vial 3,5mg INJ - - 2941.25000 2941.25000 Yes Yes Oncology Non-PBR Yes No
+708290 Bren 400mg TAB 0.33000 0.33000 0.34000 0.34000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+3005245 Brimoct co 2mg/5mg per ml 5ml OPD 191.56000 191.56000 227.72000 227.72000 Yes Yes CDL PBR Yes Yes
+710520 Bronchette 250mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+897462 Budeflam hfa 300dose 100mcg INH - - 182.09000 182.09000 Yes Yes CDL Non-PBR Yes Yes
+897469 Budeflam hfa 300dose 200mcg INH 172.50000 172.50000 182.09000 182.09000 Yes Yes CDL PBR Yes Yes
+3004231 Busulfan fresenius conc for sol for inf vial 10ml 6mg/1mL INF - - 431.25000 431.25000 Yes Yes Oncology Non-PBR Yes No
+3003213 Cabazitaxel adco concentrate for solution vial 60mg/1,5mL INF - - 21171.80000 21171.80000 Yes Yes Oncology Non-PBR Yes No
+3000147 Cabitas vial 3ml RTU 20mg/1mL INF - - 21171.80000 21171.80000 Yes Yes Oncology Non-PBR Yes No
+3006997 Cabxel concentrate for solution 15ml vial 60mg/1,5mL INF - - 21171.80000 21171.80000 Yes Yes Oncology Non-PBR Yes No
+867411 Caelyx vial 10ml 20mg/10mL INJ - - 5405.00000 5405.00000 Yes Yes Oncology Non-PBR Yes No
+715602 Calamine lotion - darol medi-rite LOT - - - - No No KeyCare acute Non-PBR Yes Yes
+705561 Calamine lotion bp LOT - - - - No No KeyCare acute Non-PBR Yes Yes
+3005259 Calmadep dr 30mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+3005260 Calmadep dr 60mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+Discovery Health formularies and PBR benchmark pricing 7 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+715721 Caloxa 50mg TAB - - 17.76000 17.76000 Yes Yes Oncology Non-PBR Yes No
+3003568 Calsar 10mg/160mg TAB 4.65000 4.65000 5.26000 5.26000 Yes Yes CDL PBR No No
+3003567 Calsar 5mg/160mg TAB 4.65000 4.65000 4.88000 4.88000 Yes Yes CDL PBR No No
+3003566 Calsar 5mg/80mg TAB - - 4.50000 4.50000 Yes Yes CDL Non-PBR No No
+712078 Camcolit 250mg TAB - - 4.86000 4.86000 Yes Yes CDL Non-PBR Yes Yes
+712086 Camcolit 400mg TAB - - 5.21000 5.21000 Yes Yes CDL Non-PBR Yes Yes
+701100 Candacide 100000u/1mLSUS - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+824011 Canex topical 0.01 CRE - - - - No No KeyCare acute Non-PBR Yes Yes
+831913 Canex vag 0.01 VCR - - - - No No KeyCare acute Non-PBR Yes Yes
+835056 Canstat oral SUS - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+3001286 Capeloda 500mg TAB - - 25.50000 25.50000 Yes Yes Oncology Non-PBR Yes No
+3001285 Capeloda 150mg TAB - - 7.25000 7.25000 Yes Yes Oncology Non-PBR Yes No
+722784 Capexa 500mg TAB - - 25.50000 25.50000 Yes Yes Oncology Non-PBR Yes No
+722783 Capexa 150mg TAB - - 7.25000 7.25000 Yes Yes Oncology Non-PBR Yes No
+3006805 Captero 500mg TAB - - 25.50000 25.50000 Yes Yes Oncology Non-PBR Yes No
+3006804 Captero 150mg TAB - - 7.25000 7.25000 Yes Yes Oncology Non-PBR Yes No
+3004239 Carboplatin fresenius conc for sol for inf vial 15ml 150mg/15mLINF - - 267.55000 267.55000 Yes Yes Oncology Non-PBR Yes No
+3004240 Carboplatin fresenius conc for sol for inf vial 45ml 450mg/45mLINF - - 802.64000 802.64000 Yes Yes Oncology Non-PBR Yes No
+3004242 Carboplatin fresenius conc for sol for inf vial 60ml 600mg/60mLINF - - 1070.19000 1070.19000 Yes Yes Oncology Non-PBR Yes No
+3005946 Carbuce 1000mg TAB 0.81000 0.81000 0.83000 0.83000 Yes Yes CDL PBR Yes Yes
+3002168 Carbuce 500mg TAB 0.40000 0.40000 0.42000 0.42000 Yes Yes CDL PBR Yes Yes
+3002167 Carbuce 850mg TAB 0.73000 0.73000 0.74000 0.74000 Yes Yes CDL PBR Yes Yes
+701425 Cardugen (was merck-doxazosin) 1mg TAB - - 2.28000 2.28000 Yes Yes CDL Non-PBR Yes Yes
+701426 Cardugen (was merck-doxazosin) 4mg TAB 2.38000 2.38000 2.38000 2.38000 Yes Yes CDL PBR Yes Yes
+700168 Carloc 12,5mg TAB 2.46000 2.46000 2.48000 2.48000 Yes Yes CDL PBR Yes Yes
+897117 Carloc 25mg TAB 3.17000 3.17000 3.23000 3.23000 Yes Yes CDL PBR Yes Yes
+705459 Carloc 6,25mg TAB 2.26000 2.26000 2.37000 2.37000 Yes Yes CDL PBR Yes Yes
+716743 Carvedilol unicorn 12,5mg TAB 2.46000 2.46000 2.48000 2.48000 Yes Yes CDL PBR Yes Yes
+716744 Carvedilol unicorn 25mg TAB 3.17000 3.17000 3.23000 3.23000 Yes Yes CDL PBR Yes Yes
+716742 Carvedilol unicorn 6,25mg TAB 2.26000 2.26000 2.37000 2.37000 Yes Yes CDL PBR Yes Yes
+3003053 Caxeta 500mg TAB - - 25.50000 25.50000 Yes Yes Oncology Non-PBR Yes No
+3003052 Caxeta 150mg TAB - - 7.25000 7.25000 Yes Yes Oncology Non-PBR Yes No
+3003341 Cefalexin alkem 500mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+862452 Celebrex 200mg CAP 2.54000 2.54000 2.69000 2.69000 Yes Yes CDL enhanced PBR No No
+3006395 Celexii 100mg CAP 1.27000 1.27000 1.35000 1.35000 Yes Yes CDL enhanced PBR No No
+3006396 Celexii 200mg CAP 2.54000 2.54000 2.69000 2.69000 Yes Yes CDL enhanced PBR No No
+3004887 Cerbigem 1 powder for solution for infusion vial 1g INF - - 875.97000 875.97000 Yes Yes Oncology Non-PBR Yes No
+3004890 Cerbigem 200 powder for solution for infusion vial 200mg INF - - 175.19000 175.19000 Yes Yes Oncology Non-PBR Yes No
+703864 Cetirizine-hexal 10mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+713759 Chlorcol 3.5g 0.01 EYO - - - - No No KeyCare acute Non-PBR Yes Yes
+713872 Chlornicol 3.5g 0.01 EYO - - - - No No KeyCare acute Non-PBR Yes Yes
+817201 Chlorphen 3.5g 0.01 EYO - - - - No No KeyCare acute Non-PBR Yes Yes
+715708 Choleste 10mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+714705 Choleste 20mg TAB 1.00000 1.00000 1.08000 1.08000 Yes Yes CDL PBR Yes Yes
+714706 Choleste 40mg TAB 1.21000 1.21000 1.21000 1.21000 Yes Yes CDL PBR Yes Yes
+892147 Cifran 500 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+838276 Cimetidine 2ml 100mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+854255 Cimlok 400mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+Discovery Health formularies and PBR benchmark pricing 8 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+854247 Cimlok 200mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+864153 Cipalat retard 20mg TAB - - 1.28000 1.28000 Yes Yes CDL Non-PBR Yes Yes
+723283 Cipalat xr 30mg SRT 3.57000 3.57000 3.60000 3.60000 Yes Yes CDL PBR No No
+723284 Cipalat xr 60mg SRT 5.13000 5.13000 5.16000 5.16000 Yes Yes CDL PBR No No
+707300 Cipla-duovir TAB - - 3.16000 3.16000 Yes Yes HIV Non-PBR Yes Yes
+709331 Cipla-efavirenz 600mg TAB - - 3.59000 3.59000 Yes Yes HIV Non-PBR Yes Yes
+710313 Cipla-indapamide 2,5mg TAB 0.61000 0.61000 0.61000 0.61000 Yes Yes CDL PBR Yes Yes
+716802 Cipla-ondansetron 8mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+716801 Cipla-ondansetron 4mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+707974 Cipla-pioglitazone 15mg TAB 3.34000 3.34000 3.38000 3.38000 Yes Yes CDL PBR Yes Yes
+707981 Cipla-pioglitazone 30mg TAB 5.60000 5.60000 5.66000 5.66000 Yes Yes CDL PBR Yes Yes
+708307 Cipla-simvastatin 10mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+708308 Cipla-simvastatin 20mg TAB 1.00000 1.00000 1.08000 1.08000 Yes Yes CDL PBR Yes Yes
+710511 Cipla-simvastatin 40mg TAB 1.21000 1.21000 1.21000 1.21000 Yes Yes CDL PBR Yes Yes
+717095 Ciplasyl plus 4mg/1.25mg TAB 3.05000 3.05000 3.05000 3.05000 Yes Yes CDL PBR No No
+708152 Ciplavasc 10mg TAB 2.49000 2.49000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+708150 Ciplavasc 5mg TAB 1.73000 1.73000 1.73000 1.73000 Yes Yes CDL PBR Yes Yes
+709905 Cipla-warfarin 5mg TAB 1.37000 1.37000 1.80000 1.80000 Yes Yes CDL-Oncology PBR Yes Yes
+700284 Ciprofloxacin 250 pharma-q 250mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+700287 Ciprofloxacin 500 pharma-q 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+703045 Ciprogen 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+703043 Ciprogen 250mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+720381 Cisacor 10ml vial 1mg/1mL INF - - 35.12000 35.12000 Yes Yes Oncology Non-PBR Yes No
+720382 Cisacor 50ml vial 1mg/1mL INF - - 175.66000 175.66000 Yes Yes Oncology Non-PBR Yes No
+3007785 Cisplatin 50mg/50ml oethmaan solution for infusion 50ml vial 1mg/1mL INF - - 175.66000 175.66000 Yes Yes Oncology Non-PBR Yes No
+3000328 Citalopram 20 oethmaan 20mg TAB 2.31000 2.31000 2.31000 2.31000 Yes Yes CDL PBR Yes Yes
+842524 Clamentin s 156,25mg/5mSLUS - - - - No No KeyCare acute Non-PBR Yes Yes
+716628 Claren granules 250mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+716627 Claren granules 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+706758 Clarihexal 125 P 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+706759 Clarihexal 250 P 250mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+712969 Clicks calamine LOT - - - - No No KeyCare acute Non-PBR Yes Yes
+849960 Clindahexal 150mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+3003283 Clindamycin actor 150mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+878421 Clomaderm CRE - - - - No No KeyCare acute Non-PBR Yes Yes
+721545 Clonam 0,5mg TAB 1.79000 1.79000 1.79000 1.79000 Yes Yes CDL-Oncology PBR Yes Yes
+721546 Clonam 2mg TAB 4.11000 4.11000 4.11000 4.11000 Yes Yes CDL-Oncology PBR Yes Yes
+789798 Clopixol 10mg TAB - - 4.19000 4.19000 Yes Yes CDL Non-PBR Yes Yes
+796751 Clopixol 2mg TAB - - 1.68000 1.68000 Yes Yes CDL Non-PBR Yes Yes
+714852 Clopixol depot 200mg INJ - - 126.12000 126.12000 Yes Yes CDL Non-PBR Yes Yes
+3003631 Clovexa 75mg TAB 3.26000 3.26000 3.26000 3.26000 Yes Yes CDL enhanced PBR Yes No
+809640 Cloxin 500mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+809632 Cloxin 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+705845 Clozapine 100 oethmaan 100mg TAB 11.05000 11.05000 11.05000 11.05000 Yes Yes CDL PBR Yes Yes
+705844 Clozapine 25 oethmaan 25mg TAB 3.30000 3.30000 3.30000 3.30000 Yes Yes CDL PBR Yes Yes
+722712 Co-atana 2.5ml OPD 207.74000 207.74000 207.81000 207.81000 Yes Yes CDL PBR Yes Yes
+787043 Codorol TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+779814 Co-flem 250mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 9 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+719662 Cogesic TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3006085 Colchicine 0.5mg activo 0,5mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3006418 Colcin 0,5mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+709863 Combigan 2mg/5mg 5ml OPD 191.56000 191.56000 227.72000 227.72000 Yes Yes CDL PBR Yes Yes
+3000159 Co-normoten 100mg/25mg TAB 2.98000 2.98000 2.98000 2.98000 Yes Yes CDL PBR Yes Yes
+3000158 Co-normoten 50mg/12.5mg TAB 2.63000 2.63000 2.64000 2.64000 Yes Yes CDL PBR Yes Yes
+168518 Contour plus blood glucose test strips ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR No No
+491915 Contour ts blood glucose test strips STR - - 2.97000 2.87000 Yes Yes CDL Non-PBR No No
+781541 Convulex 250mg/5mL SYR - - 1.62000 1.62000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+715980 Convulex 150mg CAP - - 3.41000 3.41000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+715999 Convulex 300mg CAP - - 6.82000 6.82000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+3005255 Copaxone pre-filled pen 1ml 40mg/1mL INJ - - 508.33000 508.33000 Yes Yes CDL enhanced Non-PBR Yes No
+708286 Copaxone pre-filled syringe 1ml 20mg/1mL INJ - - 217.90000 217.90000 Yes Yes CDL enhanced Non-PBR Yes No
+3006399 Coprin 100mg ECT 1.02000 1.02000 1.05000 1.05000 Yes Yes CDL PBR Yes Yes
+711596 Cosmofer ampoule 2ml 50mg/1mL INJ - - 180.12000 180.12000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+3005324 Cosyrel 10mg/10mg TAB - - 8.08435 8.08435 Yes Yes CDL Non-PBR No No
+3005323 Cosyrel 10mg/5mg TAB - - 5.47841 5.47841 Yes Yes CDL Non-PBR No No
+3005322 Cosyrel 5mg/10mg TAB - - 6.46551 6.46551 Yes Yes CDL Non-PBR No No
+3005321 Cosyrel 5mg/5mg TAB - - 3.86943 3.86943 Yes Yes CDL Non-PBR No No
+3003962 Co-telza 40mg/12.5mg TAB 2.68000 2.68000 3.05000 3.05000 Yes Yes CDL PBR No No
+3003963 Co-telza 80mg/12.5mg TAB 2.68000 2.68000 3.05000 3.05000 Yes Yes CDL PBR No No
+809322 Covamet 50mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+716693 Covocort 10mg TAB - - 2.13000 2.13000 Yes Yes CDL Non-PBR Yes Yes
+899066 Coxflam 7,5mg TAB 0.88000 0.88000 1.24000 1.24000 Yes Yes CDL-Oncology PBR Yes Yes
+716731 Cozole TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+705832 Curam bd 457mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+716944 Cyclidox 100mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+3004487 Cyretib 100mg CAP 1.27000 1.27000 1.35000 1.35000 Yes Yes CDL enhanced PBR No No
+3004541 Cyretib 200mg CAP 2.54000 2.54000 2.69000 2.69000 Yes Yes CDL enhanced PBR No No
+717169 Cysticide 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3004005 Cytarabine fresenius concentrate for sol for inf vial 1ml 100mg/1mL INJ - - 103.66000 103.66000 Yes Yes Oncology Non-PBR Yes No
+3004006 Cytarabine fresenius concentrate for sol for inf vial 5 ml 500mg/5mL INJ - - 518.30000 518.30000 Yes Yes Oncology Non-PBR Yes No
+715322 Cytigem powder for reconstitution 10ml vial 200mg INJ - - 175.19000 175.19000 Yes Yes Oncology Non-PBR Yes No
+715323 Cytigem powder for reconstitution 50ml vial 1g INJ - - 875.97000 875.97000 Yes Yes Oncology Non-PBR Yes No
+3007953 Dabigatran 150 drl 150mg CAP 10.66000 - 10.66000 0.00000 Yes No CDL enhanced PBR No No
+3007951 Dabigatran 75 drl 75mg CAP 10.66000 - 10.66000 0.00000 Yes No CDL enhanced PBR No No
+3004874 Dafiro 10/160mg TAB 4.65000 4.65000 5.26000 5.26000 Yes Yes CDL PBR No No
+3003390 Dafiro 5/160mg TAB 4.65000 4.65000 4.88000 4.88000 Yes Yes CDL PBR No No
+3006122 Daglif 10mg TAB 7.40000 7.40000 7.40000 7.40000 Yes Yes CDL enhanced PBR No No
+3001418 Dalimune 50mg TAB - - 6.90000 6.90000 Yes Yes HIV Non-PBR Yes No
+3008056 Dapiflo 10mg TAB 7.40000 7.40000 7.40000 7.40000 Yes Yes CDL enhanced PBR No No
+3006543 Daptica 10mg TAB 7.40000 7.40000 7.40000 7.40000 Yes Yes CDL enhanced PBR No No
+833045 Daptril 2,5mg TAB 0.61000 0.61000 0.61000 0.61000 Yes Yes CDL PBR Yes Yes
+3006316 Dasatinib 100 teva 100mg TAB - - 532.18000 532.18000 Yes Yes Oncology Non-PBR Yes No
+3006236 Dasatinib 20 teva 20mg TAB - - 106.44000 106.44000 Yes Yes Oncology Non-PBR Yes No
+3006248 Dasatinib 50 teva 50mg TAB - - 266.09000 266.09000 Yes Yes Oncology Non-PBR Yes No
+3006249 Dasatinib 70 teva 70mg TAB - - 371.93000 371.93000 Yes Yes Oncology Non-PBR Yes No
+837555 Ddavp nasal spray 5ml 0,1mg/1mL NSS - - 1087.10000 1087.10000 Yes Yes CDL Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 10 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+835536 Decofed TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+835544 Decofed SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+857769 Defulide 40mg TAB 0.20000 0.20000 0.27000 0.27000 Yes Yes CDL PBR Yes Yes
+712493 Degranol 200mg TAB 2.53000 2.53000 3.15000 3.15000 Yes Yes CDL-Oncology PBR Yes Yes
+3004841 Deotin 30mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+3004894 Deotin 60mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+704328 Depramil 20mg TAB 2.31000 2.31000 2.31000 2.31000 Yes Yes CDL PBR Yes Yes
+3001254 Dezzolip 10mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+3001255 Dezzolip 20mg TAB 1.05000 1.05000 1.05000 1.05000 Yes Yes CDL PBR Yes Yes
+3001256 Dezzolip 40mg TAB 1.32000 1.32000 1.32000 1.32000 Yes Yes CDL PBR Yes Yes
+719382 Df 118 30mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+719786 Diaphage 1000mg TAB 0.81000 0.81000 0.83000 0.83000 Yes Yes CDL PBR Yes Yes
+719784 Diaphage 500mg TAB 0.40000 0.40000 0.42000 0.42000 Yes Yes CDL PBR Yes Yes
+719785 Diaphage 850mg TAB 0.73000 0.73000 0.74000 0.74000 Yes Yes CDL PBR Yes Yes
+3006007 Diaran mr 60mg SRT 1.66000 1.66000 1.75000 1.75000 Yes Yes CDL PBR Yes Yes
+788597 Diclofenac 50mg clicks 50mg TAB 0.34000 0.34000 0.71000 0.71000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+718479 Diclofenac biotech 25mg TAB 0.20000 0.20000 0.20000 0.20000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+702725 Dicyclomine co gel SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+720577 Disprin 300mg EFT - - - - No No KeyCare acute Non-PBR Yes Yes
+3002829 Divudine 120/60 DSP - - 10.29000 10.29000 Yes Yes HIV Non-PBR Yes No
+3003306 Docetaxel 20 teva concentrate for solution for inf 1ml vial 20mg/1mL INF - - 361.86000 361.86000 Yes Yes Oncology Non-PBR Yes No
+3003307 Docetaxel 80 teva concentrate for solution for inf 4ml vial 80mg/4mL INF - - 1447.43000 1447.43000 Yes Yes Oncology Non-PBR Yes No
+723381 Docetaxel accord concentrate for solution 1ml vial 20mg/1mL INF - - 361.86000 361.86000 Yes Yes Oncology Non-PBR Yes No
+723387 Docetaxel accord concentrate for solution 4ml vial 80mg/4mL INF - - 1447.43000 1447.43000 Yes Yes Oncology Non-PBR Yes No
+3004004 Docetaxel fresenius concentrate for sol for inf vial 1ml 20mg/1mL INF - - 361.86000 361.86000 Yes Yes Oncology Non-PBR Yes No
+3004003 Docetaxel fresenius concentrate for sol for inf vial 4ml 80mg/4mL INF - - 1447.43000 1447.43 Yes Yes Oncology Non-PBR Yes No
+894842 Doctrim SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+720377 Dolin 10mg TAB 2.00000 2.00000 2.00000 2.00000 Yes Yes CDL PBR Yes Yes
+720378 Dolin 20mg TAB 2.70000 2.70000 2.70000 2.70000 Yes Yes CDL PBR Yes Yes
+704044 Dolotram 100mg INJ - - - - Yes Yes Oncology Non-PBR Yes No
+705379 Dolotram 50mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+705175 Domadol 50mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+716051 Dopaquel 100mg TAB 4.54000 4.54000 4.68000 4.68000 Yes Yes CDL PBR Yes Yes
+716052 Dopaquel 200mg TAB 7.05000 7.05000 7.28000 7.28000 Yes Yes CDL PBR Yes Yes
+716050 Dopaquel 25mg TAB 1.65000 1.65000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+716053 Dopaquel 300mg TAB 8.63000 8.63000 8.91000 8.91000 Yes Yes CDL PBR Yes Yes
+721174 Doval 5mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+719985 Doxolip concentrate for infusion vial 10ml 20mg/10mL INF - - 5405.00000 5405.00000 Yes Yes Oncology Non-PBR Yes No
+720412 Doxopeg 10ml vial 2mg/1mL INF - - 5405.00000 5405.00000 Yes Yes Oncology Non-PBR Yes No
+721805 Doxorubicin accord concentrate for infusion 25ml 50mg/25mL INF - - 387.84000 387.84000 Yes Yes Oncology Non-PBR Yes No
+721804 Doxorubicin accord concentrate for infusion 5ml 10mg/5mL INF - - 77.57000 77.57000 Yes Yes Oncology Non-PBR Yes No
+3004247 Doxorubicin fresenius conc for sol for inf vial 25ml 50mg/25mL INF - - 387.84000 387.84000 Yes Yes Oncology Non-PBR Yes No
+3004245 Doxorubicin fresenius conc for sol for inf vial 5ml 10mg/5mL INF - - 77.57000 77.57000 Yes Yes Oncology Non-PBR Yes No
+3007786 Doxred 10 lyophilized powder for solution for infusion vial 10mg INF - - 77.57000 77.57000 Yes Yes Oncology Non-PBR Yes No
+3007787 Doxred 50 lyophilized powder for solution for infusion vial 50mg INF - - 387.84000 387.84000 Yes Yes Oncology Non-PBR Yes No
+722844 Doxycycline biotech 100mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+809667 Doxycyl 100mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+714192 Doxytet 100mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 11 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+702618 Drinasal paediatric 10ml 0,025% NOD - - - - No No KeyCare acute Non-PBR Yes Yes
+3005567 Duforzig 10mg TAB 7.40000 7.40000 7.40000 7.40000 Yes Yes CDL enhanced PBR No No
+722934 Dulera 100/5ug 120 dose INH - - 196.35000 196.35000 Yes Yes CDL-CDL enhanced Non-PBR Yes Yes
+722933 Dulera 200/5ug 120 dose INH - - 264.36000 264.36000 Yes Yes CDL-CDL enhanced Non-PBR Yes Yes
+3006198 Duloxetine xr 30 biotech 30mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+3006199 Duloxetine xr 60 biotech 60mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+3006752 Duoasma 25/125 120 dose INH 195.50000 195.50000 202.55000 202.55000 Yes Yes CDL-CDL enhanced PBR No No
+3006753 Duoasma 25/250 120 dose INH 264.50000 264.50000 272.46000 272.46000 Yes Yes CDL-CDL enhanced PBR No No
+3005169 Duotemtric TAB - - 6.50000 6.50000 Yes Yes HIV Non-PBR Yes Yes
+708877 Duotrav 2.5ml OPD 245.05000 245.05000 245.05000 245.05000 Yes Yes CDL PBR Yes Yes
+3002891 Duzela 30mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3002892 Duzela 60mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+718484 Dyna levetiracetam 750mg TAB 5.93000 5.93000 5.97000 5.97000 Yes Yes CDL-Oncology PBR Yes Yes
+719973 Dyna sertraline 100mg TAB 2.79000 2.79000 3.21000 3.21000 Yes Yes CDL PBR Yes Yes
+719972 Dyna sertraline 50mg TAB 2.62000 2.62000 3.01000 3.01000 Yes Yes CDL PBR Yes Yes
+716953 Dynacaz 30mg mr (was dyna gliclazide sr 30mg) 30mg SRT 0.87000 0.87000 0.87000 0.87000 Yes Yes CDL PBR Yes Yes
+3005220 Dynacaz 60mg mr 60mg SRT 1.66000 1.66000 1.75000 1.75000 Yes Yes CDL PBR Yes Yes
+3005221 Dynacaz 90mg mr 90mg SRT - - 2.62000 2.62000 Yes Yes CDL Non-PBR Yes Yes
+710390 Dyna-lamotrigine 200mg TAB 5.42000 5.42000 6.76000 6.76000 Yes Yes CDL-Oncology PBR Yes Yes
+710387 Dyna-lamotrigine 25mg TAB 1.42000 1.42000 1.76000 1.76000 Yes Yes CDL-Oncology PBR Yes Yes
+710388 Dyna-lamotrigine 50mg TAB 1.98000 1.98000 2.54000 2.54000 Yes Yes CDL-Oncology PBR Yes Yes
+3007340 Easan powder for solution for infusion vial 150mg INF - - - - Yes Yes Oncology Non-PBR Yes No
+3005000 Effentora 100mcg MLT - - - - Yes Yes Oncology Non-PBR Yes No
+3005002 Effentora 200mcg MLT - - - - Yes Yes Oncology Non-PBR Yes No
+3005007 Effentora 400mcg MLT - - - - Yes Yes Oncology Non-PBR Yes No
+723043 Elteno TAB - - 8.37000 8.37000 Yes Yes HIV Non-PBR Yes Yes
+3003793 Emcor 10mg TAB 2.71000 2.71000 2.71000 2.71000 Yes Yes CDL PBR Yes Yes
+3003792 Emcor 5mg TAB 1.57000 1.57000 1.57000 1.57000 Yes Yes CDL PBR Yes Yes
+721157 Emerdyne (was macleods escitalopram) 10mg TAB 2.00000 2.00000 2.00000 2.00000 Yes Yes CDL PBR Yes Yes
+721159 Emerdyne (was macleods escitalopram) 20mg TAB 2.70000 2.70000 2.70000 2.70000 Yes Yes CDL PBR Yes Yes
+723037 Emetrol SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+784346 Emex SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+720786 Emistop ampoule 2ml 4mg/2mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+720788 Emistop ampoule 4ml 8mg/4mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+3005188 Emkapron 500mg TAB 5.71000 5.71000 6.36000 6.36000 Yes Yes CDL PBR Yes Yes
+3004847 Enalapril 10 arya 10mg TAB 1.32000 1.32000 1.32000 1.32000 Yes Yes CDL PBR Yes Yes
+3004848 Enalapril 20 arya 20mg TAB 1.78000 1.78000 1.78000 1.78000 Yes Yes CDL PBR Yes Yes
+3004846 Enalapril 5 arya 5mg TAB 0.82000 0.82000 0.89000 0.89000 Yes Yes CDL PBR Yes Yes
+824593 Entocord 0,02mg/1mL ENE - - 77.11000 0 Yes No CDL Non-PBR No No
+716240 Epicord 10 vial 5ml 10mg/5mL INJ - - 155.75000 155.75000 Yes Yes Oncology Non-PBR Yes No
+716241 Epicord 50 vial 25ml 50mg/25mL INJ - - 794.59000 794.59000 Yes Yes Oncology Non-PBR Yes No
+721701 Epikepp 250mg TAB 1.95000 1.95000 1.99000 1.99000 Yes Yes CDL-Oncology PBR Yes Yes
+721703 Epikepp 750mg TAB 5.93000 5.93000 5.97000 5.97000 Yes Yes CDL-Oncology PBR Yes Yes
+721702 Epikepp 500mg TAB 3.98000 3.98000 3.98000 3.98000 Yes Yes CDL-Oncology PBR Yes Yes
+821578 Epilim crushable 100mg TAB - - 4.05000 4.05000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+718857 Epimate 100mg TAB 8.18000 8.18000 8.18000 8.18000 Yes Yes CDL-Oncology PBR Yes Yes
+718855 Epimate 25mg TAB 2.97000 2.97000 2.97000 2.97000 Yes Yes CDL-Oncology PBR Yes Yes
+718856 Epimate 50mg TAB 5.55000 5.55000 5.55000 5.55000 Yes Yes CDL-Oncology PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 12 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+704381 Epitec 100mg TAB 3.32000 3.32000 4.20000 4.20000 Yes Yes CDL-Oncology PBR Yes Yes
+704382 Epitec 200mg TAB 5.42000 5.42000 6.76000 6.76000 Yes Yes CDL-Oncology PBR Yes Yes
+704379 Epitec 25mg TAB 1.42000 1.42000 1.76000 1.76000 Yes Yes CDL-Oncology PBR Yes Yes
+704380 Epitec 50mg TAB 1.98000 1.98000 2.54000 2.54000 Yes Yes CDL-Oncology PBR Yes Yes
+710901 Epitoz 100mg TAB 8.18000 8.18000 8.18000 8.18000 Yes Yes CDL-Oncology PBR Yes Yes
+710899 Epitoz 25mg TAB 2.97000 2.97000 2.97000 2.97000 Yes Yes CDL-Oncology PBR Yes Yes
+710900 Epitoz 50mg TAB 5.55000 5.55000 5.55000 5.55000 Yes Yes CDL-Oncology PBR Yes Yes
+707623 Epleptin 300mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+707624 Epleptin 400mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+707622 Epleptin 100mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3007626 Eplipix 2,5mg TAB 10.66000 - 10.66000 0.00000 Yes No CDL enhanced PBR No No
+3007627 Eplipix 5mg TAB 10.66000 - 10.66000 0.00000 Yes No CDL enhanced PBR No No
+837318 Eprex prefill 2000u/0,5mLINJ - - 179.28000 179.28000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+820741 Eprex prefill 4000u/0,4mLINJ - - 345.83000 345.83000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+839876 Eprex prefill 10000u/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+705487 Eprex prefilled 40000iu/1mLINJ - - - - Yes Yes Oncology Non-PBR Yes No
+712391 Eprex prefilled syringe 0.6ml 6000u/0,6mLINJ - - - - Yes Yes Oncology Non-PBR Yes No
+721460 Eprolep cr 200mg SRT 3.22000 3.22000 3.22000 3.22000 Yes Yes CDL-Oncology PBR Yes Yes
+720762 Eprolep cr 300mg SRT 4.45000 4.45000 4.82000 4.82000 Yes Yes CDL-Oncology PBR Yes Yes
+721055 Eprolep cr 500mg SRT 7.35000 7.35000 7.98000 7.98000 Yes Yes CDL-Oncology PBR Yes Yes
+717447 Equifer ampoule 5ml 100mg/5mL INJ 101.62000 101.62000 126.80000 126.80000 Yes Yes CDL-Oncology PBR Yes Yes
+720023 Equisin 25mg TAB - - 31.82000 31.82000 Yes Yes Oncology Non-PBR Yes No
+3003514 Eranfu pre-filled syringe 5ml 250mg/5mL INJ - - 3529.93000 3529.93000 Yes Yes Oncology Non-PBR Yes No
+3002633 Erlocip 150mg TAB - - 509.80000 509.80000 Yes Yes Oncology Non-PBR Yes No
+3002632 Erlocip 100mg TAB - - 429.27000 429.27000 Yes Yes Oncology Non-PBR Yes No
+710310 Eryko 250mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3000919 Esetam 10mg TAB 2.00000 2.00000 2.00000 2.00000 Yes Yes CDL PBR Yes Yes
+3000922 Esetam 20mg TAB 2.70000 2.70000 2.70000 2.70000 Yes Yes CDL PBR Yes Yes
+893919 Estrofem 1mg TAB - - 6.66000 6.66000 Yes Yes Menopause Non-PBR Yes Yes
+825883 Estrofem 2mg TAB - - 7.26000 7.26000 Yes Yes Menopause Non-PBR Yes Yes
+3005394 Etoposide fresenius conc for solution for infusion vial 5ml 100mg/5mL INF - - 205.16000 205.16000 Yes Yes Oncology Non-PBR Yes No
+3000051 Eurodron concentrated solution for infusion vial 5ml 4mg/5mL INF - - 552.40000 552.40000 Yes Yes Oncology Non-PBR Yes No
+3002601 Eurolen 15mg CAP - - 326.16000 326.16000 Yes Yes Oncology Non-PBR Yes No
+3002603 Eurolen 25mg CAP - - 326.16000 326.16000 Yes Yes Oncology Non-PBR Yes No
+3002551 Eurolen 10mg CAP - - 237.12000 237.12000 Yes Yes Oncology Non-PBR Yes No
+3002314 Eurolen 5mg CAP - - 150.21000 150.21000 Yes Yes Oncology Non-PBR Yes No
+3006494 Eurostib 200mg TAB - - 201.42000 201.42000 Yes Yes Oncology Non-PBR Yes No
+3002452 Eurotax concentrate for solution for infusion vial 80mg/4mL INF - - 1447.43000 1447.43 Yes Yes Oncology Non-PBR Yes No
+3002451 Eurotax concentrate for solution for infusion vial 20mg/1mL INF - - 361.86000 361.86000 Yes Yes Oncology Non-PBR Yes No
+713169 Euthyrox 100mcg TAB 0.84000 0.84000 0.84000 0.84000 Yes Yes CDL PBR Yes Yes
+713172 Euthyrox 25mcg TAB 0.40000 0.40000 0.40000 0.40000 Yes Yes CDL PBR Yes Yes
+713168 Euthyrox 50mcg TAB 0.67000 0.67000 0.67000 0.67000 Yes Yes CDL PBR Yes Yes
+3006092 Euthyrox 75mcg TAB 0.78000 0.78000 0.78000 0.78000 Yes Yes CDL PBR Yes Yes
+713048 Euvax b vial 1ml 20mcg/1mL VAC - - 132.46000 132.46000 Yes Yes CDL enhanced Non-PBR Yes No
+3005898 Everzor 10mg TAB - - 942.19000 942.19000 Yes Yes Oncology Non-PBR Yes No
+3005897 Everzor 5mg TAB - - 471.10000 471.10000 Yes Yes Oncology Non-PBR Yes No
+3005347 Evrenzo 20mg TAB - - 293.02000 293.02000 Yes Yes CDL Non-PBR Yes Yes
+3005348 Evrenzo 50mg TAB - - 293.02000 293.02000 Yes Yes CDL Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 13 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+3005349 Evrenzo 70mg TAB - - 293.02000 293.02000 Yes Yes CDL Non-PBR Yes Yes
+3005350 Evrenzo 100mg TAB - - 293.02000 293.02000 Yes Yes CDL Non-PBR Yes Yes
+3005351 Evrenzo 150mg TAB - - 293.02000 293.02000 Yes Yes CDL Non-PBR Yes Yes
+3003490 Extreda vial powder concentrate for solution 500mg INF - - 8383.50000 8383.50000 Yes Yes Oncology Non-PBR Yes No
+3003489 Extreda vial powder concentrate for solution 100mg INF - - 1610.05000 1610.05000 Yes Yes Oncology Non-PBR Yes No
+725544 Famucaps CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+3002375 Fastelev pre-filled syringe 5ml 250mg/5mL INJ - - 3529.93000 3529.93000 Yes Yes Oncology Non-PBR Yes No
+711682 Fedaloc sr 30mg SRT 3.57000 3.57000 3.60000 3.60000 Yes Yes CDL PBR No No
+711714 Fedaloc sr 60mg SRT 5.13000 5.13000 5.16000 5.16000 Yes Yes CDL PBR No No
+703902 Felodipine 10 kiara (was felodipine-hexal) 10mg SRT - - 5.87000 0.00000 Yes No CDL Non-PBR No No
+703221 Felodipine 5 kiara (was felodipine-hexal) 5mg SRT - - 4.73000 0.00000 Yes No CDL Non-PBR No No
+797014 Fenamin 50mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+719282 Fendermal 100mcg/1h PTD - - - - Yes Yes Oncology Non-PBR Yes No
+719281 Fendermal 75mcg/1h PTD - - - - Yes Yes Oncology Non-PBR Yes No
+719280 Fendermal 50mcg/1h PTD - - - - Yes Yes Oncology Non-PBR Yes No
+719279 Fendermal 25mcg/1h PTD - - - - Yes Yes Oncology Non-PBR Yes No
+710372 Ferrous sulphate 75mg TAB - - 0.14000 0.14000 Yes Yes CDL-KeyCare acute Non-PBR Yes Yes
+877832 Ferrous sulphate 30mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+703820 Feverpain 120mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+863742 Feverpain (boxed) 120mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+3004226 Fiasp penfill 3ml 100u/1mL INJ - - 87.03000 85.71000 Yes No CDL Non-PBR No No
+3003844 Fibtin 500mg TAB 5.71000 5.71000 6.36000 6.36000 Yes Yes CDL PBR Yes Yes
+3002730 Fidocare 30 xl 30mg SRT 3.57000 3.57000 3.60000 3.60000 Yes Yes CDL PBR No No
+3002731 Fidocare 60 xl 60mg SRT 5.13000 5.13000 5.16000 5.16000 Yes Yes CDL PBR No No
+3005254 Filengia 0,5mg CAP 150.00000 150.00000 150.00000 150.00000 Yes Yes CDL enhanced PBR Yes No
+704829 Flexocam 7,5mg TAB 0.88000 0.88000 1.24000 1.24000 Yes Yes CDL-Oncology PBR Yes Yes
+726540 Florinef acetate 0,1mg TAB - - 4.12000 4.12000 Yes Yes CDL Non-PBR Yes Yes
+726656 Fluanxol 0,5mg TAB - - 9.34000 9.34000 Yes Yes CDL Non-PBR Yes Yes
+726664 Fluanxol 1mg TAB - - 13.16000 13.16000 Yes Yes CDL Non-PBR Yes Yes
+726672 Fluanxol depot 1ml 20mg INJ - - 102.05000 102.05000 Yes Yes CDL Non-PBR Yes Yes
+723163 Flucloxacillin 250 oethmaan 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+838713 Fluoxetine 20 oethmaan 20mg CAP 0.94000 0.94000 1.24000 1.24000 Yes Yes CDL-Oncology PBR Yes Yes
+710308 Flupen 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+711136 Fluracedyl vial 10ml 500mg/10mLINJ - - 43.90000 43.90000 Yes Yes Oncology Non-PBR Yes No
+3004111 Fluticasone otc teva 120 dose 50mcg AQS 79.14000 79.14000 79.14000 79.14000 Yes Yes CDL enhanced PBR No No
+710307 Foratec hfa 120dose 12mcg/1doseINH - - 156.92000 156.92000 Yes Yes CDL-CDL enhanced Non-PBR Yes Yes
+3006281 Forgevasc 10/160 mg TAB 4.65000 4.65000 5.26000 5.26000 Yes Yes CDL PBR No No
+3006280 Forgevasc 5/160 mg TAB 4.65000 4.65000 4.88000 4.88000 Yes Yes CDL PBR No No
+3005818 Fortihem solution for injection 5ml ampoule 20mg/1mL INJ 101.62000 101.62000 126.80000 126.80000 Yes Yes CDL-Oncology PBR Yes Yes
+3006607 Fosaprepitant cipla powder for solution for infusion vial 150mg INF - - - - Yes Yes Oncology Non-PBR Yes No
+3004998 Frexivo pre-filled syringe 5ml 250mg/5mL INJ - - 3529.93000 3529.93000 Yes Yes Oncology Non-PBR Yes No
+3006922 Fuldexa pre-filled syringe 5ml 250mg/5mL INJ - - 3529.93000 3529.93000 Yes Yes Oncology Non-PBR Yes No
+3002160 Fulphila pre-filled syringe 0.6ml 6mg/0,6mL INJ - - 3065.99000 3065.99000 Yes Yes Oncology Non-PBR Yes No
+3006714 Fulvedex pre-filled syringe 5ml 250mg/5mL INJ - - 3529.93000 3529.93000 Yes Yes Oncology Non-PBR Yes No
+3003571 Fulvestrant mylan pre-filled syringe 5ml 250mg/5mL INJ - - 3529.93000 3529.93000 Yes Yes Oncology Non-PBR Yes No
+846422 Fungispor 0.01 CRE - - - - No No KeyCare acute Non-PBR Yes Yes
+798150 Fungistop topical 0.01 CRE - - - - No No KeyCare acute Non-PBR Yes Yes
+821845 Furobe 40mg TAB 0.20000 0.20000 0.27000 0.27000 Yes Yes CDL PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 14 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+714110 Ganfort 3ml OPD 175.00000 175.00000 245.05000 245.05000 Yes Yes CDL PBR Yes Yes
+810916 Gastron 2mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+3004230 Gemcitabine rtu fresenius conc for sol for inf vial 26.3ml 1000mg/26,3mINLF - - 875.97000 875.97000 Yes Yes Oncology Non-PBR Yes No
+3004229 Gemcitabine rtu fresenius conc for sol for inf vial 5.26ml 200mg/5,26mILNF - - 175.19000 175.19000 Yes Yes Oncology Non-PBR Yes No
+728608 Gemini 15ml OPD - - - - No No KeyCare acute Non-PBR Yes Yes
+3005226 Gemvalaz 10/160 TAB 4.65000 4.65000 5.26000 5.26000 Yes Yes CDL PBR No No
+3005225 Gemvalaz 5/160 TAB 4.65000 4.65000 4.88000 4.88000 Yes Yes CDL PBR No No
+704606 Gen-payne CAP - - - - Yes Yes Oncology Non-PBR Yes No
+722725 Girotec 50mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+719449 Gitsalat 30mg SRT 3.57000 3.57000 3.60000 3.60000 Yes Yes CDL PBR No No
+720983 Glaucopress 5ml 0.02 OPD 166.45000 166.45000 177.46000 166.45000 Yes Yes CDL PBR Yes Yes
+721902 Glaumide-co 5ml OPD 195.00000 195.00000 233.60000 227.71000 Yes Yes CDL PBR No No
+721977 Glauopt co 5ml OPD 195.00000 195.00000 233.60000 227.71000 Yes No CDL PBR No No
+3008080 Glauptico 3ml OPD 175.00000 175.00000 245.05000 245.05000 Yes Yes CDL PBR Yes Yes
+3003183 Glenbute 200 dose 100mcg INH 32.05000 32.05000 34.68000 34.68000 Yes Yes CDL PBR Yes Yes
+3004171 Gliclazide mr austell 60mg SRT 1.66000 1.66000 1.75000 1.75000 Yes Yes CDL PBR Yes Yes
+721692 Gliclazide unicorn mr 30mg SRT 0.87000 0.87000 0.87000 0.87000 Yes Yes CDL PBR Yes Yes
+3007041 Glomatin 0,5mg CAP 150.00000 150.00000 150.00000 150.00000 Yes Yes CDL enhanced PBR Yes No
+3005476 Glovireg 150mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3005475 Glovireg 75mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3005474 Glovireg 25mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+667990 Glucocheck evolve test strip ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR Yes Yes
+1038324 Glucocheck key test strip ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR Yes Yes
+714525 Gluconorm 500mg TAB 0.40000 0.40000 0.42000 0.42000 Yes Yes CDL PBR Yes Yes
+714526 Gluconorm 850mg TAB 0.73000 0.73000 0.74000 0.74000 Yes Yes CDL PBR Yes Yes
+3003578 Gluctam mr 60mg SRT 1.66000 1.66000 1.75000 1.75000 Yes Yes CDL PBR Yes Yes
+3006093 Glyzid mr 30mg SRT 0.87000 0.87000 0.87000 0.87000 Yes Yes CDL PBR Yes Yes
+3006094 Glyzid mr 60mg SRT 1.66000 1.66000 1.75000 1.75000 Yes Yes CDL PBR Yes Yes
+895199 Go-pain p 120mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+720942 Granisetron fresenius ampoule 1ml 1mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+720943 Granisetron fresenius ampoule 3ml 1mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+718525 Granisetron teva 3 3mg/3mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+721164 Grantryl ampoule 1ml 1mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+721165 Grantryl ampoule 3ml 3mg/3mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+3003091 Grastiva pre-filled syringe 0.5ml 300mcg/0,5mLINJ - - 418.80000 418.80000 Yes Yes Oncology Non-PBR Yes No
+3003092 Grastiva pre-filled syringe 0.5ml 480mcg/0,5mLINJ - - 786.80000 786.80000 Yes Yes Oncology Non-PBR Yes No
+718746 Gulf amitriptyline 25mg TAB 0.84000 0.84000 0.92000 0.92000 Yes Yes CDL-Oncology PBR Yes Yes
+712954 Gulf amlodipine 10mg TAB 2.49000 2.49000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+712953 Gulf amlodipine 5mg TAB 1.73000 1.73000 1.73000 1.73000 Yes Yes CDL PBR Yes Yes
+715626 Gulf atenolol 100mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+715625 Gulf atenolol 50mg TAB 0.60000 0.60000 0.60000 0.60000 Yes Yes CDL PBR Yes Yes
+3001174 Gulf carbamazepine 200mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+720846 Gulf cetirizine 10mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+720727 Gulf folic acid 5mg TAB 0.79000 0.79000 0.82000 0.82000 Yes Yes CDL PBR Yes Yes
+3001173 Gulf hydrochlorothiazide 25mg TAB 0.57000 0.57000 0.60000 0.60000 Yes Yes CDL PBR Yes Yes
+868213 Gulf indomethacin 25mg CAP 0.10000 0.10000 0.20000 0.20000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+841560 Haemosolvate viii 300u INJ - - 1331.42000 1331.42000 Yes Yes CDL Non-PBR Yes Yes
+800759 Haemosolvate viii 10ml 500u INJ - - 2094.46000 2094.46000 Yes Yes CDL Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 15 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+813648 Haemosolvate viii 2x10ml 1000u INJ - - 4188.90000 4188.90000 Yes Yes CDL Non-PBR Yes Yes
+800767 Haemosolvex ix 500u INJ - - 2459.42000 2459.42000 Yes Yes CDL Non-PBR Yes Yes
+730327 Haloperidol 5 oethmaan 5mg TAB 1.29000 1.29000 1.29000 1.29000 Yes Yes CDL PBR Yes Yes
+701659 Heberbio hbv sgl dose 1ml adult 20mcg/1mL VAC - - 132.46000 132.46000 Yes Yes CDL enhanced Non-PBR Yes No
+730602 Heparin sod 1ml-fresenius 5000u/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+730599 Heparin sodium fresenius ampoule 1ml 1000u/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+782254 Heparin sodium fresenius vial 5ml 1000u/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+3001799 Hetacav 300mg TAB - - 9.67000 9.67000 Yes Yes HIV Non-PBR Yes No
+3001798 Hetacav oral 20mg/1mL SOL - - 1.33000 1.33000 Yes Yes HIV Non-PBR Yes Yes
+720869 Hetemcit 200mg/300mg TAB - - 6.50000 6.50000 Yes Yes HIV Non-PBR Yes Yes
+3004852 Heteran 250mg TAB - - 136.79000 136.79000 Yes Yes Oncology Non-PBR Yes No
+3005177 Heterix vial 1.2ml 24mg/1,2mL INJ - - 50991.67000 50991.67000 Yes Yes Oncology Non-PBR Yes No
+722622 Heteruam 600mg/300mg TAB - - 17.44000 17.44000 Yes Yes HIV Non-PBR Yes No
+3002312 Hetripco TAB - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes Yes
+863157 Hexarone 100mg TAB 8.60000 8.60000 8.60000 8.60000 Yes Yes CDL PBR Yes Yes
+863165 Hexarone 200mg TAB 9.90000 9.90000 9.90000 9.90000 Yes Yes CDL PBR Yes Yes
+890470 Hexazide 25mg TAB 0.57000 0.57000 0.60000 0.60000 Yes Yes CDL PBR Yes Yes
+861782 Humalog mix 25 cartridge 3ml 100u/1mL INJ - - 124.38000 124.38000 Yes Yes CDL Non-PBR Yes Yes
+705074 Humalog mix 50 cartridge 3ml 100u/1mL INJ - - 124.38000 124.38000 Yes Yes CDL Non-PBR Yes Yes
+761400 Hydralazine hcl 25 kiara (was sandoz hydralazine) 25mg TAB - - 1.08000 1.08000 Yes Yes CDL Non-PBR Yes Yes
+3002327 Hydrolec juice + electrolytes apple SOL - - - - No No KeyCare acute Non-PBR Yes Yes
+3002333 Hydrolec ready to drink orange SOL - - - - No No KeyCare acute Non-PBR Yes Yes
+3005296 Hylokat 100/25 TAB 2.98000 2.98000 2.98000 2.98000 Yes Yes CDL PBR Yes Yes
+3005295 Hylokat 50/12.5 TAB 2.63000 2.63000 2.64000 2.64000 Yes Yes CDL PBR Yes Yes
+707213 Hyospasmol 5mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+731951 Hyospasmol 10mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+862622 Hypace 5mg TAB 0.82000 0.82000 0.89000 0.89000 Yes Yes CDL PBR Yes Yes
+731714 Hyperphen 10mg TAB - - 1.18000 1.18000 Yes Yes CDL Non-PBR Yes Yes
+731722 Hyperphen 50mg TAB - - 1.11000 1.11000 Yes Yes CDL Non-PBR Yes Yes
+732052 Hypotone 250mg TAB 1.08000 1.08000 1.38000 1.38000 Yes Yes CDL PBR Yes Yes
+705940 Ibu 200mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+700316 Ibucine 200mg TAB 0.17000 0.17000 0.19000 0.19000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+700318 Ibucine 400mg TAB 0.33000 0.33000 0.34000 0.34000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+700315 Ibucine 100mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+704781 Ibugesic fever and pain (orange) 100mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+705264 Ibugesic forte CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3004030 Ibugesic oral suspension (strawberry) 100mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+868221 Ibunate 200mg TAB 0.17000 0.17000 0.19000 0.19000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+719664 Ibupain forte blister pack CAP - - - - Yes Yes Oncology Non-PBR Yes No
+708536 Ibusor 200mg TAB 0.17000 0.17000 0.19000 0.19000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+704095 Ilvitrim TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+705259 Ilvitrim SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+722788 Imatinib accord 400mg TAB - - 228.57000 228.57000 Yes Yes Oncology Non-PBR Yes No
+722780 Imatinib accord 100mg TAB - - 65.88000 65.88000 Yes Yes Oncology Non-PBR Yes No
+723296 Imavec 400mg CAP - - 228.57000 228.57000 Yes Yes Oncology Non-PBR Yes No
+718595 Imavec 100mg CAP - - 65.88000 65.88000 Yes Yes Oncology Non-PBR Yes No
+806560 Indoblok 40mg TAB 0.24000 0.24000 0.24000 0.24000 Yes Yes CDL PBR Yes Yes
+721335 Inflamax Paediatric 100mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 16 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+732826 Influvac 0.5ml VAC - - 77.32000 77.32000 Yes Yes CDL Non-PBR Yes Yes
+3004640 Innofer solution for injection 5ml ampoule 100mg/5mL INJ 101.62000 101.62000 126.80000 126.80000 Yes Yes CDL-Oncology PBR Yes Yes
+3004923 Innoflam 100mg CAP 1.27000 1.27000 1.35000 1.35000 Yes Yes CDL enhanced PBR No No
+3004943 Innoflam 200mg CAP 2.54000 2.54000 2.69000 2.69000 Yes Yes CDL enhanced PBR No No
+711138 Innospore 0.01 VCR - - - - No No KeyCare acute Non-PBR Yes Yes
+723841 Innuvair 100mcg/6mcg 120 dose INH - - 320.37000 174.62000 Yes No CDL-CDL enhanced Non-PBR No No
+3002606 Intaza powder for suspension vial 100mg INJ - - 2129.60000 2129.60000 Yes Yes Oncology Non-PBR Yes No
+712873 Irinotas 5ml vial 100mg/5mL INF - - 840.60000 840.60000 Yes Yes Oncology Non-PBR Yes No
+712643 Irinotas vial 2ml 40mg/2mL INF - - 336.23000 336.23000 Yes Yes Oncology Non-PBR Yes No
+711902 Irinotecan 100 oethmaan 5ml vial 100mg/5mL INF - - 840.60000 840.60000 Yes Yes Oncology Non-PBR Yes No
+711903 Irinotecan 40 oethmaan 2ml vial 40mg/2mL INF - - 336.23000 336.23000 Yes Yes Oncology Non-PBR Yes No
+3006967 Iritero solution for injection 5ml vial 100mg/5mL INF - - 840.60000 840.60000 Yes Yes Oncology Non-PBR Yes No
+3007047 Iritero solution for injection 5ml vial 40mg/2mL INF - - 336.23000 336.23000 Yes Yes Oncology Non-PBR Yes No
+734055 Ismo 20mg TAB - - 5.94000 5.94000 Yes Yes CDL Non-PBR Yes Yes
+784206 Isosorbide dinitrate 10 kiara (sandoz isosorbide dinitrate) 10mg TAB - - 1.03000 1.03000 Yes Yes CDL Non-PBR Yes Yes
+784192 Isosorbide dinitrate 5 kiara (sandoz isosorbide dinitrate) 5mg SLT - - 1.16000 1.16000 Yes Yes CDL Non-PBR Yes Yes
+723180 Ivemend powder for solution vial 150mg INF - - - - Yes Yes Oncology Non-PBR Yes No
+723194 Jubitan 150mg TAB 2.07000 2.07000 2.60000 2.60000 Yes Yes CDL PBR No No
+723203 Jubitan 300mg TAB 2.07000 2.07000 2.60000 2.60000 Yes Yes CDL PBR No No
+717378 Jurnista 16mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+716424 Jurnista 4mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+700924 Kaletra SYR - - 1.45000 1.45000 Yes Yes HIV Non-PBR Yes Yes
+3004778 Kavideza TAB - - 24.76000 24.76000 Yes Yes HIV Non-PBR Yes No
+718160 Kavimun paed 60mg TAB - - 6.37000 6.37000 Yes Yes HIV Non-PBR Yes Yes
+3006500 Kemoprev iv solution for injection 5ml vial 250mcg/5mLINJ - - - - Yes Yes Oncology Non-PBR Yes No
+735175 Kessar 20mg TAB - - 5.21000 5.21000 Yes Yes Oncology Non-PBR Yes No
+3005231 Kinect 1mg TAB 13.81000 13.81000 14.91000 14.91000 Yes Yes CDL PBR Yes Yes
+720977 Klaribin 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+720976 Klaribin 250mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+707256 Klarizon 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+719921 Klaryvid 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+716675 Klaryvid 250mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3004144 Kolcrys 0,5mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3000605 Kovatrax TAB - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes Yes
+797723 Lacson 3300mg/5mLSYR - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+735698 Lagatrim 480mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+710389 Lamilepsy (was dyna-lamotrigine) 100mg TAB 3.32000 3.32000 4.20000 4.20000 Yes Yes CDL-Oncology PBR Yes Yes
+704487 Lamitor 50mg TAB 1.98000 1.98000 2.54000 2.54000 Yes Yes CDL PBR Yes Yes
+704488 Lamitor 100mg TAB 3.32000 3.32000 4.20000 4.20000 Yes Yes CDL-Oncology PBR Yes Yes
+712217 Lamitor 200mg TAB 5.42000 5.42000 6.76000 6.76000 Yes Yes CDL-Oncology PBR Yes Yes
+704486 Lamitor 25mg TAB 1.42000 1.42000 1.76000 1.76000 Yes Yes CDL-Oncology PBR Yes Yes
+3002171 Lamorola 100mg TAB 3.32000 3.32000 4.20000 4.20000 Yes Yes CDL-Oncology PBR Yes Yes
+3005109 Lamorola 200mg TAB 5.42000 5.42000 6.76000 6.76000 Yes Yes CDL-Oncology PBR Yes Yes
+3002169 Lamorola 25mg TAB 1.42000 1.42000 1.76000 1.76000 Yes Yes CDL-Oncology PBR Yes Yes
+3002170 Lamorola 50mg TAB 1.98000 1.98000 2.54000 2.54000 Yes Yes CDL-Oncology PBR Yes Yes
+3004312 Lamotrigine unichem 100mg TAB 3.32000 3.32000 4.20000 4.20000 Yes Yes CDL-Oncology PBR Yes Yes
+3004313 Lamotrigine unichem 200mg TAB 5.42000 5.42000 6.76000 6.76000 Yes Yes CDL-Oncology PBR Yes Yes
+3004310 Lamotrigine unichem 25mg TAB 1.42000 1.42000 1.76000 1.76000 Yes Yes CDL-Oncology PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 17 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+3004311 Lamotrigine unichem 50mg TAB 1.98000 1.98000 2.54000 2.54000 Yes Yes CDL-Oncology PBR Yes Yes
+708053 Lancap 30mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+735760 Lanoxin 0,0625mg TAB - - 1.04000 1.04000 Yes Yes CDL Non-PBR Yes Yes
+735752 Lanoxin 0,25mg TAB - - 0.56000 0.56000 Yes Yes CDL Non-PBR Yes Yes
+735744 Lanoxin paediatric/geriatric 0,05mg/1mL SYR - - 2.10000 2.10000 Yes Yes CDL Non-PBR Yes Yes
+715080 Lansoprazole unicorn 30mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+715718 Laradex 2,5mg TAB - - 15.39000 15.39000 Yes Yes Oncology Non-PBR Yes No
+735884 Largactil 100mg TAB - - 8.36000 8.36000 Yes Yes CDL Non-PBR Yes Yes
+735868 Largactil 25mg TAB - - 2.82000 2.82000 Yes Yes CDL Non-PBR Yes Yes
+735876 Largactil 50mg TAB - - 4.92000 4.92000 Yes Yes CDL Non-PBR Yes Yes
+3000000 Lecardop 25/100 TAB 3.43000 3.43000 3.43000 3.43000 Yes Yes CDL PBR Yes Yes
+3000001 Lecardop 25/250 TAB 4.68000 4.68000 4.68000 4.68000 Yes Yes CDL PBR Yes Yes
+3002411 Lenalidomide cipla 15mg CAP - - 326.16000 326.16000 Yes Yes Oncology Non-PBR Yes No
+3002413 Lenalidomide cipla 25mg CAP - - 326.16000 326.16000 Yes Yes Oncology Non-PBR Yes No
+3002410 Lenalidomide cipla 10mg CAP - - 237.12000 237.12000 Yes Yes Oncology Non-PBR Yes No
+3002409 Lenalidomide cipla 5mg CAP - - 150.21000 150.21000 Yes Yes Oncology Non-PBR Yes No
+3002244 Lenalidomide drl 15mg CAP - - 326.16000 326.16000 Yes Yes Oncology Non-PBR Yes No
+3002245 Lenalidomide drl 25mg CAP - - 326.16000 326.16000 Yes Yes Oncology Non-PBR Yes No
+3002243 Lenalidomide drl 10mg CAP - - 237.12000 237.12000 Yes Yes Oncology Non-PBR Yes No
+3002242 Lenalidomide drl 5mg CAP - - 150.21000 150.21000 Yes Yes Oncology Non-PBR Yes No
+736260 Lenamet 400mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+736244 Lenazine 5mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+872253 Lenditro 5mg TAB 2.17000 2.17000 2.30000 2.30000 Yes Yes CDL PBR Yes Yes
+767360 Lennon Sulphacetamide Eye Ointment 3.5g 0.1 EYO - - - - No No KeyCare acute Non-PBR Yes Yes
+3002719 Lessuric 300mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+3005305 Letraz 2,5mg TAB - - 15.39000 15.39000 Yes Yes Oncology Non-PBR Yes No
+3004945 Letrozole hetero 2,5mg TAB - - 15.39000 15.39000 Yes Yes Oncology Non-PBR Yes No
+3006208 Leucovorin 100mg/10ml fresenius solution for injection vial 10mg/1mL INJ - - 140.77000 140.77000 Yes Yes Oncology Non-PBR Yes No
+705313 Levemir prefilled cartridge 3ml 100u/1mL INJ - - 94.00000 94.00000 Yes Yes CDL Non-PBR Yes Yes
+3006360 Leveseize xr 1500mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+3006359 Leveseize xr 1000mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+3006358 Leveseize xr 750mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+3006357 Leveseize xr 500mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+722150 Levetiracetam unicorn 250mg TAB 1.95000 1.95000 1.99000 1.99000 Yes Yes CDL-Oncology PBR Yes Yes
+722151 Levetiracetam unicorn 750mg TAB 5.93000 5.93000 5.97000 5.97000 Yes Yes CDL-Oncology PBR Yes Yes
+705076 Lipidex 10mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+705077 Lipidex 20mg TAB 1.00000 1.00000 1.08000 1.08000 Yes Yes CDL PBR Yes Yes
+714678 Lizro 10mg TAB 0.91000 0.91000 0.92000 0.92000 Yes Yes CDL PBR Yes Yes
+714679 Lizro 20mg TAB 0.91000 0.91000 0.92000 0.92000 Yes Yes CDL PBR Yes Yes
+714677 Lizro 5mg TAB 0.91000 0.91000 0.92000 0.92000 Yes Yes CDL PBR Yes Yes
+3004648 Lokit od 40mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3003683 Lomida 50mg/300mg TAB - - 7.78000 7.78000 Yes Yes HIV Non-PBR Yes Yes
+3001450 Lopimune oral pellets 40mg/10mg SPC - - 3.11000 3.11000 Yes Yes HIV Non-PBR Yes Yes
+715857 Losaar plus 100mg/25mg TAB 2.98000 2.98000 2.98000 2.98000 Yes Yes CDL PBR Yes Yes
+715856 Losaar plus 50mg/12.5mg TAB 2.63000 2.63000 2.64000 2.64000 Yes Yes CDL PBR Yes Yes
+3003797 Losartan accord 100mg TAB 2.22000 2.22000 2.93000 2.93000 Yes Yes CDL PBR No No
+3003796 Losartan accord 50mg TAB 2.22000 2.22000 2.50000 2.50000 Yes Yes CDL PBR No No
+3000542 Losartan macleods 100mg TAB 2.22000 2.22000 2.93000 2.93000 Yes Yes CDL PBR No No
+Discovery Health formularies and PBR benchmark pricing 18 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+3000541 Losartan macleods 50mg TAB 2.22000 2.22000 2.50000 2.50000 Yes Yes CDL PBR No No
+3005832 Loxat concentrate for infusion 20ml vial 100mg/20mgINF - - 420.32000 420.32000 Yes Yes Oncology Non-PBR Yes No
+3005833 Loxat concentrate for infusion 5ml vial 30mg/5mL INF - - 125.84000 125.84000 Yes Yes Oncology Non-PBR Yes No
+716754 Lumigan 2.5ml 0,01% OPD - - 217.20000 0.00000 Yes No CDL Non-PBR No No
+717385 Lumont 10mg TAB 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+717383 Lumont 4mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+717384 Lumont 5mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+721806 Lunar 20mg TAB 23.85000 23.85000 23.85000 23.85000 Yes Yes CDL PBR Yes Yes
+3000596 Luvigen TAB - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes Yes
+3004668 Lybet 150mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3004665 Lybet 75mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3004663 Lybet 25mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3005408 Maclutek 10mg TAB 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+3005406 Maclutek 4mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+3005407 Maclutek 5mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+797561 Macropen 500mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+830208 Macropen s 250mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+892654 Magasil SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+3007137 Mazotem 100mg CAP - - 500.08000 500.08000 Yes Yes Oncology Non-PBR Yes No
+3007136 Mazotem 20mg CAP - - 100.02000 100.02000 Yes Yes Oncology Non-PBR Yes No
+3007135 Mazotem 5mg CAP - - 24.77000 24.77000 Yes Yes Oncology Non-PBR Yes No
+792853 Medazine nausea 50mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+792845 Medazine-s 12,5mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+712312 Medi soda effervescent GRA - - - - No No KeyCare acute Non-PBR Yes Yes
+740683 Medigel SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+3006915 Mercaptopurine equity 50mg TAB - - 46.93000 46.93000 Yes Yes Oncology Non-PBR Yes No
+848824 Metagyl 200mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+848832 Metagyl forte 400mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+793167 Metazol 400mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+793159 Metazol 200mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+814393 Methocaps 25mg CAP 0.10000 0.10000 0.20000 0.20000 Yes Yes CDL-Oncology PBR Yes Yes
+742465 Methotrexate 2,5mg TAB 1.57000 1.57000 1.60000 1.60000 Yes Yes CDL-Oncology PBR Yes Yes
+3008506 Metplitin 100mg TAB 4.28000 4.28000 4.28000 4.28000 Yes Yes CDL enhanced PBR No No
+3008505 Metplitin 50mg TAB 4.28000 4.28000 4.28000 4.28000 Yes Yes CDL enhanced PBR No No
+3008816 Metplitin Co 50mg/1000mg TAB 2.97000 2.97000 2.97000 2.97000 Yes Yes CDL enhanced PBR No No
+3008817 Metplitin Co 50mg/850mg TAB 2.97000 2.97000 2.97000 2.97000 Yes Yes CDL enhanced PBR No No
+779822 Metrazole 400mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+720355 Mezavant 1200mg ERT - - 17.29000 17.29000 Yes Yes CDL Non-PBR No No
+3000409 Miblex vial powder for reconstitution 3,5mg INJ - - 2941.25000 2941.25000 Yes Yes Oncology Non-PBR Yes No
+743283 Migril TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+722061 Minirin melt 240mcg SLT - - 55.97000 55.97000 Yes Yes CDL Non-PBR Yes Yes
+722060 Minirin melt 120mcg SLT - - 27.96000 27.96000 Yes Yes CDL Non-PBR Yes Yes
+3006595 Minirin melt 60mcg SLT - - 13.98000 13.98000 Yes Yes CDL Non-PBR Yes Yes
+712564 Mircera prefilled syringe 0.3ml 100mcg/0,3mLINJ - - 2068.88000 2068.88000 Yes Yes CDL Non-PBR No No
+712565 Mircera prefilled syringe 0.3ml 150mcg/0,3mLINJ - - 4094.46000 4094.46000 Yes Yes CDL Non-PBR No No
+712567 Mircera prefilled syringe 0.3ml 200mcg/0,3mLINJ - - 4137.76000 4137.76000 Yes Yes CDL Non-PBR No No
+712568 Mircera prefilled syringe 0.3ml 250mcg/0,3mLINJ - - 4137.76000 4137.76000 Yes Yes CDL Non-PBR No No
+712562 Mircera prefilled syringe 0.3ml 50mcg/0,3mLINJ - - 1364.82000 1364.82000 Yes Yes CDL Non-PBR No No
+Discovery Health formularies and PBR benchmark pricing 19 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+712563 Mircera prefilled syringe 0.3ml 75mcg/0,3mLINJ - - 2047.22000 2047.22000 Yes Yes CDL Non-PBR No No
+717045 Mircera prefilled syringe 0.3ml 120mcg/0,3mLINJ - - 3275.56000 3275.56000 Yes Yes CDL Non-PBR No No
+805130 Mist pot cit simplex 416,6mg/5mLSUS - - - - No No KeyCare acute Non-PBR Yes Yes
+744182 Mitil 5mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+722964 Mivesta 400mg TAB - - 228.57000 228.57000 Yes Yes Oncology Non-PBR Yes No
+722940 Mivesta 100mg TAB - - 65.88000 65.88000 Yes Yes Oncology Non-PBR Yes No
+718676 Mivuten TAB - - 7.13000 7.13000 Yes Yes HIV Non-PBR Yes Yes
+3003576 Mixanval 10mg/10mg TAB 4.84000 4.84000 4.84000 4.84000 Yes Yes CDL PBR Yes Yes
+3003575 Mixanval 10mg/5mg TAB 4.21000 4.21000 4.21000 4.21000 Yes Yes CDL PBR Yes Yes
+3003574 Mixanval 5mg/10mg TAB 4.21000 4.21000 4.21000 4.21000 Yes Yes CDL PBR Yes Yes
+3003573 Mixanval 5mg/5mg TAB 3.31000 3.31000 3.31000 3.31000 Yes Yes CDL PBR Yes Yes
+3008137 Mizart plus 40/10 TAB 5.26000 5.26000 5.26000 5.26000 Yes Yes CDL PBR No No
+3008133 Mizart plus 40/5 TAB 4.88000 4.88000 4.88000 4.88000 Yes Yes CDL PBR No No
+3008138 Mizart plus 80/10 TAB 5.26000 5.26000 5.26000 5 Yes Yes CDL PBR No No
+3008135 Mizart plus 80/5 TAB 4.88000 4.88000 4.88000 5 Yes Yes CDL PBR No No
+710251 Monicor sr 60mg SRT 6.69000 6.69000 6.69000 6.69000 Yes Yes CDL PBR Yes Yes
+721303 Monteflo 10mg TAB 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+721300 Monteflo 4mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+721302 Monteflo 5mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+3006139 Montelukast 4 lhc 4mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+3006140 Montelukast 5 lhc 5mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+3001384 Montelukast lhc 10mg TAB 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+3005090 Morphine hydrochloride PDR - - - - Yes Yes Oncology Non-PBR Yes No
+3005093 Morphine sulphate PDR - - - - Yes Yes Oncology Non-PBR Yes No
+806587 Moxymax 500mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+806579 Moxymax 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+830275 Moxymax s 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+830283 Moxymax sf 250mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+715940 Mozobil vial 1.2ml 24mg/1,2mL INJ - - 50991.67000 50991.67000 Yes Yes Oncology Non-PBR Yes No
+811246 Mst continus 100mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+811238 Mst continus 60mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+744743 Mst continus 30mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+744735 Mst continus 10mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+3004795 Myalica 25mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+704791 Mybulen CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3000395 Myclav 625mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3000394 Myclav 375mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+852619 Mylan captopril 25mg TAB 0.40000 0.40000 0.40000 0.40000 Yes Yes CDL PBR Yes Yes
+899429 Mylan captopril 50mg TAB - - 0.54000 0.54000 Yes Yes CDL Non-PBR Yes Yes
+705416 Mylan clarithromycin 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+786012 Mylan diclofenac 25mg TAB 0.20000 0.20000 0.20000 0.20000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+786020 Mylan diclofenac 50mg TAB 0.34000 0.34000 0.71000 0.71000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+714109 Mylan granisetron ampoule 3ml 1mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+703329 Mylan indapamide 2,5mg TAB 0.61000 0.61000 0.61000 0.61000 Yes Yes CDL PBR Yes Yes
+721443 Mylan metformin 1000mg TAB 0.81000 0.81000 0.83000 0.83000 Yes Yes CDL PBR Yes Yes
+897957 Mylan metformin 500mg TAB 0.40000 0.40000 0.42000 0.42000 Yes Yes CDL PBR Yes Yes
+897961 Mylan metformin 850mg TAB 0.73000 0.73000 0.74000 0.74000 Yes Yes CDL PBR Yes Yes
+824267 Mylan morphine 15mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+Discovery Health formularies and PBR benchmark pricing 20 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+701893 Mylan oxybutynin 5mg TAB 2.17000 2.17000 2.30000 2.30000 Yes Yes CDL PBR Yes Yes
+716670 Mylan quetiapine 100mg TAB 4.54000 4.54000 4.68000 4.68000 Yes Yes CDL PBR Yes Yes
+716671 Mylan quetiapine 200mg TAB 7.05000 7.05000 7.28000 7.28000 Yes Yes CDL PBR Yes Yes
+716668 Mylan quetiapine 25mg TAB 1.65000 1.65000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+716672 Mylan quetiapine 300mg TAB 8.63000 8.63000 8.91000 8.91000 Yes Yes CDL PBR Yes Yes
+3006839 Mylonza 300/300/400 TAB - - 7.12000 7.12000 Yes Yes HIV Non-PBR Yes Yes
+3002263 Myltega 50mg TAB - - 6.90000 6.90000 Yes Yes HIV Non-PBR Yes No
+721258 Myoprin 100mg TAB - - 1.14000 1.14000 Yes Yes CDL Non-PBR No No
+810185 Napinflam 250mg TAB 0.58000 0.58000 0.72000 0.72000 Yes Yes CDL-Oncology PBR Yes Yes
+805238 Naproscript 250mg TAB 0.58000 0.58000 0.72000 0.72000 Yes Yes CDL-Oncology PBR Yes Yes
+3006415 Natrapress 10mg TAB 1.32000 1.32000 1.32000 1.32000 Yes Yes CDL PBR Yes Yes
+3006414 Natrapress 20mg TAB 1.78000 1.78000 1.78000 1.78000 Yes Yes CDL PBR Yes Yes
+3003636 Natrixam 1.5mg/10mg SRT - - 3.86943 3.86943 Yes Yes CDL Non-PBR Yes Yes
+3003635 Natrixam 1.5mg/5mg SRT - - 2.81324 2.81324 Yes Yes CDL Non-PBR Yes Yes
+718465 Navalpro cr 200mg SRT 3.22000 3.22000 3.22000 3.22000 Yes Yes CDL-Oncology PBR Yes Yes
+718466 Navalpro cr 300mg SRT 4.45000 4.45000 4.82000 4.82000 Yes Yes CDL-Oncology PBR Yes Yes
+718468 Navalpro cr 500mg SRT 7.35000 7.35000 7.98000 7.98000 Yes Yes CDL-Oncology PBR Yes Yes
+3006179 Navalpro liquid 200mg/5mL SYR 0.87000 0.87000 0.87000 0.87000 Yes Yes CDL-Oncology PBR Yes Yes
+700192 Navelbine oral 30mg CAP - - 690.79000 690.79000 Yes Yes Oncology Non-PBR Yes No
+700191 Navelbine oral 20mg CAP - - 460.53000 460.53000 Yes Yes Oncology Non-PBR Yes No
+822655 Navelbine vial 1ml 10mg/1mL INF - - 253.05000 253.05000 Yes Yes Oncology Non-PBR Yes No
+819263 Navelbine vial 5ml 50mg/5mL INF - - 985.00000 985.00000 Yes Yes Oncology Non-PBR Yes No
+3003766 Navilin 30mg CAP - - 690.79000 690.79000 Yes Yes Oncology Non-PBR Yes No
+3003765 Navilin 20mg CAP - - 460.53000 460.53000 Yes Yes Oncology Non-PBR Yes No
+746126 Nazene Z 20ml NAS - - - - No No KeyCare acute Non-PBR Yes Yes
+3006174 Neukast pre-filled syringe 0.5ml 480mcg/0,5mLINJ - - 786.80000 786.80000 Yes Yes Oncology Non-PBR Yes No
+3006173 Neukast pre-filled syringe 0.5ml 300mcg/0,5mLINJ - - 418.80000 418.80000 Yes Yes Oncology Non-PBR Yes No
+708482 Nexavar 200mg TAB - - 201.42000 201.42000 Yes Yes Oncology Non-PBR Yes No
+3003673 Nezolap 10mg TAB 11.50000 11.50000 11.94000 11.94000 Yes Yes CDL PBR Yes Yes
+3003672 Nezolap 5mg TAB 9.63000 9.63000 9.96000 9.96000 Yes Yes CDL PBR Yes Yes
+804924 Nidasall 400mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3005264 Niosar 160mg TAB 2.71000 2.71000 2.71000 2.71000 Yes Yes CDL PBR No No
+3005263 Niosar 80mg TAB 2.71000 2.71000 2.71000 2.71000 Yes Yes CDL PBR No No
+3005849 Niosar co 160/12.5 mg TAB 3.83000 - 4.18000 0.00000 Yes No CDL PBR No No
+3005926 Niosar co 160/25 mg TAB 3.83000 - 4.18000 0.00000 Yes No CDL PBR No No
+3005827 Niosar co 80/12.5 mg TAB 4.17000 - 4.18000 0.00000 Yes No CDL PBR No No
+721260 Normoten 100mg TAB 2.22000 2.22000 2.93000 2.93000 Yes Yes CDL PBR No No
+721259 Normoten 50mg TAB 2.22000 2.22000 2.50000 2.50000 Yes Yes CDL PBR No No
+721595 Norvir 100mg TAB - - 1.41000 1.41000 Yes Yes HIV Non-PBR Yes Yes
+793310 Novatrim SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+704903 Novofem TAB - - 8.50000 8.50000 Yes Yes Menopause Non-PBR Yes Yes
+897775 Novorapid penfill 3ml 100u/1mL INJ - - 87.03000 85.71000 Yes Yes CDL Non-PBR No No
+892662 Nucopain TAB - - - - Yes Yes Oncology Non-PBR Yes No
+867977 Nucotrim TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3004989 Nuradar 600mg TAB - - 17.91000 17.91000 Yes Yes HIV Non-PBR Yes No
+3000585 Nuvaco TAB - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes Yes
+3004878 Nuvitab 400mg TAB - - 228.57000 228.57000 Yes Yes Oncology Non-PBR Yes No
+3004872 Nuvitab 100mg TAB - - 65.88000 65.88000 Yes Yes Oncology Non-PBR Yes No
+Discovery Health formularies and PBR benchmark pricing 21 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+835285 Nystacid SUS - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+713084 Octanate vial 10ml 1000iu INJ - - 3452.55000 3452.55000 Yes Yes CDL Non-PBR Yes Yes
+713086 Octanate vial 10ml 500iu INJ - - 1726.27000 1726.27000 Yes Yes CDL Non-PBR Yes Yes
+713085 Octanate vial 5ml 250iu INJ - - 863.14000 863.14000 Yes Yes CDL Non-PBR Yes Yes
+713100 Octanine f 30ml vial 500iu INJ - - 2002.28000 2002.28000 Yes Yes CDL Non-PBR Yes Yes
+713099 Octanine f vial 30ml 1000iu INJ - - 4004.57000 4004.57000 Yes Yes CDL Non-PBR Yes Yes
+702935 Octin opthalmic drops 5ml 3mg/1mL OPD - - - - No No KeyCare acute Non-PBR Yes Yes
+3000372 Ocudor co 5ml OPD 195.00000 195.00000 233.60000 227.71000 Yes Yes CDL PBR Yes Yes
+3006429 Odinsti dispersible 10mg DSP - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes No
+710972 Odiven 37,5mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+710973 Odiven 75mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+3000927 Ogivri 21mg/ml iv vial powder for reconstitution + diluent 440mg INF - - 5021.64000 5021.64000 Yes Yes Oncology Non-PBR Yes No
+3004398 Olandus 10mg TAB 11.50000 11.50000 11.94000 11.94000 Yes Yes CDL PBR Yes Yes
+3004397 Olandus 5mg TAB 9.63000 9.63000 9.96000 9.96000 Yes Yes CDL PBR Yes Yes
+715659 Olexar 10mg TAB 11.50000 11.50000 11.94000 11.94000 Yes Yes CDL PBR Yes Yes
+715658 Olexar 5mg TAB 9.63000 9.63000 9.96000 9.96000 Yes Yes CDL PBR Yes Yes
+3006193 Omectron 4 odt 4mg DSP - - - - Yes Yes Oncology Non-PBR Yes No
+3006194 Omectron 8 odt 8mg DSP - - - - Yes Yes Oncology Non-PBR Yes No
+706688 Omez 40mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+703459 Omez 20mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3000589 Omiflux 20mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+718715 Omsal 0,4mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+3008511 Omuben powder for concentrate for solution for infusion vial 100mg INF - - 2847.45000 2847.45000 Yes Yes Oncology Non-PBR Yes No
+1125497 On call plus blood glucose strips STR - - 2.97000 2.87000 Yes Yes CDL Non-PBR Yes Yes
+1125498 On call sure blood glucose test strips ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR Yes Yes
+717402 Onbrez breezhaler (30 caps & inhaler) KIT - - 373.92000 156.92000 Yes No CDL enhanced Non-PBR No No
+3006620 Ondansetron 4mg odt cipla 4mg DSP - - - - Yes Yes Oncology Non-PBR Yes No
+3006622 Ondansetron 8mg odt cipla 8mg DSP - - - - Yes Yes Oncology Non-PBR Yes No
+718558 Ondansetron fresenius ampoule 8mg/4mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+718557 Ondansetron fresenius ampoule 4mg/2mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+218449 Onetouch select plus test strip ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR Yes Yes
+708388 Onicit vial 5ml 50mcg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+723390 Oplaxin concentrate for solution 1ml vial rtu 100mg/1mL INF - - 729.10000 729.10000 Yes Yes Oncology Non-PBR Yes No
+723389 Oplaxin concentrate for solution 1ml vial rtu 50mg/1mL INF - - 364.55000 364.55000 Yes Yes Oncology Non-PBR Yes No
+723474 Optisulin cartridge 3ml 100iu/1mL INJ - - 94.00000 94.00000 Yes Yes CDL Non-PBR Yes Yes
+3007142 Optitrin OPD 195.00000 195.00000 233.60000 227.71000 Yes Yes CDL PBR Yes Yes
+3004000 Oxaliplatin fresenius concentrate for sol for inf vial 10ml 50mg/10mL INF - - 364.55000 364.55000 Yes Yes Oncology Non-PBR Yes No
+3004002 Oxaliplatin fresenius concentrate for sol for inf vial 20ml 100mg/20mLINF - - 729.10000 729.10000 Yes Yes Oncology Non-PBR Yes No
+719542 Oxpola 0,125mg TAB 2.56000 2.56000 2.56000 2.56000 Yes Yes CDL PBR Yes Yes
+719543 Oxpola 0,25mg TAB 3.13000 3.13000 3.13000 3.13000 Yes Yes CDL PBR Yes Yes
+715945 Oxycontin 20mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+715944 Oxycontin 10mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+715943 Oxycontin 5mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+715951 Oxynorm 20mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+715950 Oxynorm 10mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+715949 Oxynorm 5mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+722063 Oxyrest 5mg TAB 2.17000 2.17000 2.30000 2.30000 Yes Yes CDL PBR Yes Yes
+717009 Paclitaxel 100 eurolab vial 16.7ml 100mg/16,7mILNF - - 420.32000 420.32000 Yes Yes Oncology Non-PBR Yes No
+Discovery Health formularies and PBR benchmark pricing 22 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+3006704 Paclitaxel 100mg/16.7ml fresenius conc for sol vial 50ml 100mg/16,7mILNF - - 420.32000 420.32000 Yes Yes Oncology Non-PBR Yes No
+717008 Paclitaxel 30 eurolab 30mg/5mL INF - - 125.84000 125.84000 Yes Yes Oncology Non-PBR Yes No
+717011 Paclitaxel 300 eurolab concentrate for inf vial 50ml 300mg/50mLINF - - 1258.45000 1258.45000 Yes Yes Oncology Non-PBR Yes No
+3006705 Paclitaxel 300mg/50ml fresenius conc for sol vial 50ml 300mg/50mLINF - - 1258.45000 1258.45 Yes Yes Oncology Non-PBR Yes No
+3006703 Paclitaxel 30mg/5ml fresenius conc for sol vial 6ml 30mg/5mL INF - - 125.84000 125.84000 Yes Yes Oncology Non-PBR Yes No
+889772 Painblok (plastic bottle) 120mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+704450 Painogesic 120mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+3005997 Painogesic co TAB - - - - Yes Yes Oncology Non-PBR Yes No
+3006261 Palbociclib 100 mg cipla 100mg CAP - - 503.54000 503.54000 Yes Yes Oncology Non-PBR Yes No
+3006262 Palbociclib 125 mg cipla 125mg CAP - - 503.54000 503.54000 Yes Yes Oncology Non-PBR Yes No
+3006258 Palbociclib 75 mg cipla 75mg CAP - - 503.54000 503.54000 Yes Yes Oncology Non-PBR Yes No
+3002864 Palbociclib pfizer 75mg CAP - - 503.54000 503.54000 Yes Yes Oncology Non-PBR Yes No
+3002865 Palbociclib pfizer 100mg CAP - - 503.54000 503.54000 Yes Yes Oncology Non-PBR Yes No
+3002866 Palbociclib pfizer 125mg CAP - - 503.54000 503.54000 Yes Yes Oncology Non-PBR Yes No
+3005645 Palcita solution for injection 5ml vial 250mcg/5mLINJ - - - - Yes Yes Oncology Non-PBR Yes No
+723877 Palexia sr 100mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+723876 Palexia sr 50mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+3007017 Palonosetron fresenius solution for injection 5ml vial 250mcg/5mLINJ - - - - Yes Yes Oncology Non-PBR Yes No
+3006694 Palton solution for injection 5ml vial 250mcg/5mLINJ - - - - Yes Yes Oncology Non-PBR Yes No
+752304 Panafcort 5mg TAB 0.19000 0.19000 0.27000 0.27000 Yes Yes CDL-KeyCare acute PBR Yes Yes
+752398 Panamor at 50mg TAB 0.34000 0.34000 0.71000 0.71000 Yes Yes CDL-Oncology-KeyCare acute PBR Yes Yes
+706111 Pantocid 40mg/10mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+3005121 Pantoprazole mr 20 mg austell 20mg ECT - - - - Yes Yes Oncology Non-PBR Yes No
+3005122 Pantoprazole mr 40 mg austell 40mg ECT - - - - Yes Yes Oncology Non-PBR Yes No
+3005882 Paranvir 600mg TAB - - 17.91000 17.91000 Yes Yes HIV Non-PBR Yes No
+3007756 Partid 200mg TAB 2.53000 2.53000 3.15000 3.15000 Yes Yes CDL-Oncology PBR Yes Yes
+714527 Pearinda 4mg TAB 1.79000 1.79000 1.89000 1.89000 Yes Yes CDL PBR No No
+714528 Pearinda 8mg TAB 3.59000 3.59000 3.78000 3.78000 Yes Yes CDL PBR No No
+714952 Pearinda plus 4mg/1.25mg TAB 3.05000 3.05000 3.05000 3.05000 Yes Yes CDL PBR No No
+3003593 Pearinda plus 8mg/2.5mg TAB - - 4.23000 4.23000 Yes Yes CDL Non-PBR No No
+3003563 Pearloc 4mg/10mg TAB 4.20000 4.20000 4.21000 4.21000 Yes Yes CDL PBR Yes Yes
+3003551 Pearloc 4mg/5mg TAB 3.30000 3.30000 3.31000 3.31000 Yes Yes CDL PBR Yes Yes
+3003565 Pearloc 8mg/10mg TAB 4.83333 4.83333 4.84000 4.84000 Yes Yes CDL PBR Yes Yes
+3003564 Pearloc 8mg/5mg TAB 4.21000 4.21000 4.21000 4.21000 Yes Yes CDL PBR Yes Yes
+722963 Pecaset 500mg TAB - - 25.50000 25.50000 Yes Yes Oncology Non-PBR Yes No
+722962 Pecaset 150mg TAB - - 7.25000 7.25000 Yes Yes Oncology Non-PBR Yes No
+3005663 Pegfilgrastim 6mg/0.6ml mylan pre-filled syringe 0.6ml INJ - - 3065.99000 3065.99000 Yes Yes Oncology Non-PBR Yes No
+3003864 Pegylastin pre-filled syringe 0.6ml 6mg/0,6mL INJ - - 3065.99000 3065.99000 Yes Yes Oncology Non-PBR Yes No
+723384 Pemetrexed accord powder for solution vial 500mg INF - - 8383.50000 8383.50000 Yes Yes Oncology Non-PBR Yes No
+3002218 Pemject powder for solution vial 500mg INF - - 8383.50000 8383.50000 Yes Yes Oncology Non-PBR Yes No
+707980 Pendine 10mg TAB 2.49000 2.49000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+707979 Pendine 5mg TAB 1.73000 1.73000 1.73000 1.73000 Yes Yes CDL PBR Yes Yes
+714134 Pentasa 1000mg SUP - - 35.70000 35.70000 Yes Yes CDL Non-PBR No No
+890775 Pentasa 500mg TAB - - 6.85000 6.85000 Yes Yes CDL Non-PBR Yes Yes
+715307 Peploc 40mg ECT - - - - Yes Yes Oncology Non-PBR Yes No
+715306 Peploc 20mg ECT - - - - Yes Yes Oncology Non-PBR Yes No
+708649 Perdotor (was circator) 4mg TAB 1.79000 1.79000 1.89000 1.89000 Yes Yes CDL PBR No No
+3000236 Perdotor (was circator) 8mg TAB 3.59000 3.59000 3.78000 3.78000 Yes Yes CDL PBR No No
+Discovery Health formularies and PBR benchmark pricing 23 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+708650 Perdotor plus (was circator plus) 4mg/1.25mg TAB 3.05000 3.05000 3.05000 3.05000 Yes Yes CDL PBR No No
+717782 Perindopril co unicorn 4mg/1.25mg TAB 3.05000 3.05000 3.05000 3.05000 Yes Yes CDL PBR No No
+717783 Perindopril unicorn 4mg TAB 1.79000 1.79000 1.89000 1.89000 Yes Yes CDL PBR No No
+717784 Perindopril unicorn 8mg TAB 3.59000 3.59000 3.78000 3.78000 Yes Yes CDL PBR No No
+754463 Pethidine hcl 1ml-fresenius 50mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+3003581 Pexali powder for solution vial 500mg INF - - 8383.50000 8383.50000 Yes Yes Oncology Non-PBR Yes No
+3003580 Pexali powder for solution vial 100mg INF - - 1610.05000 1610.05 Yes Yes Oncology Non-PBR Yes No
+723741 Pexasp 0,125mg TAB 2.56000 2.56000 2.56000 2.56000 Yes Yes CDL PBR Yes Yes
+723740 Pexasp 0,25mg TAB 3.13000 3.13000 3.13000 3.13000 Yes Yes CDL PBR Yes Yes
+723742 Pexasp 1mg TAB 9.83000 9.83000 9.83000 9.83000 Yes Yes CDL PBR Yes Yes
+3002874 Pexitaz 500 powder for solution for infusion vial 500mg INF - - 8383.50000 8383.50000 Yes Yes Oncology Non-PBR Yes No
+714293 Pharma dynamics clopidogrel 75mg TAB 3.26000 3.26000 3.26000 3.26000 Yes Yes CDL enhanced PBR Yes No
+703601 Pharma-q cimetidine ampoule 2ml 200mg/2mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+705973 Pharma-q metoclopramide ampoule 2ml 5mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+894951 Pharma-q morphine ampoule 1ml 15mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+895156 Pharma-q pethidine ampoule 1ml 25mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+894958 Pharma-q pethidine ampoule 1ml 50mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+703224 Pharmatet (yellow/orange) 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+754757 Phenergan 25mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+754870 Phenytoin sod 100mg TAB - - 0.80000 0.80000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+3000543 Pioglitazone hydrochloride macleods 15mg TAB 3.34000 3.34000 3.38000 3.38000 Yes Yes CDL PBR Yes Yes
+3000544 Pioglitazone hydrochloride macleods 30mg TAB 5.60000 5.60000 5.66000 5.66000 Yes Yes CDL PBR Yes Yes
+711423 Plagrol 75mg TAB 3.26000 3.26000 3.26000 3.26000 Yes Yes CDL enhanced PBR Yes No
+794333 Plasmoquine 200mg CAP - - 3.33000 3.33000 Yes Yes CDL Non-PBR Yes Yes
+3001820 Plenish-k sr 600mg SRT 1.59000 1.59000 1.59000 1.59000 Yes Yes CDL PBR Yes Yes
+3001925 Pneumovax 23 single dose pre-filled syringe 0.5ml VAC - - 479.28000 479.28000 Yes Yes CDL Non-PBR Yes Yes
+3006836 Pomalidomide 3mg cipla 3mg CAP - - 1598.00000 1598.00000 Yes Yes Oncology Non-PBR Yes No
+3006837 Pomalidomide 4mg cipla 4mg CAP - - 1598.00000 1598.00000 Yes Yes Oncology Non-PBR Yes No
+793264 Ponac 50mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+3002371 Pravafen 40mg/160mg CAP - - 9.11000 9.11000 Yes Yes CDL Non-PBR Yes Yes
+3005678 Pravlex sr 0,4mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+3005655 Prazant 40mg ECT - - - - Yes Yes Oncology Non-PBR Yes No
+3005654 Prazant 20mg ECT - - - - Yes Yes Oncology Non-PBR Yes No
+720716 Prazoloc powder for solution vial 40mg INJ - - - - Yes Yes Oncology Non-PBR Yes No
+3004726 Pregabalin 150 cipla 150mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3004724 Pregabalin 25 cipla 25mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3004725 Pregabalin 75 cipla 75mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+756849 Preparation h OIN - - - - No No KeyCare acute Non-PBR Yes Yes
+3004558 Prerica 150mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3004555 Prerica 75mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3003544 Presicard 10mg TAB 2.71000 2.71000 2.71000 2.71000 Yes Yes CDL PBR Yes Yes
+3003543 Presicard 5mg TAB 1.57000 1.57000 1.57000 1.57000 Yes Yes CDL PBR Yes Yes
+721508 Prexum 10 plus 10mg/2.5mg TAB - - 4.65000 4.65000 Yes Yes CDL Non-PBR No No
+720388 Prexum 5 plus 5mg/1.25mg TAB 2.56000 2.56000 3.05000 3.05000 Yes Yes CDL PBR No No
+3006855 Prinolid 11,25mg KIT - - 6219.20000 6219.20000 Yes Yes Oncology Non-PBR Yes No
+3006854 Prinolid 3,75mg KIT - - 2125.12000 2125.12000 Yes Yes Oncology Non-PBR Yes No
+3003847 Priptrin 10mg TAB 10.50000 10.50000 12.00000 12.00000 Yes Yes CDL PBR Yes Yes
+3003848 Priptrin 15mg TAB 17.67000 17.67000 18.00000 18.00000 Yes Yes CDL PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 24 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+720812 Probitor 20mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+757527 Promethazine hcl 1ml fresenius 25mg/1mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+757675 Propan gel s SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+3002487 Protyga 250mg TAB - - 136.79000 136.79000 Yes Yes Oncology Non-PBR Yes No
+808245 Provera 10mg TAB - - 9.06000 9.06000 Yes Yes Menopause Non-PBR Yes Yes
+757934 Provera 5mg TAB - - 5.26000 5.26000 Yes Yes Menopause Non-PBR Yes Yes
+758221 Purbac SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+758388 Purmycin 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+758418 Purmycin 250mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+758396 Purmycin 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+758558 Pyralen 120mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+882996 Pyridoxine 25mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+723438 Pyridoxine 25mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+799432 Pyrocaps 20mg CAP 1.22000 1.22000 1.38000 1.38000 Yes Yes CDL-Oncology PBR Yes Yes
+3003782 Quesara 100mg TAB 4.54000 4.54000 4.68000 4.68000 Yes Yes CDL PBR Yes Yes
+3003783 Quesara 200mg TAB 7.05000 7.05000 7.28000 7.28000 Yes Yes CDL PBR Yes Yes
+3003781 Quesara 25mg TAB 1.65000 1.65000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+3003784 Quesara 300mg TAB 8.63000 8.63000 8.91000 8.91000 Yes Yes CDL PBR Yes Yes
+3003540 Quesara xr 200mg SRT 7.28000 7.28000 7.28000 7.28000 Yes Yes CDL PBR No No
+3003541 Quesara xr 300mg SRT 8.91000 8.91000 8.91000 8.91000 Yes Yes CDL PBR No No
+3003542 Quesara xr 400mg SRT 9.42000 9.42000 9.42000 9.42000 Yes Yes CDL PBR No No
+3003537 Quesara xr 150mg SRT 6.00000 6.00000 6.00000 6.00000 Yes Yes CDL PBR No No
+3004145 Quetz 100mg TAB 4.54000 4.54000 4.68000 4.68000 Yes Yes CDL PBR Yes Yes
+3004146 Quetz 200mg TAB 7.05000 7.05000 7.28000 7.28000 Yes Yes CDL PBR Yes Yes
+3004143 Quetz 25mg TAB 1.65000 1.65000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+3004147 Quetz 300mg TAB 8.63000 8.63000 8.91000 8.91000 Yes Yes CDL PBR Yes Yes
+3005267 Radzil 10mg TAB 10.50000 10.50000 12.00000 12.00000 Yes Yes CDL PBR Yes Yes
+3005268 Radzil 15mg TAB 17.67000 17.67000 18.00000 18.00000 Yes Yes CDL PBR Yes Yes
+3005266 Radzil 5mg TAB 6.30000 6.30000 6.30000 6.30000 Yes Yes CDL PBR Yes Yes
+837253 Ranceph 500mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+830909 Ranceph 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+860603 Ranceph 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+860611 Ranceph 250mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+3004081 Ranclav 625mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+894123 Ranclav 156,25mg/5mSLUS - - - - No No KeyCare acute Non-PBR Yes Yes
+894125 Ranclav forte 312,5mg/5mLSUS - - - - No No KeyCare acute Non-PBR Yes Yes
+710611 Ran-perindopril 4mg TAB 1.79000 1.79000 1.89000 1.89000 Yes Yes CDL PBR No No
+703543 Rapacid 20mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3004978 Rasapar 1mg TAB 13.81000 13.81000 14.91000 14.91000 Yes Yes CDL PBR Yes Yes
+718486 Rassetom (was dyna levetiracetam) 250mg TAB 1.95000 1.95000 1.99000 1.99000 Yes Yes CDL-Oncology PBR Yes Yes
+718485 Rassetom (was dyna levetiracetam) 500mg TAB 3.98000 3.98000 3.98000 3.98000 Yes Yes CDL-Oncology PBR Yes Yes
+719989 Rautevene solution for injection ampoule 5ml 100mg/5mL INJ 101.62000 101.62000 126.80000 126.80000 Yes Yes CDL PBR No No
+3000528 Ravalef 10mg TAB 23.85000 23.85000 23.85000 23.85000 Yes Yes CDL PBR Yes Yes
+3000529 Ravalef 20mg TAB 23.85000 23.85000 23.85000 23.85000 Yes Yes CDL PBR Yes Yes
+3006965 Razeda 1mg TAB 13.81000 13.81000 14.91000 14.91000 Yes Yes CDL PBR Yes Yes
+890887 Rebif 22 pre-filled syringe 0.5ml 22mcg/0,5mLINJ - - 571.64000 571.64000 Yes Yes CDL Non-PBR Yes Yes
+717085 Rebif 22 rebidose pre-filled pen 0.5ml 22mcg/0,5mLINJ - - 571.64000 571.64000 Yes Yes CDL Non-PBR Yes Yes
+898891 Rebif 44 pre-filled syringe 0.5ml 44mcg/0,5mLINJ - - 636.81000 636.81000 Yes Yes CDL Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 25 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+717093 Rebif 44 rebidose pre-filled pen 0.5ml 44mcg/0,5mLINJ - - 636.81000 636.81000 Yes Yes CDL Non-PBR Yes Yes
+704630 Recormon 6000 iu/0.3ml pre-filled syringe 6000iu INJ - - - - Yes Yes Oncology Non-PBR Yes No
+705751 Recormon pre-filled syringe 30000iu/0,6mLINJ - - - - Yes Yes Oncology Non-PBR Yes No
+705261 Recormon pre-filled syringe 10000iu INJ - - - - Yes Yes Oncology Non-PBR Yes No
+3005178 Redditux concentrate for solution for infusion vial 10ml 100mg/10mLINF - - 2337.82000 2337.82000 Yes Yes Oncology Non-PBR Yes No
+3005180 Redditux concentrate for solution for infusion vial 50ml 500mg/50mLINF - - 11688.60000 11688.60000 Yes Yes Oncology Non-PBR Yes No
+3008853 Redifarg 10mg TAB 7.40000 7.40000 7.40000 7.40000 Yes Yes CDL enhanced PBR No No
+714662 Redilev 250mg TAB 1.95000 1.95000 1.99000 1.99000 Yes Yes CDL-Oncology PBR Yes Yes
+714664 Redilev 750mg TAB 5.93000 5.93000 5.97000 5.97000 Yes Yes CDL-Oncology PBR Yes Yes
+714663 Redilev 500mg TAB 3.98000 3.98000 3.98000 3.98000 Yes Yes CDL-Oncology PBR Yes Yes
+719205 Regoval co 160mg/12.5mg TAB 3.83000 - 4.18000 0.00000 Yes No CDL PBR No No
+719206 Regoval co 160mg/25mg TAB 3.83000 - 4.18000 0.00000 Yes No CDL PBR No No
+719204 Regoval co 80mg/12.5mg TAB 4.17000 - 4.18000 0.00000 Yes No CDL PBR No No
+882934 Repivate 0,1% CRE 0.70000 0.70000 0.75000 0.75000 Yes Yes CDL-KeyCare acute PBR Yes Yes
+716505 Reprex 4mg TAB 1.79000 1.79000 1.89000 1.89000 Yes Yes CDL PBR Yes Yes
+716506 Reprex 8mg TAB 3.59000 3.59000 3.78000 3.78000 Yes Yes CDL PBR Yes Yes
+760048 Reserpine 0,25mg TAB - - 1.02000 1.02000 Yes Yes CDL Non-PBR Yes Yes
+3007015 Revinty ellipta 184/22ug 30 dose INH 276.49000 276.49000 276.49000 276.49000 Yes Yes CDL-CDL enhanced PBR No No
+3007014 Revinty ellipta 92/22ug 30 dose INH 238.94000 238.94000 238.94000 238.94000 Yes Yes CDL-CDL enhanced PBR No No
+3000532 Reydin TAB - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes Yes
+721609 Rheumalef 10mg TAB 23.85000 23.85000 23.85000 23.85000 Yes Yes CDL PBR Yes Yes
+721610 Rheumalef 20mg TAB 23.85000 23.85000 23.85000 23.85000 Yes Yes CDL PBR Yes Yes
+703162 Rhineton 4mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3001731 Rhineton 2mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+3002386 Riatem 100mg/300mg TAB - - 11.41000 11.41000 Yes Yes HIV Non-PBR Yes Yes
+710437 Ridaq 12,5mg TAB - - 0.61000 0.61000 Yes Yes CDL Non-PBR Yes Yes
+720864 Rilovia 200mg/50mg TAB - - 3.07000 3.07000 Yes Yes HIV Non-PBR Yes Yes
+3007990 Riqviva concentrate for solution for infusion 20ml vial 400mg/16mLINF - - 14833.78000 14833.78000 Yes Yes Oncology Non-PBR Yes No
+3007989 Riqviva concentrate for solution for infusion 5ml vial 100mg/4mL INF - - 3708.44000 3708.44000 Yes Yes Oncology Non-PBR Yes No
+717996 Risnia 0,5mg TAB 4.03000 4.03000 4.03000 4.03000 Yes Yes CDL PBR Yes Yes
+717997 Risnia 1mg TAB 7.45000 7.45000 7.45000 7.45000 Yes Yes CDL PBR Yes Yes
+717998 Risnia 2mg TAB 15.90000 15.90000 15.90000 15.90000 Yes Yes CDL PBR Yes Yes
+717999 Risnia 3mg TAB 21.41000 21.41000 21.41000 21.41000 Yes Yes CDL PBR Yes Yes
+714101 Rispacor 0,5mg TAB 4.03000 4.03000 4.03000 4.03000 Yes Yes CDL PBR Yes Yes
+713967 Rispacor 1mg TAB 7.45000 7.45000 7.45000 7.45000 Yes Yes CDL PBR Yes Yes
+713966 Rispacor 2mg TAB 15.90000 15.90000 15.90000 15.90000 Yes Yes CDL PBR Yes Yes
+713965 Rispacor 3mg TAB 21.41000 21.41000 21.41000 21.41000 Yes Yes CDL PBR Yes Yes
+723314 Rispide 0,5mg TAB 4.03000 4.03000 4.03000 4.03000 Yes Yes CDL PBR Yes Yes
+723315 Rispide 1mg TAB 7.45000 7.45000 7.45000 7.45000 Yes Yes CDL PBR Yes Yes
+723316 Rispide 2mg TAB 15.90000 15.90000 15.90000 15.90000 Yes Yes CDL PBR Yes Yes
+3001754 Ristova 100 vial 10ml 100mg/10mLINF - - 2337.82000 2337.82000 Yes Yes Oncology Non-PBR Yes No
+3001755 Ristova 500 vial 50ml 500mg/50mLINF - - 11688.60000 11688.60000 Yes Yes Oncology Non-PBR Yes No
+721720 Rizene TAB - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes Yes
+704786 R-loc 50mg/2mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+3008557 Roidace 100mcg TAB 0.84000 0.84000 0.84000 0.84000 Yes Yes CDL PBR Yes Yes
+3008554 Roidace 25mcg TAB 0.40000 0.40000 0.40000 0.40000 Yes Yes CDL PBR Yes Yes
+3008555 Roidace 50mcg TAB 0.67000 0.67000 0.67000 0.67000 Yes Yes CDL PBR Yes Yes
+3008556 Roidace 75mcg TAB 0.78000 0.78000 0.78000 0.78000 Yes Yes CDL PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 26 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+3002165 Roltesim (was Simvastatin 10 strides) 10mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+3002166 Roltesim (was Simvastatin 20 strides) 20mg TAB 1.00000 1.00000 1.08000 1.08000 Yes Yes CDL PBR Yes Yes
+704174 Roltesim (was simvastatin 40 strides) 40mg TAB 1.21000 1.21000 1.21000 1.21000 Yes Yes CDL PBR Yes Yes
+719645 Romidab 1000mg TAB 0.81000 0.81000 0.83000 0.83000 Yes Yes CDL PBR Yes Yes
+719643 Romidab 500mg TAB 0.40000 0.40000 0.42000 0.42000 Yes Yes CDL PBR Yes Yes
+719644 Romidab 850mg TAB 0.73000 0.73000 0.74000 0.74000 Yes Yes CDL PBR Yes Yes
+701072 Roxifen 20mg CAP 1.22000 1.22000 1.38000 1.38000 Yes Yes CDL-Oncology PBR Yes Yes
+721801 Rubexet rtu concentrated solution for infusion 25ml 50mg/25mL INF - - 387.84000 387.84000 Yes Yes Oncology Non-PBR Yes No
+721800 Rubexet rtu concentrated solution for infusion 5ml 10mg/5mL INF - - 77.57000 77.57000 Yes Yes Oncology Non-PBR Yes No
+3005165 Rubilim cr 200mg SRT 3.22000 3.22000 3.22000 3.22000 Yes Yes CDL PBR Yes Yes
+3005166 Rubilim cr 300mg SRT 4.45000 4.45000 4.82000 4.82000 Yes Yes CDL-Oncology PBR Yes Yes
+3005167 Rubilim cr 500mg SRT 7.35000 7.35000 7.98000 7.98000 Yes Yes CDL-Oncology PBR Yes Yes
+3000278 Rubitrend 12,5mg TAB 2.46000 2.46000 2.48000 2.48000 Yes Yes CDL PBR Yes Yes
+3000281 Rubitrend 25mg TAB 3.17000 3.17000 3.23000 3.23000 Yes Yes CDL PBR Yes Yes
+3000276 Rubitrend 6,25mg TAB 2.26000 2.26000 2.37000 2.37000 Yes Yes CDL PBR Yes Yes
+3005571 Ryzodeg penfill 3ml 100u/1mL INJ - - 136.26000 0 Yes No CDL Non-PBR No No
+720401 Saflutan single dose container 0.3ml 15mcg/1mL OPD - - 8.60000 0.00000 Yes No CDL Non-PBR No No
+3006449 Sagalatin 10mg TAB 7.40000 7.40000 7.40000 7.40000 Yes Yes CDL enhanced PBR No No
+762008 Salazopyrin 500mg TAB - - 5.27000 5.27000 Yes Yes CDL Non-PBR Yes Yes
+762016 Salazopyrin en 500mg ECT - - 5.27000 5.27000 Yes Yes CDL Non-PBR Yes Yes
+3007073 Salofalk 1,5g SAC - - 14.42000 14.42000 Yes Yes CDL Non-PBR No No
+707852 Sandoz azithromycin 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+828300 Sandoz bezafibrate 400mg SRT 8.11000 8.11000 8.11000 8.11000 Yes Yes CDL PBR Yes Yes
+878782 Sandoz co-amoclav sf 312,5mg/5mLSUS - - - - No No KeyCare acute Non-PBR Yes Yes
+719283 Sandoz co-amoxyclav 625mg DSP - - - - No No KeyCare acute Non-PBR Yes Yes
+878766 Sandoz co-amoxyclav 375mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+705471 Sandoz co-amoxyclav bd sf 457mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+878774 Sandoz co-amoxyclav s 156,25mg/5mSLUS - - - - No No KeyCare acute Non-PBR Yes Yes
+781231 Sandoz flucloxacillin 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+721304 Sandoz vinorelbine vial 2ml 10mg/1mL INF - - 266.79000 266.79000 Yes Yes Oncology Non-PBR Yes No
+716515 Sartoc-co 100mg/25mg TAB 2.98000 2.98000 2.98000 2.98000 Yes Yes CDL PBR Yes Yes
+715064 Sartoc-co 50/12.5 50mg/12.5mgTAB 2.63000 2.63000 2.64000 2.64000 Yes Yes CDL PBR Yes Yes
+762725 Scopex 10mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+762717 Scopex co TAB - - - - Yes Yes Oncology Non-PBR Yes No
+703383 Scopex syrup 5mg/5mL SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+762849 Scripto-metic 5mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+814946 Sedabarb 30mg TAB 0.14000 0.14000 0.14000 0.14000 Yes Yes CDL-Oncology PBR Yes Yes
+721596 Seebri breezhaler (30 caps & inhaler) KIT - - 403.88000 403.88000 Yes Yes CDL enhanced Non-PBR Yes No
+3005512 Segavin 5mg TAB 1.37000 1.37000 1.80000 1.80000 Yes Yes CDL-Oncology PBR Yes Yes
+821713 Septadine antiseptic OIN - - - - No No KeyCare acute Non-PBR Yes Yes
+715190 Sereflo 25/125 hfa 120 dose INH 195.50000 195.50000 202.55000 202.55000 Yes Yes CDL-CDL enhanced PBR No No
+721413 Sereflo 25/125 hfa synchrobreathe 120 dose INH 195.50000 195.50000 202.55000 202.55000 Yes Yes CDL-CDL enhanced PBR No No
+715191 Sereflo 25/250 hfa 120 dose INH 264.50000 264.50000 272.46000 272.46000 Yes Yes CDL-CDL enhanced PBR No No
+721414 Sereflo 25/250 hfa synchrobreathe 120 dose INH 264.50000 264.50000 272.46000 272.46000 Yes Yes CDL-CDL enhanced PBR No No
+715189 Sereflo 25/50 hfa 120 dose INH 149.99000 149.99000 149.99000 149.99000 Yes Yes CDL-CDL enhanced PBR Yes Yes
+721412 Sereflo 25/50 hfa synchrobreathe 120 dose INH 149.99000 149.99000 149.99000 149.99000 Yes Yes CDL-CDL enhanced PBR Yes Yes
+3003304 Sereflo dpi 50/100 60 dose ACC 164.66000 164.66000 164.66000 164.66000 Yes Yes CDL-CDL enhanced PBR No No
+3003305 Sereflo dpi 50/250 60 dose ACC 202.54000 202.54000 202.54000 202.54000 Yes Yes CDL-CDL enhanced PBR No No
+Discovery Health formularies and PBR benchmark pricing 27 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+3006972 Sereflo dpi 50/500 60 dose ACC 272.46000 272.46000 272.46000 272.46000 Yes Yes CDL-CDL enhanced PBR No No
+3000451 Serinem 100mg TAB 3.32000 3.32000 4.20000 4.20000 Yes Yes CDL-Oncology PBR Yes Yes
+3000452 Serinem 200mg TAB 5.42000 5.42000 6.76000 6.76000 Yes Yes CDL-Oncology PBR Yes Yes
+3000448 Serinem 25mg TAB 1.42000 1.42000 1.76000 1.76000 Yes Yes CDL-Oncology PBR Yes Yes
+3000449 Serinem 50mg TAB 1.98000 1.98000 2.54000 2.54000 Yes Yes CDL-Oncology PBR Yes Yes
+3004660 Simbrinza 5ml OPD - - 225.30000 225.30000 Yes Yes CDL Non-PBR Yes Yes
+705281 Simcard 10mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+705282 Simcard 20mg TAB 1.00000 1.00000 1.08000 1.08000 Yes Yes CDL PBR Yes Yes
+822744 Sinuend TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+797618 Sinustat CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+868078 Soflax 13,5mg TAB - - - - Yes Yes Oncology-KeyCare acute Non-PBR Yes Yes
+704642 Soluspirin (was aspirin soluble) 300mg EFT - - - - No No KeyCare acute Non-PBR Yes Yes
+3004522 Sopilcin concentrate for infusion vial 10ml 20mg/10mL INF - - 5405.00000 5405.00000 Yes Yes Oncology Non-PBR Yes No
+828009 Sotahexal 160mg TAB - - 4.19000 4.19000 Yes Yes CDL Non-PBR Yes Yes
+827991 Sotahexal 80mg TAB - - 3.11000 3.11000 Yes Yes CDL Non-PBR Yes Yes
+765538 Spasmogel SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+834440 Spectrapain forte TAB - - - - Yes Yes Oncology Non-PBR Yes No
+765910 Spiractin 25mg TAB 1.77000 1.77000 1.77000 1.77000 Yes Yes CDL PBR Yes Yes
+3006317 Spirodisc 50/100 60 dose ACC 164.66000 164.66000 164.66000 164.66000 Yes Yes CDL-CDL enhanced PBR No No
+3006319 Spirodisc 50/250 60 dose ACC 202.54000 202.54000 202.54000 202.54000 Yes Yes CDL-CDL enhanced PBR No No
+3006320 Spirodisc 50/500 60 dose ACC 272.46000 272.46000 272.46000 272.46000 Yes Yes CDL-CDL enhanced PBR No No
+769665 Spironolactone 25 kiara (was sandoz spironolactone) 25mg TAB 1.77000 1.77000 1.77000 1.77000 Yes Yes CDL PBR Yes Yes
+3008548 Spironolactone 25mg accord 25mg TAB 1.77000 1.77000 1.77000 1.77000 Yes Yes CDL PBR Yes Yes
+718478 Sprycel 100mg TAB - - 532.18000 532.18000 Yes Yes Oncology Non-PBR Yes No
+711443 Sprycel 70mg TAB - - 371.93000 371.93000 Yes Yes Oncology Non-PBR Yes No
+711442 Sprycel 50mg TAB - - 266.09000 266.09000 Yes Yes Oncology Non-PBR Yes No
+711441 Sprycel 20mg TAB - - 106.44000 106.44000 Yes Yes Oncology Non-PBR Yes No
+894605 Stop allerg 13.5ml OPD - - - - No No KeyCare acute Non-PBR Yes Yes
+715720 Stradexa 1mg TAB - - 6.13000 6.13000 Yes Yes Oncology Non-PBR Yes No
+719927 Sunmatin 400mg TAB - - 228.57000 228.57000 Yes Yes Oncology Non-PBR Yes No
+710182 Sutent 50mg CAP - - 871.31000 871.31000 Yes Yes Oncology Non-PBR Yes No
+710181 Sutent 25mg CAP - - 435.65000 435.65000 Yes Yes Oncology Non-PBR Yes No
+710179 Sutent 12,5mg CAP - - 217.82000 217.82000 Yes Yes Oncology Non-PBR Yes No
+700500 Symadin 100mg CAP 3.68000 3.68000 3.68000 3.68000 Yes Yes CDL PBR Yes Yes
+705984 Symbicord 320/9mcg per inhalation 60dose TBH - - 336.60000 174.62000 Yes No CDL-CDL enhanced Non-PBR No No
+700173 Symbicord turboh 120dose 160mcg/4.5mcg TBH - - 336.60000 174.62000 Yes No CDL-CDL enhanced Non-PBR No No
+700172 Symbicord turbohaler 60dose 160mcg/4.5mcg TBH - - 168.30000 168.30000 Yes Yes CDL-CDL enhanced Non-PBR Yes Yes
+3006456 Synglutra 10/1000 SRT 10.33000 10.33000 10.33000 10.33000 Yes Yes CDL enhanced PBR No No
+813915 Tambocor 100mg TAB - - 13.80000 13.80000 Yes Yes CDL Non-PBR No No
+717802 Tambocor cr 100mg SRC - - 13.80000 13.80000 Yes Yes CDL Non-PBR No No
+717803 Tambocor cr 200mg SRC - - 27.60000 27.60000 Yes Yes CDL Non-PBR No No
+723749 Tamoltra 37.5mg/325mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+705417 Tamomilt 20mg TAB 2.31000 2.31000 2.31000 2.31000 Yes Yes CDL PBR Yes Yes
+712610 Tamoplex 20mg TAB - - 5.21000 5.21000 Yes Yes Oncology Non-PBR Yes No
+710403 Tamoxihexal 20mg TAB - - 5.21000 5.21000 Yes Yes Oncology Non-PBR Yes No
+706713 Tamsul sr 0,4mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+721515 Targinact 10mg/5mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+721516 Targinact 20mg/10mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+Discovery Health formularies and PBR benchmark pricing 28 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+721517 Targinact 40mg/20mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+721509 Targinact 5mg/2.5mg SRT - - - - Yes Yes Oncology Non-PBR Yes No
+3002048 Tarito 300mg/100mg TAB - - 11.41000 11.41000 Yes Yes HIV Non-PBR Yes Yes
+3002817 Tarpib 150mg TAB - - 509.80000 509.80000 Yes Yes Oncology Non-PBR Yes No
+3002816 Tarpib 100mg TAB - - 429.27000 429.27000 Yes Yes Oncology Non-PBR Yes No
+3002811 Tarpib 25mg TAB - - 146.96000 146.96000 Yes Yes Oncology Non-PBR Yes No
+722149 Tasdiam 150mg TAB - - 90.79000 90.79000 Yes Yes Oncology Non-PBR Yes No
+3006496 Tazatred 100mg TAB - - 532.18000 532.18000 Yes Yes Oncology Non-PBR Yes No
+3006484 Tazatred 70mg TAB - - 371.93000 371.93000 Yes Yes Oncology Non-PBR Yes No
+3006478 Tazatred 50mg TAB - - 266.09000 266.09000 Yes Yes Oncology Non-PBR Yes No
+779652 Tegretol cr 200mg SRT - - 5.85000 5.85000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+779660 Tegretol cr 400mg SRT - - 10.83000 10.83000 Yes Yes CDL-Oncology Non-PBR Yes Yes
+3000571 Telatri TAB - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes Yes
+3004888 Telpres 40mg TAB 2.93000 2.93000 2.93000 2.93000 Yes Yes CDL PBR No No
+3004889 Telpres 80mg TAB 2.93000 2.93000 2.93000 2.93000 Yes Yes CDL PBR No No
+3000422 Telpres plus 40mg/12.5mg TAB 2.68000 2.68000 3.05000 3.05000 Yes Yes CDL PBR No No
+3000423 Telpres plus 80mg/12.5mg TAB 2.68000 2.68000 3.05000 3.05000 Yes Yes CDL PBR No No
+783072 Temgesic sublingual 0,2mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+718098 Temintas 250mg CAP - - 1236.57000 1236.57000 Yes Yes Oncology Non-PBR Yes No
+718097 Temintas 100mg CAP - - 500.08000 500.08000 Yes Yes Oncology Non-PBR Yes No
+718096 Temintas 20mg CAP - - 100.02000 100.02000 Yes Yes Oncology Non-PBR Yes No
+718095 Temintas 5mg CAP - - 24.77000 24.77000 Yes Yes Oncology Non-PBR Yes No
+867853 Tenezil 10mg TAB 1.32000 1.32000 1.32000 1.32000 Yes Yes CDL PBR Yes Yes
+867861 Tenezil 20mg TAB 1.78000 1.78000 1.78000 1.78000 Yes Yes CDL PBR Yes Yes
+705873 Tenopress 100mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+705874 Tenopress 50mg TAB 0.60000 0.60000 0.60000 0.60000 Yes Yes CDL PBR Yes Yes
+3005468 Tensoforj 10/160 TAB 4.65000 4.65000 5.26000 5.26000 Yes Yes CDL PBR No No
+3005467 Tensoforj 5/160 TAB 4.65000 4.65000 4.88000 4.88000 Yes Yes CDL PBR No No
+3007327 Teprilam 10/10 TAB 4.84000 4.84000 4.84000 4.84000 Yes Yes CDL PBR Yes Yes
+3007326 Teprilam 10/5 TAB 4.21000 4.21000 4.21000 4.21000 Yes Yes CDL PBR Yes Yes
+3007325 Teprilam 5/10 TAB 4.21000 4.21000 4.21000 4.21000 Yes Yes CDL PBR Yes Yes
+3007051 Teprilam 5/5 TAB 3.31000 3.31000 3.31000 3.31000 Yes Yes CDL PBR Yes Yes
+3005318 Teriflunomide 14 teva 14mg TAB 143.13000 143.13000 143.13000 143.13000 Yes Yes CDL enhanced PBR Yes No
+3007589 Teriflunomide adco 14mg TAB 143.13000 143.13000 143.13000 143.13000 Yes Yes CDL enhanced PBR Yes No
+3002420 Terlot 150mg TAB - - 509.80000 509.80000 Yes Yes Oncology Non-PBR Yes No
+3002419 Terlot 100mg TAB - - 429.27000 429.27000 Yes Yes Oncology Non-PBR Yes No
+3007584 Teronred 500mg TAB - - 214.28000 214.28000 Yes Yes Oncology Non-PBR Yes No
+3002439 Teronred 250mg TAB - - 136.79000 136.79000 Yes Yes Oncology Non-PBR Yes No
+3006580 Tesamolot 40/10 TAB 5.26000 5.26000 5.26000 5.26000 Yes Yes CDL PBR No No
+3006579 Tesamolot 40/5 TAB 4.88000 4.88000 4.88000 4.88000 Yes Yes CDL PBR No No
+3006582 Tesamolot 80/10 TAB 5.26000 5.26000 5.26000 5 Yes Yes CDL PBR No No
+3006581 Tesamolot 80/5 TAB 4.88000 4.88000 4.88000 4.88000 Yes Yes CDL PBR No No
+3003570 Tesar co 40mg/12.5mg TAB 2.68000 2.68000 3.05000 3.05000 Yes Yes CDL PBR No No
+3003582 Tesar co 80mg/12.5mg TAB 2.68000 2.68000 3.05000 3.05000 Yes Yes CDL PBR No No
+3007578 Tesdyn 40/10 mg TAB 5.26000 5.26000 5.26000 5.26000 Yes Yes CDL PBR No No
+3007577 Tesdyn 40/5 mg TAB 4.88000 4.88000 4.88000 4.88000 Yes Yes CDL PBR No No
+3007580 Tesdyn 80/10 mg TAB 5.26000 5.26000 5.26000 5 Yes Yes CDL PBR No No
+3007579 Tesdyn 80/5 mg TAB 4.88000 4.88000 4.88000 4.88000 Yes Yes CDL PBR No No
+Discovery Health formularies and PBR benchmark pricing 29 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+3005681 Tesminol 40mg TAB 2.93000 2.93000 2.93000 2.93000 Yes Yes CDL PBR No No
+3005682 Tesminol 80mg TAB 2.93000 2.93000 2.93000 2.93000 Yes Yes CDL PBR No No
+276640 Test strip blood glucose clicks bionime gs550 ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR Yes Yes
+136701 Test strip freestyle optium glucose ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR No No
+1112071 Test strip glucocheck connekt ZZZ - - 2.97000 2.87000 Yes No CDL Non-PBR No No
+1042171 Test strip glucose blood fora 6 ZZZ - - 2.97000 3 Yes Yes CDL Non-PBR No No
+621608 Test strip glucose caresens n 29g ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR Yes Yes
+173709 Test strip glucose fora diamond blood ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR Yes Yes
+1108624 Test strip glucose vivachek ino ZZZ - - 2.97000 2.87000 Yes Yes CDL Non-PBR Yes Yes
+3007524 Tetrilune TAB - - 12.46000 12.46000 Yes Yes HIV Non-PBR Yes No
+718266 Teva anastrozole 1mg TAB - - 6.13000 6.13000 Yes Yes Oncology Non-PBR Yes No
+712607 Teva baclofen 10mg TAB 5.70000 5.70000 5.70000 5.70000 Yes Yes CDL PBR Yes Yes
+716661 Teva bicalutamide 150mg TAB - - 90.79000 90.79000 Yes Yes Oncology Non-PBR Yes No
+716660 Teva bicalutamide 50mg TAB - - 17.76000 17.76000 Yes Yes Oncology Non-PBR Yes No
+710286 Teva carbi-levo 25/100 TAB 3.43000 3.43000 3.43000 3.43000 Yes Yes CDL PBR Yes Yes
+710468 Teva carbi-levo 25/250 TAB 4.68000 4.68000 4.68000 4.68000 Yes Yes CDL PBR Yes Yes
+716356 Teva fludarabine concentrate for solution vial 2ml 50mg/2mL INJ - - 2575.71000 2575.71000 Yes Yes Oncology Non-PBR Yes No
+770388 Theophen SYR - - - - No No KeyCare acute Non-PBR Yes Yes
+788376 Theophylline anhydrous 300 kiara (was sandoz theophylline) 300mg SRT - - 1.68000 1.68000 Yes Yes CDL Non-PBR Yes Yes
+788368 Theophylline anydrous 200 kiara (was Sandoz theophylline) 200mg SRT - - 1.15000 1.15000 Yes Yes CDL Non-PBR Yes Yes
+710080 Thromboreductin 0,5mg CAP - - 54.12000 54.12000 Yes Yes Oncology Non-PBR Yes No
+3004439 Thryve 10mg TAB 10.50000 10.50000 12.00000 12.00000 Yes Yes CDL PBR Yes Yes
+3004438 Thryve 5mg TAB 6.30000 6.30000 6.30000 6.30000 Yes Yes CDL PBR Yes Yes
+3003653 Ticarda 40mg TAB 2.93000 2.93000 2.93000 2.93000 Yes Yes CDL PBR No No
+3003655 Ticarda 80mg TAB 2.93000 2.93000 2.93000 2.93000 Yes Yes CDL PBR No No
+3003656 Ticarda plus 40mg/12.5mg TAB 2.68000 2.68000 3.05000 3.05000 Yes Yes CDL PBR No No
+3003657 Ticarda plus 80mg/12.5mg TAB 2.68000 2.68000 3.05000 3.05000 Yes Yes CDL PBR No No
+3006574 Timolol 0.5% w/v fdc 5ml 0,5% OPD 83.72000 83.72000 158.23000 158.23000 Yes Yes CDL PBR Yes Yes
+770841 Timoptol 5ml 0,5% OPD 83.72000 83.72000 158.23000 158.23000 Yes Yes CDL PBR Yes Yes
+819824 Timoptol-xe 2.5ml 0,5% OPD - - 158.01000 158.01000 Yes Yes CDL Non-PBR Yes Yes
+3007059 Timpromat 3ml OPD 175.00000 175.00000 245.05000 245.05000 Yes Yes CDL PBR Yes Yes
+785962 Timucen 250mg TAB 1.08000 1.08000 1.38000 1.38000 Yes Yes CDL PBR Yes Yes
+3003905 Tiotor 30 inh capsules with zelphir inhaler KIT 265.89000 265.89000 265.89000 265.89000 Yes Yes CDL enhanced PBR Yes No
+3005701 Tisumor 50mg CAP - - 871.31000 871.31000 Yes Yes Oncology Non-PBR Yes No
+3005699 Tisumor 25mg CAP - - 435.65000 435.65000 Yes Yes Oncology Non-PBR Yes No
+3005698 Tisumor 12,5mg CAP - - 217.82000 217.82000 Yes Yes Oncology Non-PBR Yes No
+833037 Topivate 0,1% CRE 0.70000 0.70000 0.75000 0.75000 Yes Yes CDL-KeyCare acute PBR Yes Yes
+708391 Toplep 100mg TAB 8.18000 8.18000 8.18000 8.18000 Yes Yes CDL-Oncology PBR Yes Yes
+708392 Toplep 200mg TAB 13.38000 13.38000 13.38000 13.38000 Yes Yes CDL-Oncology PBR Yes Yes
+708390 Toplep 50mg TAB 5.55000 5.55000 5.55000 5.55000 Yes Yes CDL-Oncology PBR Yes Yes
+716547 Topraz 10mg TAB 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+716544 Topraz 4mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+716546 Topraz 5mg CHU 5.63000 5.63000 5.63000 5.63000 Yes Yes CDL enhanced PBR No No
+3005106 Torquit 100mg TAB 4.54000 4.54000 4.68000 4.68000 Yes Yes CDL PBR Yes Yes
+3005107 Torquit 200mg TAB 7.05000 7.05000 7.28000 7.28000 Yes Yes CDL PBR Yes Yes
+3005105 Torquit 25mg TAB 1.65000 1.65000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+3005108 Torquit 300mg TAB 8.63000 8.63000 8.91000 8.91000 Yes Yes CDL PBR Yes Yes
+703993 Tralidep 100mg TAB 2.79000 2.79000 3.21000 3.21000 Yes Yes CDL PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 30 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+703992 Tralidep 50mg TAB 2.62000 2.62000 3.01000 3.01000 Yes Yes CDL PBR Yes Yes
+3005311 Tramadol/paracetamol 37.5/325mg austell TAB - - - - Yes Yes Oncology Non-PBR Yes No
+3006155 Tramaspen co 37.5mg/325mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+707365 Tramazac 100mg/2mL INJ - - - - Yes Yes Oncology Non-PBR Yes No
+706475 Tramazac 50mg CAP - - - - Yes Yes Oncology Non-PBR Yes No
+3006045 Trapacetol 37.5mg/325mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+3002658 Trastuzumab cipla vial powder for recon with diluent 440mg INF - - 5021.64000 5021.64000 Yes Yes Oncology Non-PBR Yes No
+702534 Travatan 2.5ml 0,004% OPD - - 217.62000 0.00000 Yes No CDL Non-PBR No No
+3002446 Tremistan plus 40mg/12.5mg TAB 2.68000 2.68000 3.05000 3.05000 Yes Yes CDL PBR No No
+3001913 Tremistan plus 80mg/12.5mg TAB 2.68000 2.68000 3.05000 3.05000 Yes Yes CDL PBR No No
+721430 Trenvir TAB - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes Yes
+772003 Trepiline 10mg TAB 0.95000 0.95000 1.24000 1.24000 Yes Yes CDL-Oncology PBR Yes Yes
+3003940 Trexeva plus 5mg/1.25mg TAB 2.56000 2.56000 3.05000 3.05000 Yes Yes CDL PBR Yes Yes
+772216 Trichazole 200mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3006937 Trilef TAB - - 7.12000 7.12000 Yes Yes HIV Non-PBR Yes Yes
+3008160 Trinprin 100mg ECT 1.02000 1.02000 1.05000 1.05000 Yes Yes CDL PBR Yes Yes
+3006556 Triovir TAB - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes Yes
+723032 Triplixam 10/2.5/10mg TAB - - 7.38351 7.38351 Yes Yes CDL Non-PBR No No
+723033 Triplixam 10/2.5/5mg TAB - - 7.07751 7.07751 Yes Yes CDL Non-PBR No No
+723034 Triplixam 5/1.25/10mg TAB - - 7.19596 7.19596 Yes Yes CDL Non-PBR No No
+723031 Triplixam 5/1.25/5mg TAB - - 5.86337 5.86337 Yes Yes CDL Non-PBR No No
+3001233 Triploco TAB - - 6.14000 6.14000 Yes Yes HIV Non-PBR Yes Yes
+3005329 Triveram 10mg/5mg/5mg TAB - - 5.27111 5.27111 Yes Yes CDL Non-PBR No No
+3005332 Triveram 20mg/10mg/10mg TAB - - 7.45261 7.45261 Yes Yes CDL Non-PBR No No
+3005331 Triveram 20mg/10mg/5mg TAB - - 7.11699 7.11699 Yes Yes CDL Non-PBR No No
+3005330 Triveram 20mg/5mg/5mg TAB - - 5.32047 5.32047 Yes Yes CDL Non-PBR No No
+3005333 Triveram 40mg/10mg/10mg TAB - - 7.83757 7.83757 Yes Yes CDL Non-PBR No No
+715609 Trixazole 480mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+3005389 Trobet 150mg TAB 2.07000 2.07000 2.60000 2.60000 Yes Yes CDL PBR No No
+3005399 Trobet 300mg TAB 2.07000 2.07000 2.60000 2.60000 Yes Yes CDL PBR No No
+818267 Trolic 5mg TAB 0.19000 0.19000 0.27000 0.27000 Yes Yes CDL-KeyCare acute PBR Yes Yes
+3002126 Tronson solution for injection vial 250mcg/5mLINJ - - - - Yes Yes Oncology Non-PBR Yes No
+819832 Trusopt 5ml owi 0.02 OPD 166.45000 166.45000 177.46000 166.45000 Yes No CDL PBR No No
+723867 Ultibro breezhaler (30 caps & inhaler device) KIT - - 517.45000 517.45000 Yes Yes CDL enhanced Non-PBR Yes No
+718911 Ultipot 600mg SRT 1.59000 1.59000 1.59000 1.59000 Yes Yes CDL PBR Yes Yes
+3000184 Urodoxa 4mg TAB 2.38000 2.38000 2.38000 2.38000 Yes Yes CDL PBR Yes Yes
+3000683 Valduo 10mg/160mg TAB 4.65000 4.65000 5.26000 5.26000 Yes Yes CDL PBR No No
+3000682 Valduo 5mg/160mg TAB 4.65000 4.65000 4.88000 4.88000 Yes Yes CDL PBR No No
+720026 Valeptic cr 300mg SRT 4.45000 4.45000 4.82000 4.82000 Yes Yes CDL-Oncology PBR Yes Yes
+720027 Valeptic cr 500mg SRT 7.35000 7.35000 7.98000 7.98000 Yes Yes CDL-Oncology PBR Yes Yes
+3007767 Valheft co 160/12.5 TAB 3.83000 - 4.18000 0.00000 Yes No CDL PBR No No
+3007768 Valheft co 160/25 TAB 3.83000 - 4.18000 0.00000 Yes No CDL PBR No No
+3004050 Valoma powder for solution for injection vial 3,5mg INJ - - 2941.25000 2941.25000 Yes Yes Oncology Non-PBR Yes No
+3006362 Valoma powder for solution for injection vial 1mg INJ - - 1604.25000 1604.25000 Yes Yes Oncology Non-PBR Yes No
+3006514 Valtib 2.5 solution for injection 2ml vial 2,5mg/1mL INJ - - 2100.89000 2100.89000 Yes Yes Oncology Non-PBR Yes No
+3006322 Valtib 3.5 solution for injection 2ml vial 3,5mg/1,4mLINJ - - 2941.25000 2941.25000 Yes Yes Oncology Non-PBR Yes No
+722781 Valtib powder for injection vial 3,5mg INJ - - 2941.25000 2941.25000 Yes Yes Oncology Non-PBR Yes No
+3003579 Valtib powder for solution for injection vial 1mg INJ - - 1604.25000 1604.25000 Yes Yes Oncology Non-PBR Yes No
+Discovery Health formularies and PBR benchmark pricing 31 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+3003281 Valvasc 10/160 TAB 4.65000 4.65000 5.26000 5.26000 Yes Yes CDL PBR No No
+3003280 Valvasc 5/160 TAB 4.65000 4.65000 4.88000 4.88000 Yes Yes CDL PBR No No
+720219 Vannair 160/4.5mcg per inhalation 120 dose INH - - 315.20000 174.62000 Yes No CDL-CDL enhanced Non-PBR No No
+720218 Vannair 80/4.5mcg per inhalation 120 dose INH - - 217.49000 150.00000 Yes No CDL-CDL enhanced Non-PBR No No
+718641 Vari miconazole 2% 20mg/1g GEO - - - - Yes Yes Oncology Non-PBR Yes No
+701138 Vari-betamethasone 0,1% CRE - - - - No No KeyCare acute Non-PBR Yes Yes
+700445 Vari-hydrocortisone 0.01 CRE - - - - No No KeyCare acute Non-PBR Yes Yes
+3006409 Vasloc 10mg TAB 2.49000 2.49000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+3006408 Vasloc 5mg TAB 1.73000 1.73000 1.73000 1.73000 Yes Yes CDL PBR Yes Yes
+3005418 Vasmak 10mg TAB 0.98000 0.98000 0.98000 0.98000 Yes Yes CDL PBR Yes Yes
+3005419 Vasmak 20mg TAB 1.05000 1.05000 1.05000 1.05000 Yes Yes CDL PBR Yes Yes
+3005420 Vasmak 40mg TAB 1.32000 1.32000 1.32000 1.32000 Yes Yes CDL PBR Yes Yes
+3005421 Vasmak 80mg TAB 2.64000 2.64000 2.64000 2.64000 Yes Yes CDL PBR Yes Yes
+3000431 Vativio 400mg TAB - - 228.57000 228.57000 Yes Yes Oncology Non-PBR Yes No
+3006517 Vativio fc 100mg TAB - - 65.88000 65.88000 Yes Yes Oncology Non-PBR Yes No
+3000826 Vaxigrip tetra single dose 0.5ml pre-filled syringe VAC - - 120.46000 120.46000 Yes Yes CDL Non-PBR Yes Yes
+710298 Vectoryl plus 4mg/1.25mg TAB 3.05000 3.05000 3.05000 3.05000 Yes Yes CDL PBR No No
+3005143 Veikirin 10mg TAB 0.95000 0.95000 1.24000 1.24000 Yes Yes CDL-Oncology PBR Yes Yes
+3005150 Veikirin 25mg TAB 0.84000 0.84000 0.92000 0.92000 Yes Yes CDL-Oncology PBR Yes Yes
+719405 Venlafaxine adco 150mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+719403 Venlafaxine adco 75mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+719402 Venlafaxine adco 37,5mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+706404 Venlor XR 150mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+706402 Venlor XR 75mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+706399 Venlor XR 37,5mg SRC - - - - Yes Yes Oncology Non-PBR Yes No
+720723 Ventimax cfc free 200 dose 100mcg INH 32.05000 32.05000 34.68000 34.68000 Yes Yes CDL PBR Yes Yes
+700071 Verahexal 240 sr 240mg SRT 6.15000 6.15000 6.15000 6.15000 Yes Yes CDL PBR Yes Yes
+775789 Verapamil 40 oethmaan 40mg TAB 0.66000 0.66000 0.66000 1 Yes Yes CDL PBR Yes Yes
+3002799 Vexabax 600mg/300mg TAB - - 17.44000 17.44000 Yes Yes HIV Non-PBR Yes No
+3005211 Vexfan concentrate for solution for infusion vial 10ml 6mg/1mL INF - - 431.25000 431.25000 Yes Yes Oncology Non-PBR Yes No
+3005275 Vexicop 100mg CAP 1.27000 1.27000 1.35000 1.35000 Yes Yes CDL enhanced PBR No No
+3005276 Vexicop 200mg CAP 2.54000 2.54000 2.69000 2.69000 Yes Yes CDL enhanced PBR No No
+712413 Vidaza powder for reconstitution vial 4ml 100mg INJ - - 2129.60000 2129.60000 Yes Yes Oncology Non-PBR Yes No
+3005171 Vidoteg 50mg TAB - - 6.90000 6.90000 Yes Yes HIV Non-PBR Yes No
+827851 Vinblastine pch vial 10ml 1mg/1mL INJ - - 348.91000 348.91000 Yes Yes Oncology Non-PBR Yes No
+722790 Vinblastine teva solution for injection vial 10ml 1mg/1mL INJ - - 348.91000 348.91000 Yes Yes Oncology Non-PBR Yes No
+710604 Viropon 50mg/5mL SUS - - 0.99000 0.99000 Yes Yes HIV Non-PBR Yes Yes
+3006401 Virulate 600mg/300mg TAB - - 17.44000 17.44000 Yes Yes HIV Non-PBR Yes No
+711532 Vomiz 8mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+711531 Vomiz 4mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+3007233 Vunad 400mg TAB - - 9.58000 9.58000 Yes Yes HIV Non-PBR Yes No
+3007234 Vunad 800mg TAB - - 19.17000 19.17000 Yes Yes HIV Non-PBR Yes No
+3006583 Vyzulta 5ml 0,24mg/1mL OPD - - 435.24000 397.44000 Yes No CDL Non-PBR No No
+3006817 Warfarin 5 unicorn 5mg TAB 1.37000 1.37000 1.80000 1.80000 Yes Yes CDL-Oncology PBR Yes Yes
+3006318 Warfarin 5mg austell 5mg TAB 1.37000 1.37000 1.80000 1.80000 Yes Yes CDL-Oncology PBR Yes Yes
+845698 Wormstop 100mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+870072 Xeloda 150 150mg TAB - - 7.25000 7.25000 Yes Yes Oncology Non-PBR Yes No
+870080 Xeloda 500 500mg TAB - - 25.50000 25.50000 Yes Yes Oncology Non-PBR Yes No
+Discovery Health formularies and PBR benchmark pricing 32 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+824682 Xeramel 250mg CAP - - - - No No KeyCare acute Non-PBR Yes Yes
+823570 Xeramel s 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+848409 Xeramel sf 250mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+3000513 Zaario 100mg TAB 2.22000 2.22000 2.93000 2.93000 Yes Yes CDL PBR No No
+3000512 Zaario 50mg TAB 2.22000 2.22000 2.50000 2.50000 Yes Yes CDL PBR No No
+708395 Zaloxy 250mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+708396 Zaloxy 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+709964 Zartan 100mg TAB 2.22000 2.22000 2.93000 2.93000 Yes Yes CDL PBR No No
+709225 Zartan 50mg TAB 2.22000 2.22000 2.50000 2.50000 Yes Yes CDL PBR No No
+716217 Zartan co 100mg/25mg TAB 2.98000 2.98000 2.98000 2.98000 Yes Yes CDL PBR Yes Yes
+716216 Zartan co 50mg/12.5mg TAB 2.63000 2.63000 2.64000 2.64000 Yes Yes CDL PBR Yes Yes
+3002269 Zatonav 300mg/100mg TAB - - 11.41000 11.41000 Yes Yes HIV Non-PBR Yes Yes
+703220 Zecarb 200mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+715962 Zeptol 200mg TAB 2.53000 2.53000 3.15000 3.15000 Yes Yes CDL-Oncology PBR Yes Yes
+3006755 Ziextenzo prefilled syringe 0.6ml 6mg/0,6mL INJ - - 3065.99000 3065.99000 Yes Yes Oncology Non-PBR Yes No
+3000378 Zimbiquet 100mg TAB 4.54000 4.54000 4.68000 4.68000 Yes Yes CDL PBR Yes Yes
+3000379 Zimbiquet 200mg TAB 7.05000 7.05000 7.28000 7.28000 Yes Yes CDL PBR Yes Yes
+3000339 Zimbiquet 25mg TAB 1.65000 1.65000 2.49000 2.49000 Yes Yes CDL PBR Yes Yes
+3000380 Zimbiquet 300mg TAB 8.63000 8.63000 8.91000 8.91000 Yes Yes CDL PBR Yes Yes
+3003748 Zimbus breezhaler 150/50/160 (30 caps & inhaler device) KIT - - 507.25000 507.25000 Yes Yes CDL enhanced Non-PBR Yes No
+3003749 Zimbus breezhaler 150/50/80 (30 caps & inhaler device) KIT - - 507.25000 507.25000 Yes Yes CDL enhanced Non-PBR Yes No
+720664 Zinallerg 10mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+703531 Zinc ointment bp OIN - - 0.14000 0.14000 Yes Yes CDL Non-PBR Yes Yes
+3005307 Zipsid 20mg CAP 5.50000 5.50000 5.50000 5.50000 Yes Yes CDL PBR No No
+3005308 Zipsid 40mg CAP 5.92000 5.92000 5.92000 5.92000 Yes Yes CDL PBR No No
+3005309 Zipsid 60mg CAP 7.92000 7.92000 7.92000 7.92000 Yes Yes CDL PBR No No
+3005310 Zipsid 80mg CAP 9.42000 9.42000 9.42000 9.42000 Yes Yes CDL PBR No No
+3003355 Zithract 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+721677 Zithrolide 500mg TAB - - - - No No KeyCare acute Non-PBR Yes Yes
+715952 Zobone powder for solution vial 4mg INF - - 552.40000 552.40000 Yes Yes Oncology Non-PBR Yes No
+723577 Zoclasta solution for infusion bottle 100ml 5mg/100mL INF - - 2621.95000 2621.95000 Yes Yes Oncology Non-PBR Yes No
+3003368 Zodoray 0,25mcg CAP 9.32000 9.32000 9.32000 9.32000 Yes Yes CDL PBR Yes Yes
+3003367 Zodoray 1mcg CAP 27.70000 27.70000 27.70000 27.70000 Yes Yes CDL PBR Yes Yes
+705945 Zofer 8mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+705944 Zofer 4mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+723747 Zolanz 10mg TAB 11.50000 11.50000 11.94000 11.94000 Yes Yes CDL PBR Yes Yes
+723745 Zolanz 5mg TAB 9.63000 9.63000 9.96000 9.96000 Yes Yes CDL PBR Yes Yes
+3006979 Zoledronic acid fresenius concetrate for solution 5ml vial 4mg/5mL INF - - 552.40000 552.40000 Yes Yes Oncology Non-PBR Yes No
+3005917 Zoltero concentration for solution for infusion 5ml vial 4mg/5mL INF - - 552.40000 552.40000 Yes Yes Oncology Non-PBR Yes No
+3004451 Zomvil 50mg TAB 2.14000 2.14000 2.14000 2.14000 Yes Yes CDL enhanced PBR No No
+3003456 Zorikos 300mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+3003454 Zorikos 100mg TAB - - - - Yes Yes Oncology Non-PBR Yes No
+3004932 Zostracol 1mg TAB - - 6.13000 6.13000 Yes Yes Oncology Non-PBR Yes No
+3005616 Zothena 8mg DSP - - - - Yes Yes Oncology Non-PBR Yes No
+3005615 Zothena 4mg DSP - - - - Yes Yes Oncology Non-PBR Yes No
+711511 Zoxadon 0,5mg TAB 4.03000 4.03000 4.03000 4.03000 Yes Yes CDL PBR Yes Yes
+711512 Zoxadon 1mg TAB 7.45000 7.45000 7.45000 7.45000 Yes Yes CDL PBR Yes Yes
+711513 Zoxadon 2mg TAB 15.90000 15.90000 15.90000 15.90000 Yes Yes CDL PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 33 03/12/2024
+PBR PBR Core/ Saver/
+Comp/ Exec
+Reference Reference Priority Core/ Saver/
+Formulary Comp/ Exec
+Dosage Benchmark Benchmark Formulary Priority Item indicator - Formulary Available on
+NAPPI 6 Product name Strength Benchmark highlight PBR flag FlexiCare EDL
+form Comp/ Exec Core/ Saver/ Benchmark highlight flag KeyCare
+(Unit SEP indicator
+(Unit SEP Priority (Unit SEP indicator
+incl. VAT)
+incl. VAT) (Unit SEP incl. VAT)
+721750 Zoxadon 3mg TAB 21.41000 21.41000 21.41000 21.41000 Yes Yes CDL PBR Yes Yes
+721752 Zoxadon 4mg TAB 21.41000 21.41000 21.41000 21.41000 Yes Yes CDL PBR Yes Yes
+3001439 Zoxadon odt 0,5mg MLT - - 4.03000 4.03000 Yes Yes CDL Non-PBR Yes Yes
+3001440 Zoxadon odt 1mg MLT - - 7.45000 7.45000 Yes Yes CDL Non-PBR Yes Yes
+3001441 Zoxadon odt 2mg MLT - - 15.90000 15.90000 Yes Yes CDL Non-PBR Yes Yes
+830739 Zoxil s 125mg/5mL SUS - - - - No No KeyCare acute Non-PBR Yes Yes
+705064 Zydus fluoxetine 20mg CAP 0.94000 0.94000 1.24000 1.24000 Yes Yes CDL-Oncology PBR Yes Yes
+3002266 Zyescito 10mg TAB 2.00000 2.00000 2.00000 2.00000 Yes Yes CDL PBR Yes Yes
+3002267 Zyescito 20mg TAB 2.70000 2.70000 2.70000 2.70000 Yes Yes CDL PBR Yes Yes
+720690 Zytiga 250mg TAB - - 136.79000 136.79000 Yes Yes Oncology Non-PBR Yes No
+3004575 Zyvasc 10mg/160mg TAB 4.65000 4.65000 5.26000 5.26000 Yes Yes CDL PBR No No
+3004574 Zyvasc 5mg/160mg TAB 4.65000 4.65000 4.88000 4.88000 Yes Yes CDL PBR No No
+528031 BD micro fine plus pen needle 30g 8mm ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+528034 BD micro fine plus pen needle 31g ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+149455 BD micro fine plus pen needle 32g 4mm ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+185040 Droplet pen needle 8mm 31g ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+171566 Lancet blood collection needle loris ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+177463 Lancet fora collection needle sterile 30g ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+262253 Lancet fora tender needle sterile 33g ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+405288 Lancet freestyle test ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+605351 Lancet glucocheck novicheck ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+138352 Lancet solus v2 ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+201918 Lancet unilet sterile 28g ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+511143 Lancet unilet sterile 4cm x 6cm x 7.5cm 28g ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+508771 Microlet lancet ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+188454 Needle insulin fora pen 31g 5mm ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+194605 Needle insulin fora pen 31g 8mm ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+188452 Needle insulin fora pen 32g 4mm ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+188458 Needle insulin fora pen 32g 6mm ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+1101043 Needle insulin pen verifine 4mmx10cmx15cm 32g ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+1101038 Needle insulin pen verifine 4mmx10cmx15cm 33g ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+458317 Needle novofine ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+497746 Syringe insulin 1.0ml with 27g needle ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+528007 Syringe insulin bd microfine 12.7mm 1ml 9g ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+528008 Syringe insulin bd microfine 1ml 8mm 30g ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+528024 Syringe insulin bd microfine 8mm demi 0.3ml 30g ZZZ - - - - Yes Yes CDL Non-PBR Yes Yes
+Discovery Health formularies and PBR benchmark pricing 34 03/12/2024

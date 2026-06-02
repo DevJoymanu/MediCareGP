@@ -15,7 +15,7 @@ class InvoiceForm(forms.ModelForm):
             'date_issued':          forms.DateInput(attrs={'class': 'crm-input', 'type': 'date'}),
             'due_date':             forms.DateInput(attrs={'class': 'crm-input', 'type': 'date'}),
             'status':               forms.Select(attrs={'class': 'crm-select', 'style': 'width:100%;'}),
-            'icd10_code':           forms.TextInput(attrs={'class': 'crm-input', 'placeholder': 'e.g. I10, E11.9'}),
+            'icd10_code':           forms.HiddenInput(),
             'procedure_codes':      forms.Textarea(attrs={'class': 'crm-input', 'rows': 2, 'placeholder': 'e.g. 0190 — Consultation\n0191 — Follow-up'}),
             'authorization_number': forms.TextInput(attrs={'class': 'crm-input', 'placeholder': 'Medical aid auth. number'}),
             'receipt_number':       forms.TextInput(attrs={'class': 'crm-input', 'placeholder': 'Receipt / payment reference'}),
@@ -28,10 +28,13 @@ class InvoiceForm(forms.ModelForm):
 class InvoiceItemForm(forms.ModelForm):
     class Meta:
         model  = InvoiceItem
-        fields = ['description', 'procedure_code', 'quantity', 'unit_price']
+        fields = ['line_type', 'procedure_code', 'nappi_code', 'description', 'diag_code', 'quantity', 'unit_price']
         widgets = {
-            'description':    forms.TextInput(attrs={'class': 'crm-input', 'placeholder': 'e.g. Consultation fee'}),
+            'line_type':      forms.Select(attrs={'class': 'crm-select'}),
             'procedure_code': forms.TextInput(attrs={'class': 'crm-input', 'placeholder': '0190'}),
+            'nappi_code':     forms.TextInput(attrs={'class': 'crm-input', 'placeholder': 'NAPPI code'}),
+            'description':    forms.TextInput(attrs={'class': 'crm-input', 'placeholder': 'Description'}),
+            'diag_code':      forms.TextInput(attrs={'class': 'crm-input', 'placeholder': 'ICD-10'}),
             'quantity':       forms.NumberInput(attrs={'class': 'crm-input', 'step': '0.01', 'min': '0'}),
             'unit_price':     forms.NumberInput(attrs={'class': 'crm-input', 'step': '0.01', 'min': '0'}),
         }

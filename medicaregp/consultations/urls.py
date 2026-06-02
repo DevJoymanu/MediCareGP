@@ -11,4 +11,5 @@ urlpatterns = [
     path('<int:pk>/sick-note/pdf/', views.sick_note_pdf, name='sick_note_pdf'),
     path('<int:pk>/sick-note/email/', views.sick_note_email, name='sick_note_email'),
     path('suggest/', views.suggest_prescriptions, name='suggest_prescriptions'),
+    path('icd10/', views.search_icd10, name='search_icd10'),
 ]

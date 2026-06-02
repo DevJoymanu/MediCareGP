@@ -103,6 +103,79 @@
     text-decoration:underline; padding:0;
   }
 
+  /* ── ICD-10 multi-code widget ── */
+  .icd10-search-row { position:relative; }
+  .icd10-dropdown {
+    display:none; position:absolute; top:calc(100% + 2px); left:0;
+    min-width:320px; max-width:500px;
+    background:#fff; border:1px solid var(--border); border-radius:8px;
+    box-shadow:0 4px 20px rgba(0,0,0,.14); z-index:1050;
+    max-height:260px; overflow-y:auto;
+  }
+  .icd10-dropdown.open { display:block; }
+  .icd10-option {
+    padding:8px 12px; cursor:pointer; font-size:13px; line-height:1.4;
+    border-bottom:1px solid var(--border);
+  }
+  .icd10-option:last-child { border-bottom:none; }
+  .icd10-option:hover, .icd10-option.focused { background:#f1f5f9; }
+  .icd10-option-added { opacity:.65; cursor:default; }
+  .icd10-code-badge {
+    display:inline-block; font-family:monospace; font-weight:700; font-size:11.5px;
+    color:#3730a3; background:#eef2ff; padding:1px 6px; border-radius:4px;
+    margin-right:8px; white-space:nowrap;
+  }
+  /* Tags */
+  .icd10-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; }
+  .icd10-tag {
+    display:inline-flex; align-items:center; gap:5px;
+    background:#eef2ff; border:1.5px solid #c7d2fe; border-radius:6px;
+    padding:4px 8px; font-size:12px; max-width:100%;
+  }
+  .icd10-tag-code { font-family:monospace; font-weight:700; color:#3730a3; white-space:nowrap; }
+  .icd10-tag-desc { color:#4338ca; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:220px; }
+  .icd10-tag-remove {
+    background:none; border:none; cursor:pointer; color:#818cf8;
+    font-size:15px; padding:0 0 0 2px; line-height:1; flex-shrink:0;
+  }
+  .icd10-tag-remove:hover { color:#dc2626; }
+  /* Suggestion row */
+  .icd10-suggest-row { margin-top:6px; font-size:11px; color:var(--text-3); display:none; }
+  .icd10-suggest-chip {
+    display:inline-block; background:#eef2ff; color:#3730a3; font-size:11px;
+    font-weight:700; padding:2px 8px; border-radius:4px; cursor:pointer;
+    margin:2px 3px; font-family:monospace; white-space:nowrap;
+  }
+  .icd10-suggest-chip:hover { background:#c7d2fe; }
+
+  /* ── Assessment / Diagnosis → ICD-10 inline popup ── */
+  .assess-icd10-wrap { position:relative; display:block; }
+  .assess-icd10-popup {
+    display:none; position:absolute; bottom:calc(100% + 2px); left:0; right:0;
+    background:#fff; border:1.5px solid #c7d2fe; border-radius:10px;
+    box-shadow:0 -8px 28px rgba(99,102,241,.15); z-index:1060;
+    max-height:300px; overflow-y:auto;
+  }
+  .assess-icd10-popup.open { display:block; }
+  .assess-popup-header {
+    display:flex; align-items:center; gap:6px;
+    padding:7px 13px; font-size:10px; font-weight:700; color:#3730a3;
+    text-transform:uppercase; letter-spacing:.07em; background:#eef2ff;
+    border-bottom:1px solid #c7d2fe; border-radius:10px 10px 0 0;
+    position:sticky; top:0;
+  }
+  .assess-popup-item {
+    padding:9px 13px; cursor:pointer; font-size:13px; line-height:1.4;
+    border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0;
+  }
+  .assess-popup-item:last-child { border-bottom:none; }
+  .assess-popup-item:hover, .assess-popup-item.focused { background:#f5f3ff; }
+  .assess-popup-item-added { opacity:.6; cursor:default; }
+  .assess-popup-check {
+    margin-left:8px; font-size:11px; font-weight:700;
+    color:#16a34a; white-space:nowrap; flex-shrink:0;
+  }
+
   @media (max-width:760px) {
     .consult-panels { grid-template-columns:1fr; }
     .consult-topbar { flex-direction:column; }
@@ -245,8 +318,16 @@
                 {{ form.differential_diagnosis }}
               </div>
               <div class="form-group" style="margin-bottom:0;">
-                <label>ICD-10 Code</label>
-                {{ form.icd10_code }}
+                <label>ICD-10 Code(s) <span style="font-weight:400;color:var(--text-4);">— multiple allowed</span></label>
+                <div class="icd10-widget">
+                  {{ form.icd10_code }}
+                  <div class="icd10-search-row">
+                    <input type="text" class="crm-input icd10-search" placeholder="Type code (e.g. J06) or diagnosis keyword…" autocomplete="off" spellcheck="false">
+                    <div class="icd10-dropdown"></div>
+                  </div>
+                  <div class="icd10-tags"></div>
+                  <div class="icd10-suggest-row"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -305,9 +386,17 @@
       <!-- (Quick Notes layout only — SOAP has these inline above) -->
       <div id="footer-twopanel" class="consult-footer">
         <div class="footer-row">
-          <div class="vitals-field" style="flex:0 0 130px;">
-            <div class="vitals-label">ICD-10 Code</div>
-            {{ form.icd10_code }}
+          <div class="vitals-field" style="flex:1;min-width:260px;">
+            <div class="vitals-label">ICD-10 Code(s)</div>
+            <div class="icd10-widget">
+              {{ form.icd10_code }}
+              <div class="icd10-search-row">
+                <input type="text" class="crm-input icd10-search" placeholder="Type code or diagnosis…" autocomplete="off" spellcheck="false">
+                <div class="icd10-dropdown"></div>
+              </div>
+              <div class="icd10-tags"></div>
+              <div class="icd10-suggest-row"></div>
+            </div>
           </div>
           <div class="vitals-field" style="flex:0 0 160px;">
             <div class="vitals-label">Follow-up Date</div>
@@ -411,7 +500,11 @@ function fetchSuggestions(assessmentText) {
     hideSuggestions();
     return;
   }
-  fetch(SUGGEST_URL + '?assessment=' + encodeURIComponent(assessmentText))
+  var url = SUGGEST_URL + '?assessment=' + encodeURIComponent(assessmentText);
+  if (icd10Selected && icd10Selected.length) {
+    url += '&icd10=' + encodeURIComponent(JSON.stringify(icd10Selected));
+  }
+  fetch(url)
     .then(r => r.json())
     .then(data => renderSuggestions(data))
     .catch(() => {});
@@ -469,18 +562,329 @@ function rxSuggestAddAll() {
   suggestBox.querySelectorAll('.rx-suggest-chip').forEach(c => c.classList.add('added'));
 }
 
-// Watch assessment field in both layouts — debounced 900ms
-['{{ form.assessment.id_for_label }}'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) {
-    el.addEventListener('input', function () {
-      clearTimeout(suggestTimeout);
-      suggestTimeout = setTimeout(() => fetchSuggestions(this.value), 900);
-    });
-  }
+// Watch all assessment fields — sync ICD-10 list immediately, debounce rx suggestions 700ms
+document.querySelectorAll('[name="assessment"]').forEach(function(el) {
+  el.addEventListener('input', function() {
+    syncIcd10ToAssessment(el.value);
+    clearTimeout(suggestTimeout);
+    suggestTimeout = setTimeout(function() { fetchSuggestions(el.value); }, 700);
+  });
 });
 
 function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ══════════════════════════════════════════════════════════════════
+// ICD-10 MULTI-CODE SYSTEM
+// ══════════════════════════════════════════════════════════════════
+
+const ICD10_URL = "{% url 'search_icd10' %}";
+
+// Shared state: [{code, description}, ...]
+var icd10Selected = [];
+
+// Initialise from existing hidden field (handles old single-code string + new JSON array)
+(function () {
+  var hidden = document.querySelector('[name="icd10_code"]');
+  if (!hidden || !hidden.value.trim()) return;
+  try {
+    var parsed = JSON.parse(hidden.value);
+    if (Array.isArray(parsed)) { icd10Selected = parsed; icd10RenderAll(); return; }
+  } catch(e) {}
+  // Legacy plain string e.g. "J06.9"
+  var v = hidden.value.trim();
+  icd10Selected = [{code: v, description: v}];
+  icd10RenderAll();
+})();
+
+function icd10SyncHidden() {
+  var json = JSON.stringify(icd10Selected);
+  document.querySelectorAll('[name="icd10_code"]').forEach(function(inp) { inp.value = json; });
+}
+
+function icd10RenderAll() {
+  document.querySelectorAll('.icd10-tags').forEach(function(container) {
+    if (!icd10Selected.length) { container.innerHTML = ''; return; }
+    container.innerHTML = icd10Selected.map(function(item) {
+      var c = escHtml(item.code);
+      var dFull  = escHtml(item.description);
+      var dShort = item.description.length > 52
+        ? escHtml(item.description.substring(0, 52)) + '…' : dFull;
+      return '<span class="icd10-tag" title="' + dFull + '">' +
+        '<span class="icd10-tag-code">' + c + '</span>' +
+        '<span class="icd10-tag-desc">' + dShort + '</span>' +
+        '<button type="button" class="icd10-tag-remove" data-code="' + c + '" aria-label="Remove">×</button>' +
+        '</span>';
+    }).join('');
+    container.querySelectorAll('.icd10-tag-remove').forEach(function(btn) {
+      btn.addEventListener('click', function() { icd10Remove(btn.dataset.code); });
+    });
+  });
+}
+
+function icd10Add(code, description, skipAssessSync) {
+  if (icd10Selected.some(function(c) { return c.code === code; })) return;
+  icd10Selected.push({code: code, description: description});
+  icd10SyncHidden();
+  icd10RenderAll();
+  clearIcd10Suggestions();
+  if (!skipAssessSync) {
+    // Sync description into the visible assessment field (append if not already present)
+    document.querySelectorAll('[name="assessment"]').forEach(function(field) {
+      var layout  = field.closest('[id^="layout-"]');
+      var visible = !layout || layout.style.display !== 'none';
+      if (!visible) return;
+      var current    = field.value.trim();
+      var fingerprint = description.toLowerCase().substring(0, 20);
+      if (!current) {
+        field.value = description;
+      } else if (current.toLowerCase().indexOf(fingerprint) === -1) {
+        field.value = current + '\n' + description;
+      }
+      field.dispatchEvent(new Event('input'));
+    });
+  }
+}
+
+function icd10Remove(code) {
+  icd10Selected = icd10Selected.filter(function(c) { return c.code !== code; });
+  icd10SyncHidden();
+  icd10RenderAll();
+}
+
+// Called on every assessment input event: drops codes whose descriptions
+// are no longer present in the text (doctor deleted them).
+function syncIcd10ToAssessment(assessText) {
+  var lower   = (assessText || '').toLowerCase();
+  var changed = false;
+  icd10Selected = icd10Selected.filter(function(item) {
+    // Use first 22 chars as fingerprint; short descriptions (< 5 chars) are kept unconditionally
+    var fp = item.description.toLowerCase().substring(0, Math.min(22, item.description.length));
+    if (fp.length >= 5 && lower.indexOf(fp) === -1) {
+      changed = true;
+      return false;
+    }
+    return true;
+  });
+  if (changed) {
+    icd10SyncHidden();
+    icd10RenderAll();
+  }
+}
+
+// Per-widget search + dropdown
+document.querySelectorAll('.icd10-widget').forEach(function(widget) {
+  var searchInput = widget.querySelector('.icd10-search');
+  var drop        = widget.querySelector('.icd10-dropdown');
+  if (!searchInput || !drop) return;
+
+  var timer      = null;
+  var focusedIdx = -1;
+  var lastResults = [];
+
+  function fetchAndRender(q) {
+    if (!q || q.trim().length < 2) { closeDrop(); return; }
+    fetch(ICD10_URL + '?q=' + encodeURIComponent(q.trim()))
+      .then(function(r) { return r.json(); })
+      .then(function(data) { renderDrop(data.results || []); })
+      .catch(function() {});
+  }
+
+  function renderDrop(results) {
+    lastResults = results;
+    focusedIdx  = -1;
+    if (!results.length) { closeDrop(); return; }
+    drop.innerHTML = results.map(function(r) {
+      var already = icd10Selected.some(function(c) { return c.code === r.code; });
+      return '<div class="icd10-option' + (already ? ' icd10-option-added' : '') +
+        '" data-code="' + escHtml(r.code) + '" data-desc="' + escHtml(r.description) + '">' +
+        '<span class="icd10-code-badge">' + escHtml(r.code) + '</span>' +
+        escHtml(r.description) +
+        (already ? ' <span style="font-size:10px;color:#86efac;margin-left:4px;">✓ added</span>' : '') +
+        '</div>';
+    }).join('');
+    drop.classList.add('open');
+    drop.querySelectorAll('.icd10-option').forEach(function(opt) {
+      opt.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        if (!opt.classList.contains('icd10-option-added')) {
+          icd10Add(opt.dataset.code, opt.dataset.desc);
+          searchInput.value = '';
+        }
+        closeDrop();
+      });
+    });
+  }
+
+  function closeDrop() {
+    drop.classList.remove('open');
+    drop.innerHTML = '';
+    focusedIdx  = -1;
+    lastResults = [];
+  }
+
+  function moveFocus(dir) {
+    var opts = drop.querySelectorAll('.icd10-option');
+    if (!opts.length) return;
+    focusedIdx = Math.max(0, Math.min(focusedIdx + dir, opts.length - 1));
+    opts.forEach(function(o, i) { o.classList.toggle('focused', i === focusedIdx); });
+    if (opts[focusedIdx]) opts[focusedIdx].scrollIntoView({block: 'nearest'});
+  }
+
+  searchInput.addEventListener('input', function() {
+    clearTimeout(timer);
+    timer = setTimeout(function() { fetchAndRender(searchInput.value); }, 250);
+  });
+
+  searchInput.addEventListener('keydown', function(e) {
+    if (!drop.classList.contains('open')) return;
+    if      (e.key === 'ArrowDown') { e.preventDefault(); moveFocus(+1); }
+    else if (e.key === 'ArrowUp')   { e.preventDefault(); moveFocus(-1); }
+    else if (e.key === 'Enter' && focusedIdx >= 0) {
+      e.preventDefault();
+      var r = lastResults[focusedIdx];
+      if (r && !icd10Selected.some(function(c) { return c.code === r.code; })) {
+        icd10Add(r.code, r.description);
+        searchInput.value = '';
+      }
+      closeDrop();
+    }
+    else if (e.key === 'Escape') { closeDrop(); }
+  });
+
+  searchInput.addEventListener('blur', function() { setTimeout(closeDrop, 160); });
+});
+
+// ── Assessment / Diagnosis → ICD-10 inline popup ─────────────────────────────
+
+function clearIcd10Suggestions() {} // kept for icd10Add compatibility
+
+document.querySelectorAll('[name="assessment"]').forEach(function(textarea) {
+  // Wrap textarea so the popup can be positioned absolutely below it
+  var wrapper = document.createElement('div');
+  wrapper.className = 'assess-icd10-wrap';
+  textarea.parentNode.insertBefore(wrapper, textarea);
+  wrapper.appendChild(textarea);
+
+  var popup = document.createElement('div');
+  popup.className = 'assess-icd10-popup';
+  wrapper.appendChild(popup);
+
+  var popupTimer     = null;
+  var focusedIdx     = -1;
+  var popupResults   = [];
+  var skipNextSearch = false;
+
+  // Returns {before, query} where `query` is the current incomplete segment
+  // and `before` is everything up to and including the last separator.
+  // Separators: newline  ,  ;  /  and period-space (". ")
+  function getSegmentInfo() {
+    var text = textarea.value;
+    var lastSep = -1;
+    for (var i = text.length - 1; i >= 0; i--) {
+      var ch = text[i];
+      if (ch === '\n' || ch === ',' || ch === ';' || ch === '/') {
+        lastSep = i + 1; break;
+      }
+      // period followed by a space → ". " separator
+      if (ch === ' ' && i >= 1 && text[i - 1] === '.') {
+        lastSep = i + 1; break;
+      }
+    }
+    var query  = (lastSep === -1 ? text : text.substring(lastSep)).trim();
+    var before = lastSep === -1 ? '' : text.substring(0, lastSep);
+    return { before: before, query: query };
+  }
+
+  function getQuery() {
+    var q = getSegmentInfo().query;
+    return q.replace(/^\d+[\.\)]\s*/, '').substring(0, 60);
+  }
+
+  function renderPopup(results) {
+    focusedIdx   = -1;
+    popupResults = results;
+    if (!results.length) { closePopup(); return; }
+    popup.innerHTML =
+      '<div class="assess-popup-header">' +
+        '<i class="bi bi-clipboard2-pulse"></i> ICD-10 — click or ↑↓ Enter to add</div>' +
+      results.map(function(r) {
+        var already = icd10Selected.some(function(c) { return c.code === r.code; });
+        return '<div class="assess-popup-item' + (already ? ' assess-popup-item-added' : '') +
+          '" data-code="' + escHtml(r.code) + '" data-desc="' + escHtml(r.description) + '">' +
+          '<span class="icd10-code-badge">' + escHtml(r.code) + '</span>' +
+          escHtml(r.description) +
+          (already ? '<span class="assess-popup-check">✓ added</span>' : '') +
+          '</div>';
+      }).join('');
+    popup.classList.add('open');
+    popup.querySelectorAll('.assess-popup-item').forEach(function(item) {
+      item.addEventListener('mousedown', function(e) {
+        e.preventDefault(); // keep focus on textarea
+        pickItem(item);
+      });
+    });
+  }
+
+  function pickItem(item) {
+    if (item.classList.contains('assess-popup-item-added')) return;
+    var desc = item.dataset.desc;
+
+    // Replace only the current incomplete segment (everything after the last separator)
+    var seg = getSegmentInfo();
+    skipNextSearch = true;          // don't re-open popup from this programmatic change
+    textarea.value = seg.before + desc;
+    textarea.dispatchEvent(new Event('input')); // trigger rx suggestions
+
+    closePopup();
+
+    // Add code to ICD-10 list; skip the append-to-assessment logic (text already set above)
+    icd10Add(item.dataset.code, desc, true);
+  }
+
+  function closePopup() {
+    popup.classList.remove('open');
+    popup.innerHTML = '';
+    focusedIdx   = -1;
+    popupResults = [];
+  }
+
+  function moveFocus(dir) {
+    var items = popup.querySelectorAll('.assess-popup-item');
+    if (!items.length) return;
+    focusedIdx = Math.max(0, Math.min(focusedIdx + dir, items.length - 1));
+    items.forEach(function(o, i) { o.classList.toggle('focused', i === focusedIdx); });
+    if (items[focusedIdx]) items[focusedIdx].scrollIntoView({block: 'nearest'});
+  }
+
+  textarea.addEventListener('input', function() {
+    if (skipNextSearch) { skipNextSearch = false; return; }
+    clearTimeout(popupTimer);
+    var q = getQuery();
+    if (q.length < 2) { closePopup(); return; }
+    popupTimer = setTimeout(function() {
+      fetch(ICD10_URL + '?q=' + encodeURIComponent(q))
+        .then(function(r) { return r.json(); })
+        .then(function(data) { renderPopup(data.results || []); })
+        .catch(function() {});
+    }, 280);
+  });
+
+  textarea.addEventListener('keydown', function(e) {
+    if (!popup.classList.contains('open')) return;
+    if      (e.key === 'ArrowDown') { e.preventDefault(); moveFocus(+1); }
+    else if (e.key === 'ArrowUp')   { e.preventDefault(); moveFocus(-1); }
+    else if (e.key === 'Enter' && focusedIdx >= 0) {
+      // Select the focused code; prevent Enter from inserting a newline
+      e.preventDefault();
+      var items = popup.querySelectorAll('.assess-popup-item');
+      if (items[focusedIdx]) pickItem(items[focusedIdx]);
+    }
+    else if (e.key === 'Escape')    { closePopup(); }
+  });
+
+  // Close when focus leaves the assessment area entirely
+  textarea.addEventListener('blur', function() { setTimeout(closePopup, 200); });
+});
 
 // ── Fix: disable hidden layout fields before submit so they don't override ──
 document.getElementById('consultForm').addEventListener('submit', function () {

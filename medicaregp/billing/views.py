@@ -1,15 +1,28 @@
 import csv
 import datetime
 import io
+import json
+import os
 import re
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMultiAlternatives
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
+
+# ── NAPPI code data (loaded once, cached in module) ───────────────────────────
+_NAPPI_DATA = None
+
+def _get_nappi_data():
+    global _NAPPI_DATA
+    if _NAPPI_DATA is None:
+        path = os.path.join(os.path.dirname(__file__), 'nappi_data.json')
+        with open(path, 'r', encoding='utf-8') as f:
+            _NAPPI_DATA = json.load(f)
+    return _NAPPI_DATA
 
 from .models import Invoice, InvoiceItem, Payment, ClaimSubmission
 from .forms import (InvoiceForm, InvoiceItemFormSet, SendEmailForm,
@@ -61,6 +74,44 @@ def invoice_list(request):
 
 
 @login_required
+def patient_consultations(request, patient_id):
+    from consultations.models import Consultation
+    qs = Consultation.objects.filter(patient_id=patient_id).order_by('-date', '-pk')[:50]
+    data = []
+    for c in qs:
+        snippet = c.chief_complaint or c.assessment or ''
+        if snippet:
+            snippet = snippet[:60] + ('…' if len(snippet) > 60 else '')
+        else:
+            snippet = '(no notes)'
+        data.append({'id': c.pk, 'label': f'{c.date} — {snippet}'})
+    return JsonResponse({'consultations': data})
+
+
+@login_required
+def consultation_icd10(request, consultation_id):
+    from consultations.models import Consultation
+    c = get_object_or_404(Consultation, pk=consultation_id)
+    return JsonResponse({
+        'icd10_codes': c.icd10_codes_list,
+        'assessment': c.assessment or '',
+    })
+
+
+@login_required
+def search_nappi(request):
+    q = request.GET.get('q', '').strip().lower()
+    if len(q) < 2:
+        return JsonResponse({'results': []})
+    data = _get_nappi_data()
+    results = [
+        item for item in data
+        if item['code'].startswith(q) or q in item['desc'].lower()
+    ][:12]
+    return JsonResponse({'results': results})
+
+
+@login_required
 def invoice_create(request):
     today = timezone.now().date()
     patient_id = request.GET.get('patient_id', '')
@@ -76,7 +127,14 @@ def invoice_create(request):
         form = InvoiceForm(request.POST)
         formset = InvoiceItemFormSet(request.POST)
         if form.is_valid() and formset.is_valid():
-            invoice = form.save()
+            invoice = form.save(commit=False)
+            consultation_id = request.POST.get('consultation_id', '').strip()
+            if consultation_id:
+                try:
+                    invoice.consultation_id = int(consultation_id)
+                except (ValueError, TypeError):
+                    pass
+            invoice.save()
             formset.instance = invoice
             formset.save()
             messages.success(request, f'Invoice {invoice.invoice_number} created.')
@@ -105,7 +163,16 @@ def invoice_edit(request, pk):
         form = InvoiceForm(request.POST, instance=invoice)
         formset = InvoiceItemFormSet(request.POST, instance=invoice)
         if form.is_valid() and formset.is_valid():
-            form.save()
+            updated = form.save(commit=False)
+            consultation_id = request.POST.get('consultation_id', '').strip()
+            if consultation_id:
+                try:
+                    updated.consultation_id = int(consultation_id)
+                except (ValueError, TypeError):
+                    updated.consultation_id = None
+            else:
+                updated.consultation_id = None
+            updated.save()
             formset.save()
             messages.success(request, 'Invoice updated.')
             return redirect('invoice_detail', pk=invoice.pk)

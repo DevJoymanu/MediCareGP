@@ -2,8 +2,82 @@
 {% block title %}{{ title }} | G.P CRM{% endblock %}
 {% block page_title %}{{ title }}{% endblock %}
 {% block content %}
+<style>
+/* ── ICD-10 sidebar widget ────────────────────────────────────────── */
+.icd10-widget { position: relative; }
+.icd10-search-row { position: relative; margin-bottom: 6px; }
+.icd10-dropdown {
+  display: none; position: absolute; top: calc(100% + 2px);
+  left: 0; right: 0; background: #fff;
+  border: 1px solid #c7d2fe; border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(99,102,241,.14); z-index: 1000;
+  max-height: 220px; overflow-y: auto;
+}
+.icd10-dropdown-item {
+  padding: 8px 12px; cursor: pointer; display: flex; gap: 8px;
+  align-items: flex-start; border-bottom: 1px solid #f1f5f9; font-size: 12px;
+}
+.icd10-dropdown-item:hover { background: #eef2ff; }
+.icd10-dropdown-item:last-child { border-bottom: none; }
+.icd10-item-code { font-family: monospace; font-weight: 700; color: #3730a3; min-width: 55px; }
+.icd10-item-desc { color: #4338ca; }
+.icd10-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; min-height: 4px; }
+.icd10-tag {
+  display: inline-flex; align-items: center; gap: 4px; background: #eef2ff;
+  border: 1px solid #c7d2fe; border-radius: 20px; padding: 3px 8px; font-size: 11px;
+}
+.icd10-tag-code { font-family: monospace; font-weight: 700; color: #3730a3; }
+.icd10-tag-desc { color: #4338ca; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.icd10-tag-remove { cursor: pointer; color: #818cf8; font-size: 14px; line-height: 1; margin-left: 2px; }
+.icd10-tag-remove:hover { color: #e11d48; }
+
+/* ── Line item grid ───────────────────────────────────────────────── */
+.line-cols {
+  display: grid;
+  /* Line Type | Tariff | NAPPI Code | NAPPI Desc | Diag Code | Qty | Price | Total | × */
+  grid-template-columns: 100px 68px 80px 1fr 72px 50px 84px 72px 28px;
+  gap: 6px;
+  align-items: center;
+}
+.line-head > div {
+  font-size: 10px; font-weight: 700; color: var(--text-4);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  padding-bottom: 6px; border-bottom: 2px solid #f1f5f9;
+}
+.line-row > div { overflow: visible; position: relative; }
+.line-row > div > input,
+.line-row > div > select,
+.line-row > div .typeahead-select,
+.line-row > div .typeahead-input { width: 100%; box-sizing: border-box; }
+.item-wrap { margin-bottom: 3px; }
+.line-total { font-size: 13px; font-weight: 600; color: var(--text-2); }
+.remove-line-btn {
+  background: none; border: none; color: var(--text-4);
+  font-size: 15px; cursor: pointer; padding: 3px 4px;
+  border-radius: 4px; line-height: 1; display: block;
+}
+.remove-line-btn:hover { color: #e11d48; background: #fff1f2; }
+
+/* ── Shared autocomplete dropdown ─────────────────────────────────── */
+.ac-dropdown {
+  display: none; position: absolute; top: calc(100% + 2px);
+  left: 0; min-width: 220px; background: #fff;
+  border: 1px solid var(--border); border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.10); z-index: 120;
+  max-height: 210px; overflow-y: auto;
+}
+.ac-item {
+  padding: 7px 10px; cursor: pointer; font-size: 12px;
+  border-bottom: 1px solid #f1f5f9; display: flex; gap: 8px; align-items: center;
+}
+.ac-item:hover { background: #eef2ff; }
+.ac-item:last-child { border-bottom: none; }
+.ac-code { font-family: monospace; font-weight: 700; color: #3730a3; min-width: 48px; }
+.ac-desc { color: var(--text-2); }
+</style>
+
 <div class="page-body">
-  <div style="max-width:960px;margin:0 auto;">
+  <div style="max-width:980px;margin:0 auto;">
     <div class="page-header">
       <div><h1>{{ title }}</h1></div>
       <a href="{% url 'invoice_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
@@ -11,115 +85,81 @@
 
     <form method="post" id="invoiceForm">
       {% csrf_token %}
+      <input type="hidden" name="consultation_id" id="consultationIdInput" value="{{ invoice.consultation_id|default:'' }}">
 
-      <div style="display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start;">
-        <div>
-          <!-- Invoice details -->
-          <div class="card" style="margin-bottom:18px;">
-            <div class="card-title" style="margin-bottom:16px;">Invoice Details</div>
-            <div class="form-grid-2">
-              <div class="form-group form-full">
-                <label>Patient *</label>
-                {{ form.patient }}
-              </div>
-              <div class="form-group">
-                <label>Invoice Number</label>
-                {{ form.invoice_number }}
-              </div>
-              <div class="form-group">
-                <label>Status</label>
-                {{ form.status }}
-              </div>
-              <div class="form-group">
-                <label>Date Issued</label>
-                {{ form.date_issued }}
-              </div>
-              <div class="form-group">
-                <label>Due Date</label>
-                {{ form.due_date }}
-              </div>
-              <div class="form-group">
-                <label>Issued By</label>
-                {{ form.issued_by }}
-              </div>
-              <div class="form-group form-full">
-                <label>Notes</label>
-                {{ form.notes }}
-              </div>
-            </div>
-          </div>
+      <!-- ── Top: Invoice details + Medical Aid / Payment sidebar ── -->
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start;margin-bottom:18px;">
 
-          <!-- Line items -->
-          <div class="card" style="margin-bottom:18px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-              <div class="card-title">Line Items</div>
-              <button type="button" id="addLine" class="btn-ghost" style="font-size:12px;padding:6px 12px;">
-                <i class="bi bi-plus-lg"></i> Add Line
-              </button>
+        <!-- Invoice Details -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom:16px;">Invoice Details</div>
+          <div class="form-grid-2">
+
+            <div class="form-group form-full">
+              <label>Patient *</label>
+              {{ form.patient }}
             </div>
 
-            {{ formset.management_form }}
-
-            <div style="display:grid;grid-template-columns:80px 1fr 80px 110px 100px 32px;gap:8px;padding:0 0 8px;border-bottom:1px solid #f1f5f9;margin-bottom:4px;">
-              {% for h in "Code,Description,Qty,Unit Price (R),Total," %}
-              <div style="font-size:11px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:0.06em;">{{ h }}</div>
-              {% endfor %}
+            <div class="form-group form-full">
+              <label>Linked Consultation
+                <span style="font-size:11px;color:var(--text-4);font-weight:400;"> — optional, auto-fills ICD-10</span>
+              </label>
+              <select id="consultationPicker" class="crm-select" style="width:100%;">
+                <option value="">— None —</option>
+                {% if invoice.consultation %}
+                <option value="{{ invoice.consultation.pk }}" selected>
+                  {{ invoice.consultation.date }} — {{ invoice.consultation.chief_complaint|default:invoice.consultation.assessment|default:"(no notes)"|truncatechars:60 }}
+                </option>
+                {% endif %}
+              </select>
             </div>
 
-            <div id="formsetRows">
-              {% for f in formset %}
-              <div class="line-row" style="display:grid;grid-template-columns:80px 1fr 80px 110px 100px 32px;gap:8px;margin-bottom:8px;align-items:center;">
-                {{ f.id }}
-                {% if f.DELETE %}<div style="display:none;">{{ f.DELETE }}</div>{% endif %}
-                <div>{{ f.procedure_code }}</div>
-                <div>{{ f.description }}</div>
-                <div>{{ f.quantity }}</div>
-                <div>{{ f.unit_price }}</div>
-                <div class="line-total" style="font-size:13px;font-weight:600;color:var(--text-2);">—</div>
-                <button type="button" class="remove-line" style="background:none;border:none;color:var(--text-4);font-size:16px;cursor:pointer;padding:4px;" title="Remove">
-                  <i class="bi bi-x-circle"></i>
-                </button>
-              </div>
-              {% endfor %}
+            <div class="form-group">
+              <label>Invoice Number</label>
+              {{ form.invoice_number }}
             </div>
-
-            <!-- Totals -->
-            <div style="border-top:1px solid #f1f5f9;margin-top:12px;padding-top:12px;">
-              <div style="display:flex;justify-content:flex-end;">
-                <div style="min-width:240px;">
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
-                    <span style="color:var(--text-3);">Subtotal</span>
-                    <span id="subtotal" style="font-weight:600;">R 0.00</span>
-                  </div>
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
-                    <span style="color:var(--text-3);">VAT (15%)</span>
-                    <span id="vat" style="font-weight:600;">R 0.00</span>
-                  </div>
-                  <div style="display:flex;justify-content:space-between;padding:8px 0 0;font-size:16px;font-weight:800;border-top:2px solid var(--border);margin-top:4px;">
-                    <span>Total</span>
-                    <span id="total" style="color:var(--accent);">R 0.00</span>
-                  </div>
-                </div>
-              </div>
+            <div class="form-group">
+              <label>Status</label>
+              {{ form.status }}
+            </div>
+            <div class="form-group">
+              <label>Date Issued</label>
+              {{ form.date_issued }}
+            </div>
+            <div class="form-group">
+              <label>Due Date</label>
+              {{ form.due_date }}
+            </div>
+            <div class="form-group">
+              <label>Issued By</label>
+              {{ form.issued_by }}
+            </div>
+            <div class="form-group form-full">
+              <label>Notes</label>
+              {{ form.notes }}
             </div>
           </div>
         </div>
 
-        <!-- Right sidebar: Medical aid coding + payment -->
+        <!-- Right sidebar -->
         <div>
           <div class="card" style="margin-bottom:18px;">
             <div class="card-title" style="margin-bottom:4px;">Medical Aid Billing</div>
             <div style="font-size:12px;color:var(--text-4);margin-bottom:14px;">Complete for medical aid claims</div>
+
             <div class="form-group">
               <label>ICD-10 Code(s)</label>
-              {{ form.icd10_code }}
-              <div style="font-size:11px;color:var(--text-4);margin-top:4px;">e.g. I10, E11.9</div>
+              <div class="icd10-widget">
+                {{ form.icd10_code }}
+                <div class="icd10-search-row">
+                  <input type="text" id="icd10SearchInput" class="crm-input"
+                         placeholder="Type code or diagnosis…" autocomplete="off" spellcheck="false">
+                  <div class="icd10-dropdown" id="icd10Dropdown"></div>
+                </div>
+                <div class="icd10-tags" id="icd10Tags"></div>
+              </div>
             </div>
-            <div class="form-group">
-              <label>Procedure Codes</label>
-              {{ form.procedure_codes }}
-              <div style="font-size:11px;color:var(--text-4);margin-top:4px;">One per line</div>
-            </div>
+
             <div class="form-group">
               <label>Auth. Number</label>
               {{ form.authorization_number }}
@@ -140,6 +180,71 @@
         </div>
       </div>
 
+      <!-- ── Line Items (full width) ──────────────────────────────── -->
+      <div class="card" style="margin-bottom:18px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div class="card-title">Line Items</div>
+          <button type="button" id="addLine" class="btn-ghost" style="font-size:12px;padding:6px 12px;">
+            <i class="bi bi-plus-lg"></i> Add Line
+          </button>
+        </div>
+
+        {{ formset.management_form }}
+
+        <!-- Column headers -->
+        <div class="line-cols line-head">
+          <div>Line Type</div>
+          <div>Tariff Code</div>
+          <div>NAPPI Code</div>
+          <div>NAPPI Description</div>
+          <div>Diag Code</div>
+          <div>Qty</div>
+          <div>Price (R)</div>
+          <div>Total</div>
+          <div></div>
+        </div>
+
+        <div id="formsetRows">
+          {% for f in formset %}
+          <div class="item-wrap">
+            {{ f.id }}
+            {% if f.DELETE %}<span style="display:none;">{{ f.DELETE }}</span>{% endif %}
+            <div class="line-cols line-row">
+              <div>{{ f.line_type }}</div>
+              <div class="ac-tariff">{{ f.procedure_code }}</div>
+              <div class="ac-nappi">{{ f.nappi_code }}</div>
+              <div class="ac-nappi-desc">{{ f.description }}</div>
+              <div class="ac-diag">{{ f.diag_code }}</div>
+              <div>{{ f.quantity }}</div>
+              <div>{{ f.unit_price }}</div>
+              <div class="line-total">—</div>
+              <div><button type="button" class="remove-line-btn remove-line" title="Remove"><i class="bi bi-x-circle"></i></button></div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Totals -->
+        <div style="border-top:1px solid #f1f5f9;margin-top:12px;padding-top:12px;">
+          <div style="display:flex;justify-content:flex-end;">
+            <div style="min-width:240px;">
+              <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
+                <span style="color:var(--text-3);">Subtotal</span>
+                <span id="subtotal" style="font-weight:600;">R 0.00</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
+                <span style="color:var(--text-3);">VAT (15%)</span>
+                <span id="vat" style="font-weight:600;">R 0.00</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0 0;font-size:16px;font-weight:800;border-top:2px solid var(--border);margin-top:4px;">
+                <span>Total</span>
+                <span id="total" style="color:var(--accent);">R 0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div style="display:flex;gap:10px;margin-top:4px;">
         <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Invoice</button>
         <a href="{% url 'invoice_list' %}" class="btn-ghost">Cancel</a>
@@ -150,18 +255,177 @@
 
 <script>
 (function () {
+  /* ── URL constants ──────────────────────────────────────────────── */
+  const ICD10_URL           = '{% url "search_icd10" %}';
+  const NAPPI_SEARCH_URL    = '{% url "search_nappi" %}';
+  const PATIENT_CONSULT_URL = '{% url "patient_consultations" 0 %}'.replace('/0/', '/');
+  const CONSULT_ICD10_URL   = '{% url "consultation_icd10" 0 %}'.replace('/0/', '/');
+
+  /* ── ICD-10 sidebar widget ──────────────────────────────────────── */
+  var icd10Selected = [];
+
+  function icd10SyncHidden() {
+    var json = JSON.stringify(icd10Selected);
+    document.querySelectorAll('[name="icd10_code"]').forEach(function (inp) { inp.value = json; });
+  }
+
+  function icd10RenderTags() {
+    var container = document.getElementById('icd10Tags');
+    if (!container) return;
+    container.innerHTML = '';
+    icd10Selected.forEach(function (item) {
+      var tag = document.createElement('span');
+      tag.className = 'icd10-tag';
+      tag.innerHTML =
+        '<span class="icd10-tag-code">' + escHtml(item.code) + '</span>' +
+        '<span class="icd10-tag-desc" title="' + escHtml(item.description) + '">' + escHtml(item.description) + '</span>' +
+        '<span class="icd10-tag-remove" data-code="' + escHtml(item.code) + '">&#x2715;</span>';
+      container.appendChild(tag);
+    });
+  }
+
+  function icd10Add(code, description) {
+    if (icd10Selected.some(function (c) { return c.code === code; })) return;
+    icd10Selected.push({ code: code, description: description });
+    icd10SyncHidden();
+    icd10RenderTags();
+  }
+
+  function icd10Remove(code) {
+    icd10Selected = icd10Selected.filter(function (c) { return c.code !== code; });
+    icd10SyncHidden();
+    icd10RenderTags();
+  }
+
+  document.getElementById('icd10Tags').addEventListener('click', function (e) {
+    var btn = e.target.closest('.icd10-tag-remove');
+    if (btn) icd10Remove(btn.dataset.code);
+  });
+
+  var icd10SearchInput = document.getElementById('icd10SearchInput');
+  var icd10Dropdown    = document.getElementById('icd10Dropdown');
+  var icd10Timer       = null;
+
+  icd10SearchInput.addEventListener('input', function () {
+    clearTimeout(icd10Timer);
+    var q = this.value.trim();
+    if (q.length < 2) { closeSidebarDd(); return; }
+    icd10Timer = setTimeout(function () { fetchSidebarIcd10(q); }, 280);
+  });
+  icd10SearchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeSidebarDd();
+  });
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.icd10-widget')) closeSidebarDd();
+  });
+
+  function closeSidebarDd() {
+    icd10Dropdown.style.display = 'none';
+    icd10Dropdown.innerHTML = '';
+  }
+  function fetchSidebarIcd10(q) {
+    fetch(ICD10_URL + '?q=' + encodeURIComponent(q))
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var results = data.results || data;
+        if (!results || !results.length) { closeSidebarDd(); return; }
+        icd10Dropdown.innerHTML = '';
+        results.slice(0, 12).forEach(function (item) {
+          var div = document.createElement('div');
+          div.className = 'icd10-dropdown-item';
+          div.innerHTML = '<span class="icd10-item-code">' + escHtml(item.code) + '</span><span class="icd10-item-desc">' + escHtml(item.description) + '</span>';
+          div.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            icd10Add(item.code, item.description);
+            icd10SearchInput.value = '';
+            closeSidebarDd();
+          });
+          icd10Dropdown.appendChild(div);
+        });
+        icd10Dropdown.style.display = 'block';
+      })
+      .catch(function () {});
+  }
+
+  /* Restore tags on edit page load */
+  (function () {
+    var hidden = document.querySelector('[name="icd10_code"]');
+    if (!hidden || !hidden.value) return;
+    try {
+      var parsed = JSON.parse(hidden.value);
+      if (Array.isArray(parsed)) {
+        parsed.forEach(function (item) { if (item.code && item.description) icd10Selected.push(item); });
+        icd10RenderTags();
+      }
+    } catch (e) {}
+  })();
+
+  /* ── Consultation picker ────────────────────────────────────────── */
+  var consultPicker  = document.getElementById('consultationPicker');
+  var consultIdInput = document.getElementById('consultationIdInput');
+  var patientSelect  = document.querySelector('[name="patient"]');
+
+  function rebuildTypeahead(selectEl, html) {
+    var wrapper = selectEl.closest('.typeahead-select');
+    if (wrapper) { wrapper.parentNode.insertBefore(selectEl, wrapper); wrapper.remove(); }
+    delete selectEl.dataset.typeaheadReady;
+    selectEl.classList.remove('typeahead-native-select');
+    selectEl.innerHTML = html;
+    if (typeof window.makeSearchableSelect === 'function') window.makeSearchableSelect(selectEl);
+  }
+
+  function loadConsultations(patientId, selectedId) {
+    if (!patientId) { rebuildTypeahead(consultPicker, '<option value="">— None —</option>'); return; }
+    fetch(PATIENT_CONSULT_URL + patientId + '/')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var html = '<option value="">— None —</option>';
+        (data.consultations || []).forEach(function (c) {
+          var sel = String(c.id) === String(selectedId) ? ' selected' : '';
+          html += '<option value="' + c.id + '"' + sel + '>' + escHtml(c.label) + '</option>';
+        });
+        rebuildTypeahead(consultPicker, html);
+      })
+      .catch(function () {});
+  }
+
+  consultPicker.addEventListener('change', function () {
+    consultIdInput.value = this.value;
+    if (this.value) {
+      fetch(CONSULT_ICD10_URL + this.value + '/')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data.icd10_codes && data.icd10_codes.length) {
+            icd10Selected = [];
+            data.icd10_codes.forEach(function (c) { icd10Add(c.code, c.description); });
+          }
+        }).catch(function () {});
+    }
+  });
+
+  if (patientSelect) {
+    patientSelect.addEventListener('change', function () {
+      consultIdInput.value = '';
+      loadConsultations(this.value, '');
+    });
+    var initPatient = patientSelect.value;
+    var initConsult = consultIdInput.value;
+    if (initPatient) loadConsultations(initPatient, initConsult);
+  }
+
+  /* ── Line item totals ───────────────────────────────────────────── */
   function calcTotals() {
-    let sub = 0;
-    document.querySelectorAll('.line-row').forEach(row => {
-      if (row.style.display === 'none') return;
-      const qty   = parseFloat(row.querySelector('[name$="-quantity"]')?.value) || 0;
-      const price = parseFloat(row.querySelector('[name$="-unit_price"]')?.value) || 0;
-      const lt    = qty * price;
-      const el    = row.querySelector('.line-total');
+    var sub = 0;
+    document.querySelectorAll('.item-wrap').forEach(function (wrap) {
+      if (wrap.style.display === 'none') return;
+      var qty   = parseFloat(wrap.querySelector('[name$="-quantity"]')?.value) || 0;
+      var price = parseFloat(wrap.querySelector('[name$="-unit_price"]')?.value) || 0;
+      var lt    = qty * price;
+      var el    = wrap.querySelector('.line-total');
       if (el) el.textContent = lt > 0 ? 'R ' + lt.toFixed(2) : '—';
       sub += lt;
     });
-    const vat = sub * 0.15;
+    var vat = sub * 0.15;
     document.getElementById('subtotal').textContent = 'R ' + sub.toFixed(2);
     document.getElementById('vat').textContent      = 'R ' + vat.toFixed(2);
     document.getElementById('total').textContent    = 'R ' + (sub + vat).toFixed(2);
@@ -170,35 +434,1072 @@
   document.addEventListener('input', calcTotals);
   calcTotals();
 
-  document.addEventListener('click', e => {
+  /* ── Remove line ────────────────────────────────────────────────── */
+  document.addEventListener('click', function (e) {
     if (e.target.closest('.remove-line')) {
-      const row = e.target.closest('.line-row');
-      const delCb = row.querySelector('[name$="-DELETE"]');
-      if (delCb) { delCb.checked = true; row.style.display = 'none'; }
-      else row.remove();
+      var wrap  = e.target.closest('.item-wrap');
+      var delCb = wrap.querySelector('[name$="-DELETE"]');
+      if (delCb) { delCb.checked = true; wrap.style.display = 'none'; }
+      else wrap.remove();
       calcTotals();
     }
   });
 
-  let extraIdx = {{ formset.total_form_count }};
-  const prefix = '{{ formset.prefix }}';
-  document.getElementById('addLine').addEventListener('click', () => {
-    const container = document.getElementById('formsetRows');
-    const row = document.createElement('div');
-    row.className = 'line-row';
-    row.style.cssText = 'display:grid;grid-template-columns:80px 1fr 80px 110px 100px 32px;gap:8px;margin-bottom:8px;align-items:center;';
-    row.innerHTML = `
-      <input type="hidden" name="${prefix}-${extraIdx}-id">
-      <input class="crm-input" name="${prefix}-${extraIdx}-procedure_code" placeholder="0190" style="font-size:12px;">
-      <input class="crm-input" name="${prefix}-${extraIdx}-description"    placeholder="e.g. Consultation fee">
-      <input class="crm-input" name="${prefix}-${extraIdx}-quantity"       type="number" value="1" step="0.01" min="0">
-      <input class="crm-input" name="${prefix}-${extraIdx}-unit_price"     type="number" placeholder="0.00" step="0.01" min="0">
-      <div class="line-total" style="font-size:13px;font-weight:600;color:var(--text-2);">—</div>
-      <button type="button" class="remove-line" style="background:none;border:none;color:var(--text-4);font-size:16px;cursor:pointer;padding:4px;"><i class="bi bi-x-circle"></i></button>
-    `;
-    container.appendChild(row);
-    document.querySelector(`[name=${prefix}-TOTAL_FORMS]`).value = ++extraIdx;
+  /* ── Add Line ───────────────────────────────────────────────────── */
+  var extraIdx = {{ formset.total_form_count }};
+  var prefix   = '{{ formset.prefix }}';
+
+  document.getElementById('addLine').addEventListener('click', function () {
+    var n    = extraIdx;
+    var inp  = 'style="width:100%;box-sizing:border-box;"';
+    var wrap = document.createElement('div');
+    wrap.className = 'item-wrap';
+    wrap.innerHTML =
+      '<input type="hidden" name="' + prefix + '-' + n + '-id">' +
+      '<div class="line-cols line-row">' +
+        '<div><select name="' + prefix + '-' + n + '-line_type" class="crm-select" style="width:100%;">' +
+          '<option value="Procedure">Procedure</option>' +
+          '<option value="Modifier">Modifier</option>' +
+          '<option value="Medicine">Medicine</option>' +
+          '<option value="Consumable">Consumable</option>' +
+        '</select></div>' +
+        '<div class="ac-tariff"><input class="crm-input" name="' + prefix + '-' + n + '-procedure_code" placeholder="0190" ' + inp + '></div>' +
+        '<div class="ac-nappi"><input class="crm-input" name="' + prefix + '-' + n + '-nappi_code" placeholder="NAPPI" ' + inp + '></div>' +
+        '<div class="ac-nappi-desc"><input class="crm-input" name="' + prefix + '-' + n + '-description" placeholder="Description" ' + inp + '></div>' +
+        '<div class="ac-diag"><input class="crm-input" name="' + prefix + '-' + n + '-diag_code" placeholder="ICD-10" ' + inp + '></div>' +
+        '<div><input class="crm-input" name="' + prefix + '-' + n + '-quantity" type="number" value="1" step="0.01" min="0" ' + inp + '></div>' +
+        '<div><input class="crm-input" name="' + prefix + '-' + n + '-unit_price" type="number" placeholder="0.00" step="0.01" min="0" ' + inp + '></div>' +
+        '<div class="line-total">&#8212;</div>' +
+        '<div><button type="button" class="remove-line-btn remove-line" title="Remove"><i class="bi bi-x-circle"></i></button></div>' +
+      '</div>';
+    document.getElementById('formsetRows').appendChild(wrap);
+    document.querySelector('[name=' + prefix + '-TOTAL_FORMS]').value = ++extraIdx;
+    if (typeof window.makeSearchableSelect === 'function') {
+      wrap.querySelectorAll('select').forEach(window.makeSearchableSelect);
+    }
+    wrap.querySelectorAll('.ac-tariff').forEach(initTariffAC);
+    wrap.querySelectorAll('.ac-nappi').forEach(initNappiAC);
+    wrap.querySelectorAll('.ac-diag').forEach(initDiagAC);
   });
+
+  /* ── Tariff-code autocomplete (SA NHRPL / BHF / GEMS 2024) ─────── */
+  var TARIFF_CODES = [
+    /* ── Consultations: in rooms ─────────────────────────────────── */
+    { code: '0189', desc: 'Brief consultation / minor problem (rooms)' },
+    { code: '0190', desc: 'Consultation – average duration and complexity (rooms)' },
+    { code: '0191', desc: 'Consultation – moderate above-average duration/complexity (rooms)' },
+    { code: '0192', desc: 'Consultation – long duration and high complexity (rooms)' },
+    /* ── Consultations: hospital first visit ─────────────────────── */
+    { code: '0173', desc: 'First hospital consult – average duration/complexity' },
+    { code: '0174', desc: 'First hospital consult – moderate above-average duration/complexity' },
+    { code: '0175', desc: 'First hospital consult – long duration and high complexity' },
+    /* ── Consultations: away from rooms / home visits ────────────── */
+    { code: '0161', desc: 'Away from rooms – average duration/complexity (home visit)' },
+    { code: '0162', desc: 'Away from rooms – moderate above-average duration/complexity' },
+    { code: '0163', desc: 'Away from rooms – long duration and high complexity' },
+    { code: '0164', desc: 'Away from rooms – comprehensive, complex (46–60 min)' },
+    /* ── Hospital follow-up / ward rounds ────────────────────────── */
+    { code: '0109', desc: 'Hospital follow-up visit to patient' },
+    { code: '0111', desc: 'Paediatric hospital follow-up visit (excl. neonates)' },
+    { code: '0166', desc: 'Subsequent hospital visit – average duration/complexity' },
+    { code: '0167', desc: 'Subsequent hospital visit – moderate above-average duration/complexity' },
+    { code: '0168', desc: 'Subsequent hospital visit – long duration and high complexity' },
+    { code: '0169', desc: 'Subsequent hospital visit – comprehensive, complex (46–60 min)' },
+    /* ── Hospital discharge day management ───────────────────────── */
+    { code: '0176', desc: 'Hospital discharge day management – 30 min or less' },
+    { code: '0177', desc: 'Hospital discharge day management – more than 30 min (incl. summary)' },
+    { code: '0178', desc: 'Hospital follow-up visit 31–60 min (add-on to 0109)' },
+    { code: '0179', desc: 'Prolonged ward attendance – per additional 15 min (add-on to 0178)' },
+    /* ── Emergency / unscheduled consultations ───────────────────── */
+    { code: '0145', desc: 'Scheduled consultation away from rooms (non-emergency)' },
+    { code: '0146', desc: 'Unscheduled emergency consultation at rooms' },
+    { code: '0147', desc: 'Unscheduled emergency consultation away from rooms' },
+    /* ── Add-on codes for consultations ──────────────────────────── */
+    { code: '0126', desc: 'Unscheduled consultation add-on (add to 0190–0192, 0161–0164, 0151–0153)' },
+    { code: '0148', desc: 'Elective after-hours add-on – add 50% of consultation fee' },
+    { code: '0149', desc: 'After-hours bona fide emergency add-on 21:00–06:00 – add 25%' },
+    /* ── Special / miscellaneous consultation services ───────────── */
+    { code: '0107', desc: 'Newborn attendance' },
+    { code: '0113', desc: 'Emergency newborn attendance' },
+    { code: '0129', desc: 'Prolonged consultation' },
+    { code: '0130', desc: 'Telephonic consultation / repeat prescription' },
+    { code: '0131', desc: 'Subsequent injections / flu vaccinations in planned series (not with consultation)' },
+    { code: '0132', desc: 'Repeat script / pre-authorisation request' },
+    { code: '0133', desc: 'Special motivation / clinical report for scheme' },
+    { code: '0139', desc: 'Patient and/or family education for specific condition – 41 min or longer' },
+    { code: '0199', desc: 'Chronic medicine motivation / CDL management' },
+    /* ── Pre-anaesthetic assessment ──────────────────────────────── */
+    { code: '0151', desc: 'Pre-anaesthetic assessment – problem-focused (10–20 min)' },
+    { code: '0152', desc: 'Pre-anaesthetic assessment – detailed (20–35 min)' },
+    { code: '0153', desc: 'Pre-anaesthetic assessment – comprehensive' },
+    /* ── Mental health / counselling ─────────────────────────────── */
+    { code: '0220', desc: 'Brief supportive counselling by GP (< 15 min)' },
+    { code: '0221', desc: 'Extended counselling session by GP (15–30 min)' },
+    { code: '0222', desc: 'Mental health assessment and risk stratification' },
+    /* ── Certificates / reports ───────────────────────────────────── */
+    { code: '0134', desc: 'Medico-legal report / insurance certificate' },
+    { code: '0135', desc: 'Fitness for work / pre-employment medical certificate' },
+    { code: '0136', desc: 'Sick certificate (formal completion)' },
+    { code: '0137', desc: 'Disability claim form completion' },
+    { code: '0138', desc: 'Road Accident Fund (RAF) / third-party claim form' },
+    { code: '0193', desc: 'Health risk assessment / preventive health evaluation' },
+    /* ── Chronic disease management / CDL ───────────────────────── */
+    { code: '0200', desc: 'CDL condition management visit' },
+    { code: '0201', desc: 'Disease Management Programme enrolment consultation' },
+    { code: '0202', desc: 'Diabetic foot assessment' },
+    { code: '0203', desc: 'Asthma / COPD management plan review' },
+    { code: '0204', desc: 'HIV/AIDS chronic disease management visit' },
+    { code: '0205', desc: 'Hypertension management with risk stratification' },
+    /* ── Injections / infusions ──────────────────────────────────── */
+    { code: '0206', desc: 'IV infusion – push-in cannula insertion (patients > 3 years, once per 24h)' },
+    { code: '0207', desc: 'IV infusion – cut-down cannula insertion (patients > 3 years)' },
+    { code: '0208', desc: 'Venesection – therapeutic (not for laboratory blood draw)' },
+    { code: '0209', desc: 'Umbilical artery cannulation at birth' },
+    { code: '0210', desc: 'Collection of blood / Pap smear specimen for pathology (not by pathologist)' },
+    { code: '0211', desc: 'Exchange transfusion – first and subsequent (incl. after-care)' },
+    { code: '0213', desc: 'Chemotherapy – IM or SC injection (cytostatic agents)' },
+    { code: '0214', desc: 'Chemotherapy – IV bolus injection (cytostatic agents)' },
+    { code: '0215', desc: 'Chemotherapy – IV infusion technique (cytostatic agents)' },
+    { code: '0223', desc: 'Intralesional injection (e.g. keloids) – multiple sites' },
+    { code: '0661', desc: 'Aspiration of joint or intra-articular injection (no after-care)' },
+    { code: '0663', desc: 'Multiple intra-articular injections for rheumatoid arthritis – first session' },
+    { code: '0665', desc: 'Multiple intra-articular injections for rheumatoid arthritis – subsequent sessions' },
+    { code: '0763', desc: 'Tendon or ligament injection' },
+    /* ── Dispensing (dispensing GP practice) ─────────────────────── */
+    { code: '0195', desc: 'Cancer treatment dispensing – hormonal/oral products (active cancer treatment)' },
+    { code: '0197', desc: 'Dispensing cost – per medicine dispensed (legislated tariff, billed with NAPPI)' },
+    { code: '0198', desc: 'Once-off administration of medicine at consultation (charge at SEP + dispensing fee)' },
+    { code: '0212', desc: 'Chemotherapy drug cost – charge at cost + 16% (max R16)' },
+    { code: '0400', desc: 'Dispensing fee – schedule 1–4 medicines' },
+    { code: '0401', desc: 'Dispensing fee – schedule 5–6 medicines' },
+    { code: '0402', desc: 'Dispensing counselling – new chronic medication' },
+    /* ── Soft tissue / minor surgery ─────────────────────────────── */
+    { code: '0304', desc: 'Major debridement of wound, sloughectomy or secondary suture' },
+    { code: '0305', desc: 'Needle biopsy – soft tissue' },
+    { code: '0306', desc: 'Excision subcutaneous mass < 2 cm: head and neck (lipoma, cyst)' },
+    { code: '0307', desc: 'Excision and repair by direct suture; excision nail fold or similar minor procedures' },
+    { code: '0308', desc: 'Each additional small procedure done at same time' },
+    { code: '0309', desc: 'Excision subcutaneous mass > 2 cm: head and neck (lipoma, cyst)' },
+    { code: '0310', desc: 'Radical excision of nailbed' },
+    { code: '0311', desc: 'Excision of large benign tumour (> 5 cm)' },
+    { code: '0313', desc: 'Extensive resection for malignant soft tissue tumour including muscle' },
+    { code: '0315', desc: 'Repair by small skin graft or small local flap' },
+    { code: '0316', desc: 'Fine needle aspiration – soft tissue (all areas)' },
+    { code: '0317', desc: 'Aspiration of cyst or tumour' },
+    /* ── Wound care / sutures ────────────────────────────────────── */
+    { code: '0550', desc: 'Wound suture – simple, single layer' },
+    { code: '0551', desc: 'Wound suture – complex / layered closure' },
+    { code: '0552', desc: 'Wound dressing – simple' },
+    { code: '0553', desc: 'Wound dressing – complex' },
+    { code: '0560', desc: 'Incision and drainage of abscess' },
+    { code: '0561', desc: 'Excision of skin lesion / cyst' },
+    { code: '0562', desc: 'Excision of lipoma' },
+    { code: '0563', desc: 'Shave excision of skin lesion' },
+    { code: '0564', desc: 'Cryotherapy / liquid nitrogen treatment of lesion' },
+    { code: '0565', desc: 'Nail avulsion (partial or total)' },
+    { code: '0566', desc: 'Cauterisation of lesion' },
+    { code: '0567', desc: 'Removal of sutures (by another practitioner)' },
+    { code: '0568', desc: 'Curettage of skin lesion' },
+    { code: '0570', desc: 'Subungual haematoma drainage' },
+    /* ── Breast surgery ──────────────────────────────────────────── */
+    { code: '0319', desc: 'Mastotomy with exploration / drainage of breast abscess' },
+    { code: '0321', desc: 'Biopsy or excision of cyst / benign breast tumour / duct papilloma' },
+    { code: '0325', desc: 'Total mastectomy' },
+    { code: '0327', desc: 'Total mastectomy with axillary gland biopsy' },
+    { code: '0329', desc: 'Total mastectomy with axillary gland dissection' },
+    { code: '0334', desc: 'Removal of breast implant (capsulectomy) – per breast' },
+    /* ── Burns ───────────────────────────────────────────────────── */
+    { code: '0351', desc: 'Major burns resuscitation and IV supervision – first 48 hours' },
+    { code: '0353', desc: 'Burns tangential excision and grafting – small' },
+    { code: '0354', desc: 'Burns tangential excision and grafting – large' },
+    /* ── Plastic / reconstructive surgery ───────────────────────── */
+    { code: '0355', desc: 'Skin flap in acute hand injury – from remote site' },
+    { code: '0357', desc: 'Small skin graft in acute hand injury' },
+    { code: '0359', desc: 'Release of extensive skin contracture and major skin graft' },
+    { code: '0361', desc: 'Z-plasty' },
+    { code: '0363', desc: 'Local flap and skin graft' },
+    /* ── Acupuncture ─────────────────────────────────────────────── */
+    { code: '0377', desc: 'Standard acupuncture' },
+    { code: '0378', desc: 'Laser acupuncture – more than six points' },
+    { code: '0379', desc: 'Electro-acupuncture' },
+    { code: '0380', desc: 'Scalp acupuncture' },
+    { code: '0381', desc: 'Micro-acupuncture (ear, hand)' },
+    /* ── Obstetric (GP with obstetric practice) ──────────────────── */
+    { code: '0300', desc: 'Normal spontaneous vaginal delivery – GP' },
+    { code: '0301', desc: 'Episiotomy and repair' },
+    { code: '0302', desc: 'Postpartum management' },
+    { code: '0303', desc: 'Antenatal risk assessment (first trimester)' },
+    /* ── Orthopaedics: fractures (closed / open reduction) ───────── */
+    { code: '0383', desc: 'Fracture reduction under GA – scapula (closed)' },
+    { code: '0384', desc: 'Fracture – scapula open reduction and internal fixation' },
+    { code: '0387', desc: 'Fracture reduction under GA – clavicle (closed)' },
+    { code: '0386', desc: 'Fracture – clavicle open reduction and internal fixation' },
+    { code: '0389', desc: 'Fracture reduction under GA – humerus' },
+    { code: '0390', desc: 'Fracture – humerus open reduction and internal fixation' },
+    { code: '0391', desc: 'Fracture reduction under GA – radius and/or ulna' },
+    { code: '0403', desc: 'Fracture reduction under GA – Bennett fracture-dislocation' },
+    { code: '0409', desc: 'Fracture reduction under GA – finger phalanx distal (simple)' },
+    { code: '0413', desc: 'Fracture reduction under GA – finger phalanx proximal/middle (simple)' },
+    { code: '0417', desc: 'Fracture reduction under GA – pelvis (closed)' },
+    { code: '0421', desc: 'Fracture reduction under GA – femur neck or shaft' },
+    { code: '0425', desc: 'Fracture reduction under GA – patella' },
+    { code: '0429', desc: 'Fracture reduction under GA – tibia with/without fibula' },
+    { code: '0435', desc: 'Fracture reduction under GA – ankle malleolus' },
+    { code: '0441', desc: 'Fracture reduction under GA – metatarsal' },
+    { code: '0443', desc: 'Fracture reduction under GA – toe phalanx distal (simple)' },
+    { code: '0451', desc: 'Fracture reduction – sternum and/or ribs (closed)' },
+    { code: '0455', desc: 'Fracture – spine with/without paralysis (cervical)' },
+    { code: '0456', desc: 'Fracture – spine with/without paralysis (other)' },
+    { code: '0465', desc: 'Fractures involving large joints' },
+    { code: '0473', desc: 'Percutaneous insertion and removal of Kirschner wires / Steinmann pins' },
+    /* ── Orthopaedics: bone surgery ──────────────────────────────── */
+    { code: '0475', desc: 'Bone grafting or internal fixation for malunion/non-union – major long bones' },
+    { code: '0479', desc: 'Bone grafting or internal fixation for malunion/non-union – other bones' },
+    { code: '0497', desc: 'Resection of bone or tumour with/without grafting – benign' },
+    { code: '0498', desc: 'Resection of bone or tumour with/without grafting – malignant' },
+    { code: '0507', desc: 'Removal of autogenous bone for grafting' },
+    { code: '0509', desc: 'Acute or chronic osteomyelitis – conservative treatment' },
+    { code: '0511', desc: 'Acute or chronic osteomyelitis – operation' },
+    { code: '0513', desc: 'Osteotomy – single metatarsal' },
+    { code: '0535', desc: 'Exostosis excision – readily accessible sites' },
+    { code: '0537', desc: 'Exostosis excision – less accessible sites' },
+    { code: '0539', desc: 'Needle biopsy – spine (no after-care)' },
+    { code: '0541', desc: 'Needle biopsy – other orthopaedic sites (no after-care)' },
+    { code: '0543', desc: 'Open biopsy – readily accessible site' },
+    { code: '0545', desc: 'Open biopsy – less accessible site' },
+    /* ── Orthopaedics: joint dislocations ────────────────────────── */
+    { code: '0547', desc: 'Dislocation – clavicle (either end)' },
+    { code: '0549', desc: 'Dislocation – shoulder' },
+    { code: '0557', desc: 'Dislocation – metacarpo-phalangeal or interphalangeal (hand)' },
+    { code: '0559', desc: 'Dislocation – hip' },
+    { code: '0569', desc: 'Dislocation – intertarsal / tarsometatarsal / mid-tarsal' },
+    { code: '0578', desc: 'Operation for recurrent dislocation of shoulder' },
+    /* ── Orthopaedics: joint surgery ─────────────────────────────── */
+    { code: '0582', desc: 'Capsulotomy / arthrotomy / biopsy / drainage – small joint' },
+    { code: '0583', desc: 'Capsulotomy / arthrotomy / biopsy / drainage – large joint' },
+    { code: '0589', desc: 'Synovectomy – digital joint' },
+    { code: '0592', desc: 'Synovectomy – large joint' },
+    { code: '0667', desc: 'Arthroscopy (excl. after-care)' },
+    { code: '0669', desc: 'Manipulation of knee or shoulder joint under GA' },
+    { code: '0673', desc: 'Meniscectomy / internal derangement of knee' },
+    { code: '0675', desc: 'Ligament reconstruction – ankle collateral' },
+    { code: '0677', desc: 'Ligament reconstruction – knee collateral' },
+    { code: '0678', desc: 'Ligament reconstruction – knee cruciate' },
+    /* ── Orthopaedics: arthroplasty ──────────────────────────────── */
+    { code: '0614', desc: 'Arthroplasty – debridement of large joint' },
+    { code: '0619', desc: 'Shoulder – partial replacement' },
+    { code: '0620', desc: 'Shoulder – total replacement' },
+    { code: '0624', desc: 'Elbow – total replacement' },
+    { code: '0631', desc: 'Wrist – total replacement' },
+    { code: '0637', desc: 'Hip – total replacement' },
+    { code: '0641', desc: 'Hip – prosthetic replacement of femoral head' },
+    { code: '0645', desc: 'Knee – partial replacement' },
+    { code: '0646', desc: 'Knee – total replacement' },
+    /* ── Tendon / muscle surgery ─────────────────────────────────── */
+    { code: '0745', desc: 'Biceps humeri repair' },
+    { code: '0747', desc: 'Rotator cuff repair' },
+    { code: '0757', desc: 'Achilles tendon repair' },
+    { code: '0759', desc: 'Single tendon repair – other' },
+    { code: '0760', desc: 'Flexor tendon suture – primary zone 1 (hand)' },
+    { code: '0761', desc: 'Flexor tendon repair – primary zone 2 (no man\'s land)' },
+    { code: '0775', desc: 'Free tendon graft' },
+    { code: '0782', desc: 'Carpal tunnel syndrome release' },
+    { code: '0784', desc: 'Trigger finger release' },
+    { code: '0791', desc: 'Single tendon transfer' },
+    { code: '0792', desc: 'Multiple tendon transfer' },
+    /* ── Amputations ─────────────────────────────────────────────── */
+    { code: '0685', desc: 'Amputation – upper arm or forearm' },
+    { code: '0686', desc: 'Amputation – ankle (Syme / Pirogoff type)' },
+    { code: '0691', desc: 'Amputation – whole or part of finger' },
+    { code: '0697', desc: 'Amputation – through thigh' },
+    { code: '0699', desc: 'Amputation – below knee / through knee / Syme' },
+    { code: '0703', desc: 'Amputation – foot one ray' },
+    { code: '0705', desc: 'Amputation – toe' },
+    /* ── Neurology / electrodiagnostics ──────────────────────────── */
+    { code: '0713', desc: 'Electromyography (EMG)' },
+    { code: '0715', desc: 'Strength duration curve per session' },
+    { code: '0717', desc: 'Electrical examination of single nerve or muscle' },
+    { code: '0727', desc: 'Cranial reflex study (early and late responses) – unilateral' },
+    { code: '0728', desc: 'Cranial reflex study (early and late responses) – bilateral' },
+    { code: '0733', desc: 'Motor nerve conduction studies (single nerve)' },
+    { code: '0735', desc: 'Sensory nerve conduction by sweep averages (single nerve)' },
+    { code: '0741', desc: 'Muscle biopsy' },
+    /* ── Emergency procedures ─────────────────────────────────────── */
+    { code: '0700', desc: 'Cardiopulmonary resuscitation (CPR)' },
+    { code: '0701', desc: 'Emergency endotracheal intubation' },
+    { code: '0702', desc: 'Nebulisation treatment administered in rooms' },
+    { code: '1211', desc: '24-hour emergency attendance (emergency centre)' },
+    /* ── Critical care / ICU ─────────────────────────────────────── */
+    { code: '1200', desc: 'Carbon monoxide diffusing capacity (lung function)' },
+    { code: '1201', desc: 'Maximum inspiratory / expiratory pressure' },
+    { code: '1204', desc: 'Intensive care: Category 1 (High Care) – monitoring' },
+    { code: '1205', desc: 'Intensive care: Category 2 (ICU) – active system support, first period' },
+    { code: '1206', desc: 'Intensive care: Category 2 (ICU) – active system support, second period' },
+    { code: '1207', desc: 'Intensive care: Category 2 (ICU) – active system support, subsequent' },
+    { code: '1208', desc: 'Intensive care: Category 3 (ICU) – multiple organ failure, first period' },
+    { code: '1209', desc: 'Intensive care: Category 3 (ICU) – multiple organ failure, second period' },
+    { code: '1210', desc: 'Intensive care: Category 3 (ICU) – multiple organ failure, subsequent' },
+    { code: '1212', desc: 'Mechanical ventilation – first day' },
+    { code: '1213', desc: 'Mechanical ventilation – subsequent days (per day)' },
+    { code: '1214', desc: 'Mechanical ventilation – after two weeks (per day)' },
+    { code: '1215', desc: 'Insertion of arterial pressure cannula' },
+    { code: '1217', desc: 'Insertion of central venous line via peripheral vein' },
+    { code: '1218', desc: 'Insertion of central venous line via subclavian or jugular vein' },
+    { code: '1227', desc: 'Prolonged neonatal resuscitation' },
+    /* ── Cardiology / ECG ────────────────────────────────────────── */
+    { code: '1228', desc: 'GP fee for taking ECG only (without effort)' },
+    { code: '1229', desc: 'GP fee for taking ECG only (with and without effort)' },
+    { code: '1230', desc: 'Physician fee for interpreting ECG (without effort)' },
+    { code: '1231', desc: 'Physician fee for interpreting ECG (with and without effort)' },
+    { code: '1232', desc: 'ECG – without effort' },
+    { code: '1233', desc: 'ECG – with and without effort' },
+    { code: '1234', desc: 'Effort ECG with bicycle ergometer (stress test)' },
+    { code: '1235', desc: 'Multi-stage treadmill stress test' },
+    { code: '1236', desc: 'ECG without effort – under 4 years old' },
+    { code: '1237', desc: '24-hour ambulatory blood pressure monitoring – hire fee' },
+    { code: '1238', desc: '24-hour Holter ECG monitoring – hire fee' },
+    { code: '1239', desc: '24-hour Holter ECG monitoring – interpretation' },
+    { code: '1240', desc: 'Signal averaged ECG' },
+    { code: '1243', desc: 'Two-week event-triggered ambulatory ECG monitoring – hire fee' },
+    { code: '1244', desc: 'Two-week event-triggered ambulatory ECG monitoring – interpretation' },
+    { code: '1247', desc: 'Cardioversion for arrhythmias (doctor in attendance)' },
+    { code: '1248', desc: 'Paracentesis of pericardium' },
+    { code: '1255', desc: 'Tilt test' },
+    { code: '1273', desc: 'Insertion of temporary pacemaker' },
+    /* ── Radiology ───────────────────────────────────────────────── */
+    { code: '3600', desc: 'Peripheral bone densitometry (ionizing radiation)' },
+    { code: '3601', desc: 'Chest X-ray – PA view' },
+    { code: '3602', desc: 'Chest X-ray – PA and lateral' },
+    { code: '3603', desc: 'Sinography' },
+    { code: '3604', desc: 'Bone densitometry (one or more levels, same session)' },
+    { code: '3605', desc: 'X-ray of single limb / joint (in-rooms)' },
+    { code: '3606', desc: 'Repeat mammography (tumour localisation)' },
+    { code: '3607', desc: 'Attendance at radiological procedure in X-ray department' },
+    { code: '3608', desc: 'Repeat mammography with minimally invasive breast biopsy / FNA' },
+    { code: '3612', desc: 'Ultrasonic bone densitometry' },
+    { code: '3615', desc: 'Routine obstetric ultrasound – 10 to 20 weeks' },
+    { code: '3617', desc: 'Routine obstetric ultrasound – 20 to 24 weeks (detailed anatomical)' },
+    { code: '3618', desc: 'Pelvic organs ultrasound – transabdominal (gynaecological)' },
+    { code: '3620', desc: 'Cardiac echocardiography with Doppler colour mapping' },
+    { code: '3621', desc: 'Cardiac examination – M-Mode' },
+    { code: '3622', desc: 'Cardiac examination – 2-Dimensional' },
+    { code: '3623', desc: 'Cardiac examination with effort (stress echo)' },
+    { code: '3625', desc: 'Cardiac examination with Doppler' },
+    { code: '3627', desc: 'Abdominal and pelvic ultrasound – whole abdomen' },
+    { code: '3628', desc: 'Renal tract ultrasound' },
+    { code: '3629', desc: 'High-definition small-parts scan (thyroid, breast, scrotum)' },
+    { code: '3634', desc: 'Peripheral vascular study – B-mode only' },
+    { code: '3635', desc: 'Peripheral vascular study with Doppler' },
+    { code: '3636', desc: 'Trans-oesophageal echocardiography' },
+    { code: '3637', desc: 'Colour Doppler add-on (to any regional exam)' },
+    /* ── Biochemistry: serum ─────────────────────────────────────── */
+    { code: '4105', desc: 'Protein electrophoresis (serum)' },
+    { code: '4109', desc: 'Phosphate (serum)' },
+    { code: '4113', desc: 'Potassium (serum)' },
+    { code: '4114', desc: 'Sodium (serum)' },
+    { code: '4117', desc: 'Protein total (serum)' },
+    { code: '4121', desc: 'pH, pCO2 or pO2 – blood gas (each)' },
+    { code: '4125', desc: 'Salicylates (serum)' },
+    { code: '4130', desc: 'Aspartate aminotransferase (AST)' },
+    { code: '4131', desc: 'Alanine aminotransferase (ALT)' },
+    { code: '4132', desc: 'Creatine kinase (CK)' },
+    { code: '4133', desc: 'Lactate dehydrogenase (LD)' },
+    { code: '4134', desc: 'Gamma glutamyl transferase (GGT)' },
+    { code: '4136', desc: 'Angiotensin converting enzyme (ACE)' },
+    { code: '4138', desc: 'CK-MB – immunoinhibition / precipitation' },
+    { code: '4144', desc: 'Transferrin (serum)' },
+    { code: '4147', desc: 'Triglyceride (serum)' },
+    { code: '4150', desc: 'Urea – post-dialysis' },
+    { code: '4151', desc: 'Urea (serum)' },
+    { code: '4152', desc: 'CK-MB mass determination – quantitative (automated)' },
+    { code: '4154', desc: 'Myoglobin quantitative (monoclonal immunological)' },
+    { code: '4155', desc: 'Uric acid (serum)' },
+    { code: '4156', desc: 'Vitamin D3 (serum)' },
+    { code: '4161', desc: 'Troponin isoforms (each)' },
+    { code: '4163', desc: 'Apoprotein AI – turbidometric method' },
+    { code: '4167', desc: 'Apoprotein B – turbidometric method' },
+    { code: '4170', desc: 'Lipoprotein (a) [Lp(a)] assay' },
+    { code: '4171', desc: 'Electrolytes panel – Na + K + Cl + CO2 + urea' },
+    { code: '4172', desc: 'ELISA / EMIT technique' },
+    { code: '4184', desc: 'C-reactive protein (ultra-sensitive)' },
+    { code: '4187', desc: 'Zinc – atomic absorption' },
+    { code: '4188', desc: 'Urine dipstick (per stick)' },
+    { code: '4197', desc: 'Amylase' },
+    /* ── Biochemistry: urine ─────────────────────────────────────── */
+    { code: '4204', desc: 'Calcium – atomic absorption (urine)' },
+    { code: '4205', desc: 'Calcium – spectrophotometric (urine)' },
+    { code: '4210', desc: 'Urine collagen telopeptides' },
+    { code: '4213', desc: 'Protein quantitative (urine)' },
+    { code: '4218', desc: 'Glucose quantitative (urine)' },
+    { code: '4221', desc: 'Creatinine (urine)' },
+    { code: '4223', desc: 'Creatinine clearance' },
+    { code: '4229', desc: 'Uric acid clearance' },
+    { code: '4230', desc: 'Urine specific gravity' },
+    { code: '4233', desc: 'Drugs of abuse – metabolites HPLC (urine)' },
+    { code: '4237', desc: '5-Hydroxy-indole-acetic acid (5-HIAA) – screen test' },
+    { code: '4247', desc: 'Ketones (excl. dipstick method)' },
+    { code: '4261', desc: 'Microalbumin quantitative' },
+    { code: '4262', desc: 'Microalbumin qualitative' },
+    { code: '4263', desc: 'pH excl. dipstick method' },
+    /* ── Other body fluids / stool ───────────────────────────────── */
+    { code: '4301', desc: 'Chloride (urine)' },
+    { code: '4309', desc: 'Urobilinogen quantitative' },
+    { code: '4315', desc: 'Potassium (urine)' },
+    { code: '4316', desc: 'Sodium (urine)' },
+    { code: '4319', desc: 'Urea (urine)' },
+    { code: '4321', desc: 'Uric acid (urine)' },
+    { code: '4325', desc: 'VMA quantitative' },
+    { code: '4326', desc: 'Catecholamines (HPLC)' },
+    { code: '4343', desc: 'Fat – qualitative (stool)' },
+    { code: '4345', desc: 'Fat – quantitative (stool)' },
+    { code: '4351', desc: 'Occult blood – chemical test' },
+    { code: '4352', desc: 'Occult blood – monoclonal antibodies' },
+    { code: '4362', desc: 'Elastase quantitative ELISA (stool)' },
+    { code: '4371', desc: 'Amylase in exudate' },
+    { code: '4378', desc: 'Urea breath test' },
+    { code: '4395', desc: 'Sweat sodium' },
+    { code: '4396', desc: 'Sweat potassium' },
+    { code: '4397', desc: 'Sweat chloride' },
+    { code: '4399', desc: 'Sweat collection by iontophoresis' },
+    /* ── CSF / molecular biology ─────────────────────────────────── */
+    { code: '4401', desc: 'Cell count (CSF)' },
+    { code: '4407', desc: 'Cell count + protein + glucose + chloride (CSF panel)' },
+    { code: '4417', desc: 'Protein qualitative (CSF)' },
+    { code: '4419', desc: 'Protein quantitative (CSF)' },
+    { code: '4421', desc: 'Glucose (CSF)' },
+    { code: '4423', desc: 'Urea (CSF)' },
+    { code: '4425', desc: 'Protein electrophoresis (CSF)' },
+    { code: '4429', desc: 'Quantitative PCR (DNA / RNA)' },
+    { code: '4434', desc: 'Bacteriological DNA identification (PCR)' },
+    /* ── Immunology / tumour markers ─────────────────────────────── */
+    { code: '4448', desc: 'HCG – latex agglutination qualitative (side room)' },
+    { code: '4449', desc: 'HCG – latex agglutination semi-quantitative (side room)' },
+    { code: '4450', desc: 'HCG – monoclonal immunological qualitative' },
+    { code: '4451', desc: 'HCG – monoclonal immunological quantitative' },
+    { code: '4456', desc: 'Eosinophil cationic protein' },
+    { code: '4457', desc: 'Mast cell tryptase' },
+    { code: '4460', desc: 'CA-199 tumour marker' },
+    { code: '4462', desc: 'CA-125 tumour marker' },
+    { code: '4466', desc: 'Beta-2-microglobulin' },
+    { code: '4469', desc: 'Tumour markers – monoclonal immunological (each)' },
+    { code: '4471', desc: 'Carcinoembryonic antigen (CEA)' },
+    { code: '4473', desc: 'TSH receptor antibody' },
+    { code: '4477', desc: 'Neuron specific enolase' },
+    { code: '4480', desc: 'Serotonin' },
+    { code: '4482', desc: 'Free thyroxine (FT4)' },
+    { code: '4484', desc: 'TSH + Free T4 (combined)' },
+    { code: '4485', desc: 'Insulin' },
+    { code: '4486', desc: 'C-peptide' },
+    { code: '4488', desc: 'B-type natriuretic peptide (BNP)' },
+    { code: '4491', desc: 'Vitamin B12' },
+    { code: '4493', desc: 'Drug concentration quantitative' },
+    { code: '4499', desc: 'Cortisol' },
+    /* ── Endocrinology / hormones ─────────────────────────────────── */
+    { code: '4500', desc: 'DHEA sulphate' },
+    { code: '4501', desc: 'Testosterone (total)' },
+    { code: '4502', desc: 'Free testosterone' },
+    { code: '4503', desc: 'Oestradiol' },
+    { code: '4504', desc: 'Anti-Mullerian hormone (AMH)' },
+    { code: '4507', desc: 'Thyrotropin (TSH)' },
+    { code: '4509', desc: 'Free tri-iodothyronine (FT3)' },
+    { code: '4511', desc: 'Renin activity' },
+    { code: '4512', desc: 'Parathormone (PTH)' },
+    { code: '4513', desc: 'IgE total' },
+    { code: '4514', desc: 'Antigen specific IgE' },
+    { code: '4515', desc: 'Aldosterone' },
+    { code: '4516', desc: 'Follicle stimulating hormone (FSH)' },
+    { code: '4517', desc: 'Luteinising hormone (LH)' },
+    { code: '4519', desc: 'Prostate specific antigen (PSA)' },
+    { code: '4520', desc: '17-Hydroxy progesterone' },
+    { code: '4521', desc: 'Progesterone' },
+    { code: '4522', desc: 'Alpha-fetoprotein' },
+    { code: '4523', desc: 'ACTH' },
+    { code: '4524', desc: 'Free PSA' },
+    { code: '4526', desc: 'Sex hormone binding globulin (SHBG)' },
+    { code: '4527', desc: 'Gastrin' },
+    { code: '4528', desc: 'Ferritin' },
+    { code: '4531', desc: 'Hepatitis – per antigen or antibody' },
+    { code: '4533', desc: 'Folic acid (serum)' },
+    { code: '4536', desc: 'Erythrocyte folate' },
+    { code: '4537', desc: 'Prolactin' },
+    { code: '4538', desc: 'Procalcitonin – semi-quantitative' },
+    { code: '4539', desc: 'Procalcitonin – quantitative' },
+    { code: '4546', desc: 'First trimester Down\'s screen' },
+    { code: '4552', desc: 'Second trimester Down\'s screen' },
+    { code: '4553', desc: 'Thyroglobulin' },
+    /* ── In-rooms investigations ──────────────────────────────────── */
+    { code: '4100', desc: 'ECG – resting 12-lead, recording and interpretation' },
+    { code: '4101', desc: 'ECG – interpretation only' },
+    { code: '4102', desc: 'ECG – rhythm strip recording and interpretation' },
+    { code: '4559', desc: 'Liquid-based cytology (Pap smear)' },
+    { code: '4560', desc: 'Spirometry (FVC, FEV1) – recording and interpretation' },
+    { code: '4561', desc: 'Spirometry pre- and post-bronchodilator' },
+    { code: '4562', desc: 'Peak expiratory flow rate (PEFR) measurement' },
+    { code: '4563', desc: 'Sputum / body fluids / tumour aspirates – each additional unit' },
+    { code: '4564', desc: 'Fine-needle aspiration for cytology' },
+    { code: '4566', desc: 'Pap smear – collection and preparation' },
+    { code: '4567', desc: 'Histology per sample' },
+    { code: '4570', desc: 'Blood glucose measurement (point-of-care)' },
+    { code: '4571', desc: 'INR / prothrombin time (point-of-care)' },
+    { code: '4572', desc: 'Haemoglobin measurement (point-of-care)' },
+    { code: '4573', desc: 'Urinalysis – dipstick and interpretation' },
+    { code: '4574', desc: 'Urine pregnancy test (in-rooms)' },
+    { code: '4575', desc: 'Rapid antigen test (strep / flu / COVID-19)' },
+    { code: '4580', desc: 'Blood pressure measurement and recording' },
+    { code: '4581', desc: '24-hour ambulatory blood pressure monitoring' },
+    { code: '4582', desc: 'Pulse oximetry' },
+    { code: '4583', desc: 'Ear wax removal / aural irrigation' },
+    { code: '4590', desc: 'Visual acuity testing' },
+    { code: '4591', desc: 'Fundoscopy (ophthalmoscopy)' },
+    { code: '4600', desc: 'Proctoscopy / anoscopy' },
+    { code: '4605', desc: 'Diagnostic nasal endoscopy (anterior rhinoscopy)' },
+    /* ── Women\'s health / family planning ───────────────────────── */
+    { code: '4610', desc: 'IUD / IUS insertion' },
+    { code: '4611', desc: 'IUD / IUS removal' },
+    { code: '4612', desc: 'Subdermal implant insertion (e.g. Implanon)' },
+    { code: '4613', desc: 'Subdermal implant removal' },
+    { code: '4614', desc: 'Injectable contraceptive (Depo-Provera) administration' },
+    { code: '4620', desc: 'Immunisation / vaccination administration' },
+    { code: '4621', desc: 'Childhood immunisation counselling' },
+    { code: '4622', desc: 'Travel medicine consultation and vaccination' },
+    { code: '4630', desc: 'Antenatal care visit (GP-managed)' },
+    { code: '4631', desc: 'Postnatal check – mother' },
+    { code: '4632', desc: 'Well-baby / child assessment' },
+    /* ── Microbiology / bacteriology ─────────────────────────────── */
+    { code: '4651', desc: 'Non-radiometric automated blood cultures' },
+    { code: '4652', desc: 'Rapid automated bacterial identification per organism' },
+    { code: '4653', desc: 'Rapid automated antibiotic susceptibility per organism' },
+    { code: '4655', desc: 'Mycobacteria – MIC determination (E Test)' },
+    { code: '4656', desc: 'Mycobacteria – identification HPLC' },
+    { code: '4657', desc: 'Mycobacteria – liquefied, concentrated, fluorochrome stain' },
+    /* ── ENT ─────────────────────────────────────────────────────── */
+    { code: '1025', desc: 'Submucous resection of nasal septum (septoplasty)' },
+    { code: '1027', desc: 'Submucous resection of nasal septum with turbinectomy' },
+    { code: '1029', desc: 'Rhinoplasty – corrective (non-cosmetic)' },
+    { code: '1030', desc: 'Intranasal polypectomy (unilateral or bilateral)' },
+    { code: '1033', desc: 'Turbinectomy / inferior turbinate reduction' },
+    { code: '1035', desc: 'Functional endoscopic sinus surgery (FESS) – unilateral' },
+    { code: '1036', desc: 'Functional endoscopic sinus surgery (FESS) – bilateral' },
+    { code: '1039', desc: 'Caldwell-Luc antrostomy / radical antrum operation' },
+    { code: '1047', desc: 'External fronto-ethmoidectomy / external ethmoidectomy' },
+    { code: '1054', desc: 'Sphenoethmoidectomy / posterior sinus surgery' },
+    { code: '1083', desc: 'Intranasal antrostomy / inferior meatal antrostomy' },
+    { code: '1101', desc: 'Tonsillectomy – dissection method' },
+    { code: '1103', desc: 'Tonsillectomy with adenoidectomy' },
+    { code: '1105', desc: 'Adenoidectomy (removal of adenoids only)' },
+    { code: '1107', desc: 'Incision of peritonsillar abscess (quinsy) under local anaesthetic' },
+    { code: '1109', desc: 'Incision of peritonsillar abscess (quinsy) under general anaesthetic' },
+    { code: '1111', desc: 'Post-tonsillectomy or post-adenoidectomy haemorrhage control' },
+    { code: '1113', desc: 'Retropharyngeal abscess drainage via internal approach' },
+    { code: '1115', desc: 'Direct laryngoscopy under general anaesthetic' },
+    { code: '1117', desc: 'Microlaryngoscopy with or without biopsy' },
+    { code: '1119', desc: 'Microlaryngoscopy with laser treatment' },
+    { code: '1121', desc: 'Tracheostomy (emergency or elective)' },
+    { code: '1123', desc: 'Tracheostomy change / revision' },
+    { code: '1125', desc: 'Myringotomy (unilateral)' },
+    { code: '1127', desc: 'Myringotomy with insertion of ventilation tubes (grommets) – bilateral' },
+    { code: '1129', desc: 'Myringoplasty (type 1 tympanoplasty)' },
+    { code: '1131', desc: 'Tympanoplasty (type II–IV) with or without mastoidectomy' },
+    { code: '1133', desc: 'Cortical (simple) mastoidectomy' },
+    { code: '1135', desc: 'Modified radical mastoidectomy' },
+    { code: '1137', desc: 'Radical mastoidectomy' },
+    { code: '1139', desc: 'Stapedectomy / stapedotomy (with or without prosthesis)' },
+    { code: '1141', desc: 'Cochlear implant surgery' },
+    { code: '1143', desc: 'Ear syringing / aural toilet' },
+    { code: '1145', desc: 'Total thyroidectomy' },
+    { code: '1147', desc: 'Partial / subtotal thyroidectomy (hemithyroidectomy)' },
+    { code: '1149', desc: 'Total parathyroidectomy' },
+    { code: '1151', desc: 'Parathyroidectomy with autotransplantation' },
+    { code: '1153', desc: 'Parotidectomy – superficial lobe (facial nerve preservation)' },
+    { code: '1155', desc: 'Parotidectomy – total with facial nerve preservation' },
+    { code: '1157', desc: 'Submandibular gland excision' },
+    { code: '1159', desc: 'Selective neck dissection' },
+    { code: '1161', desc: 'Radical neck dissection (modified)' },
+    { code: '1163', desc: 'Audiometry (pure tone audiogram)' },
+    { code: '1165', desc: 'Tympanometry / impedance audiometry' },
+    { code: '1167', desc: 'Brainstem evoked response audiometry (BERA)' },
+    { code: '1169', desc: 'Hearing test – full battery' },
+    /* ── Vascular surgery ────────────────────────────────────────── */
+    { code: '1372', desc: 'Abdominal aorta and iliac artery – unruptured aneurysm repair' },
+    { code: '1373', desc: 'Abdominal aorta and iliac artery – ruptured aneurysm repair' },
+    { code: '1375', desc: 'Grafting and/or thrombo-endarterectomy for thrombosis' },
+    { code: '1376', desc: 'Aorta bi-femoral graft with proximal and distal endarterectomy' },
+    { code: '1379', desc: 'Iliac artery prosthetic grafting and/or thrombo-endarterectomy' },
+    { code: '1385', desc: 'Peripheral artery prosthetic grafting' },
+    { code: '1387', desc: 'Vein grafting proximal to knee joint' },
+    { code: '1388', desc: 'Vein grafting distal to knee joint' },
+    { code: '1389', desc: 'Endarterectomy (when not part of another specified procedure)' },
+    { code: '1390', desc: 'Carotid endarterectomy' },
+    { code: '1393', desc: 'Embolectomy – peripheral, transfemoral' },
+    { code: '1395', desc: 'Arterial suture (trauma / miscellaneous arterial procedures)' },
+    { code: '1396', desc: 'Suture of major blood vessel (artery or vein) – trauma' },
+    { code: '1397', desc: 'Profundoplasty' },
+    { code: '1399', desc: 'Distal tibial (ankle region) bypass' },
+    { code: '1401', desc: 'Femoro-femoral bypass' },
+    { code: '1402', desc: 'Carotid-subclavian bypass' },
+    { code: '1403', desc: 'Axillo-femoral bypass' },
+    { code: '1407', desc: 'Ligation of saphenous vein' },
+    { code: '1408', desc: 'Placement of Hickman catheter or similar' },
+    { code: '1410', desc: 'Ligation of inferior vena cava (abdominal)' },
+    { code: '1413', desc: 'Varicose veins combined procedure (ligation, stripping, perforators) – unilateral' },
+    { code: '1415', desc: 'Varicose veins combined procedure – bilateral' },
+    { code: '1417', desc: 'Extensive sub-fascial ligation of perforating veins' },
+    { code: '1419', desc: 'Lesser varicose vein procedures' },
+    { code: '1421', desc: 'Compression sclerotherapy of varicose veins (per injection, max 9 per leg)' },
+    { code: '1422', desc: 'Endovenous ablation of incompetent vein by radiofrequency or laser – first vein' },
+    { code: '1424', desc: 'Endovenous ablation of incompetent vein – subsequent veins' },
+    { code: '1425', desc: 'Thrombectomy – inferior vena cava (trans-abdominal)' },
+    { code: '1427', desc: 'Thrombectomy – ilio-femoral' },
+    { code: '1429', desc: 'Porto-caval shunt' },
+    /* ── Lymph nodes / spleen ────────────────────────────────────── */
+    { code: '1435', desc: 'Splenectomy' },
+    { code: '1436', desc: 'Splenorrhaphy' },
+    { code: '1439', desc: 'Excision of lymph node for biopsy – neck or axilla' },
+    { code: '1441', desc: 'Excision of lymph node for biopsy – groin' },
+    { code: '1443', desc: 'Simple excision of lymph nodes for tuberculosis' },
+    { code: '1445', desc: 'Radical excision of lymph nodes of neck – total, unilateral' },
+    { code: '1449', desc: 'Radical excision of lymph nodes of axilla' },
+    { code: '1451', desc: 'Radical excision of lymph nodes of groin – ilio-inguinal' },
+    { code: '1453', desc: 'Radical excision of lymph nodes of groin – inguinal' },
+    { code: '1455', desc: 'Retroperitoneal lymphadenectomy including pelvic, aortic and renal nodes' },
+    { code: '1460', desc: 'Sentinel lymph node intra-operative identification' },
+    /* ── Upper GI surgery ────────────────────────────────────────── */
+    { code: '1545', desc: 'Oesophagoscopy with rigid instrument' },
+    { code: '1549', desc: 'Oesophagoscopy with dilatation of stricture' },
+    { code: '1550', desc: 'Oesophagoscopy with removal of foreign body' },
+    { code: '1551', desc: 'Oesophagoscopy with insertion of indwelling oesophageal tube' },
+    { code: '1552', desc: 'Injection and/or ligation of oesophageal varices (endoscopy inclusive)' },
+    { code: '1553', desc: 'Subsequent injection/ligation of oesophageal varices' },
+    { code: '1556', desc: 'Oesophagogastric fundoplication (Nissen/Toupet/Watson) – laparoscopic' },
+    { code: '1557', desc: 'Oesophageal dilatation' },
+    { code: '1559', desc: 'Oesophagectomy – two stage' },
+    { code: '1560', desc: 'Oesophagectomy – three stage' },
+    { code: '1561', desc: 'Thoraco-abdominal oesophagogastrectomy' },
+    { code: '1563', desc: 'Hiatus / diaphragmatic hernia repair with anti-reflux procedure' },
+    { code: '1564', desc: 'Oesophagogastric fundoplication (Nissen/Belsey) – thoracotomy' },
+    { code: '1566', desc: 'Gastroplasty' },
+    { code: '1569', desc: 'Heller\'s oesophagomyotomy (open)' },
+    { code: '1570', desc: 'Oesophagomyotomy laparoscopic with fundoplication (Heller type)' },
+    { code: '1578', desc: 'Oesophageal motility study (4 channel)' },
+    { code: '1580', desc: 'Oesophageal motility study (6 channel with pH pull-through)' },
+    { code: '1584', desc: '24-hour oesophageal pH studies – hire fee' },
+    { code: '1585', desc: '24-hour oesophageal pH studies – interpretation' },
+    { code: '1587', desc: 'Upper GI endoscopy / gastroscopy (hospital equipment)' },
+    { code: '1588', desc: 'Plus polypectomy – add to gastroscopy (item 1587)' },
+    { code: '1589', desc: 'Endoscopic control of GI haemorrhage by injection/ligation/energy device – add-on' },
+    { code: '1591', desc: 'Removal of foreign body from stomach – add to gastroscopy (item 1587)' },
+    { code: '1597', desc: 'Gastrostomy or gastrotomy' },
+    { code: '1598', desc: 'Gastrotomy with suture repair of bleeding ulcer' },
+    { code: '1599', desc: 'Pyloromyotomy (Rammstedt)' },
+    { code: '1601', desc: 'Local excision of ulcer or benign neoplasm (stomach)' },
+    { code: '1603', desc: 'Vagotomy – abdominal' },
+    { code: '1605', desc: 'Truncal or selective vagotomy with drainage procedures' },
+    { code: '1607', desc: 'Vagotomy and antrectomy' },
+    { code: '1609', desc: 'Highly selective vagotomy' },
+    { code: '1611', desc: 'Pyloroplasty' },
+    { code: '1613', desc: 'Gastroenterostomy' },
+    { code: '1615', desc: 'Suture of perforated gastric or duodenal ulcer' },
+    { code: '1617', desc: 'Partial gastrectomy' },
+    { code: '1619', desc: 'Total gastrectomy' },
+    { code: '1621', desc: 'Revision of gastrectomy or gastro-enterostomy' },
+    { code: '1626', desc: 'Enteroscopy (small bowel endoscopy beyond duodenojejunal flexure with biopsy)' },
+    { code: '1780', desc: 'Gastric and duodenal intubation' },
+    /* ── Lower GI / colorectal surgery ──────────────────────────── */
+    { code: '1634', desc: 'Enterotomy or enterostomy' },
+    { code: '1637', desc: 'Operation for relief of intestinal obstruction' },
+    { code: '1639', desc: 'Resection of small bowel with enterostomy or anastomosis' },
+    { code: '1641', desc: 'Entero-enterostomy or entero-colostomy for bypass' },
+    { code: '1642', desc: 'Video capsule endoscopy (GI tract imaging) – hire fee' },
+    { code: '1643', desc: 'Video capsule endoscopy – doctor interpretation and report' },
+    { code: '1645', desc: 'Suture of intestine – perforated ulcer, wound or injury' },
+    { code: '1647', desc: 'Closure of intestinal fistula' },
+    { code: '1649', desc: 'Excision of Meckel\'s diverticulum' },
+    { code: '1653', desc: 'Total colonoscopy with hospital equipment (including biopsy)' },
+    { code: '1654', desc: 'Plus polypectomy – add to colonoscopy (item 1653)' },
+    { code: '1656', desc: 'Left-sided colonoscopy' },
+    { code: '1657', desc: 'Right or left hemicolectomy / segmental colectomy' },
+    { code: '1658', desc: 'Reconstruction of colon after Hartman\'s procedure' },
+    { code: '1661', desc: 'Colotomy including removal of tumour or foreign body' },
+    { code: '1663', desc: 'Total colectomy' },
+    { code: '1665', desc: 'Colostomy or ileostomy – isolated procedure' },
+    { code: '1667', desc: 'Colostomy closure' },
+    { code: '1669', desc: 'Total proctocolectomy and ileostomy' },
+    { code: '1673', desc: 'Drainage of appendix abscess' },
+    { code: '1675', desc: 'Appendicectomy' },
+    { code: '1676', desc: 'Flexible sigmoidoscopy including rectum and anus (hospital equipment)' },
+    { code: '1677', desc: 'Sigmoidoscopy with or without biopsy' },
+    { code: '1678', desc: 'Plus polypectomy – add to sigmoidoscopy (item 1676)' },
+    { code: '1681', desc: 'Proctoscopy with removal of polyps – first time' },
+    { code: '1683', desc: 'Proctoscopy with removal of polyps – subsequent times' },
+    { code: '1687', desc: 'Anterior resection of rectum for carcinoma' },
+    { code: '1689', desc: 'Perineal resection of rectum' },
+    { code: '1691', desc: 'Abdomino-perineal resection of rectum – abdominal surgeon' },
+    { code: '1697', desc: 'Repair of prolapsed rectum – abdominal (Roscoe Graham/Moskovitz)' },
+    { code: '1701', desc: 'Repair of prolapsed rectum – perineal approach' },
+    { code: '1703', desc: 'Repair of prolapsed rectum – Thierisch suture' },
+    { code: '1705', desc: 'Incision and drainage of peri-anal abscess' },
+    { code: '1707', desc: 'Drainage of submucous abscess (anorectal)' },
+    { code: '1709', desc: 'Drainage of ischio-rectal abscess' },
+    { code: '1711', desc: 'Excision of pelvi-rectal fistula' },
+    { code: '1713', desc: 'Excision of fistula-in-ano' },
+    { code: '1715', desc: 'Operation for fissure-in-ano' },
+    { code: '1719', desc: 'Rubber band ligation of haemorrhoids – per haemorrhoid' },
+    { code: '1721', desc: 'Sclerosing injection for haemorrhoids – per injection' },
+    { code: '1723', desc: 'Haemorrhoidectomy' },
+    { code: '1725', desc: 'Drainage of external thrombosed pile' },
+    { code: '1727', desc: 'Multiple anal procedures (haemorrhoids, fissure, etc.) combined' },
+    { code: '1729', desc: 'Excision of anal skin tags' },
+    { code: '1735', desc: 'Anal sphincteroplasty for incontinence' },
+    { code: '1737', desc: 'Dilation of ano-rectal stricture' },
+    /* ── Hepatobiliary / pancreatic ──────────────────────────────── */
+    { code: '1743', desc: 'Needle biopsy of liver' },
+    { code: '1745', desc: 'Biopsy of liver by laparotomy' },
+    { code: '1747', desc: 'Drainage of liver abscess or cyst' },
+    { code: '1749', desc: 'Right hemi-hepatectomy' },
+    { code: '1751', desc: 'Left hemi-hepatectomy' },
+    { code: '1753', desc: 'Partial or segmental hepatectomy' },
+    { code: '1757', desc: 'Suture of liver wound or injury' },
+    { code: '1759', desc: 'Cholecystostomy' },
+    { code: '1761', desc: 'Cholecystectomy (open)' },
+    { code: '1762', desc: 'Cholecystectomy with operative cholangiogram' },
+    { code: '1763', desc: 'Cholecystectomy with exploration of common bile duct' },
+    { code: '1765', desc: 'Exploration of common bile duct – secondary operation' },
+    { code: '1767', desc: 'Reconstruction of common bile duct' },
+    { code: '1769', desc: 'Cholecysto-enterostomy or gastrostomy' },
+    { code: '1770', desc: 'Endoscopic placement of bilio-duodenal endoprosthesis – add to ERCP' },
+    { code: '1773', desc: 'Transduodenal sphincteroplasty' },
+    { code: '1775', desc: 'Excision of choledochal cyst with reconstruction' },
+    { code: '1778', desc: 'ERCP – endoscopy + catheterisation of pancreas duct or choledochus' },
+    { code: '1779', desc: 'Endoscopic retrograde removal of stone(s) – add to ERCP (item 1778)' },
+    { code: '1781', desc: 'Pancreatic procedure (excluding laboratory tests)' },
+    { code: '1782', desc: 'Endoscopic sphincterotomy – add to ERCP (item 1778)' },
+    { code: '1783', desc: 'Drainage of pancreatic abscess' },
+    { code: '1785', desc: 'Internal drainage of pancreatic cyst' },
+    { code: '1788', desc: 'Biopsy of pancreas' },
+    { code: '1789', desc: 'Pancreatico-duodenectomy (Whipple procedure)' },
+    { code: '1791', desc: 'Local, partial or subtotal pancreatectomy' },
+    { code: '1794', desc: 'Total pancreatectomy' },
+    /* ── Abdominal / general surgery ─────────────────────────────── */
+    { code: '0257', desc: 'Drainage of major hand/foot infection involving deep fascia or complete excision of pilonidal cyst/sinus' },
+    { code: '0939', desc: 'Trans-abdominal anterior exposure of spine for spinal fusion – second surgeon' },
+    { code: '1797', desc: 'Pneumo-peritoneum – first' },
+    { code: '1799', desc: 'Pneumo-peritoneum – repeat' },
+    { code: '1800', desc: 'Peritoneal lavage' },
+    { code: '1801', desc: 'Diagnostic paracentesis (abdomen)' },
+    { code: '1803', desc: 'Therapeutic paracentesis (abdomen)' },
+    { code: '1807', desc: 'Laparoscopic modifier – add to open procedure when performed laparoscopically' },
+    { code: '1809', desc: 'Laparotomy (exploratory)' },
+    { code: '1811', desc: 'Suture of burst abdomen' },
+    { code: '1812', desc: 'Laparotomy for control of surgical haemorrhage' },
+    { code: '1813', desc: 'Drainage of sub-phrenic abscess' },
+    { code: '1815', desc: 'Drainage of intraperitoneal abscess – transabdominal' },
+    { code: '1819', desc: 'Inguinal or femoral hernia repair – adult' },
+    { code: '1821', desc: 'Inguinal or femoral hernia repair – child under 14 years' },
+    { code: '1823', desc: 'Inguinal hernia repair – infant under 1 year' },
+    { code: '1825', desc: 'Recurrent inguinal or femoral hernia repair' },
+    { code: '1827', desc: 'Strangulated hernia repair' },
+    { code: '1829', desc: 'Epigastric hernia repair' },
+    { code: '1831', desc: 'Umbilical hernia repair – adult' },
+    { code: '1833', desc: 'Umbilical hernia repair – child under 14 years' },
+    { code: '1835', desc: 'Incisional hernia repair' },
+    { code: '1836', desc: 'Mesh implantation for incisional/ventral hernia – add to hernia repair' },
+    { code: '1837', desc: 'Repair of omphalocele in newborn' },
+    { code: '1843', desc: 'Peritoneal dialysis – first day' },
+    { code: '1845', desc: 'Peritoneal dialysis – every subsequent day' },
+    /* ── Urology ─────────────────────────────────────────────────── */
+    { code: '1949', desc: 'Cystoscopy (diagnostic)' },
+    { code: '1951', desc: 'Cystoscopy with retrograde pyelogram (add-on)' },
+    { code: '1953', desc: 'Cystoscopy with bladder biopsy (add-on)' },
+    { code: '1954', desc: 'Ureteroscopy (diagnostic or therapeutic)' },
+    { code: '1955', desc: 'Cystoscopy with ureteric stent insertion (add-on)' },
+    { code: '1957', desc: 'Cystoscopy with ureteric stent removal (add-on)' },
+    { code: '1961', desc: 'Cystoscopy with urethral dilatation (add-on)' },
+    { code: '1965', desc: 'Cystoscopy with fulguration of bladder lesion (add-on)' },
+    { code: '1967', desc: 'Cystoscopy with insertion of suprapubic catheter' },
+    { code: '1975', desc: 'Transurethral resection of bladder tumour (TURBT)' },
+    { code: '1977', desc: 'Percutaneous nephrolithotomy (PCNL)' },
+    { code: '1979', desc: 'Extracorporeal shock wave lithotripsy (ESWL)' },
+    { code: '1981', desc: 'Urodynamic studies (full urodynamics)' },
+    { code: '1983', desc: 'Uroflowmetry' },
+    { code: '1985', desc: 'Urethral meatotomy / dilatation' },
+    { code: '1987', desc: 'Insertion of urinary catheter (indwelling Foley)' },
+    { code: '1989', desc: 'Suprapubic catheter insertion (percutaneous)' },
+    { code: '1991', desc: 'Prostate biopsy (transrectal ultrasound-guided)' },
+    { code: '2245', desc: 'Transurethral resection of prostate (TURP)' },
+    { code: '2247', desc: 'Open prostatectomy (retropubic/transvesical)' },
+    { code: '2249', desc: 'Radical prostatectomy (open or laparoscopic)' },
+    { code: '2251', desc: 'Nephrectomy – simple/total (open)' },
+    { code: '2253', desc: 'Nephrectomy – radical (open)' },
+    { code: '2257', desc: 'Nephrectomy – partial nephrectomy' },
+    { code: '2261', desc: 'Pyeloplasty (repair of pelvi-ureteric junction obstruction)' },
+    { code: '2263', desc: 'Circumcision – adult' },
+    { code: '2265', desc: 'Circumcision – child under 12 years' },
+    { code: '2267', desc: 'Vasectomy (bilateral)' },
+    { code: '2269', desc: 'Vasovasostomy (vasectomy reversal)' },
+    { code: '2271', desc: 'Orchidectomy (unilateral)' },
+    { code: '2273', desc: 'Orchidectomy (bilateral / radical)' },
+    { code: '2275', desc: 'Orchidopexy for undescended testis' },
+    { code: '2277', desc: 'Hydrocelectomy (repair of hydrocele)' },
+    { code: '2279', desc: 'Varicocelectomy' },
+    { code: '2281', desc: 'Epididymectomy' },
+    /* ── Gynaecology ─────────────────────────────────────────────── */
+    { code: '2303', desc: 'Operation for enlarging introitus (any method)' },
+    { code: '2305', desc: 'Vulvectomy – partial, simple' },
+    { code: '2307', desc: 'Vulvectomy – complete, simple' },
+    { code: '2313', desc: 'Labioplasty / labial reduction' },
+    { code: '2315', desc: 'Bartholin cyst excision' },
+    { code: '2317', desc: 'Bartholin cyst marsupialisation' },
+    { code: '2319', desc: 'Bartholin abscess incision and drainage' },
+    { code: '2321', desc: 'Hymenectomy / imperforate hymen incision' },
+    { code: '2323', desc: 'Vaginal cyst excision / Gartner duct cyst excision' },
+    { code: '2325', desc: 'Anterior colporrhaphy (anterior vaginal wall repair)' },
+    { code: '2327', desc: 'Posterior colporrhaphy (posterior vaginal wall repair)' },
+    { code: '2329', desc: 'Combined anterior and posterior colporrhaphy' },
+    { code: '2331', desc: 'Pelvic floor repair with mesh' },
+    { code: '2333', desc: 'Vaginal vault suspension / sacrocolpopexy' },
+    { code: '2337', desc: 'Tension-free vaginal tape (TVT) / mid-urethral sling' },
+    { code: '2339', desc: 'Colposcopy (diagnostic)' },
+    { code: '2341', desc: 'Colposcopy with directed biopsy of cervix' },
+    { code: '2343', desc: 'LLETZ / LEEP (loop excision of transformation zone)' },
+    { code: '2345', desc: 'Cone biopsy of cervix (cold knife conisation)' },
+    { code: '2347', desc: 'Cryotherapy to cervix' },
+    { code: '2349', desc: 'Laser treatment of cervix' },
+    { code: '2355', desc: 'Cervical polyp removal' },
+    { code: '2357', desc: 'Cervical cerclage (McDonald / Shirodkar suture)' },
+    { code: '2359', desc: 'Dilatation and curettage (D&C) – diagnostic' },
+    { code: '2361', desc: 'Dilatation and curettage (D&C) – therapeutic / evacuation' },
+    { code: '2363', desc: 'Hysteroscopy (diagnostic)' },
+    { code: '2365', desc: 'Hysteroscopy with endometrial biopsy' },
+    { code: '2367', desc: 'Hysteroscopy with polypectomy' },
+    { code: '2369', desc: 'Hysteroscopy with fibroid resection (TCRM)' },
+    { code: '2371', desc: 'Hysteroscopy with septum resection' },
+    { code: '2373', desc: 'Endometrial ablation (any method)' },
+    { code: '2375', desc: 'Insertion of Mirena IUS / levonorgestrel intrauterine system' },
+    { code: '2377', desc: 'IUCD insertion (intrauterine contraceptive device)' },
+    { code: '2379', desc: 'IUCD removal' },
+    { code: '2381', desc: 'Laparoscopy (diagnostic)' },
+    { code: '2383', desc: 'Laparoscopic sterilisation (tubal ligation / clips / rings)' },
+    { code: '2385', desc: 'Open tubal ligation (Pomeroy / Filshie clip)' },
+    { code: '2387', desc: 'Laparoscopic treatment of ectopic pregnancy (salpingostomy / salpingectomy)' },
+    { code: '2389', desc: 'Open surgery for ectopic pregnancy' },
+    { code: '2391', desc: 'Laparoscopic ovarian cystectomy' },
+    { code: '2393', desc: 'Open ovarian cystectomy' },
+    { code: '2395', desc: 'Laparoscopic salpingo-oophorectomy (unilateral or bilateral)' },
+    { code: '2397', desc: 'Laparoscopic myomectomy' },
+    { code: '2399', desc: 'Open myomectomy (abdominal)' },
+    { code: '2401', desc: 'Total abdominal hysterectomy (TAH) without salpingo-oophorectomy' },
+    { code: '2403', desc: 'Total abdominal hysterectomy with unilateral salpingo-oophorectomy' },
+    { code: '2405', desc: 'Total abdominal hysterectomy with bilateral salpingo-oophorectomy' },
+    { code: '2407', desc: 'Subtotal (supracervical) hysterectomy' },
+    { code: '2409', desc: 'Vaginal hysterectomy without repair' },
+    { code: '2411', desc: 'Vaginal hysterectomy with anterior/posterior repair' },
+    { code: '2413', desc: 'Laparoscopic hysterectomy (total or laparoscopic-assisted)' },
+    { code: '2415', desc: 'Radical hysterectomy (Wertheim) with lymph node dissection' },
+    { code: '2421', desc: 'Chromotubation (dye test for tubal patency at laparoscopy)' },
+    { code: '2423', desc: 'Hysterosalpingogram (HSG) / uterine dye study' },
+    { code: '2425', desc: 'Pelvic laparotomy (exploratory)' },
+    { code: '2427', desc: 'Hysteroscopic adhesiolysis for Asherman syndrome' },
+    { code: '2429', desc: 'Cervical dilatation (alone, without curettage)' },
+    /* ── Adrenal / endocrine surgery ─────────────────────────────── */
+    { code: '2995', desc: 'Adrenalectomy – unilateral' },
+    { code: '2997', desc: 'Bilateral exploration of adrenal glands including removal' },
+    /* ── Endoscopic / interventional procedures ──────────────────── */
+    { code: '5017', desc: 'Endoscopic ultrasound – colon' },
+    { code: '5019', desc: 'Endoscopic ultrasound – colon with aspiration or biopsy' },
+    { code: '5024', desc: 'Endoscopic ultrasound – oesophagus' },
+    { code: '5025', desc: 'Endoscopic ultrasound – oesophagus with aspiration or biopsy' },
+    { code: '5044', desc: 'Transhepatic portogram' },
+    { code: '5046', desc: 'Percutaneous biliary drainage (external)' },
+    { code: '5047', desc: 'Combined internal/external biliary drainage' },
+    { code: '5048', desc: 'Biliary stent insertion' },
+    { code: '5049', desc: 'Percutaneous gall bladder drainage' },
+    { code: '5080', desc: 'Transjugular intrahepatic porto-systemic shunt (TIPS)' },
+    { code: '5082', desc: 'Transjugular liver biopsy' },
+    { code: '5088', desc: 'Oesophageal stent insertion in radiology suite' },
+    { code: '5091', desc: 'GIT balloon dilatation under fluoroscopy' },
+    { code: '5092', desc: 'Other GIT stent insertion' },
+    { code: '5093', desc: 'Percutaneous gastrostomy in radiology suite' },
+    { code: '5098', desc: 'Endoscopic ultrasound – upper GI tract (oesophagus, stomach, duodenum)' },
+    { code: '5099', desc: 'Endoscopic ultrasound – upper GI tract with aspiration / biopsy' },
+    { code: '5710', desc: 'Para-oesophageal hiatal hernia repair with fundoplication – laparotomy, without mesh' },
+    { code: '5711', desc: 'Para-oesophageal hiatal hernia repair with fundoplication – laparotomy, with mesh' },
+    { code: '5716', desc: 'Para-oesophageal hiatal hernia repair with fundoplication – laparoscopic, without mesh' },
+    { code: '5717', desc: 'Para-oesophageal hiatal hernia repair with fundoplication – laparoscopic, with mesh' },
+    /* ── Modifier codes ───────────────────────────────────────────── */
+    { code: '0001', desc: 'Modifier: public holiday – add 100% to fee' },
+    { code: '0002', desc: 'Modifier: multiple procedures same session – 50% subsidiary' },
+    { code: '0003', desc: 'Modifier: service not in schedule – billed by comparison' },
+    { code: '0007', desc: 'Modifier: Sunday service surcharge' },
+    { code: '0010', desc: 'Modifier: local anaesthetic by operating surgeon' },
+    { code: '0011', desc: 'Modifier: bona fide medical emergency' },
+    { code: '0012', desc: 'Modifier: Saturday service surcharge' },
+    { code: '0013', desc: 'Modifier: after-hours service surcharge (weekday evenings)' },
+    { code: '0014', desc: 'Modifier: consultation at non-usual hospital / institution' },
+    { code: '0015', desc: 'Modifier: bilateral procedure – 75% per side' },
+    { code: '0016', desc: 'Modifier: assistant surgeon fee (25% of main)' },
+    { code: '0017', desc: 'Modifier: additional injection same condition' },
+    { code: '0019', desc: 'Modifier: neonatal patient weight < 2 500 g' },
+    { code: '0020', desc: 'Modifier: telephonic consultation' },
+  ];
+
+  function makeLocalAC(cell, dataset, onPick) {
+    var input = cell.querySelector('input');
+    if (!input || cell.dataset.acReady) return;
+    cell.dataset.acReady = '1';
+    var dd = document.createElement('div');
+    dd.className = 'ac-dropdown';
+    cell.appendChild(dd);
+
+    function showItems(items) {
+      dd.innerHTML = '';
+      if (!items.length) { dd.style.display = 'none'; return; }
+      items.forEach(function (item) {
+        var div = document.createElement('div');
+        div.className = 'ac-item';
+        div.innerHTML = '<span class="ac-code">' + escHtml(item.code) + '</span><span class="ac-desc">' + escHtml(item.desc) + '</span>';
+        div.addEventListener('mousedown', function (e) {
+          e.preventDefault();
+          input.value = item.code;
+          dd.style.display = 'none';
+          if (onPick) onPick(item, cell);
+        });
+        dd.appendChild(div);
+      });
+      dd.style.display = 'block';
+    }
+
+    function search() {
+      var q = input.value.trim().toLowerCase();
+      if (!q) { dd.style.display = 'none'; return; }
+      showItems(dataset.filter(function (c) {
+        return c.code.indexOf(q) === 0 || c.desc.toLowerCase().indexOf(q) !== -1;
+      }).slice(0, 10));
+    }
+
+    input.addEventListener('input', search);
+    input.addEventListener('focus', search);
+    input.addEventListener('blur', function () { setTimeout(function () { dd.style.display = 'none'; }, 160); });
+    input.addEventListener('keydown', function (e) { if (e.key === 'Escape') dd.style.display = 'none'; });
+  }
+
+  /* ── NAPPI-code autocomplete (server-side, 3600+ medicines) ────── */
+    /* ── NAPPI-code autocomplete (server-side, 3600+ SA medicines) ── */
+  function initNappiAC(cell) {
+    var input = cell.querySelector('input');
+    if (!input || cell.dataset.acReady) return;
+    cell.dataset.acReady = '1';
+    var dd = document.createElement('div');
+    dd.className = 'ac-dropdown';
+    cell.appendChild(dd);
+    var timer = null;
+
+    function showNappiItems(results) {
+      dd.innerHTML = '';
+      if (!results || !results.length) { dd.style.display = 'none'; return; }
+      results.slice(0, 12).forEach(function(item) {
+        var div = document.createElement('div');
+        div.className = 'ac-item';
+        div.innerHTML = '<span class="ac-code">' + escHtml(item.code) + '</span><span class="ac-desc">' + escHtml(item.desc) + '</span>';
+        div.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          input.value = item.code;
+          dd.style.display = 'none';
+          var row = cell.closest('.line-row');
+          if (row) {
+            var descEl = row.querySelector('.ac-nappi-desc input');
+            if (descEl && !descEl.value) descEl.value = item.desc;
+          }
+        });
+        dd.appendChild(div);
+      });
+      dd.style.display = 'block';
+    }
+
+    input.addEventListener('input', function() {
+      clearTimeout(timer);
+      var q = this.value.trim();
+      if (q.length < 2) { dd.style.display = 'none'; return; }
+      timer = setTimeout(function() {
+        fetch(NAPPI_SEARCH_URL + '?q=' + encodeURIComponent(q))
+          .then(function(r) { return r.json(); })
+          .then(function(data) { showNappiItems(data.results || []); })
+          .catch(function() {});
+      }, 280);
+    });
+    input.addEventListener('blur', function() {
+      setTimeout(function() { dd.style.display = 'none'; }, 160);
+    });
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') dd.style.display = 'none';
+    });
+  }
+
+  function initTariffAC(cell) {
+    makeLocalAC(cell, TARIFF_CODES, function (item, cell) {
+      var row = cell.closest('.line-row');
+      if (!row) return;
+      var descEl = row.querySelector('.ac-nappi-desc input');
+      if (descEl && !descEl.value) descEl.value = item.desc;
+    });
+  }
+
+  /* ── Diag-code autocomplete (server ICD-10 search) ──────────────── */
+  function makeServerAC(cell, fetchFn, labelFn, valueFn) {
+    var input = cell.querySelector('input');
+    if (!input || cell.dataset.acReady) return;
+    cell.dataset.acReady = '1';
+    var dd    = document.createElement('div');
+    dd.className = 'ac-dropdown';
+    cell.appendChild(dd);
+    var timer = null;
+
+    function showItems(results) {
+      dd.innerHTML = '';
+      if (!results || !results.length) { dd.style.display = 'none'; return; }
+      results.slice(0, 10).forEach(function (item) {
+        var div = document.createElement('div');
+        div.className = 'ac-item';
+        div.innerHTML = '<span class="ac-code">' + escHtml(item.code) + '</span><span class="ac-desc">' + escHtml(item.description) + '</span>';
+        div.addEventListener('mousedown', function (e) {
+          e.preventDefault();
+          input.value = valueFn ? valueFn(item) : item.code;
+          dd.style.display = 'none';
+        });
+        dd.appendChild(div);
+      });
+      dd.style.display = 'block';
+    }
+
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      var q = this.value.trim();
+      if (q.length < 2) { dd.style.display = 'none'; return; }
+      timer = setTimeout(function () { fetchFn(q, showItems); }, 280);
+    });
+    input.addEventListener('blur', function () { setTimeout(function () { dd.style.display = 'none'; }, 160); });
+    input.addEventListener('keydown', function (e) { if (e.key === 'Escape') dd.style.display = 'none'; });
+  }
+
+  function fetchIcd10ForLine(q, cb) {
+    fetch(ICD10_URL + '?q=' + encodeURIComponent(q))
+      .then(function (r) { return r.json(); })
+      .then(function (data) { cb(data.results || data); })
+      .catch(function () {});
+  }
+
+  function initDiagAC(cell) {
+    makeServerAC(cell, fetchIcd10ForLine, null, function (item) { return item.code; });
+  }
+
+  /* Init on page load */
+  document.querySelectorAll('.ac-tariff').forEach(initTariffAC);
+  document.querySelectorAll('.ac-nappi').forEach(initNappiAC);
+  document.querySelectorAll('.ac-diag').forEach(initDiagAC);
+
+  /* ── Helper ─────────────────────────────────────────────────────── */
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
 })();
 </script>
 {% endblock %}

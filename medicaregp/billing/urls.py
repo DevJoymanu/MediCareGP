@@ -23,4 +23,9 @@ urlpatterns = [
     path('era-import/',                     views.era_import,          name='era_import'),
     path('<int:pk>/edi-export/',            views.edi_export,          name='edi_export'),
     path('<int:pk>/bhf/',                   views.bhf_export,          name='bhf_export'),
+
+    # AJAX helpers for invoice form
+    path('api/patient-consultations/<int:patient_id>/', views.patient_consultations, name='patient_consultations'),
+    path('api/consultation-icd10/<int:consultation_id>/', views.consultation_icd10,  name='consultation_icd10'),
+    path('api/nappi-search/',                            views.search_nappi,         name='search_nappi'),
 ]

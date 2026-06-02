@@ -14,6 +14,7 @@ from appointments.models import Appointment
 from patients.models import Patient
 from .models import Consultation, ConditionPrescriptionLink
 from .forms import ConsultationForm
+from .icd10_data import ICD10_CODES
 
 
 # ── Prescription suggestion helpers ──────────────────────────────────────────
@@ -23,8 +24,8 @@ def _parse_conditions(text):
     import re
     if not text:
         return []
-    # Split on newline, comma, semicolon, or numbered list markers
-    parts = re.split(r'[\n,;]|\d+\.', text)
+    # Split on: newline, comma, semicolon, forward-slash, period+space, or numbered list markers
+    parts = re.split(r'[\n,;/]|\.\s+|\d+[.\)]\s*', text)
     return [p.strip() for p in parts if len(p.strip()) > 3]
 
 
@@ -223,20 +224,59 @@ def _build_sick_note_pdf(consultation):
 # ── Standard views ────────────────────────────────────────────────────────────
 
 @login_required
+def search_icd10(request):
+    """
+    AJAX: search ICD-10 codes by code prefix or description substring.
+    Returns up to 12 matches ordered by code-prefix hits first.
+    """
+    q = request.GET.get('q', '').strip()
+    if len(q) < 2:
+        return JsonResponse({'results': []})
+
+    q_upper = q.upper()
+    q_lower = q.lower()
+
+    code_matches = []
+    desc_matches = []
+
+    for code, desc in ICD10_CODES:
+        if code.upper().startswith(q_upper):
+            code_matches.append({'code': code, 'description': desc})
+        elif q_lower in desc.lower():
+            desc_matches.append({'code': code, 'description': desc})
+
+    results = (code_matches + desc_matches)[:12]
+    return JsonResponse({'results': results})
+
+
+@login_required
 def suggest_prescriptions(request):
     """
-    AJAX: given assessment text, return ranked prescription suggestions.
-    Matches against ConditionPrescriptionLink using the conditions parsed
-    from the assessment field.
+    AJAX: given assessment text (and optional selected ICD-10 codes), return
+    ranked prescription suggestions matched against ConditionPrescriptionLink.
     """
+    import json as _json
     assessment = request.GET.get('assessment', '').strip()
-    if not assessment:
-        return JsonResponse({'suggestions': []})
+    icd10_raw  = request.GET.get('icd10', '').strip()
 
     conditions = _parse_conditions(assessment)
+
+    # Augment with descriptions from selected ICD-10 codes
+    if icd10_raw:
+        try:
+            icd10_list = _json.loads(icd10_raw)
+            for item in icd10_list:
+                desc = item.get('description', '').strip()
+                if len(desc) > 3 and desc not in conditions:
+                    conditions.append(desc)
+        except (ValueError, TypeError, AttributeError):
+            pass
+
     if not conditions:
-        # Fallback: treat whole assessment as one condition
-        conditions = [assessment[:200]]
+        if assessment:
+            conditions = [assessment[:200]]
+        else:
+            return JsonResponse({'suggestions': []})
 
     # Build query: match any condition substring
     q = Q()
@@ -247,7 +287,7 @@ def suggest_prescriptions(request):
         ConditionPrescriptionLink.objects
         .filter(q)
         .order_by('-count')
-        .values('prescription', 'count', 'condition')[:10]
+        .values('prescription', 'count', 'condition')[:30]
     )
 
     # Deduplicate by prescription text, keeping highest count
@@ -257,7 +297,7 @@ def suggest_prescriptions(request):
         if rx not in seen or link['count'] > seen[rx]['count']:
             seen[rx] = link
 
-    suggestions = sorted(seen.values(), key=lambda x: -x['count'])[:6]
+    suggestions = sorted(seen.values(), key=lambda x: -x['count'])[:12]
     total_consultations = Consultation.objects.count()
 
     return JsonResponse({

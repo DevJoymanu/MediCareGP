@@ -226,12 +226,19 @@
     </div>
 
     <!-- Footer strip: ICD-10, referral -->
-    {% if consultation.icd10_code or consultation.referral_to %}
+    {% if consultation.icd10_codes_list or consultation.referral_to %}
     <div class="footer-strip">
-      {% if consultation.icd10_code %}
-      <div class="footer-chip">
+      {% if consultation.icd10_codes_list %}
+      <div class="footer-chip" style="flex-direction:column;align-items:flex-start;gap:6px;">
         <span class="fc-label">ICD-10</span>
-        <span class="fc-val">{{ consultation.icd10_code }}</span>
+        <span style="display:flex;flex-wrap:wrap;gap:5px;">
+          {% for item in consultation.icd10_codes_list %}
+          <span title="{{ item.description }}" style="display:inline-flex;align-items:center;gap:5px;background:#eef2ff;border:1.5px solid #c7d2fe;border-radius:6px;padding:3px 8px;font-size:12px;">
+            <span style="font-family:monospace;font-weight:700;color:#3730a3;">{{ item.code }}</span>
+            <span style="color:#4338ca;font-size:11px;">{{ item.description|truncatechars:50 }}</span>
+          </span>
+          {% endfor %}
+        </span>
       </div>
       {% endif %}
       {% if consultation.referral_to %}

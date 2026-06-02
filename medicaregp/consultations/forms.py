@@ -47,7 +47,7 @@ class ConsultationForm(forms.ModelForm):
             'objective':             forms.Textarea(attrs={'class': TEXTAREA, 'rows': 3, 'placeholder': 'Objective findings'}),
             'differential_diagnosis':forms.Textarea(attrs={'class': TEXTAREA, 'rows': 2, 'placeholder': 'Alternative diagnoses considered…'}),
             'plan':                  forms.Textarea(attrs={'class': TEXTAREA, 'rows': 3, 'placeholder': 'Management plan'}),
-            'icd10_code':            forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. J06.9'}),
+            'icd10_code':            forms.HiddenInput(),
             'prescriptions':         forms.Textarea(attrs={'class': TEXTAREA, 'rows': 8, 'placeholder': 'Azithromycin 500mg — 1 daily × 3/7\nPredn 20mg — 1 daily × 5/7\nBenylin …'}),
             'follow_up_date':        forms.DateInput(attrs={'class': INPUT, 'type': 'date'}),
             'referral_to':           forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. Dr. A. Nkosi — Cardiologist'}),

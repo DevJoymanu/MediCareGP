@@ -1,0 +1,1292 @@
+[
+  {
+    "code": "717725",
+    "desc": "Actamol (Paracetamol) 500mg tablets",
+    "category": "Analgesic/Antipyretic"
+  },
+  {
+    "code": "716045",
+    "desc": "Adco-Napamol (Paracetamol) 500mg tablets",
+    "category": "Analgesic/Antipyretic"
+  },
+  {
+    "code": "713153",
+    "desc": "Austell-Paracetamol 500mg tablets",
+    "category": "Analgesic/Antipyretic"
+  },
+  {
+    "code": "792101",
+    "desc": "Actamol (Paracetamol) 120mg/5ml syrup",
+    "category": "Analgesic/Antipyretic"
+  },
+  {
+    "code": "894281",
+    "desc": "Adco-Paracetamol 120mg/5ml syrup",
+    "category": "Analgesic/Antipyretic"
+  },
+  {
+    "code": "862304",
+    "desc": "Bayer Aspirin Cardio 100mg enteric-coated tablets",
+    "category": "Analgesic/Antiplatelet"
+  },
+  {
+    "code": "706930",
+    "desc": "Bayer Aspirin 300mg tablets",
+    "category": "Analgesic"
+  },
+  {
+    "code": "720577",
+    "desc": "Disprin 300mg effervescent tablets",
+    "category": "Analgesic"
+  },
+  {
+    "code": "710857",
+    "desc": "Brufen for Children Ibuprofen 100mg/5ml suspension",
+    "category": "Analgesic/NSAID"
+  },
+  {
+    "code": "700315",
+    "desc": "Ibucine Ibuprofen 100mg/5ml suspension",
+    "category": "Analgesic/NSAID"
+  },
+  {
+    "code": "891980",
+    "desc": "Tramal SR Tramadol 100mg sustained-release tablets",
+    "category": "Analgesic Opioid"
+  },
+  {
+    "code": "705810",
+    "desc": "Tramahexal SR Tramadol 100mg sustained-release tablets",
+    "category": "Analgesic Opioid"
+  },
+  {
+    "code": "719275",
+    "desc": "Tramazac SR Tramadol 100mg sustained-release tablets",
+    "category": "Analgesic Opioid"
+  },
+  {
+    "code": "891983",
+    "desc": "Tramal SR Tramadol 150mg sustained-release tablets",
+    "category": "Analgesic Opioid"
+  },
+  {
+    "code": "778230",
+    "desc": "Voltaren SR Diclofenac 100mg sustained-release tablets",
+    "category": "NSAID"
+  },
+  {
+    "code": "827592",
+    "desc": "Panamor SR Diclofenac 100mg sustained-release tablets",
+    "category": "NSAID"
+  },
+  {
+    "code": "706314",
+    "desc": "Difen SR Diclofenac 100mg sustained-release tablets",
+    "category": "NSAID"
+  },
+  {
+    "code": "704606",
+    "desc": "Gen-Payne capsules (Ibuprofen/Paracetamol/Codeine)",
+    "category": "Analgesic Combination"
+  },
+  {
+    "code": "745561",
+    "desc": "Myprodol capsules (Ibuprofen/Paracetamol/Codeine)",
+    "category": "Analgesic Combination"
+  },
+  {
+    "code": "704791",
+    "desc": "Mybulen capsules (Ibuprofen/Paracetamol/Codeine)",
+    "category": "Analgesic Combination"
+  },
+  {
+    "code": "785229",
+    "desc": "Adco-Amoxycillin 250mg capsules",
+    "category": "Antibiotic Penicillin"
+  },
+  {
+    "code": "704401",
+    "desc": "Amoxicap Amoxicillin 250mg capsules",
+    "category": "Antibiotic Penicillin"
+  },
+  {
+    "code": "811440",
+    "desc": "Adco-Amoxycillin 500mg capsules",
+    "category": "Antibiotic Penicillin"
+  },
+  {
+    "code": "705637",
+    "desc": "Austell-Amoxicillin 500mg capsules",
+    "category": "Antibiotic Penicillin"
+  },
+  {
+    "code": "714184",
+    "desc": "Amyn Amoxicillin 500mg capsules",
+    "category": "Antibiotic Penicillin"
+  },
+  {
+    "code": "704068",
+    "desc": "Augmentin BD SF (Amoxicillin/Clavulanate) 457mg/5ml suspension",
+    "category": "Antibiotic Penicillin"
+  },
+  {
+    "code": "853542",
+    "desc": "Augmentin 1000mg tablets (Amoxicillin/Clavulanate)",
+    "category": "Antibiotic Penicillin"
+  },
+  {
+    "code": "722938",
+    "desc": "Austell Co-Amoxiclav BD SF 457mg/5ml suspension",
+    "category": "Antibiotic Penicillin"
+  },
+  {
+    "code": "705471",
+    "desc": "Sandoz Co-Amoxyclav BD SF 457mg/5ml suspension",
+    "category": "Antibiotic Penicillin"
+  },
+  {
+    "code": "705100",
+    "desc": "Aspen Azithromycin 500mg tablets",
+    "category": "Antibiotic Macrolide"
+  },
+  {
+    "code": "717052",
+    "desc": "Austell Azithromycin 500mg tablets",
+    "category": "Antibiotic Macrolide"
+  },
+  {
+    "code": "718711",
+    "desc": "Azero Azithromycin 500mg tablets",
+    "category": "Antibiotic Macrolide"
+  },
+  {
+    "code": "707552",
+    "desc": "Binozyt Azithromycin 500mg tablets",
+    "category": "Antibiotic Macrolide"
+  },
+  {
+    "code": "893402",
+    "desc": "A-Lennon Doxycycline HCl 100mg capsules",
+    "category": "Antibiotic Tetracycline"
+  },
+  {
+    "code": "716944",
+    "desc": "Cyclidox Doxycycline 100mg capsules",
+    "category": "Antibiotic Tetracycline"
+  },
+  {
+    "code": "714192",
+    "desc": "Doxytet Doxycycline 100mg capsules",
+    "category": "Antibiotic Tetracycline"
+  },
+  {
+    "code": "704353",
+    "desc": "Austell Ciprofloxacin 250mg tablets",
+    "category": "Antibiotic Fluoroquinolone"
+  },
+  {
+    "code": "784354",
+    "desc": "Ciprobay Ciprofloxacin 250mg tablets",
+    "category": "Antibiotic Fluoroquinolone"
+  },
+  {
+    "code": "893951",
+    "desc": "Cifloc Ciprofloxacin 250mg tablets",
+    "category": "Antibiotic Fluoroquinolone"
+  },
+  {
+    "code": "742872",
+    "desc": "Adco-Metronidazole 200mg tablets",
+    "category": "Antibiotic/Antiprotozoal Nitroimidazole"
+  },
+  {
+    "code": "726346",
+    "desc": "Flagyl Metronidazole 200mg tablets",
+    "category": "Antibiotic/Antiprotozoal Nitroimidazole"
+  },
+  {
+    "code": "703389",
+    "desc": "Anaerobyl Metronidazole 200mg tablets",
+    "category": "Antibiotic/Antiprotozoal Nitroimidazole"
+  },
+  {
+    "code": "849960",
+    "desc": "Clindahexal Clindamycin 150mg capsules",
+    "category": "Antibiotic Lincosamide"
+  },
+  {
+    "code": "717347",
+    "desc": "Dalacin C Clindamycin 150mg capsules",
+    "category": "Antibiotic Lincosamide"
+  },
+  {
+    "code": "780561",
+    "desc": "Adco-Erythromycin 250mg capsules",
+    "category": "Antibiotic Macrolide"
+  },
+  {
+    "code": "710310",
+    "desc": "Eryko Erythromycin 250mg tablets",
+    "category": "Antibiotic Macrolide"
+  },
+  {
+    "code": "793329",
+    "desc": "Betamycin Erythromycin 125mg/5ml granules for suspension",
+    "category": "Antibiotic Macrolide"
+  },
+  {
+    "code": "897880",
+    "desc": "Cephalexin Pharma-Q 250mg capsules",
+    "category": "Antibiotic Cephalosporin"
+  },
+  {
+    "code": "706327",
+    "desc": "Belex Cephalexin 500mg capsules",
+    "category": "Antibiotic Cephalosporin"
+  },
+  {
+    "code": "837253",
+    "desc": "Ranceph Cephalexin 500mg capsules",
+    "category": "Antibiotic Cephalosporin"
+  },
+  {
+    "code": "714312",
+    "desc": "Auro-Cefalexin 500mg tablets",
+    "category": "Antibiotic Cephalosporin"
+  },
+  {
+    "code": "703917",
+    "desc": "Amloc Amlodipine 10mg tablets",
+    "category": "Antihypertensive CCB"
+  },
+  {
+    "code": "708142",
+    "desc": "Almadin Amlodipine 10mg tablets",
+    "category": "Antihypertensive CCB"
+  },
+  {
+    "code": "707278",
+    "desc": "Amlate Amlodipine 10mg tablets",
+    "category": "Antihypertensive CCB"
+  },
+  {
+    "code": "703916",
+    "desc": "Amloc Amlodipine 5mg tablets",
+    "category": "Antihypertensive CCB"
+  },
+  {
+    "code": "708141",
+    "desc": "Almadin Amlodipine 5mg tablets",
+    "category": "Antihypertensive CCB"
+  },
+  {
+    "code": "881481",
+    "desc": "Alapren Enalapril 10mg tablets",
+    "category": "Antihypertensive ACE Inhibitor"
+  },
+  {
+    "code": "894324",
+    "desc": "Ciplatec Enalapril 10mg tablets",
+    "category": "Antihypertensive ACE Inhibitor"
+  },
+  {
+    "code": "891279",
+    "desc": "Enap Enalapril 10mg tablets",
+    "category": "Antihypertensive ACE Inhibitor"
+  },
+  {
+    "code": "862053",
+    "desc": "Adco-Zetomax Lisinopril 10mg tablets",
+    "category": "Antihypertensive ACE Inhibitor"
+  },
+  {
+    "code": "703645",
+    "desc": "Cipla Lisinopril 10mg tablets",
+    "category": "Antihypertensive ACE Inhibitor"
+  },
+  {
+    "code": "781703",
+    "desc": "Zestril Lisinopril 10mg tablets",
+    "category": "Antihypertensive ACE Inhibitor"
+  },
+  {
+    "code": "700692",
+    "desc": "Sinopren Lisinopril 10mg tablets",
+    "category": "Antihypertensive ACE Inhibitor"
+  },
+  {
+    "code": "715649",
+    "desc": "Acesyl Perindopril 4mg tablets",
+    "category": "Antihypertensive ACE Inhibitor"
+  },
+  {
+    "code": "785121",
+    "desc": "Coversyl Perindopril 4mg tablets",
+    "category": "Antihypertensive ACE Inhibitor"
+  },
+  {
+    "code": "714869",
+    "desc": "Acti-Prex Perindopril 4mg tablets",
+    "category": "Antihypertensive ACE Inhibitor"
+  },
+  {
+    "code": "710079",
+    "desc": "Cozaar Losartan 100mg tablets",
+    "category": "Antihypertensive ARB"
+  },
+  {
+    "code": "716495",
+    "desc": "Annin Losartan 100mg tablets",
+    "category": "Antihypertensive ARB"
+  },
+  {
+    "code": "716644",
+    "desc": "Ciplazar Losartan 100mg tablets",
+    "category": "Antihypertensive ARB"
+  },
+  {
+    "code": "890470",
+    "desc": "Hexazide Hydrochlorothiazide 25mg tablets",
+    "category": "Antihypertensive Diuretic"
+  },
+  {
+    "code": "880949",
+    "desc": "Ridaq Hydrochlorothiazide 25mg tablets",
+    "category": "Antihypertensive Diuretic"
+  },
+  {
+    "code": "786586",
+    "desc": "Adco-Atenolol 100mg tablets",
+    "category": "Antihypertensive Beta-blocker"
+  },
+  {
+    "code": "786578",
+    "desc": "Adco-Atenolol 50mg tablets",
+    "category": "Antihypertensive Beta-blocker"
+  },
+  {
+    "code": "704651",
+    "desc": "B-Block Atenolol 100mg tablets",
+    "category": "Antihypertensive Beta-blocker"
+  },
+  {
+    "code": "704653",
+    "desc": "B-Block Atenolol 50mg tablets",
+    "category": "Antihypertensive Beta-blocker"
+  },
+  {
+    "code": "703914",
+    "desc": "Adco-Bisocor Bisoprolol 10mg tablets",
+    "category": "Antihypertensive Beta-blocker"
+  },
+  {
+    "code": "704373",
+    "desc": "Bilocor Bisoprolol 10mg tablets",
+    "category": "Antihypertensive Beta-blocker"
+  },
+  {
+    "code": "704133",
+    "desc": "Bisohexal Bisoprolol 10mg tablets",
+    "category": "Antihypertensive Beta-blocker"
+  },
+  {
+    "code": "739251",
+    "desc": "Lopresor Metoprolol 100mg tablets",
+    "category": "Antihypertensive Beta-blocker"
+  },
+  {
+    "code": "793124",
+    "desc": "Adalat XL Nifedipine 30mg sustained-release tablets",
+    "category": "Antihypertensive CCB"
+  },
+  {
+    "code": "711682",
+    "desc": "Fedaloc SR Nifedipine 30mg sustained-release tablets",
+    "category": "Antihypertensive CCB"
+  },
+  {
+    "code": "861545",
+    "desc": "Adco-Vascard 30 SR Nifedipine 30mg sustained-release tablets",
+    "category": "Antihypertensive CCB"
+  },
+  {
+    "code": "703909",
+    "desc": "Glucophage Metformin 1000mg tablets",
+    "category": "Antidiabetic Biguanide"
+  },
+  {
+    "code": "709172",
+    "desc": "Bigsens Metformin 1000mg tablets",
+    "category": "Antidiabetic Biguanide"
+  },
+  {
+    "code": "707670",
+    "desc": "Apex-Metformin 500mg tablets",
+    "category": "Antidiabetic Biguanide"
+  },
+  {
+    "code": "706672",
+    "desc": "Arrow Metformin 500mg tablets",
+    "category": "Antidiabetic Biguanide"
+  },
+  {
+    "code": "708281",
+    "desc": "Bigsens Metformin 500mg tablets",
+    "category": "Antidiabetic Biguanide"
+  },
+  {
+    "code": "827053",
+    "desc": "Bio-Glibenclamide 5mg tablets",
+    "category": "Antidiabetic Sulphonylurea"
+  },
+  {
+    "code": "894502",
+    "desc": "Diacare Glibenclamide 5mg tablets",
+    "category": "Antidiabetic Sulphonylurea"
+  },
+  {
+    "code": "729361",
+    "desc": "Glycomin Glibenclamide 5mg tablets",
+    "category": "Antidiabetic Sulphonylurea"
+  },
+  {
+    "code": "714582",
+    "desc": "Diaglucide MR Gliclazide 30mg modified-release tablets",
+    "category": "Antidiabetic Sulphonylurea"
+  },
+  {
+    "code": "716953",
+    "desc": "Dynacaz MR Gliclazide 30mg modified-release tablets",
+    "category": "Antidiabetic Sulphonylurea"
+  },
+  {
+    "code": "702923",
+    "desc": "Tendiap MR Gliclazide 30mg modified-release tablets",
+    "category": "Antidiabetic Sulphonylurea"
+  },
+  {
+    "code": "706039",
+    "desc": "Apidra Cartridges 3ml insulin glulisine 100IU/ml injection",
+    "category": "Antidiabetic Insulin"
+  },
+  {
+    "code": "722456",
+    "desc": "Basaglar Cartridge 3ml insulin glargine 100U/ml injection",
+    "category": "Antidiabetic Insulin"
+  },
+  {
+    "code": "720929",
+    "desc": "Jardiance Empagliflozin 10mg tablets",
+    "category": "Antidiabetic SGLT2 Inhibitor"
+  },
+  {
+    "code": "721619",
+    "desc": "Jardiance Empagliflozin 25mg tablets",
+    "category": "Antidiabetic SGLT2 Inhibitor"
+  },
+  {
+    "code": "717787",
+    "desc": "Januvia Sitagliptin 100mg tablets",
+    "category": "Antidiabetic DPP-4 Inhibitor"
+  },
+  {
+    "code": "717786",
+    "desc": "Januvia Sitagliptin 50mg tablets",
+    "category": "Antidiabetic DPP-4 Inhibitor"
+  },
+  {
+    "code": "717785",
+    "desc": "Januvia Sitagliptin 25mg tablets",
+    "category": "Antidiabetic DPP-4 Inhibitor"
+  },
+  {
+    "code": "717788",
+    "desc": "Janumet Sitagliptin/Metformin 50mg/500mg tablets",
+    "category": "Antidiabetic DPP-4/Biguanide"
+  },
+  {
+    "code": "701279",
+    "desc": "Adco-Simvastatin 20mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "707090",
+    "desc": "Arrow Simvastatin 20mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "706715",
+    "desc": "Aspen Simvastatin 20mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "701281",
+    "desc": "Adco-Simvastatin 40mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "707091",
+    "desc": "Arrow Simvastatin 40mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "718073",
+    "desc": "Adco Atorvastatin 10mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "708121",
+    "desc": "Aspavor Atorvastatin 10mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "714370",
+    "desc": "Atolip Atorvastatin 10mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "719185",
+    "desc": "Astor Atorvastatin 10mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "705989",
+    "desc": "Crestor Rosuvastatin 10mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "723098",
+    "desc": "Cresagen Rosuvastatin 10mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "721807",
+    "desc": "Rocrest Rosuvastatin 10mg tablets",
+    "category": "Lipid-lowering Statin"
+  },
+  {
+    "code": "705708",
+    "desc": "Lipanthyl Fenofibrate 200mg capsules",
+    "category": "Lipid-lowering Fibrate"
+  },
+  {
+    "code": "849332",
+    "desc": "Asthavent Ecohaler Salbutamol 100mcg inhaler 200 dose",
+    "category": "Bronchodilator SABA"
+  },
+  {
+    "code": "775274",
+    "desc": "Ventolin Salbutamol 2mg/5ml syrup",
+    "category": "Bronchodilator SABA"
+  },
+  {
+    "code": "775452",
+    "desc": "Venteze Salbutamol 2mg/5ml syrup",
+    "category": "Bronchodilator SABA"
+  },
+  {
+    "code": "836001",
+    "desc": "Ventolin Respirator Solution Salbutamol 5mg/ml nebuliser solution",
+    "category": "Bronchodilator SABA"
+  },
+  {
+    "code": "835994",
+    "desc": "Venteze Solution Salbutamol 5mg/ml nebuliser solution",
+    "category": "Bronchodilator SABA"
+  },
+  {
+    "code": "3004196",
+    "desc": "Beclomethasone Glenmark 100mcg inhaler 200 dose",
+    "category": "Inhaled Corticosteroid"
+  },
+  {
+    "code": "3004197",
+    "desc": "Beclomethasone Glenmark 200mcg inhaler 200 dose",
+    "category": "Inhaled Corticosteroid"
+  },
+  {
+    "code": "890164",
+    "desc": "Adco-Ipratropium 0.25mg/2ml unit dose vials",
+    "category": "Anticholinergic Bronchodilator"
+  },
+  {
+    "code": "786241",
+    "desc": "Atrovent 0.5mg/2ml unit dose vials (Ipratropium)",
+    "category": "Anticholinergic Bronchodilator"
+  },
+  {
+    "code": "794007",
+    "desc": "Atrovent UDV Paed 0.25mg/2ml unit dose vials",
+    "category": "Anticholinergic Bronchodilator"
+  },
+  {
+    "code": "718678",
+    "desc": "Arrow Budesonide 0.5mg/ml nebuliser solution",
+    "category": "Inhaled Corticosteroid"
+  },
+  {
+    "code": "807885",
+    "desc": "Pulmicort Nebuliser Suspension 0.5mg/ml",
+    "category": "Inhaled Corticosteroid"
+  },
+  {
+    "code": "718310",
+    "desc": "Glenmont Montelukast 10mg tablets",
+    "category": "Leukotriene Antagonist"
+  },
+  {
+    "code": "717385",
+    "desc": "Lumont Montelukast 10mg tablets",
+    "category": "Leukotriene Antagonist"
+  },
+  {
+    "code": "718125",
+    "desc": "Kulair Montelukast 10mg tablets",
+    "category": "Leukotriene Antagonist"
+  },
+  {
+    "code": "800155",
+    "desc": "Lenisolone Prednisolone 5mg tablets",
+    "category": "Corticosteroid"
+  },
+  {
+    "code": "703720",
+    "desc": "Prelone Prednisolone 5mg tablets",
+    "category": "Corticosteroid"
+  },
+  {
+    "code": "814407",
+    "desc": "Capsoid Prednisolone 5mg tablets",
+    "category": "Corticosteroid"
+  },
+  {
+    "code": "716381",
+    "desc": "Adco Prednisolone 15mg/5ml syrup",
+    "category": "Corticosteroid"
+  },
+  {
+    "code": "805149",
+    "desc": "Prelone 15mg/5ml syrup (Prednisolone)",
+    "category": "Corticosteroid"
+  },
+  {
+    "code": "3000589",
+    "desc": "Omez Omeprazole 20mg capsules",
+    "category": "Proton Pump Inhibitor"
+  },
+  {
+    "code": "849383",
+    "desc": "Sandoz Omeprazole 20mg capsules",
+    "category": "Proton Pump Inhibitor"
+  },
+  {
+    "code": "3005694",
+    "desc": "Esomeprazole 20mg Cipla tablets",
+    "category": "Proton Pump Inhibitor"
+  },
+  {
+    "code": "721061",
+    "desc": "Nectizole Esomeprazole 20mg tablets",
+    "category": "Proton Pump Inhibitor"
+  },
+  {
+    "code": "897132",
+    "desc": "Nexiam Esomeprazole 20mg tablets",
+    "category": "Proton Pump Inhibitor"
+  },
+  {
+    "code": "717376",
+    "desc": "Aspen Pantoprazole 20mg enteric-coated tablets",
+    "category": "Proton Pump Inhibitor"
+  },
+  {
+    "code": "715312",
+    "desc": "Conoran Pantoprazole 20mg enteric-coated tablets",
+    "category": "Proton Pump Inhibitor"
+  },
+  {
+    "code": "881589",
+    "desc": "Pantoloc Pantoprazole 20mg enteric-coated tablets",
+    "category": "Proton Pump Inhibitor"
+  },
+  {
+    "code": "712134",
+    "desc": "Austac Ranitidine 150mg tablets",
+    "category": "H2 Antagonist"
+  },
+  {
+    "code": "841609",
+    "desc": "Ranihexal Ranitidine 150mg tablets",
+    "category": "H2 Antagonist"
+  },
+  {
+    "code": "715875",
+    "desc": "Adco-Contromet Metoclopramide 10mg tablets",
+    "category": "Prokinetic"
+  },
+  {
+    "code": "714828",
+    "desc": "Clopamon Metoclopramide 10mg tablets",
+    "category": "Prokinetic"
+  },
+  {
+    "code": "700712",
+    "desc": "Clomax Metoclopramide 10mg tablets",
+    "category": "Prokinetic"
+  },
+  {
+    "code": "744611",
+    "desc": "Motilium Domperidone 10mg tablets",
+    "category": "Prokinetic"
+  },
+  {
+    "code": "715830",
+    "desc": "Bio-Domperidone 10mg tablets",
+    "category": "Prokinetic"
+  },
+  {
+    "code": "894498",
+    "desc": "Vomidon Domperidone 10mg tablets",
+    "category": "Prokinetic"
+  },
+  {
+    "code": "792071",
+    "desc": "Adco-Loperamide 2mg tablets",
+    "category": "Antidiarrhoeal"
+  },
+  {
+    "code": "732478",
+    "desc": "Imodium Loperamide 1mg/5ml syrup",
+    "category": "Antidiarrhoeal"
+  },
+  {
+    "code": "707342",
+    "desc": "Cipla-Loperamide 2mg tablets",
+    "category": "Antidiarrhoeal"
+  },
+  {
+    "code": "792691",
+    "desc": "Betaperamide Loperamide 2mg tablets",
+    "category": "Antidiarrhoeal"
+  },
+  {
+    "code": "721611",
+    "desc": "Duphalac Lactulose 3.3g/5ml syrup",
+    "category": "Laxative"
+  },
+  {
+    "code": "708722",
+    "desc": "Aculax Lactulose 3.3g/5ml syrup",
+    "category": "Laxative"
+  },
+  {
+    "code": "815047",
+    "desc": "Duphalac Dry Lactulose 10g sachets",
+    "category": "Laxative"
+  },
+  {
+    "code": "700167",
+    "desc": "Laxette Dry Lactulose 10g sachets",
+    "category": "Laxative"
+  },
+  {
+    "code": "712890",
+    "desc": "Acuzyrt Cetirizine 10mg tablets",
+    "category": "Antihistamine"
+  },
+  {
+    "code": "703315",
+    "desc": "Allecet Cetirizine 10mg tablets",
+    "category": "Antihistamine"
+  },
+  {
+    "code": "704188",
+    "desc": "Aspen Cetirizine 10mg tablets",
+    "category": "Antihistamine"
+  },
+  {
+    "code": "703864",
+    "desc": "Cetirizine-Hexal 10mg tablets",
+    "category": "Antihistamine"
+  },
+  {
+    "code": "704275",
+    "desc": "Allergex Non Drowsy Loratadine 10mg tablets",
+    "category": "Antihistamine"
+  },
+  {
+    "code": "702159",
+    "desc": "Clarinese Loratadine 10mg tablets",
+    "category": "Antihistamine"
+  },
+  {
+    "code": "704780",
+    "desc": "Cipla-Loratadine 10mg tablets",
+    "category": "Antihistamine"
+  },
+  {
+    "code": "709841",
+    "desc": "Fastway Fexofenadine 120mg tablets",
+    "category": "Antihistamine"
+  },
+  {
+    "code": "714068",
+    "desc": "Fenofex Fexofenadine 120mg tablets",
+    "category": "Antihistamine"
+  },
+  {
+    "code": "848093",
+    "desc": "Telfast Fexofenadine 120mg tablets",
+    "category": "Antihistamine"
+  },
+  {
+    "code": "3000025",
+    "desc": "Betadexamine syrup (Dexchlorpheniramine/Betamethasone combination)",
+    "category": "Antihistamine/Corticosteroid"
+  },
+  {
+    "code": "713058",
+    "desc": "Celestamine syrup (Dexchlorpheniramine/Betamethasone combination)",
+    "category": "Antihistamine/Corticosteroid"
+  },
+  {
+    "code": "3004784",
+    "desc": "Betadexamine tablets (Dexchlorpheniramine/Betamethasone combination)",
+    "category": "Antihistamine/Corticosteroid"
+  },
+  {
+    "code": "713066",
+    "desc": "Celestamine tablets (Dexchlorpheniramine/Betamethasone combination)",
+    "category": "Antihistamine/Corticosteroid"
+  },
+  {
+    "code": "894289",
+    "desc": "Adco-Kiddipayne syrup (Paracetamol/Codeine/Promethazine)",
+    "category": "Analgesic/Antihistamine"
+  },
+  {
+    "code": "757527",
+    "desc": "Promethazine HCl 25mg/ml injection (Fresenius)",
+    "category": "Antihistamine Injection"
+  },
+  {
+    "code": "894303",
+    "desc": "Deprozan Fluoxetine 20mg capsules",
+    "category": "Antidepressant SSRI"
+  },
+  {
+    "code": "821063",
+    "desc": "Lorien Fluoxetine 20mg capsules",
+    "category": "Antidepressant SSRI"
+  },
+  {
+    "code": "840653",
+    "desc": "Nuzak Fluoxetine 20mg capsules",
+    "category": "Antidepressant SSRI"
+  },
+  {
+    "code": "716520",
+    "desc": "Fluoxetine Actor 20mg capsules",
+    "category": "Antidepressant SSRI"
+  },
+  {
+    "code": "719547",
+    "desc": "Accord Escitalopram 10mg tablets",
+    "category": "Antidepressant SSRI"
+  },
+  {
+    "code": "703232",
+    "desc": "Cipralex Escitalopram 10mg tablets",
+    "category": "Antidepressant SSRI"
+  },
+  {
+    "code": "711214",
+    "desc": "Citraz Escitalopram 10mg tablets",
+    "category": "Antidepressant SSRI"
+  },
+  {
+    "code": "712092",
+    "desc": "Arrow Sertraline 100mg tablets",
+    "category": "Antidepressant SSRI"
+  },
+  {
+    "code": "715935",
+    "desc": "Serdep Sertraline 100mg tablets",
+    "category": "Antidepressant SSRI"
+  },
+  {
+    "code": "703999",
+    "desc": "Serlife Sertraline 100mg tablets",
+    "category": "Antidepressant SSRI"
+  },
+  {
+    "code": "712093",
+    "desc": "Arrow Sertraline 50mg tablets",
+    "category": "Antidepressant SSRI"
+  },
+  {
+    "code": "772003",
+    "desc": "Trepiline Amitriptyline 10mg tablets",
+    "category": "Antidepressant TCA"
+  },
+  {
+    "code": "771996",
+    "desc": "Trepiline Amitriptyline 25mg tablets",
+    "category": "Antidepressant TCA"
+  },
+  {
+    "code": "3002709",
+    "desc": "Amitriptyline 10mg Austell tablets",
+    "category": "Antidepressant TCA"
+  },
+  {
+    "code": "774472",
+    "desc": "Valium Diazepam 5mg tablets",
+    "category": "Anxiolytic Benzodiazepine"
+  },
+  {
+    "code": "774480",
+    "desc": "Valium Diazepam 10mg tablets",
+    "category": "Anxiolytic Benzodiazepine"
+  },
+  {
+    "code": "753181",
+    "desc": "Pax Diazepam 10mg tablets",
+    "category": "Anxiolytic Benzodiazepine"
+  },
+  {
+    "code": "761079",
+    "desc": "Rivotril Clonazepam 0.5mg tablets",
+    "category": "Anxiolytic/Anticonvulsant"
+  },
+  {
+    "code": "761087",
+    "desc": "Rivotril Clonazepam 2mg tablets",
+    "category": "Anxiolytic/Anticonvulsant"
+  },
+  {
+    "code": "721545",
+    "desc": "Clonam Clonazepam 0.5mg tablets",
+    "category": "Anxiolytic/Anticonvulsant"
+  },
+  {
+    "code": "721546",
+    "desc": "Clonam Clonazepam 2mg tablets",
+    "category": "Anxiolytic/Anticonvulsant"
+  },
+  {
+    "code": "835129",
+    "desc": "Rivotril Clonazepam 2.5mg/ml drops",
+    "category": "Anxiolytic/Anticonvulsant"
+  },
+  {
+    "code": "705532",
+    "desc": "AHA Ferrous Sulphate 30mg tablets",
+    "category": "Haematinic"
+  },
+  {
+    "code": "710580",
+    "desc": "Egoli Ferrous Sulphate 30mg tablets",
+    "category": "Haematinic"
+  },
+  {
+    "code": "723814",
+    "desc": "Ferrous Sulphate 100mg tablets",
+    "category": "Haematinic"
+  },
+  {
+    "code": "710372",
+    "desc": "Ferrous Sulphate 75mg tablets",
+    "category": "Haematinic"
+  },
+  {
+    "code": "756571",
+    "desc": "Pregamal (Ferrous Fumarate 200mg/Folic Acid 100mcg) tablets",
+    "category": "Haematinic Combination"
+  },
+  {
+    "code": "705853",
+    "desc": "Autrin capsules (Ferrous Fumarate/Vitamin C/Folic Acid)",
+    "category": "Haematinic Combination"
+  },
+  {
+    "code": "705531",
+    "desc": "AHA Folic Acid 0.5mg tablets",
+    "category": "Vitamin/Supplement"
+  },
+  {
+    "code": "710557",
+    "desc": "Egoli Folic Acid 0.5mg tablets",
+    "category": "Vitamin/Supplement"
+  },
+  {
+    "code": "721366",
+    "desc": "Folic Acid 0.5mg tablets",
+    "category": "Vitamin/Supplement"
+  },
+  {
+    "code": "3002180",
+    "desc": "Vitamin D3 Colecalciferol 500IU drops",
+    "category": "Vitamin/Supplement"
+  },
+  {
+    "code": "3002652",
+    "desc": "Nurture Vitamin D3 Colecalciferol 1000IU drops",
+    "category": "Vitamin/Supplement"
+  },
+  {
+    "code": "711640",
+    "desc": "Calciferol Ergocalciferol 50000IU tablets (Vitamin D2)",
+    "category": "Vitamin/Supplement"
+  },
+  {
+    "code": "3002908",
+    "desc": "Calcium Sandoz 500mg effervescent tablets",
+    "category": "Mineral Supplement"
+  },
+  {
+    "code": "704941",
+    "desc": "Fizzical Calcium 500mg effervescent tablets",
+    "category": "Mineral Supplement"
+  },
+  {
+    "code": "727024",
+    "desc": "Foliglobin (Iron/Vitamin B12/Folic Acid) tablets",
+    "category": "Haematinic Combination"
+  },
+  {
+    "code": "750654",
+    "desc": "One Alpha Alfacalcidol 0.25mcg capsules",
+    "category": "Vitamin D Analogue"
+  },
+  {
+    "code": "750662",
+    "desc": "One Alpha Alfacalcidol 1mcg capsules",
+    "category": "Vitamin D Analogue"
+  },
+  {
+    "code": "807834",
+    "desc": "Biocort Hydrocortisone 1% cream",
+    "category": "Topical Corticosteroid"
+  },
+  {
+    "code": "745472",
+    "desc": "Mylocort Hydrocortisone 1% cream",
+    "category": "Topical Corticosteroid"
+  },
+  {
+    "code": "700445",
+    "desc": "Vari-Hydrocortisone 1% cream",
+    "category": "Topical Corticosteroid"
+  },
+  {
+    "code": "764353",
+    "desc": "Skincalm Hydrocortisone 0.5% cream",
+    "category": "Topical Corticosteroid"
+  },
+  {
+    "code": "827290",
+    "desc": "Adco-Betamethasone 0.1% cream (1mg/g)",
+    "category": "Topical Corticosteroid"
+  },
+  {
+    "code": "800163",
+    "desc": "Lenovate Betamethasone 0.1% cream (1mg/g)",
+    "category": "Topical Corticosteroid"
+  },
+  {
+    "code": "754064",
+    "desc": "Persivate Betamethasone 0.1% cream (1mg/g)",
+    "category": "Topical Corticosteroid"
+  },
+  {
+    "code": "882934",
+    "desc": "Repivate Betamethasone 0.1% cream (1mg/g)",
+    "category": "Topical Corticosteroid"
+  },
+  {
+    "code": "793493",
+    "desc": "Adco-Normospor Clotrimazole 1% cream",
+    "category": "Antifungal Topical"
+  },
+  {
+    "code": "712205",
+    "desc": "Canesten Clotrimazole 1% cream",
+    "category": "Antifungal Topical"
+  },
+  {
+    "code": "788554",
+    "desc": "Candaspor Clotrimazole 1% cream",
+    "category": "Antifungal Topical"
+  },
+  {
+    "code": "712213",
+    "desc": "Canesten Clotrimazole 100mg vaginal tablets",
+    "category": "Antifungal Vaginal"
+  },
+  {
+    "code": "873551",
+    "desc": "Acitop Acyclovir 5% cream",
+    "category": "Antiviral Topical"
+  },
+  {
+    "code": "823473",
+    "desc": "Activir Pump Pack Acyclovir 5% cream",
+    "category": "Antiviral Topical"
+  },
+  {
+    "code": "826340",
+    "desc": "Zovirax Acyclovir 5% cream",
+    "category": "Antiviral Topical"
+  },
+  {
+    "code": "706493",
+    "desc": "Bactroban Topical Mupirocin 2% ointment (14g)",
+    "category": "Antibiotic Topical"
+  },
+  {
+    "code": "723040",
+    "desc": "Banogon Mupirocin 2% ointment (14g)",
+    "category": "Antibiotic Topical"
+  },
+  {
+    "code": "715837",
+    "desc": "Supiroban Mupirocin 2% ointment (14g)",
+    "category": "Antibiotic Topical"
+  },
+  {
+    "code": "702504",
+    "desc": "Bactroban Mupirocin 2% cream",
+    "category": "Antibiotic Topical"
+  },
+  {
+    "code": "713724",
+    "desc": "Chloramex Chloramphenicol 1% eye ointment 3.5g",
+    "category": "Antibiotic Eye"
+  },
+  {
+    "code": "713759",
+    "desc": "Chlorcol Chloramphenicol 1% eye ointment 3.5g",
+    "category": "Antibiotic Eye"
+  },
+  {
+    "code": "817201",
+    "desc": "Chlorphen Chloramphenicol 1% eye ointment 3.5g",
+    "category": "Antibiotic Eye"
+  },
+  {
+    "code": "713872",
+    "desc": "Chlornicol Chloramphenicol 10mg/g eye ointment",
+    "category": "Antibiotic Eye"
+  },
+  {
+    "code": "747297",
+    "desc": "Nivaquine Chloroquine 200mg tablets",
+    "category": "Antimalarial"
+  },
+  {
+    "code": "878790",
+    "desc": "Mirquin Chloroquine 50mg/5ml syrup",
+    "category": "Antimalarial"
+  },
+  {
+    "code": "794333",
+    "desc": "Plasmoquine Chloroquine 200mg capsules",
+    "category": "Antimalarial"
+  },
+  {
+    "code": "715997",
+    "desc": "Adco Emtevir (Emtricitabine/Tenofovir) 200mg/300mg tablets",
+    "category": "HIV Antiretroviral NRTI"
+  },
+  {
+    "code": "715091",
+    "desc": "Didivir Emtricitabine/Tenofovir 200mg/300mg tablets",
+    "category": "HIV Antiretroviral NRTI"
+  },
+  {
+    "code": "723307",
+    "desc": "Emcovir Emtricitabine/Tenofovir 200mg/300mg tablets",
+    "category": "HIV Antiretroviral NRTI"
+  },
+  {
+    "code": "721498",
+    "desc": "Emtroc Emtricitabine/Tenofovir 200mg/300mg tablets",
+    "category": "HIV Antiretroviral NRTI"
+  },
+  {
+    "code": "712932",
+    "desc": "Adco-Efavirenz 200mg capsules",
+    "category": "HIV Antiretroviral NNRTI"
+  },
+  {
+    "code": "718601",
+    "desc": "Efamat Efavirenz 200mg tablets",
+    "category": "HIV Antiretroviral NNRTI"
+  },
+  {
+    "code": "712070",
+    "desc": "Stocrin Efavirenz 200mg tablets",
+    "category": "HIV Antiretroviral NNRTI"
+  },
+  {
+    "code": "718672",
+    "desc": "Trivenz TDF/FTC/EFV fixed-dose combination tablets",
+    "category": "HIV Antiretroviral FDC"
+  },
+  {
+    "code": "721606",
+    "desc": "Levette Levonorgestrel/Ethinylestradiol 0.15mg/0.03mg tablets",
+    "category": "Oral Contraceptive"
+  },
+  {
+    "code": "826030",
+    "desc": "Nordette Levonorgestrel/Ethinylestradiol tablets",
+    "category": "Oral Contraceptive"
+  },
+  {
+    "code": "720419",
+    "desc": "Oralcon Levonorgestrel/Ethinylestradiol tablets",
+    "category": "Oral Contraceptive"
+  },
+  {
+    "code": "706705",
+    "desc": "Hexal-MPA Medroxyprogesterone Acetate 10mg tablets",
+    "category": "Progestogen Contraceptive"
+  },
+  {
+    "code": "706704",
+    "desc": "Hexal-MPA Medroxyprogesterone Acetate 5mg tablets",
+    "category": "Progestogen Contraceptive"
+  },
+  {
+    "code": "717370",
+    "desc": "Aciclovir Sandoz 200mg tablets",
+    "category": "Antiviral"
+  },
+  {
+    "code": "717371",
+    "desc": "Aciclovir Sandoz 400mg tablets",
+    "category": "Antiviral"
+  },
+  {
+    "code": "719670",
+    "desc": "Acyclovir Biotech 200mg tablets",
+    "category": "Antiviral"
+  },
+  {
+    "code": "3005572",
+    "desc": "Lancap OTC Lansoprazole 15mg capsules",
+    "category": "Proton Pump Inhibitor"
+  },
+  {
+    "code": "716518",
+    "desc": "Ciprofloxacin Actor 250mg tablets",
+    "category": "Antibiotic Fluoroquinolone"
+  },
+  {
+    "code": "846155",
+    "desc": "Calpin D (Calcium 750mg with Vitamin D) tablets",
+    "category": "Mineral/Vitamin Combination"
+  }
+]

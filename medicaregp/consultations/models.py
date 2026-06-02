@@ -23,7 +23,7 @@ class Consultation(models.Model):
     plan                     = models.TextField(blank=True, null=True, verbose_name='P — Plan (Treatment)')
 
     # ── Coding & referrals ────────────────────────────────────────────────────
-    icd10_code               = models.CharField(max_length=20, blank=True, null=True, verbose_name='ICD-10 code')
+    icd10_code               = models.TextField(blank=True, null=True, verbose_name='ICD-10 code(s)')
     referral_to              = models.CharField(max_length=200, blank=True, null=True, verbose_name='Referral to (specialist / facility)')
     referral_reason          = models.TextField(blank=True, null=True)
 
@@ -40,6 +40,21 @@ class Consultation(models.Model):
     # ── Lab / radiology requests ──────────────────────────────────────────────
     lab_requests             = models.TextField(blank=True, null=True, verbose_name='Lab / blood test requests', help_text='One per line')
     radiology_requests       = models.TextField(blank=True, null=True, verbose_name='Radiology requests (X-ray, ultrasound, etc.)', help_text='One per line')
+
+    @property
+    def icd10_codes_list(self):
+        """Return list of {code, description} dicts. Handles old single-code strings."""
+        import json
+        if not self.icd10_code:
+            return []
+        try:
+            parsed = json.loads(self.icd10_code)
+            if isinstance(parsed, list):
+                return parsed
+        except (json.JSONDecodeError, TypeError, ValueError):
+            pass
+        # Legacy: plain code string like "J06.9"
+        return [{'code': self.icd10_code, 'description': self.icd10_code}]
 
     def __str__(self):
         return f"{self.patient} - {self.date}"

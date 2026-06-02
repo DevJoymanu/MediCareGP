@@ -350,6 +350,7 @@
   }
 
   document.querySelectorAll('select').forEach(makeSearchableSelect);
+  window.makeSearchableSelect = makeSearchableSelect;
 
   // Resolve WhatsApp links from data-phone attributes
   document.querySelectorAll('.phone-btn.whatsapp, .phone-btn.whatsapp-hero').forEach(a => {

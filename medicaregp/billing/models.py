@@ -13,6 +13,11 @@ class Invoice(models.Model):
     ]
 
     patient              = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='invoices')
+    consultation         = models.ForeignKey(
+        'consultations.Consultation',
+        on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='invoices', verbose_name='Linked consultation',
+    )
     invoice_number       = models.CharField(max_length=20, unique=True)
     date_issued          = models.DateField()
     due_date             = models.DateField()
@@ -21,7 +26,7 @@ class Invoice(models.Model):
     issued_by            = models.CharField(max_length=100, default='Dr. Tamuka Chivonivoni')
 
     # ── Medical aid billing ───────────────────────────────────────────────────
-    icd10_code           = models.CharField(max_length=20,  blank=True, null=True, verbose_name='ICD-10 code')
+    icd10_code           = models.TextField(blank=True, null=True, verbose_name='ICD-10 code(s)')
     procedure_codes      = models.TextField(blank=True, null=True, verbose_name='Procedure codes', help_text='One per line, e.g. 0190 — Consultation')
     authorization_number = models.CharField(max_length=100, blank=True, null=True, verbose_name='Auth. number')
     receipt_number       = models.CharField(max_length=50,  blank=True, null=True)
@@ -32,6 +37,19 @@ class Invoice(models.Model):
 
     def __str__(self):
         return f'{self.invoice_number} — {self.patient}'
+
+    @property
+    def icd10_codes_list(self):
+        import json
+        if not self.icd10_code:
+            return []
+        try:
+            parsed = json.loads(self.icd10_code)
+            if isinstance(parsed, list):
+                return parsed
+        except (json.JSONDecodeError, TypeError, ValueError):
+            pass
+        return [{'code': self.icd10_code, 'description': self.icd10_code}]
 
     def subtotal(self):
         return sum(item.line_total() for item in self.items.all())
@@ -51,11 +69,21 @@ class Invoice(models.Model):
 
 
 class InvoiceItem(models.Model):
-    invoice     = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='items')
-    description = models.CharField(max_length=255)
-    quantity    = models.DecimalField(max_digits=6, decimal_places=2, default=1)
-    unit_price  = models.DecimalField(max_digits=10, decimal_places=2)
-    procedure_code = models.CharField(max_length=20, blank=True, null=True, verbose_name='Procedure code')
+    LINE_TYPE_CHOICES = [
+        ('Procedure',  'Procedure'),
+        ('Modifier',   'Modifier'),
+        ('Medicine',   'Medicine'),
+        ('Consumable', 'Consumable'),
+    ]
+
+    invoice        = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='items')
+    line_type      = models.CharField(max_length=20, choices=LINE_TYPE_CHOICES, default='Procedure', verbose_name='Line type')
+    procedure_code = models.CharField(max_length=20, blank=True, null=True, verbose_name='Tariff code')
+    nappi_code     = models.CharField(max_length=20, blank=True, null=True, verbose_name='NAPPI code')
+    description    = models.CharField(max_length=255, blank=True, null=True, verbose_name='NAPPI description')
+    diag_code      = models.CharField(max_length=20, blank=True, null=True, verbose_name='Diagnosis code')
+    quantity       = models.DecimalField(max_digits=6, decimal_places=2, default=1)
+    unit_price     = models.DecimalField(max_digits=10, decimal_places=2)
 
     def line_total(self):
         return round(float(self.quantity) * float(self.unit_price), 2)
