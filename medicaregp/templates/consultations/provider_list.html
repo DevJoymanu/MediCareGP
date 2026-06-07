@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Referral Providers | G.P CRM{% endblock %}
+{% block page_title %}Referral Providers{% endblock %}
+{% block page_sub %}Labs &amp; radiology practices you refer to{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div class="page-header">
+    <div>
+      <h1>Referral Providers</h1>
+      <p>{{ providers|length }} provider{{ providers|length|pluralize }}</p>
+    </div>
+    <a href="{% url 'provider_create' %}" class="btn-primary">
+      <i class="bi bi-plus-lg"></i> Add Provider
+    </a>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="table-scroll">
+      <table class="crm-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th class="col-hide-mobile">Practice No</th>
+            <th class="col-hide-mobile">Email</th>
+            <th class="col-hide-mobile">Phone</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in providers %}
+          <tr onclick="window.location='{% url 'provider_edit' p.pk %}'">
+            <td style="font-weight:600;">{{ p.name }}</td>
+            <td>
+              <span style="font-size:12px;font-weight:600;padding:3px 9px;border-radius:6px;
+                {% if p.kind == 'radiology' %}background:#eff6ff;color:#1d4ed8;
+                {% elif p.kind == 'lab' %}background:#fdf2f8;color:#be185d;
+                {% else %}background:#f0fdf4;color:#15803d;{% endif %}">
+                {{ p.get_kind_display }}
+              </span>
+            </td>
+            <td class="col-hide-mobile" style="font-family:monospace;color:var(--text-2);">{{ p.practice_no|default:"—" }}</td>
+            <td class="col-hide-mobile" style="color:var(--text-2);">{{ p.email|default:"—" }}</td>
+            <td class="col-hide-mobile" style="color:var(--text-3);">{{ p.phone|default:"—" }}</td>
+            <td>
+              {% if p.is_active %}
+                <span style="font-size:12px;color:#15803d;background:#f0fdf4;padding:3px 9px;border-radius:6px;">Active</span>
+              {% else %}
+                <span style="font-size:12px;color:var(--text-4);background:var(--border);padding:3px 9px;border-radius:6px;">Inactive</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'provider_edit' p.pk %}" class="btn-ghost"
+                 style="font-size:12px;padding:6px 12px;" onclick="event.stopPropagation();">Edit</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7">
+              <div class="empty-state">
+                <i class="bi bi-hospital"></i>
+                <p>No providers yet. Add the labs and radiology practices you refer to.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

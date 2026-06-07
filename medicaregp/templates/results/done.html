@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results Submitted — {{ practice_name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #166534 100%);
+      min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+    }
+    .card { background:#fff; border-radius:28px; padding:44px 32px; width:100%; max-width:420px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.2); }
+    .tick-circle { width:110px; height:110px; background:#16a34a; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 26px; box-shadow:0 8px 32px rgba(22,163,74,.35); animation:popIn .6s cubic-bezier(.36,.07,.19,.97) both; }
+    .tick-circle i { font-size:52px; color:#fff; font-weight:900; }
+    @keyframes popIn { 0%{transform:scale(0);opacity:0;} 60%{transform:scale(1.1);} 100%{transform:scale(1);opacity:1;} }
+    .thank-you { font-size:30px; font-weight:900; color:#14532d; margin-bottom:10px; }
+    .message { font-size:15px; color:#374151; line-height:1.7; margin-bottom:24px; }
+    .info-row { display:flex; align-items:center; gap:12px; padding:13px 16px; border-radius:12px; background:#f0fdf4; border:1px solid #bbf7d0; margin-bottom:10px; text-align:left; }
+    .info-row i { font-size:20px; color:#16a34a; flex-shrink:0; }
+    .info-row-text { font-size:13px; font-weight:600; color:#166534; line-height:1.4; }
+    .practice { margin-top:20px; font-size:12px; font-weight:700; color:#d1d5db; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="tick-circle"><i class="bi bi-check-lg"></i></div>
+  <div class="thank-you">Results Submitted</div>
+  <p class="message">
+    Thank you. The {{ inv.get_kind_display|lower }} results have been sent securely to
+    <b>{{ practice_name }}</b> for review.
+  </p>
+  <div class="info-row"><i class="bi bi-person-check-fill"></i><div class="info-row-text">The requesting doctor will review and file these results.</div></div>
+  <div class="info-row"><i class="bi bi-shield-check"></i><div class="info-row-text">Submitted securely — protected under POPIA.</div></div>
+  <div class="practice">{{ practice_name }}</div>
+</div>
+</body>
+</html>

@@ -88,6 +88,8 @@
       {% endif %}
     </div>
 
+    {% if is_online_consult %}{% include "appointments/_video_panel.html" %}{% endif %}
+
     {% if appointment.patient.allergies %}
     <div class="allergy-banner" style="margin-bottom:18px;">
       <i class="bi bi-exclamation-triangle-fill" style="color:#ef4444;"></i>

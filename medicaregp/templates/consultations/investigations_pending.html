@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Pending Results | G.P CRM{% endblock %}
+{% block page_title %}Pending Results{% endblock %}
+{% block page_sub %}Lab &amp; radiology results awaiting your review{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div class="page-header">
+    <div>
+      <h1>Pending Results</h1>
+      <p>{{ pending|length }} submission{{ pending|length|pluralize }} awaiting review</p>
+    </div>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="table-scroll">
+      <table class="crm-table">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Type</th>
+            <th class="col-hide-mobile">Submitted by</th>
+            <th class="col-hide-mobile">Submitted</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inv in pending %}
+          <tr onclick="window.location='{% url 'investigation_review' inv.pk %}'">
+            <td style="font-weight:600;">{{ inv.consultation.patient }}</td>
+            <td>
+              <span style="font-size:12px;font-weight:600;padding:3px 9px;border-radius:6px;
+                {% if inv.kind == 'radiology' %}background:#eff6ff;color:#1d4ed8;{% else %}background:#fdf2f8;color:#be185d;{% endif %}">
+                {{ inv.get_kind_display }}
+              </span>
+            </td>
+            <td class="col-hide-mobile" style="color:var(--text-2);">{{ inv.submitted_by|default:"—" }}</td>
+            <td class="col-hide-mobile" style="color:var(--text-3);white-space:nowrap;">{{ inv.submitted_at|date:"j M Y, H:i" }}</td>
+            <td>
+              <a href="{% url 'investigation_review' inv.pk %}" class="btn-primary"
+                 style="font-size:12px;padding:6px 14px;" onclick="event.stopPropagation();">Review</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <i class="bi bi-clipboard2-check"></i>
+                <p>No results awaiting review. You're all caught up.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

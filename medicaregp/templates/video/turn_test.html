@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}TURN test | G.P CRM{% endblock %}
+{% block page_title %}Video / TURN diagnostics{% endblock %}
+{% block page_sub %}Check that video calls can connect on restrictive networks{% endblock %}
+
+{% block content %}
+<div class="page-body" style="max-width:720px;">
+  <div class="page-header">
+    <div>
+      <h1>TURN connectivity test</h1>
+      <p>Gathers ICE candidates from your configured STUN/TURN servers. A <strong>relay</strong> candidate means TURN works.</p>
+    </div>
+    <button id="runBtn" class="btn-primary" style="padding:8px 18px;">Run test</button>
+  </div>
+
+  <div id="verdict" class="card" style="margin-bottom:16px;display:none;"></div>
+
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="crm-table">
+      <thead><tr><th>Type</th><th>Protocol</th><th>Address</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="3" style="color:var(--text-3);padding:16px;">Click “Run test”.</td></tr></tbody>
+    </table>
+  </div>
+
+  <p style="font-size:12px;color:var(--text-3);margin-top:12px;">
+    <strong>host</strong> = your local network · <strong>srflx</strong> = STUN reflexive · <strong>relay</strong> = TURN relay.
+    If no <strong>relay</strong> rows appear, set <code>METERED_*</code> or <code>TURN_*</code> env vars (see settings).
+  </p>
+</div>
+
+<script>
+  const ICE_URL = "{{ ice_url }}";
+  const rows = document.getElementById('rows');
+  const verdict = document.getElementById('verdict');
+  const runBtn = document.getElementById('runBtn');
+
+  function row(type, proto, addr) {
+    const colors = { host:'#6b7280', srflx:'#1d4ed8', relay:'#15803d' };
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><span style="font-weight:700;color:${colors[type]||'#374151'}">${type}</span></td>
+                    <td>${proto||'—'}</td><td style="font-family:monospace;font-size:12px;">${addr||'—'}</td>`;
+    rows.appendChild(tr);
+  }
+
+  async function run() {
+    runBtn.disabled = true; runBtn.textContent = 'Testing…';
+    rows.innerHTML = ''; verdict.style.display = 'none';
+    const counts = { host:0, srflx:0, relay:0 };
+
+    let iceServers;
+    try { iceServers = (await (await fetch(ICE_URL)).json()).iceServers; }
+    catch (e) { iceServers = [{ urls: 'stun:stun.l.google.com:19302' }]; }
+
+    const pc = new RTCPeerConnection({ iceServers });
+    pc.createDataChannel('probe');
+
+    const done = () => {
+      const ok = counts.relay > 0;
+      verdict.style.display = 'block';
+      verdict.style.background = ok ? '#f0fdf4' : '#fef2f2';
+      verdict.style.borderColor = ok ? '#bbf7d0' : '#fecaca';
+      verdict.innerHTML = ok
+        ? `<strong style="color:#15803d;">✓ TURN is working.</strong> Found ${counts.relay} relay candidate(s). Calls will connect even on mobile/firewalled networks.`
+        : `<strong style="color:#b91c1c;">⚠ No relay candidates.</strong> STUN-only — calls may fail on some mobile/corporate networks. Configure a TURN server (METERED_* or TURN_* env vars).`;
+      runBtn.disabled = false; runBtn.textContent = 'Run test';
+      try { pc.close(); } catch (e) {}
+    };
+
+    pc.onicecandidate = (e) => {
+      if (!e.candidate) { done(); return; }
+      const m = /typ (\w+)/.exec(e.candidate.candidate);
+      const type = m ? m[1] : 'host';
+      const proto = (/(\budp|\btcp)/i.exec(e.candidate.candidate) || [])[0] || '';
+      if (counts[type] !== undefined) counts[type]++;
+      row(type, proto, e.candidate.address || '');
+    };
+    pc.onicegatheringstatechange = () => { if (pc.iceGatheringState === 'complete') done(); };
+
+    await pc.setLocalDescription(await pc.createOffer());
+    setTimeout(() => { if (runBtn.disabled) done(); }, 8000); // safety timeout
+  }
+
+  runBtn.addEventListener('click', run);
+</script>
+{% endblock %}

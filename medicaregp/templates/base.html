@@ -30,7 +30,7 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a href="{% url 'dashboard' %}" class="sidebar-item {% if request.path == '/' %}active{% endif %}">
+      <a href="{% url 'dashboard' %}" class="sidebar-item {% if request.path == '/app/' %}active{% endif %}">
         <i class="bi bi-house-door" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
         <span style="flex:1;">Dashboard</span>
       </a>
@@ -46,9 +46,23 @@
         <i class="bi bi-hourglass-split" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
         <span style="flex:1;">Waiting Room</span>
       </a>
-      <a href="{% url 'consultation_list' %}" class="sidebar-item {% if '/consultations/' in request.path %}active{% endif %}">
+      <a href="{% url 'web_booking_list' %}" class="sidebar-item {% if '/web-bookings/' in request.path %}active{% endif %}">
+        <i class="bi bi-globe2" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Web Bookings</span>
+        {% if web_bookings_count %}
+        <span class="sidebar-badge">{{ web_bookings_count }}</span>
+        {% endif %}
+      </a>
+      <a href="{% url 'consultation_list' %}" class="sidebar-item {% if '/consultations/' in request.path and '/providers/' not in request.path and '/investigations/' not in request.path %}active{% endif %}">
         <i class="bi bi-clipboard2-pulse" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
         <span style="flex:1;">Consultations</span>
+      </a>
+      <a href="{% url 'investigations_pending' %}" class="sidebar-item {% if '/investigations/' in request.path %}active{% endif %}">
+        <i class="bi bi-clipboard2-check" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Pending Results</span>
+        {% if pending_results_count %}
+        <span class="sidebar-badge">{{ pending_results_count }}</span>
+        {% endif %}
       </a>
       <a href="{% url 'document_list' %}" class="sidebar-item {% if '/documents/' in request.path %}active{% endif %}">
         <i class="bi bi-file-earmark-text" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
@@ -75,6 +89,10 @@
       <a href="{% url 'analytics' %}" class="sidebar-item {% if request.path == '/analytics/' %}active{% endif %}">
         <i class="bi bi-bar-chart-line" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
         <span style="flex:1;">Analytics</span>
+      </a>
+      <a href="{% url 'provider_list' %}" class="sidebar-item {% if '/providers/' in request.path %}active{% endif %}">
+        <i class="bi bi-hospital" style="font-size:15px;flex-shrink:0;width:17px;text-align:center;"></i>
+        <span style="flex:1;">Referral Providers</span>
       </a>
     </nav>
 
@@ -143,7 +161,7 @@
   <!-- ── Bottom navigation (mobile) ───────────────────────────────────── -->
   <nav class="bottom-nav" aria-label="Mobile navigation">
     <div class="bottom-nav-inner">
-      <a href="{% url 'dashboard' %}" class="bottom-nav-item {% if request.path == '/' %}active{% endif %}">
+      <a href="{% url 'dashboard' %}" class="bottom-nav-item {% if request.path == '/app/' %}active{% endif %}">
         <i class="bi bi-house-door"></i>
         <span>Home</span>
       </a>

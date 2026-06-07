@@ -172,3 +172,90 @@ class CheckInRequest(models.Model):
     def minutes_ago(self):
         delta = timezone.now() - self.created_at
         return max(0, int(delta.total_seconds() // 60))
+
+
+class WebBooking(models.Model):
+    """
+    An appointment request placed through the public patient website (Medical-Flow).
+
+    The website collects only the basics (name, phone, email, service, a date and
+    a specific time slot). A booking is NOT yet a real Appointment — it lands in
+    the reception "Web bookings" queue where staff match/create the Patient and
+    confirm the time, then convert it into an Appointment. There is no payment:
+    everything is settled with the patient directly.
+    """
+    STATUS_CHOICES = [
+        ('requested', 'Requested — awaiting confirmation'),
+        ('converted', 'Converted to appointment'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    # Statuses that need reception action (confirm/convert into an appointment).
+    ACTION_STATUSES = ['requested']
+
+    reference          = models.CharField(max_length=40, unique=True)
+    name               = models.CharField(max_length=200)
+    phone              = models.CharField(max_length=30)
+    email              = models.EmailField(blank=True)
+    appointment_type   = models.CharField(max_length=100)
+    appointment_date   = models.DateField()
+    appointment_time   = models.TimeField(null=True, blank=True)   # specific slot the patient chose
+    time_slot          = models.CharField(max_length=100)          # human label, e.g. "09:30"
+    status             = models.CharField(max_length=20, choices=STATUS_CHOICES, default='requested')
+
+    # ── Honeypot / anti-spam ──────────────────────────────────────────────────
+    honeypot           = models.CharField(max_length=100, blank=True)
+
+    # ── CRM linkage (filled when reception confirms the booking) ──────────────
+    matched_patient     = models.ForeignKey(Patient, on_delete=models.SET_NULL, null=True, blank=True,
+                                            related_name='web_bookings')
+    created_appointment = models.OneToOneField(Appointment, on_delete=models.SET_NULL, null=True, blank=True,
+                                               related_name='web_booking')
+    reviewed_at         = models.DateTimeField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.reference} — {self.name} ({self.get_status_display()})"
+
+    @property
+    def minutes_ago(self):
+        delta = timezone.now() - self.created_at
+        return max(0, int(delta.total_seconds() // 60))
+
+
+class VideoRoom(models.Model):
+    """
+    A 1:1 WebRTC video-consultation room tied to an appointment. The browsers
+    talk peer-to-peer; Django only relays the WebRTC handshake (see VideoSignal).
+    The doctor joins from the CRM (login required); the patient joins via the
+    unguessable `patient_token` link — no login.
+    """
+    appointment   = models.OneToOneField(Appointment, on_delete=models.CASCADE, related_name='video_room')
+    room_id       = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    patient_token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    created_at    = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"VideoRoom {self.room_id} (appt {self.appointment_id})"
+
+
+class VideoSignal(models.Model):
+    """
+    One WebRTC signaling message (offer / answer / ICE candidate / bye), relayed
+    between the two peers. Each peer polls for messages from the *other* role.
+    Short-lived — old rows are pruned opportunistically.
+    """
+    ROLE_CHOICES = [('doctor', 'doctor'), ('patient', 'patient')]
+
+    room       = models.ForeignKey(VideoRoom, on_delete=models.CASCADE, related_name='signals')
+    role       = models.CharField(max_length=8, choices=ROLE_CHOICES)
+    kind       = models.CharField(max_length=12)   # offer | answer | ice | bye
+    payload    = models.TextField()                # JSON string
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['id']

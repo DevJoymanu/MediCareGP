@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Video consultation — {{ peer_name }}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #0b1220; color: #e5e7eb; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    #stage { position: fixed; inset: 0; display: flex; flex-direction: column; }
+    .topbar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: rgba(0,0,0,0.35); }
+    .topbar .dot { width: 9px; height: 9px; border-radius: 50%; background: #f59e0b; }
+    .topbar .dot.live { background: #22c55e; }
+    .topbar h1 { font-size: 15px; font-weight: 600; }
+    .topbar .status { margin-left: auto; font-size: 12.5px; color: #9ca3af; }
+    .videos { position: relative; flex: 1; overflow: hidden; }
+    #remote { width: 100%; height: 100%; object-fit: cover; background: #0b1220; }
+    #remoteEmpty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px; color: #6b7280; text-align: center; padding: 24px; }
+    #remoteEmpty .spinner { width: 34px; height: 34px; border: 3px solid #374151; border-top-color: #60a5fa; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #local { position: absolute; right: 14px; bottom: 14px; width: 26%; max-width: 220px; min-width: 120px; aspect-ratio: 4/3; object-fit: cover; border-radius: 12px; border: 2px solid rgba(255,255,255,0.25); box-shadow: 0 6px 20px rgba(0,0,0,0.4); background: #111827; transform: scaleX(-1); }
+    .controls { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 16px; background: rgba(0,0,0,0.35); }
+    .btn { width: 52px; height: 52px; border-radius: 50%; border: none; cursor: pointer; font-size: 20px; color: #fff; background: #374151; display: flex; align-items: center; justify-content: center; transition: filter .15s, background .15s; }
+    .btn:hover { filter: brightness(1.12); }
+    .btn.off { background: #b91c1c; }
+    .btn.hangup { background: #dc2626; width: 64px; }
+    .err { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .err .card { background: #1f2937; border: 1px solid #374151; border-radius: 14px; padding: 22px; max-width: 380px; text-align: center; }
+    .err h2 { font-size: 16px; margin-bottom: 8px; }
+    .err p { font-size: 13.5px; color: #9ca3af; }
+    .label { position: absolute; left: 14px; bottom: 14px; font-size: 12px; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <div class="topbar">
+      <span class="dot" id="dot"></span>
+      <h1>Video consultation</h1>
+      <span class="status" id="status">Starting…</span>
+    </div>
+
+    <div class="videos">
+      <video id="remote" autoplay playsinline></video>
+      <div id="remoteEmpty">
+        <div class="spinner"></div>
+        <div id="emptyText">Waiting for {{ peer_name }} to join…</div>
+      </div>
+      <span class="label">{{ peer_name }}</span>
+      <video id="local" autoplay playsinline muted></video>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="micBtn" title="Mute microphone">🎤</button>
+      <button class="btn" id="camBtn" title="Turn off camera">📷</button>
+      <button class="btn hangup" id="hangBtn" title="Leave call">📞</button>
+    </div>
+
+    <div class="err" id="errBox" style="display:none;">
+      <div class="card">
+        <h2 id="errTitle">Camera / microphone blocked</h2>
+        <p id="errMsg">Please allow camera and microphone access, then reload this page.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ROLE       = "{{ role }}";          // 'doctor' | 'patient'
+    const POLITE     = {{ polite|yesno:"true,false" }};  // patient yields on offer glare
+    const SIGNAL_URL = "{{ signal_url }}";
+    const ICE_URL    = "{{ ice_url }}";
+
+    const remoteV = document.getElementById('remote');
+    const localV  = document.getElementById('local');
+    const remoteEmpty = document.getElementById('remoteEmpty');
+    const emptyText = document.getElementById('emptyText');
+    const statusEl = document.getElementById('status');
+    const dot = document.getElementById('dot');
+
+    let pc, localStream, cursor = 0, pollTimer = null;
+    let makingOffer = false, ignoreOffer = false;
+    let ended = false;
+
+    function setStatus(t, live) { statusEl.textContent = t; dot.classList.toggle('live', !!live); }
+    function showError(title, msg) {
+      document.getElementById('errTitle').textContent = title;
+      document.getElementById('errMsg').textContent = msg;
+      document.getElementById('errBox').style.display = 'flex';
+    }
+
+    async function send(kind, payload) {
+      try {
+        await fetch(SIGNAL_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role: ROLE, kind, payload }),
+        });
+      } catch (e) { /* transient — retried implicitly by future events */ }
+    }
+
+    async function getIceServers() {
+      try {
+        const r = await fetch(ICE_URL);
+        const d = await r.json();
+        return d.iceServers && d.iceServers.length ? d.iceServers : [{ urls: 'stun:stun.l.google.com:19302' }];
+      } catch (e) {
+        return [{ urls: 'stun:stun.l.google.com:19302' }];
+      }
+    }
+
+    function buildPeer(iceServers) {
+      const peer = new RTCPeerConnection({ iceServers });
+
+      // Perfect negotiation: either side may (re)negotiate; glare is resolved by POLITE.
+      peer.onnegotiationneeded = async () => {
+        try {
+          makingOffer = true;
+          await peer.setLocalDescription();
+          await send('desc', peer.localDescription);
+        } catch (e) { console.error(e); }
+        finally { makingOffer = false; }
+      };
+      peer.onicecandidate = ({ candidate }) => { if (candidate) send('ice', candidate); };
+
+      peer.ontrack = (e) => {
+        remoteV.srcObject = e.streams[0];
+        remoteEmpty.style.display = 'none';
+      };
+      peer.onconnectionstatechange = () => {
+        const s = peer.connectionState;
+        if (s === 'connected') setStatus('Connected', true);
+        else if (s === 'connecting') setStatus('Connecting…');
+        else if (s === 'disconnected') setStatus('Reconnecting…');
+        else if (s === 'failed') { setStatus('Reconnecting…'); peer.restartIce(); }
+      };
+      peer.oniceconnectionstatechange = () => {
+        if (peer.iceConnectionState === 'failed') peer.restartIce();
+      };
+      return peer;
+    }
+
+    async function start() {
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      } catch (e) {
+        showError('Camera / microphone blocked',
+          'Allow camera and microphone access for this site, then reload. (' + e.name + ')');
+        return;
+      }
+      localV.srcObject = localStream;
+
+      const iceServers = await getIceServers();
+      pc = buildPeer(iceServers);
+      // Adding tracks triggers onnegotiationneeded → the initial offer is sent.
+      localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+
+      setStatus(ROLE === 'doctor' ? 'Waiting for patient…' : 'Waiting for doctor…');
+      startPolling();
+    }
+
+    function startPolling() {
+      poll();
+      pollTimer = setInterval(poll, 1000);
+    }
+
+    async function poll() {
+      if (ended) return;
+      try {
+        const res = await fetch(`${SIGNAL_URL}?role=${ROLE}&since=${cursor}`);
+        const data = await res.json();
+        cursor = data.cursor ?? cursor;
+        for (const m of data.messages) { await handle(m); }
+      } catch (e) { /* keep polling */ }
+    }
+
+    async function handle(m) {
+      let payload;
+      try { payload = JSON.parse(m.payload); } catch { return; }
+
+      if (m.kind === 'bye') { remotePeerLeft(); return; }
+      if (!pc) return;
+
+      try {
+        if (m.kind === 'desc') {
+          const offerCollision = payload.type === 'offer' && (makingOffer || pc.signalingState !== 'stable');
+          ignoreOffer = !POLITE && offerCollision;
+          if (ignoreOffer) return;
+          await pc.setRemoteDescription(payload);
+          if (payload.type === 'offer') {
+            await pc.setLocalDescription();
+            await send('desc', pc.localDescription);
+          }
+        } else if (m.kind === 'ice') {
+          try { await pc.addIceCandidate(payload); }
+          catch (e) { if (!ignoreOffer) console.warn('ICE add failed', e); }
+        }
+      } catch (e) { console.error('signal handling error', e); }
+    }
+
+    function remotePeerLeft() {
+      remoteV.srcObject = null;
+      emptyText.textContent = 'The other person left the call.';
+      remoteEmpty.querySelector('.spinner').style.display = 'none';
+      remoteEmpty.style.display = 'flex';
+      setStatus('Other person left');
+    }
+
+    // Controls
+    let micOn = true, camOn = true;
+    document.getElementById('micBtn').onclick = (ev) => {
+      micOn = !micOn;
+      localStream.getAudioTracks().forEach(t => t.enabled = micOn);
+      ev.currentTarget.classList.toggle('off', !micOn);
+      ev.currentTarget.textContent = micOn ? '🎤' : '🔇';
+    };
+    document.getElementById('camBtn').onclick = (ev) => {
+      camOn = !camOn;
+      localStream.getVideoTracks().forEach(t => t.enabled = camOn);
+      ev.currentTarget.classList.toggle('off', !camOn);
+      ev.currentTarget.textContent = camOn ? '📷' : '🚫';
+    };
+    document.getElementById('hangBtn').onclick = () => { send('bye', {}); endCall(true); };
+
+    function endCall(closeWindow) {
+      ended = true;
+      if (pollTimer) clearInterval(pollTimer);
+      if (pc) pc.close();
+      if (localStream) localStream.getTracks().forEach(t => t.stop());
+      setStatus('Call ended');
+      emptyText.textContent = 'Call ended.';
+      remoteEmpty.querySelector('.spinner').style.display = 'none';
+      remoteEmpty.style.display = 'flex';
+      if (closeWindow) setTimeout(() => { try { window.close(); } catch (e) {} }, 400);
+    }
+
+    window.addEventListener('beforeunload', () => { try { navigator.sendBeacon; send('bye', {}); } catch (e) {} });
+
+    start();
+  </script>
+</body>
+</html>

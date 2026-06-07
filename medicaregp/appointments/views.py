@@ -1,10 +1,33 @@
+from urllib.parse import quote
+
+from django.conf import settings
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.utils import timezone
-from .models import Appointment
+from .models import Appointment, WebBooking, VideoRoom
 from .forms import AppointmentForm, WalkInForm
+
+
+# ── Online consultation (Doxy.me) helpers ─────────────────────────────────────
+
+def _wa_link(phone, message):
+    """A wa.me click-to-chat link to the patient's number, or '' if no number."""
+    digits = ''.join(c for c in (phone or '') if c.isdigit())
+    if digits.startswith('0'):
+        digits = '27' + digits[1:]
+    return f"https://wa.me/{digits}?text={quote(message)}" if digits else ''
+
+
+def _appointment_is_online(appointment):
+    try:
+        if appointment.web_booking.appointment_type == settings.ONLINE_CONSULT_TYPE:
+            return True
+    except WebBooking.DoesNotExist:
+        pass
+    return 'online' in (appointment.reason or '').lower()
 
 @login_required
 def appointment_list(request):
@@ -32,7 +55,21 @@ def appointment_list(request):
 @login_required
 def appointment_detail(request, pk):
     appointment = get_object_or_404(Appointment, pk=pk)
-    return render(request, 'appointments/appointment_detail.html', {'appointment':appointment})
+    ctx = {'appointment': appointment}
+    if _appointment_is_online(appointment):
+        room, _ = VideoRoom.objects.get_or_create(appointment=appointment)
+        patient_url = request.build_absolute_uri(
+            reverse('video_patient_room', args=[room.patient_token]))
+        msg = (f"Hi {appointment.patient.first_name}, here is your private video consultation link "
+               f"for {appointment.date:%d %b %Y} at {appointment.time:%H:%M}: {patient_url}\n\n"
+               f"Open it at your appointment time — it works in your browser, no app or login needed.")
+        ctx.update({
+            'is_online_consult': True,
+            'video_doctor_url':  reverse('video_doctor_room', args=[appointment.pk]),
+            'video_patient_url': patient_url,
+            'video_wa_link':     _wa_link(appointment.patient.phone, msg),
+        })
+    return render(request, 'appointments/appointment_detail.html', ctx)
 
 @login_required
 def appointment_create(request):
@@ -251,3 +288,117 @@ def appointment_check_in(request, pk):
         appointment.save(update_fields=['status'])
         messages.success(request, f'{appointment.patient} checked in.')
     return redirect('waiting_room')
+
+
+# ── Web bookings (from the public Medical-Flow website) ────────────────────────
+
+@login_required
+def web_booking_list(request):
+    """Reception queue of website bookings. 'requested' bookings need confirming
+    into an appointment; everything else is history."""
+    status = request.GET.get('status', 'requested')
+    bookings = WebBooking.objects.all()
+    if status in dict(WebBooking.STATUS_CHOICES):
+        bookings = bookings.filter(status=status)
+    counts = {
+        'requested': WebBooking.objects.filter(status='requested').count(),
+        'converted': WebBooking.objects.filter(status='converted').count(),
+        'cancelled': WebBooking.objects.filter(status='cancelled').count(),
+    }
+    return render(request, 'appointments/web_booking_list.html', {
+        'bookings': bookings.select_related('matched_patient', 'created_appointment'),
+        'status':   status,
+        'counts':   counts,
+    })
+
+
+def _suggest_patients(booking):
+    """Find likely existing-patient matches for a web booking (by phone / email / name)."""
+    from patients.models import Patient
+    digits = ''.join(ch for ch in booking.phone if ch.isdigit())[-9:]
+    q = Q()
+    if digits:
+        q |= Q(phone__contains=digits) | Q(alt_phone__contains=digits)
+    if booking.email:
+        q |= Q(email__iexact=booking.email)
+    name_parts = booking.name.split()
+    if name_parts:
+        q |= Q(last_name__icontains=name_parts[-1])
+    if not q:
+        return Patient.objects.none()
+    return Patient.objects.filter(q).distinct()[:10]
+
+
+@login_required
+def web_booking_convert(request, pk):
+    """Turn a paid web booking into a real Patient (matched or new) + Appointment."""
+    from patients.models import Patient
+    booking = get_object_or_404(WebBooking, pk=pk)
+
+    if booking.status == 'converted' and booking.created_appointment_id:
+        messages.info(request, 'This booking has already been converted.')
+        return redirect('appointment_detail', pk=booking.created_appointment_id)
+
+    suggestions = _suggest_patients(booking)
+    first, *rest = booking.name.split()
+    last = ' '.join(rest)
+    error = None
+
+    if request.method == 'POST':
+        patient = None
+        existing_id = request.POST.get('existing_patient')
+        if existing_id:
+            patient = get_object_or_404(Patient, pk=existing_id)
+        else:
+            id_number = (request.POST.get('id_number') or '').strip()
+            dob       = request.POST.get('date_of_birth') or None
+            gender    = request.POST.get('gender') or ''
+            f_name    = (request.POST.get('first_name') or '').strip()
+            l_name    = (request.POST.get('last_name') or '').strip()
+            if not (id_number and dob and gender and f_name and l_name):
+                error = 'To create a new patient, first/last name, ID number, date of birth and gender are all required.'
+            elif Patient.objects.filter(id_number=id_number).exists():
+                error = 'A patient with that ID number already exists — pick them from the matches instead.'
+            else:
+                patient = Patient.objects.create(
+                    first_name=f_name, last_name=l_name, id_number=id_number,
+                    date_of_birth=dob, gender=gender,
+                    phone=booking.phone, email=booking.email or None,
+                )
+
+        if patient and not error:
+            appt = Appointment.objects.create(
+                patient=patient,
+                date=request.POST.get('date') or booking.appointment_date,
+                time=request.POST.get('time') or booking.appointment_time or '09:00',
+                reason=request.POST.get('reason') or booking.appointment_type,
+                status='Scheduled',
+                visit_type='Scheduled',
+                notes=f'Booked online ({booking.reference}) for {booking.time_slot}.',
+            )
+            booking.matched_patient = patient
+            booking.created_appointment = appt
+            booking.status = 'converted'
+            booking.reviewed_at = timezone.now()
+            booking.save(update_fields=['matched_patient', 'created_appointment', 'status', 'reviewed_at'])
+            messages.success(request, f'Appointment created for {patient}.')
+            return redirect('appointment_detail', pk=appt.pk)
+
+    return render(request, 'appointments/web_booking_convert.html', {
+        'booking':     booking,
+        'suggestions': suggestions,
+        'prefill':     {'first_name': first or '', 'last_name': last},
+        'gender_choices': Patient.GENDER_CHOICES,
+        'error':       error,
+        'is_online_consult': booking.appointment_type == settings.ONLINE_CONSULT_TYPE,
+    })
+
+
+@login_required
+def web_booking_dismiss(request, pk):
+    booking = get_object_or_404(WebBooking, pk=pk)
+    if request.method == 'POST':
+        booking.status = 'cancelled'
+        booking.save(update_fields=['status'])
+        messages.success(request, f'Booking {booking.reference} dismissed.')
+    return redirect('web_booking_list')

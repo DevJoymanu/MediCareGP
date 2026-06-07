@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Review booking | G.P CRM{% endblock %}
+{% block page_title %}Review web booking{% endblock %}
+{% block page_sub %}Match or create the patient, then confirm the appointment{% endblock %}
+
+{% block content %}
+<div class="page-body" style="max-width:760px;">
+  <div class="page-header">
+    <div>
+      <h1>Review &amp; book</h1>
+      <p>Online booking <strong>{{ booking.reference }}</strong></p>
+    </div>
+    <a href="{% url 'web_booking_list' %}" class="btn-secondary" style="font-size:12px;padding:6px 14px;">← Back to queue</a>
+  </div>
+
+  <!-- Booking summary -->
+  <div class="card" style="margin-bottom:18px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;font-size:13.5px;">
+      <div><span style="color:var(--text-3);">Name</span><br><strong>{{ booking.name }}</strong></div>
+      <div><span style="color:var(--text-3);">Phone</span><br><strong>{{ booking.phone }}</strong></div>
+      <div><span style="color:var(--text-3);">Email</span><br><strong>{{ booking.email|default:"—" }}</strong></div>
+      <div><span style="color:var(--text-3);">Service</span><br><strong>{{ booking.appointment_type }}</strong></div>
+      <div><span style="color:var(--text-3);">Preferred date</span><br><strong>{{ booking.appointment_date|date:"j M Y" }}</strong></div>
+      <div><span style="color:var(--text-3);">Time</span><br><strong>{{ booking.time_slot }}</strong></div>
+    </div>
+  </div>
+
+  {% if is_online_consult %}
+  <div class="card" style="margin-bottom:18px;border:1.5px solid #ddd6fe;background:#faf5ff;font-size:12.5px;color:var(--text-2);">
+    <i class="bi bi-camera-video-fill" style="color:#7c3aed;"></i>
+    This is an <strong>online video consultation</strong>. After you create the appointment you'll get the doctor's call button and the patient's join link to send.
+  </div>
+  {% endif %}
+
+  {% if error %}
+  <div class="card" style="background:#fef2f2;border-color:#fecaca;color:#b91c1c;margin-bottom:18px;font-size:13px;">{{ error }}</div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- Existing patient matches -->
+    <div class="card" style="margin-bottom:18px;">
+      <h3 style="margin:0 0 10px;font-size:14px;">1 · Match an existing patient</h3>
+      {% if suggestions %}
+        {% for p in suggestions %}
+        <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;cursor:pointer;">
+          <input type="radio" name="existing_patient" value="{{ p.pk }}">
+          <span><strong>{{ p }}</strong>
+            <span style="color:var(--text-3);font-size:12px;">· {{ p.phone }}{% if p.id_number %} · {{ p.id_number }}{% endif %}</span>
+          </span>
+        </label>
+        {% endfor %}
+      {% else %}
+        <p style="color:var(--text-3);font-size:13px;margin:0;">No likely matches found — create a new patient below.</p>
+      {% endif %}
+      <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;margin-top:4px;cursor:pointer;">
+        <input type="radio" name="existing_patient" value="" checked>
+        <span style="font-size:13px;">None of these — create a new patient ↓</span>
+      </label>
+    </div>
+
+    <!-- New patient -->
+    <div class="card" style="margin-bottom:18px;">
+      <h3 style="margin:0 0 10px;font-size:14px;">2 · …or create a new patient</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><label class="crm-label">First name</label><input class="crm-input" name="first_name" value="{{ prefill.first_name }}"></div>
+        <div><label class="crm-label">Last name</label><input class="crm-input" name="last_name" value="{{ prefill.last_name }}"></div>
+        <div><label class="crm-label">ID / Passport number</label><input class="crm-input" name="id_number"></div>
+        <div><label class="crm-label">Date of birth</label><input class="crm-input" type="date" name="date_of_birth"></div>
+        <div>
+          <label class="crm-label">Gender</label>
+          <select class="crm-select" name="gender" style="width:100%;">
+            <option value="">—</option>
+            {% for val, label in gender_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+          </select>
+        </div>
+      </div>
+      <p style="color:var(--text-3);font-size:11.5px;margin:8px 0 0;">Phone &amp; email are copied from the booking automatically.</p>
+    </div>
+
+    <!-- Appointment details -->
+    <div class="card" style="margin-bottom:18px;">
+      <h3 style="margin:0 0 10px;font-size:14px;">3 · Confirm appointment</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><label class="crm-label">Date</label><input class="crm-input" type="date" name="date" value="{{ booking.appointment_date|date:'Y-m-d' }}"></div>
+        <div><label class="crm-label">Time</label><input class="crm-input" type="time" name="time" value="{{ booking.appointment_time|time:'H:i'|default:'09:00' }}"></div>
+        <div style="grid-column:1/3;"><label class="crm-label">Reason</label><input class="crm-input" name="reason" value="{{ booking.appointment_type }}"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <button type="submit" class="btn-primary" style="padding:9px 20px;">Create appointment</button>
+      <a href="{% url 'web_booking_list' %}" class="btn-secondary" style="padding:9px 20px;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | G.P CRM{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_sub %}Lab / radiology practice details{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div class="consult-wrap" style="max-width:680px;margin:0 auto;">
+
+    <div class="page-header" style="margin-bottom:14px;">
+      <div><h1>{{ title }}</h1></div>
+      <a href="{% url 'provider_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+
+    <form method="post" class="card" style="padding:22px 24px;">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-error" style="margin-bottom:14px;">
+        {% for e in form.non_field_errors %}<div>{{ e }}</div>{% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>Practice name *</label>
+        {{ form.name }}
+        {% if form.name.errors %}<div style="color:#dc2626;font-size:12px;margin-top:3px;">{{ form.name.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;">
+        <div class="form-group" style="margin:0;flex:1;min-width:160px;">
+          <label>Type</label>
+          {{ form.kind }}
+        </div>
+        <div class="form-group" style="margin:0;flex:1;min-width:160px;">
+          <label>Practice number</label>
+          {{ form.practice_no }}
+        </div>
+      </div>
+
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;">
+        <div class="form-group" style="margin:0;flex:2;min-width:200px;">
+          <label>Email <span style="font-weight:400;color:var(--text-4);">— where results are sent</span></label>
+          {{ form.email }}
+          {% if form.email.errors %}<div style="color:#dc2626;font-size:12px;margin-top:3px;">{{ form.email.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="form-group" style="margin:0;flex:1;min-width:140px;">
+          <label>Phone</label>
+          {{ form.phone }}
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>Address</label>
+        {{ form.address }}
+      </div>
+
+      <div style="display:flex;align-items:center;gap:9px;padding-top:6px;border-top:1px solid var(--border);margin-bottom:18px;">
+        {{ form.is_active }}
+        <label for="{{ form.is_active.id_for_label }}" style="font-size:13px;font-weight:600;cursor:pointer;margin:0;color:var(--text-2);">
+          Active (show this provider when creating requests)
+        </label>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Save Provider</button>
+        <a href="{% url 'provider_list' %}" class="btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

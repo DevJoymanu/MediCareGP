@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Results — {{ practice_name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #7e22ce 0%, #6b21a8 50%, #581c87 100%);
+      min-height: 100vh; padding: 24px 16px; color: #1e293b;
+    }
+    .wrap { width: 100%; max-width: 560px; margin: 0 auto; }
+    .card { background: #fff; border-radius: 22px; padding: 30px 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+    .brand { text-align: center; margin-bottom: 4px; font-size: 13px; font-weight: 700; color: #7e22ce; letter-spacing: .04em; }
+    h1 { font-size: 23px; font-weight: 900; color: #4c1d95; text-align: center; margin-bottom: 4px; }
+    .sub { text-align: center; font-size: 13px; color: #64748b; margin-bottom: 22px; }
+    .resubmit-note { background:#fef9c3; border:1px solid #fde68a; color:#854d0e; font-size:12.5px;
+      border-radius:10px; padding:10px 13px; margin-bottom:18px; display:flex; gap:8px; align-items:flex-start; }
+    .details { background:#faf5ff; border:1px solid #e9d5ff; border-radius:14px; padding:16px 18px; margin-bottom:22px; }
+    .det-row { display:flex; gap:10px; font-size:13.5px; padding:4px 0; }
+    .det-label { font-weight:700; color:#7c3aed; min-width:120px; }
+    .det-val { color:#1e293b; }
+    .req-list { margin:6px 0 0; padding-left:20px; }
+    .req-list li { font-size:13.5px; color:#1e293b; margin-bottom:3px; }
+    .kind-pill { display:inline-block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+      background:#7e22ce; color:#fff; border-radius:20px; padding:3px 12px; margin-bottom:14px; }
+    label { display:block; font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; }
+    .field { margin-bottom:18px; }
+    input[type=text], textarea {
+      width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:11px 13px;
+      font-size:14px; font-family:inherit; color:#1e293b; background:#fff;
+    }
+    input[type=text]:focus, textarea:focus { outline:none; border-color:#7e22ce; box-shadow:0 0 0 3px rgba(126,34,206,.12); }
+    textarea { resize:vertical; min-height:120px; line-height:1.6; }
+    input[type=file] { width:100%; font-size:13px; padding:10px 0; }
+    .hint { font-size:11.5px; color:#94a3b8; margin-top:5px; }
+    .error { background:#fee2e2; border:1px solid #fecaca; color:#b91c1c; font-size:13px; border-radius:10px; padding:11px 14px; margin-bottom:18px; }
+    .honeypot { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+    .btn { width:100%; background:#7e22ce; color:#fff; border:none; border-radius:11px; padding:14px;
+      font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .btn:hover { background:#6b21a8; }
+    .popia { margin-top:16px; font-size:11.5px; color:#94a3b8; text-align:center; display:flex; gap:6px; justify-content:center; align-items:center; }
+    .footer { text-align:center; margin-top:18px; font-size:12px; font-weight:700; color:rgba(255,255,255,.7); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="brand">SECURE RESULTS SUBMISSION</div>
+    <h1>Submit Investigation Results</h1>
+    <div class="sub">Requested by {{ practice_name }}</div>
+
+    <div style="text-align:center;">
+      <span class="kind-pill">{{ inv.get_kind_display }}</span>
+    </div>
+
+    {% if is_resubmit %}
+    <div class="resubmit-note">
+      <i class="bi bi-arrow-repeat"></i>
+      <div>
+        {% if inv.status == 'declined' %}
+          The previous submission was returned by the doctor{% if inv.decline_reason %}: <b>{{ inv.decline_reason }}</b>{% endif %}. Please review and resubmit.
+        {% else %}
+          Results were already submitted for this request. Submitting again will replace the previous entry.
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Request details -->
+    <div class="details">
+      <div class="det-row"><span class="det-label">Patient</span><span class="det-val">{{ patient.first_name }} {{ patient.last_name }}</span></div>
+      <div class="det-row"><span class="det-label">Date of birth</span><span class="det-val">{{ patient.date_of_birth|date:"j F Y" }}</span></div>
+      {% if patient.medical_aid_number %}
+      <div class="det-row"><span class="det-label">Medical aid no.</span><span class="det-val">{{ patient.medical_aid_number }}</span></div>
+      {% endif %}
+      <div class="det-row">
+        <span class="det-label">Requested</span>
+        <span class="det-val">
+          <ul class="req-list">
+            {% for item in inv.requested_items_list %}<li>{{ item }}</li>{% empty %}<li>—</li>{% endfor %}
+          </ul>
+        </span>
+      </div>
+    </div>
+
+    {% if error %}<div class="error"><i class="bi bi-exclamation-circle"></i> {{ error }}</div>{% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <!-- honeypot -->
+      <div class="honeypot"><label>Website</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+
+      <div class="field">
+        <label>Results</label>
+        <textarea name="result_text" placeholder="Enter the findings / report text here…">{{ inv.result_text }}</textarea>
+        <div class="hint">Type the results, or attach the report file below (or both).</div>
+      </div>
+
+      <div class="field">
+        <label>Attach report / film (PDF or image)</label>
+        <input type="file" name="result_file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+        {% if inv.result_file %}<div class="hint">Current file: {{ inv.result_filename }} — uploading a new one replaces it.</div>{% endif %}
+      </div>
+
+      <div class="field">
+        <label>Submitted by</label>
+        <input type="text" name="submitted_by" value="{{ inv.submitted_by }}" placeholder="Your name / practice">
+      </div>
+
+      <div class="field">
+        <label>Note to doctor <span style="font-weight:400;text-transform:none;color:#94a3b8;">(optional)</span></label>
+        <input type="text" name="provider_note" value="{{ inv.provider_note }}" placeholder="Any comment for the requesting doctor">
+      </div>
+
+      <button type="submit" class="btn"><i class="bi bi-send"></i> Submit Results</button>
+
+      <div class="popia"><i class="bi bi-shield-check"></i> Submitted securely to the requesting practice — used only for this patient's care (POPIA).</div>
+    </form>
+  </div>
+  <div class="footer">{{ practice_name }}</div>
+</div>
+</body>
+</html>

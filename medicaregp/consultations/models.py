@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from patients.models import Patient
 from appointments.models import Appointment
@@ -81,3 +82,101 @@ class ConditionPrescriptionLink(models.Model):
 
     def __str__(self):
         return f"{self.condition} → {self.prescription[:60]} ({self.count})"
+
+
+class Provider(models.Model):
+    """A lab or radiology practice the doctor refers to. Set up once, reused on requests."""
+    KIND_CHOICES = [
+        ('lab',       'Laboratory'),
+        ('radiology', 'Radiology'),
+        ('both',      'Both'),
+    ]
+    name        = models.CharField(max_length=200)
+    kind        = models.CharField(max_length=10, choices=KIND_CHOICES, default='radiology')
+    practice_no = models.CharField(max_length=50, blank=True, verbose_name='Practice number')
+    email       = models.EmailField(blank=True, help_text='Where the results link / report is sent')
+    phone       = models.CharField(max_length=40, blank=True)
+    address     = models.TextField(blank=True)
+    is_active   = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class InvestigationRequest(models.Model):
+    """
+    A single lab/radiology order tied to a consultation. Holds the whole lifecycle:
+    request → provider submission (or doctor's manual entry) → doctor review (confirm/decline).
+    """
+    KIND_CHOICES = [
+        ('lab',       'Laboratory'),
+        ('radiology', 'Radiology'),
+    ]
+    STATUS_CHOICES = [
+        ('sent',      'Awaiting results'),
+        ('submitted', 'Submitted — awaiting review'),
+        ('confirmed', 'Confirmed & filed'),
+        ('declined',  'Declined'),
+    ]
+    DELIVER_CHOICES = [
+        ('rooms',   'Deliver to rooms'),
+        ('ward',    'Hospital ward'),
+        ('patient', 'Give to patient'),
+    ]
+
+    consultation    = models.ForeignKey(Consultation, on_delete=models.CASCADE, related_name='investigation_requests')
+    kind            = models.CharField(max_length=10, choices=KIND_CHOICES)
+    requested_items = models.TextField(blank=True, verbose_name='Requested items', help_text='One exam/test per line')
+    history         = models.TextField(blank=True, verbose_name='Clinical history')
+    nappi_code      = models.CharField(max_length=50, blank=True, verbose_name='Nappi code')
+    deliver_to      = models.CharField(max_length=10, choices=DELIVER_CHOICES, default='rooms')
+
+    provider        = models.ForeignKey('Provider', on_delete=models.SET_NULL, null=True, blank=True, related_name='requests')
+    provider_name   = models.CharField(max_length=200, blank=True, help_text='Used if no saved provider is selected')
+    provider_email  = models.EmailField(blank=True)
+
+    token           = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True)
+    status          = models.CharField(max_length=10, choices=STATUS_CHOICES, default='sent')
+
+    # ── Provider submission (or doctor's manual entry) ────────────────────────
+    result_text     = models.TextField(blank=True)
+    result_file     = models.FileField(upload_to='investigation_results/%Y/%m/', blank=True, null=True)
+    submitted_by    = models.CharField(max_length=200, blank=True, verbose_name='Submitted by')
+    provider_note   = models.TextField(blank=True)
+    decline_reason  = models.CharField(max_length=255, blank=True)
+    honeypot        = models.CharField(max_length=100, blank=True)   # spam trap
+
+    created_at      = models.DateTimeField(auto_now_add=True)
+    submitted_at    = models.DateTimeField(null=True, blank=True)
+    reviewed_at     = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        unique_together = [('consultation', 'kind')]
+
+    def __str__(self):
+        return f"{self.get_kind_display()} request — {self.consultation.patient} ({self.get_status_display()})"
+
+    @property
+    def recipient_name(self):
+        if self.provider:
+            return self.provider.name
+        return self.provider_name
+
+    @property
+    def recipient_email(self):
+        if self.provider and self.provider.email:
+            return self.provider.email
+        return self.provider_email
+
+    @property
+    def result_filename(self):
+        import os
+        return os.path.basename(self.result_file.name) if self.result_file else ''
+
+    @property
+    def requested_items_list(self):
+        return [line.strip() for line in (self.requested_items or '').splitlines() if line.strip()]

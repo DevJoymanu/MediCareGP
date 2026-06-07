@@ -1,0 +1,29 @@
+{# Built-in video consultation panel for reception. Expects: video_doctor_url, video_patient_url, video_wa_link #}
+<div class="card" style="margin-bottom:18px;border:1.5px solid #ddd6fe;background:#faf5ff;">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+    <i class="bi bi-camera-video-fill" style="color:#7c3aed;"></i>
+    <strong style="font-size:14px;">Online video consultation</strong>
+  </div>
+  <p style="font-size:12.5px;color:var(--text-3);margin:0 0 12px;">
+    Send the patient their private join link. The doctor opens the call from here. Runs in the browser — no app or login for the patient.
+  </p>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+    <a href="{{ video_doctor_url }}" target="_blank" rel="noopener" class="btn-primary" style="font-size:12.5px;padding:8px 16px;">
+      <i class="bi bi-camera-video"></i> Join call (doctor)
+    </a>
+  </div>
+
+  <label style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.05em;">Patient join link</label>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:5px;">
+    <input id="patientLink" type="text" readonly value="{{ video_patient_url }}" class="crm-input"
+           style="flex:1;min-width:220px;font-family:monospace;font-size:12px;">
+    <button type="button" class="btn-secondary" style="font-size:12px;padding:7px 12px;"
+            onclick="navigator.clipboard.writeText(document.getElementById('patientLink').value); this.textContent='Copied';">Copy</button>
+    {% if video_wa_link %}
+    <a href="{{ video_wa_link }}" target="_blank" rel="noopener" class="btn-secondary" style="font-size:12px;padding:7px 12px;">
+      <i class="bi bi-whatsapp"></i> Send to patient
+    </a>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Review Results | G.P CRM{% endblock %}
+{% block page_title %}Review Results{% endblock %}
+{% block page_sub %}{{ inv.consultation.patient }} — {{ inv.get_kind_display }}{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div class="consult-wrap" style="max-width:780px;margin:0 auto;">
+
+    <div class="page-header" style="margin-bottom:14px;">
+      <div><h1>Review {{ inv.get_kind_display }} Results</h1></div>
+      <a href="{% url 'consultation_detail' inv.consultation_id %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back to consultation</a>
+    </div>
+
+    <!-- Patient / request summary -->
+    <div class="card" style="padding:18px 20px;margin-bottom:14px;">
+      <div style="display:flex;gap:14px;align-items:center;margin-bottom:14px;">
+        <div class="avatar av-48 av-1">{{ inv.consultation.patient.first_name|first|upper }}{{ inv.consultation.patient.last_name|first|upper }}</div>
+        <div style="flex:1;">
+          <h2 class="brand-heading" style="font-size:17px;margin:0;">{{ inv.consultation.patient }}</h2>
+          <div style="font-size:13px;color:var(--text-3);">Consultation {{ inv.consultation.date|date:"j F Y" }}</div>
+        </div>
+        <span style="font-size:12px;font-weight:700;padding:4px 11px;border-radius:20px;
+          {% if inv.kind == 'radiology' %}background:#eff6ff;color:#1d4ed8;{% else %}background:#fdf2f8;color:#be185d;{% endif %}">
+          {{ inv.get_kind_display }}
+        </span>
+      </div>
+      <div style="font-size:13px;color:var(--text-2);">
+        <strong>Requested:</strong>
+        <ul style="margin:6px 0 0;padding-left:20px;">
+          {% for item in inv.requested_items_list %}<li>{{ item }}</li>{% empty %}<li>—</li>{% endfor %}
+        </ul>
+      </div>
+      {% if inv.provider %}
+      <div style="font-size:13px;color:var(--text-3);margin-top:8px;"><strong>Sent to:</strong> {{ inv.provider.name }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Submitted result -->
+    <div class="card" style="padding:18px 20px;margin-bottom:14px;border:1.5px solid #c4b5fd;">
+      <div style="font-size:11px;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">
+        <i class="bi bi-inbox"></i> Submitted result
+        {% if inv.submitted_by %}— by {{ inv.submitted_by }}{% endif %}
+        {% if inv.submitted_at %}<span style="font-weight:400;color:var(--text-4);">({{ inv.submitted_at|date:"j M Y, H:i" }})</span>{% endif %}
+      </div>
+      {% if inv.provider_note %}
+      <div style="font-size:13px;color:#854d0e;background:#fef9c3;border:1px solid #fde68a;border-radius:8px;padding:9px 12px;margin-bottom:12px;">
+        <strong>Note from provider:</strong> {{ inv.provider_note }}
+      </div>
+      {% endif %}
+      {% if inv.result_file %}
+      <a href="{{ inv.result_file.url }}" target="_blank" class="btn-ghost" style="margin-bottom:12px;display:inline-flex;">
+        <i class="bi bi-paperclip"></i> View attached file ({{ inv.result_filename }})
+      </a>
+      {% endif %}
+      {% if not inv.result_text and not inv.result_file %}
+      <div style="color:var(--text-4);font-style:italic;font-size:13px;">No result text or file submitted yet — you can enter it manually below.</div>
+      {% endif %}
+    </div>
+
+    <!-- Confirm (with optional manual edit) -->
+    <form method="post" action="{% url 'investigation_confirm' inv.pk %}" enctype="multipart/form-data" class="card" style="padding:18px 20px;margin-bottom:14px;">
+      {% csrf_token %}
+      <div style="font-size:11px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">
+        <i class="bi bi-check2-circle"></i> Confirm &amp; file
+      </div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>Results <span style="font-weight:400;color:var(--text-4);">— edit or add notes before filing</span></label>
+        <textarea name="result_text" class="crm-input" rows="6">{{ inv.result_text }}</textarea>
+      </div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>Replace / attach file <span style="font-weight:400;color:var(--text-4);">— optional (e.g. if emailed/paper)</span></label>
+        <input type="file" name="result_file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" class="crm-input">
+      </div>
+      <button type="submit" class="btn-primary"><i class="bi bi-check-lg"></i> Confirm &amp; file to patient record</button>
+    </form>
+
+    <!-- Decline -->
+    <form method="post" action="{% url 'investigation_decline' inv.pk %}" class="card" style="padding:18px 20px;">
+      {% csrf_token %}
+      <div style="font-size:11px;font-weight:700;color:#b91c1c;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">
+        <i class="bi bi-x-circle"></i> Decline / return to provider
+      </div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>Reason <span style="font-weight:400;color:var(--text-4);">— shown to the provider when they reopen the link</span></label>
+        <input type="text" name="decline_reason" class="crm-input" placeholder="e.g. Wrong patient / incomplete report — please resend">
+      </div>
+      <button type="submit" class="btn-ghost" style="color:#b91c1c;border-color:#fecaca;"><i class="bi bi-x-lg"></i> Decline &amp; allow resubmission</button>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

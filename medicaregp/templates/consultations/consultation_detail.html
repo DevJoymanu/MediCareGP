@@ -225,6 +225,98 @@
 
     </div>
 
+    <!-- ── Investigations & results ─────────────────────────────────────── -->
+    {% if consultation.investigation_requests.all %}
+    <div class="card" style="margin-bottom:14px;padding:0;overflow:hidden;">
+      <div class="panel-header" style="color:#3730a3;background:#eef2ff;border-bottom:1px solid #c7d2fe;">
+        <i class="bi bi-clipboard2-pulse"></i> Investigations &amp; Results
+      </div>
+      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:14px;">
+        {% for inv in consultation.investigation_requests.all %}
+        <div style="border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+            <span style="font-weight:700;font-size:14px;">
+              <i class="bi bi-{% if inv.kind == 'radiology' %}image{% else %}droplet-half{% endif %}"></i>
+              {{ inv.get_kind_display }}
+            </span>
+            {% if inv.status == 'confirmed' %}
+              <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">✓ Confirmed &amp; filed</span>
+            {% elif inv.status == 'submitted' %}
+              <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fef9c3;color:#854d0e;border:1px solid #fde68a;">Results submitted</span>
+            {% elif inv.status == 'declined' %}
+              <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fee2e2;color:#b91c1c;border:1px solid #fecaca;">Declined</span>
+            {% else %}
+              <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:#f1f5f9;color:#64748b;border:1px solid var(--border);">Awaiting results</span>
+            {% endif %}
+            {% if inv.provider %}<span style="font-size:12px;color:var(--text-3);margin-left:auto;">→ {{ inv.provider.name }}</span>{% endif %}
+          </div>
+
+          <div class="inv-text" style="margin-bottom:10px;">{{ inv.requested_items }}</div>
+
+          {% if inv.status == 'confirmed' %}
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:11px 14px;margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;">Result</div>
+            {% if inv.result_text %}<div style="font-size:13px;color:#166534;white-space:pre-line;line-height:1.6;">{{ inv.result_text }}</div>{% endif %}
+            {% if inv.result_file %}<a href="{{ inv.result_file.url }}" target="_blank" style="font-size:12.5px;color:#15803d;font-weight:600;display:inline-block;margin-top:6px;"><i class="bi bi-paperclip"></i> {{ inv.result_filename }}</a>{% endif %}
+          </div>
+          {% elif inv.status == 'submitted' %}
+          <a href="{% url 'investigation_review' inv.pk %}" class="btn-primary" style="margin-bottom:10px;"><i class="bi bi-eye"></i> Review submitted result</a>
+          {% elif inv.status == 'declined' %}
+          <div style="font-size:12.5px;color:#b91c1c;margin-bottom:10px;">Returned to provider{% if inv.decline_reason %}: {{ inv.decline_reason }}{% endif %}. They can resubmit via the link.</div>
+          {% endif %}
+
+          <!-- Actions -->
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a href="{% url inv.kind|add:'_request_pdf' consultation.pk %}" class="btn-ghost" style="font-size:12.5px;"><i class="bi bi-printer"></i> Print request</a>
+            <button type="button" class="btn-ghost js-send-request" style="font-size:12.5px;"
+                    data-url="{% url inv.kind|add:'_request_email' consultation.pk %}" data-kind="{{ inv.kind }}"><i class="bi bi-envelope"></i> Email</button>
+            <button type="button" class="btn-ghost js-copy-link" style="font-size:12.5px;" data-token="{{ inv.token }}"><i class="bi bi-link-45deg"></i> Copy results link</button>
+            <button type="button" class="btn-ghost js-toggle-prepare" style="font-size:12.5px;" data-target="prep-{{ inv.pk }}"><i class="bi bi-sliders"></i> Prepare</button>
+          </div>
+
+          <!-- Prepare / edit request -->
+          <form method="post" action="{% url 'prepare_request' consultation.pk %}" id="prep-{{ inv.pk }}" style="display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--border);">
+            {% csrf_token %}
+            <input type="hidden" name="kind" value="{{ inv.kind }}">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
+              <div class="form-group" style="margin:0;flex:1;min-width:180px;">
+                <label style="font-size:11px;">Send to</label>
+                <select name="provider" class="crm-select">
+                  <option value="">— select provider —</option>
+                  {% for prov in providers %}
+                    {% if prov.kind == inv.kind or prov.kind == 'both' %}
+                    <option value="{{ prov.pk }}" {% if inv.provider_id == prov.pk %}selected{% endif %}>{{ prov.name }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group" style="margin:0;flex:0 0 130px;">
+                <label style="font-size:11px;">Nappi code</label>
+                <input type="text" name="nappi_code" value="{{ inv.nappi_code }}" class="crm-input">
+              </div>
+              {% if inv.kind == 'radiology' %}
+              <div class="form-group" style="margin:0;flex:0 0 170px;">
+                <label style="font-size:11px;">Deliver report to</label>
+                <select name="deliver_to" class="crm-select">
+                  <option value="rooms"   {% if inv.deliver_to == 'rooms' %}selected{% endif %}>Rooms</option>
+                  <option value="ward"    {% if inv.deliver_to == 'ward' %}selected{% endif %}>Hospital ward</option>
+                  <option value="patient" {% if inv.deliver_to == 'patient' %}selected{% endif %}>Give to patient</option>
+                </select>
+              </div>
+              {% endif %}
+            </div>
+            <div class="form-group" style="margin:0 0 10px;">
+              <label style="font-size:11px;">History / clinical notes (printed on form)</label>
+              <textarea name="history" class="crm-input" rows="2">{{ inv.history }}</textarea>
+            </div>
+            <button type="submit" class="btn-primary" style="font-size:12.5px;"><i class="bi bi-check-lg"></i> Save request details</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
     <!-- Footer strip: ICD-10, referral -->
     {% if consultation.icd10_codes_list or consultation.referral_to %}
     <div class="footer-strip">
@@ -299,5 +391,51 @@
 <script>
 // Signal the waiting room (any open tab) to refresh immediately
 localStorage.setItem('wr_refresh', Date.now().toString());
+
+// ── Investigations: prepare toggle, copy link, email ──────────────────────
+(function () {
+  const CSRF = '{{ csrf_token }}';
+
+  document.querySelectorAll('.js-toggle-prepare').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const f = document.getElementById(btn.dataset.target);
+      if (f) f.style.display = (f.style.display === 'none' || !f.style.display) ? 'block' : 'none';
+    });
+  });
+
+  document.querySelectorAll('.js-copy-link').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const url = window.location.origin + '/results/' + btn.dataset.token + '/';
+      navigator.clipboard.writeText(url).then(function () {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check-lg"></i> Copied!';
+        setTimeout(function () { btn.innerHTML = orig; }, 1500);
+      }).catch(function () { window.prompt('Copy this results link:', url); });
+    });
+  });
+
+  document.querySelectorAll('.js-send-request').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      let to = '';
+      if (btn.dataset.kind === 'lab') {
+        to = window.prompt('Send lab request to which email?\n(Leave blank to use the saved provider email.)', '') || '';
+      }
+      btn.disabled = true;
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Sending…';
+      const body = new URLSearchParams();
+      if (to) body.append('to', to);
+      fetch(btn.dataset.url, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': CSRF, 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString(),
+      }).then(function (r) { return r.json(); }).then(function (data) {
+        btn.disabled = false; btn.innerHTML = orig;
+        if (data.success) { alert('Request emailed to ' + data.email); }
+        else { alert(data.error || 'Could not send email.'); }
+      }).catch(function () { btn.disabled = false; btn.innerHTML = orig; alert('Could not send email.'); });
+    });
+  });
+})();
 </script>
 {% endblock %}

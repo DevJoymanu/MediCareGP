@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Web Bookings | G.P CRM{% endblock %}
+{% block page_title %}Web Bookings{% endblock %}
+{% block page_sub %}Appointment requests &amp; payments from the public website{% endblock %}
+
+{% block content %}
+<div class="page-body">
+  <div class="page-header">
+    <div>
+      <h1>Web Bookings</h1>
+      <p>{{ counts.requested }} booking{{ counts.requested|pluralize }} awaiting confirmation</p>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+    <a href="?status=requested" class="btn-secondary {% if status == 'requested' %}btn-primary{% endif %}" style="font-size:12px;padding:6px 14px;">Awaiting confirmation ({{ counts.requested }})</a>
+    <a href="?status=converted" class="btn-secondary {% if status == 'converted' %}btn-primary{% endif %}" style="font-size:12px;padding:6px 14px;">Confirmed ({{ counts.converted }})</a>
+    <a href="?status=cancelled" class="btn-secondary {% if status == 'cancelled' %}btn-primary{% endif %}" style="font-size:12px;padding:6px 14px;">Cancelled ({{ counts.cancelled }})</a>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="table-scroll">
+      <table class="crm-table">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Service</th>
+            <th class="col-hide-mobile">Preferred date</th>
+            <th class="col-hide-mobile">Time</th>
+            <th>Ref</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bookings %}
+          <tr>
+            <td style="font-weight:600;">
+              {{ b.name }}
+              <div style="font-size:11.5px;color:var(--text-3);font-weight:400;">{{ b.phone }}{% if b.email %} · {{ b.email }}{% endif %}</div>
+            </td>
+            <td>{{ b.appointment_type }}</td>
+            <td class="col-hide-mobile" style="white-space:nowrap;">{{ b.appointment_date|date:"j M Y" }}</td>
+            <td class="col-hide-mobile" style="color:var(--text-2);font-size:12.5px;">{{ b.time_slot }}</td>
+            <td style="font-family:monospace;font-size:11.5px;color:var(--text-3);">{{ b.reference }}</td>
+            <td style="white-space:nowrap;text-align:right;">
+              {% if b.status == 'converted' and b.created_appointment_id %}
+                <a href="{% url 'appointment_detail' b.created_appointment_id %}" class="btn-secondary" style="font-size:12px;padding:6px 12px;">View appt</a>
+              {% elif b.status == 'requested' %}
+                <a href="{% url 'web_booking_convert' b.pk %}" class="btn-primary" style="font-size:12px;padding:6px 14px;">Review &amp; book</a>
+                <form method="post" action="{% url 'web_booking_dismiss' b.pk %}" style="display:inline;" onsubmit="return confirm('Dismiss this booking?');">
+                  {% csrf_token %}
+                  <button class="btn-secondary" style="font-size:12px;padding:6px 12px;" title="Dismiss">✕</button>
+                </form>
+              {% else %}
+                <span style="font-size:12px;color:var(--text-3);">{{ b.get_status_display }}</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6">
+              <div class="empty-state">
+                <i class="bi bi-globe2"></i>
+                <p>No bookings here yet.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

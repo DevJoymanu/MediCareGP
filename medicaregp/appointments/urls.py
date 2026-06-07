@@ -24,4 +24,8 @@ urlpatterns = [
     path('checkin/<int:pk>/accept/', checkin_views.checkin_accept,      name='checkin_accept'),
     path('checkin/<int:pk>/decline/',checkin_views.checkin_decline,     name='checkin_decline'),
     path('checkin/<int:pk>/edit/',   checkin_views.checkin_edit,        name='checkin_edit'),
+    # ── Online (website) bookings ─────────────────────────────────────────────
+    path('web-bookings/',                  views.web_booking_list,    name='web_booking_list'),
+    path('web-bookings/<int:pk>/convert/', views.web_booking_convert, name='web_booking_convert'),
+    path('web-bookings/<int:pk>/dismiss/', views.web_booking_dismiss, name='web_booking_dismiss'),
 ]

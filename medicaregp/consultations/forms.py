@@ -1,6 +1,6 @@
 from django import forms
 from appointments.models import Appointment
-from .models import Consultation
+from .models import Consultation, Provider
 
 INPUT    = 'crm-input'
 SELECT   = 'crm-select'
@@ -58,4 +58,19 @@ class ConsultationForm(forms.ModelForm):
             'sick_note_days':        forms.NumberInput(attrs={'class': INPUT, 'min': 1, 'placeholder': 'Days'}),
             'sick_note_start_date':  forms.DateInput(attrs={'class': INPUT, 'type': 'date'}),
             'sick_note_employer':    forms.TextInput(attrs={'class': INPUT, 'placeholder': 'Employer / company name'}),
+        }
+
+
+class ProviderForm(forms.ModelForm):
+    class Meta:
+        model  = Provider
+        fields = ['name', 'kind', 'practice_no', 'email', 'phone', 'address', 'is_active']
+        widgets = {
+            'name':        forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. Dr. Mapfumo & Partners Inc.'}),
+            'kind':        forms.Select(attrs={'class': SELECT}),
+            'practice_no': forms.TextInput(attrs={'class': INPUT, 'placeholder': 'e.g. 0605530'}),
+            'email':       forms.EmailInput(attrs={'class': INPUT, 'placeholder': 'results@practice.co.za'}),
+            'phone':       forms.TextInput(attrs={'class': INPUT, 'placeholder': '011 732 1022'}),
+            'address':     forms.Textarea(attrs={'class': TEXTAREA, 'rows': 2, 'placeholder': 'Street, suburb, city'}),
+            'is_active':   forms.CheckboxInput(attrs={'class': 'crm-checkbox'}),
         }

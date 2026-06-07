@@ -9,11 +9,12 @@ from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 from appointments.models import Appointment
 from patients.models import Patient
-from .models import Consultation, ConditionPrescriptionLink
-from .forms import ConsultationForm
+from .models import Consultation, ConditionPrescriptionLink, Provider, InvestigationRequest
+from .forms import ConsultationForm, ProviderForm
 from .icd10_data import ICD10_CODES
 
 
@@ -221,6 +222,438 @@ def _build_sick_note_pdf(consultation):
     return buffer
 
 
+# ── Investigation requests (lab / radiology) ──────────────────────────────────
+
+def _sync_investigation_requests(consultation):
+    """
+    Ensure an InvestigationRequest exists for each kind that has request text.
+    Idempotent: refreshes the requested-items snapshot but never duplicates.
+    """
+    from .models import InvestigationRequest
+    pairs = [('lab', consultation.lab_requests), ('radiology', consultation.radiology_requests)]
+    for kind, text in pairs:
+        text = (text or '').strip()
+        if not text:
+            continue
+        inv, created = InvestigationRequest.objects.get_or_create(
+            consultation=consultation,
+            kind=kind,
+            defaults={
+                'requested_items': text,
+                'history': (consultation.chief_complaint or consultation.assessment or '').strip(),
+            },
+        )
+        if not created and inv.requested_items != text:
+            inv.requested_items = text
+            inv.save(update_fields=['requested_items'])
+
+
+# Map a free-text request line to a standard radiology modality (for the checklist).
+_RADIOLOGY_MODALITIES = [
+    ('X-rays',                            ('x-ray', 'xray', 'x ray', 'radiograph')),
+    ('Ultrasound',                        ('ultrasound', 'sonar', 'u/s', 'us ')),
+    ('Doppler Ultrasound (colour flow)',  ('doppler',)),
+    ('Mammogram',                         ('mammogram', 'mammo')),
+    ('4D Ultrasound',                     ('4d',)),
+    ('Immigration',                       ('immigration',)),
+]
+
+
+def _classify_radiology_items(items):
+    """Return (rows, other) where rows is [(modality_label, [matched lines]), ...] and
+    other is the list of lines that didn't match a standard modality."""
+    buckets = {label: [] for label, _ in _RADIOLOGY_MODALITIES}
+    other = []
+    for line in items:
+        low = line.lower()
+        matched = None
+        for label, keywords in _RADIOLOGY_MODALITIES:
+            if any(k in low for k in keywords):
+                matched = label
+                break
+        if matched:
+            buckets[matched].append(line)
+        else:
+            other.append(line)
+    rows = [(label, buckets[label]) for label, _ in _RADIOLOGY_MODALITIES]
+    return rows, other
+
+
+def _build_request_pdf(consultation, inv, request):
+    """Letterheaded lab/radiology request form, mirroring the imaging-request layout.
+    Includes the secure results-portal link + QR code."""
+    import io as _io
+    import qrcode
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import mm
+    from reportlab.lib import colors
+    from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer, HRFlowable,
+                                    Table, TableStyle, Image as RLImage)
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=18 * mm, leftMargin=18 * mm,
+                            topMargin=16 * mm, bottomMargin=16 * mm)
+
+    styles = getSampleStyleSheet()
+    purple = colors.HexColor('#7e22ce')
+    dark   = colors.HexColor('#1e293b')
+    grey   = colors.HexColor('#64748b')
+
+    def style(name, **kw):
+        return ParagraphStyle(name, parent=styles['Normal'], **kw)
+
+    header_style = style('H',  fontSize=17, fontName='Helvetica-Bold', textColor=purple, spaceAfter=2)
+    title_style  = style('T',  fontSize=14, fontName='Helvetica-Bold', textColor=dark, alignment=TA_CENTER, spaceBefore=4, spaceAfter=4)
+    body_style   = style('B',  fontSize=10, fontName='Helvetica', textColor=dark, leading=15)
+    label_style  = style('L',  fontSize=8,  fontName='Helvetica-Bold', textColor=grey)
+    value_style  = style('V',  fontSize=10.5, fontName='Helvetica-Bold', textColor=dark)
+    section_style= style('SEC',fontSize=10, fontName='Helvetica-Bold', textColor=colors.white)
+    small_style  = style('SM', fontSize=8.5, fontName='Helvetica', textColor=grey, alignment=TA_CENTER, leading=11)
+
+    p   = consultation.patient
+    c   = consultation
+    is_rad = inv.kind == 'radiology'
+
+    def fmt(d):
+        return f'{d.day} {d:%B %Y}' if d else '—'
+
+    story = []
+
+    # ── Letterhead (referring practice) ───────────────────────────────────────
+    lh = [[
+        Paragraph(getattr(settings, 'PRACTICE_NAME', 'General Practitioner'), header_style),
+        Paragraph(
+            f"{getattr(settings, 'PRACTICE_SUBTITLE', 'General Practitioner')}<br/>"
+            f"{getattr(settings, 'PRACTICE_ADDRESS', '')}<br/>"
+            f"Tel: {getattr(settings, 'PRACTICE_PHONE', '')}  |  {getattr(settings, 'PRACTICE_EMAIL', '')}<br/>"
+            f"Practice No: {getattr(settings, 'PRACTICE_NUMBER', '')}",
+            style('LHr', fontSize=8, fontName='Helvetica', textColor=grey, alignment=TA_RIGHT, leading=12)),
+    ]]
+    t = Table(lh, colWidths=[95 * mm, 79 * mm])
+    t.setStyle(TableStyle([('VALIGN', (0, 0), (-1, -1), 'TOP')]))
+    story.append(t)
+    story.append(Spacer(1, 3 * mm))
+    story.append(HRFlowable(width='100%', thickness=2, color=purple, spaceAfter=4 * mm))
+
+    # ── Title ──────────────────────────────────────────────────────────────────
+    story.append(Paragraph('IMAGING REQUEST FORM' if is_rad else 'PATHOLOGY / LABORATORY REQUEST', title_style))
+    story.append(Spacer(1, 3 * mm))
+
+    # ── Recipient ──────────────────────────────────────────────────────────────
+    recipient = inv.recipient_name or '—'
+    rec_extra = []
+    if inv.provider and inv.provider.practice_no:
+        rec_extra.append(f"Practice No: {inv.provider.practice_no}")
+    if inv.recipient_email:
+        rec_extra.append(inv.recipient_email)
+    story.append(Paragraph(
+        f"<b>To:</b> {recipient}" + (f"  &nbsp;<font color='#64748b'>({'  |  '.join(rec_extra)})</font>" if rec_extra else ''),
+        body_style))
+    story.append(Spacer(1, 3 * mm))
+
+    # ── Patient / referrer / medical aid block ────────────────────────────────
+    def cell(label, val):
+        return [Paragraph(label, label_style), Paragraph(str(val) if val else '—', value_style)]
+
+    detail = [
+        cell("PATIENT'S NAME", f'{p.first_name} {p.last_name}') + cell("DATE", fmt(timezone.localdate())),
+        cell("REFERRING DOCTOR", getattr(settings, 'PRACTICE_NAME', '')) + cell("PRACTICE NO", getattr(settings, 'PRACTICE_NUMBER', '')),
+        cell("MEDICAL AID", p.medical_aid_name) + cell("MEDICAL AID NO", p.medical_aid_number),
+    ]
+    dt = Table(detail, colWidths=[33 * mm, 54 * mm, 30 * mm, 57 * mm])
+    dt.setStyle(TableStyle([
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e2e8f0')),
+        ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#f8f5ff')),
+        ('BACKGROUND', (2, 0), (2, -1), colors.HexColor('#f8f5ff')),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 5), ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 6),
+    ]))
+    story.append(dt)
+    story.append(Spacer(1, 4 * mm))
+
+    # ── Section header helper ──────────────────────────────────────────────────
+    def section(text):
+        st = Table([[Paragraph(text, section_style)]], colWidths=[174 * mm])
+        st.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), purple),
+            ('TOPPADDING', (0, 0), (-1, -1), 4), ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ]))
+        return st
+
+    items = inv.requested_items_list
+
+    if is_rad:
+        # ── Examination required: modality checklist ──────────────────────────
+        story.append(section('EXAMINATION REQUIRED'))
+        story.append(Spacer(1, 2 * mm))
+        rows, other = _classify_radiology_items(items)
+        check_rows = []
+        for label, matched in rows:
+            ticked = '[X]' if matched else '[ &nbsp; ]'
+            detail_txt = ', '.join(matched) if matched else ''
+            check_rows.append([
+                Paragraph(f"{ticked}  {label}", body_style),
+                Paragraph(detail_txt, body_style),
+            ])
+        check_rows.append([
+            Paragraph(("[X]" if other else "[ &nbsp; ]") + "  Whole body / Other", body_style),
+            Paragraph(', '.join(other), body_style),
+        ])
+        ct = Table(check_rows, colWidths=[70 * mm, 104 * mm])
+        ct.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('TOPPADDING', (0, 0), (-1, -1), 3), ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+            ('LINEBELOW', (1, 0), (1, -1), 0.4, colors.HexColor('#cbd5e1')),
+        ]))
+        story.append(ct)
+    else:
+        # ── Lab: simple list of requested tests ───────────────────────────────
+        story.append(section('TESTS REQUESTED'))
+        story.append(Spacer(1, 2 * mm))
+        list_rows = [[Paragraph(f"•  {line}", body_style)] for line in items] or [[Paragraph('—', body_style)]]
+        lt = Table(list_rows, colWidths=[174 * mm])
+        lt.setStyle(TableStyle([
+            ('TOPPADDING', (0, 0), (-1, -1), 3), ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+            ('LEFTPADDING', (0, 0), (-1, -1), 6),
+        ]))
+        story.append(lt)
+
+    story.append(Spacer(1, 4 * mm))
+
+    # ── History + Nappi ────────────────────────────────────────────────────────
+    story.append(Paragraph(f"<b>History / Clinical notes:</b> {inv.history or '—'}", body_style))
+    story.append(Spacer(1, 2 * mm))
+    story.append(Paragraph(f"<b>Nappi Code:</b> {inv.nappi_code or '—'}", body_style))
+    story.append(Spacer(1, 5 * mm))
+
+    # ── Signature ──────────────────────────────────────────────────────────────
+    sig = [[
+        Paragraph('_______________________________<br/>'
+                  f"<b>{getattr(settings, 'PRACTICE_NAME', '')}</b><br/>"
+                  f"{getattr(settings, 'PRACTICE_SUBTITLE', 'General Practitioner')} — "
+                  f"Date: {fmt(timezone.localdate())}",
+                  style('SBl', fontSize=9.5, fontName='Helvetica', textColor=dark, leading=14)),
+    ]]
+    story.append(Table(sig, colWidths=[174 * mm]))
+    story.append(Spacer(1, 4 * mm))
+
+    # ── Films and Report: deliver-to ───────────────────────────────────────────
+    if is_rad:
+        def opt(key, lbl):
+            return ('[X] ' if inv.deliver_to == key else '[ &nbsp; ] ') + lbl
+        story.append(section('FILMS AND REPORT'))
+        story.append(Spacer(1, 2 * mm))
+        story.append(Paragraph(
+            f"<b>Deliver to:</b>&nbsp;&nbsp; {opt('rooms', 'Rooms')} &nbsp;&nbsp; "
+            f"{opt('ward', 'Hospital ward')} &nbsp;&nbsp; {opt('patient', 'To be given to patient')}",
+            body_style))
+        story.append(Spacer(1, 4 * mm))
+
+    # ── Results portal link + QR ───────────────────────────────────────────────
+    portal_url = request.build_absolute_uri(f'/results/{inv.token}/')
+    qr_buf = _io.BytesIO()
+    qrcode.make(portal_url).save(qr_buf, format='PNG')
+    qr_buf.seek(0)
+    qr_img = RLImage(qr_buf, width=26 * mm, height=26 * mm)
+
+    portal_cell = Paragraph(
+        "<b>Submit results online</b><br/>"
+        "Scan the QR code or open the secure link below to upload this patient's "
+        "results directly to the requesting practice:<br/>"
+        f"<font color='#7e22ce'>{portal_url}</font>",
+        style('PORT', fontSize=9, fontName='Helvetica', textColor=dark, leading=13))
+    pt = Table([[qr_img, portal_cell]], colWidths=[30 * mm, 144 * mm])
+    pt.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOX', (0, 0), (-1, -1), 1, purple),
+        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#faf5ff')),
+        ('TOPPADDING', (0, 0), (-1, -1), 8), ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8), ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+    ]))
+    story.append(pt)
+
+    doc.build(story)
+    buffer.seek(0)
+    return buffer
+
+
+def _request_pdf_response(request, pk, kind):
+    consultation = get_object_or_404(Consultation, pk=pk)
+    _sync_investigation_requests(consultation)
+    inv = consultation.investigation_requests.filter(kind=kind).first()
+    if not inv:
+        messages.error(request, f'No {kind} requests recorded on this consultation.')
+        return redirect('consultation_detail', pk=pk)
+    buffer = _build_request_pdf(consultation, inv, request)
+    label = 'Radiology' if kind == 'radiology' else 'Lab'
+    filename = f'{label}_Request_{str(consultation.patient).replace(" ", "_")}_{consultation.date}.pdf'
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+
+@login_required
+def radiology_request_pdf(request, pk):
+    return _request_pdf_response(request, pk, 'radiology')
+
+
+@login_required
+def lab_request_pdf(request, pk):
+    return _request_pdf_response(request, pk, 'lab')
+
+
+# ── Prepare a request (set provider / history / nappi / deliver-to) ───────────
+
+@login_required
+@require_POST
+def prepare_request(request, pk):
+    consultation = get_object_or_404(Consultation, pk=pk)
+    kind = request.POST.get('kind')
+    if kind not in ('lab', 'radiology'):
+        messages.error(request, 'Unknown request type.')
+        return redirect('consultation_detail', pk=pk)
+
+    _sync_investigation_requests(consultation)
+    inv = consultation.investigation_requests.filter(kind=kind).first()
+    if not inv:
+        messages.error(request, f'No {kind} requests recorded on this consultation.')
+        return redirect('consultation_detail', pk=pk)
+
+    provider_id = request.POST.get('provider') or None
+    inv.provider = Provider.objects.filter(pk=provider_id).first() if provider_id else None
+    inv.history    = request.POST.get('history', '').strip()
+    inv.nappi_code = request.POST.get('nappi_code', '').strip()
+    deliver_to     = request.POST.get('deliver_to', '').strip()
+    if deliver_to in dict(InvestigationRequest.DELIVER_CHOICES):
+        inv.deliver_to = deliver_to
+    inv.save(update_fields=['provider', 'history', 'nappi_code', 'deliver_to'])
+    messages.success(request, f'{inv.get_kind_display()} request updated.')
+    return redirect('consultation_detail', pk=pk)
+
+
+# ── Email the request to the provider / patient ───────────────────────────────
+
+def _send_request_email(request, pk, kind):
+    consultation = get_object_or_404(Consultation, pk=pk)
+    _sync_investigation_requests(consultation)
+    inv = consultation.investigation_requests.filter(kind=kind).first()
+    if not inv:
+        return JsonResponse({'error': f'No {kind} requests on this consultation.'}, status=400)
+
+    patient = consultation.patient
+    if kind == 'radiology':
+        recipient = patient.email
+        if not recipient:
+            return JsonResponse({'error': 'No email address on file for this patient.'}, status=400)
+        who = f'{patient.first_name} {patient.last_name}'
+    else:
+        recipient = request.POST.get('to', '').strip() or inv.recipient_email or getattr(settings, 'LAB_EMAIL', '')
+        if not recipient:
+            return JsonResponse({'error': 'No lab email address. Add one to the provider or type a recipient.'}, status=400)
+        who = inv.recipient_name or 'the laboratory'
+
+    buffer = _build_request_pdf(consultation, inv, request)
+    label = 'Radiology' if kind == 'radiology' else 'Lab'
+    filename = f'{label}_Request_{str(patient).replace(" ", "_")}_{consultation.date}.pdf'
+    portal_url = request.build_absolute_uri(f'/results/{inv.token}/')
+
+    body = (
+        f'Dear {who},\n\n'
+        f'Please find attached a {label.lower()} request from '
+        f'{getattr(settings, "PRACTICE_NAME", "your doctor")} for '
+        f'{patient.first_name} {patient.last_name}.\n\n'
+    )
+    if kind == 'radiology':
+        body += (
+            'Please present this form at the radiology practice. '
+            'The practice can submit results back to us securely using the link on the form:\n'
+        )
+    else:
+        body += 'Results can be submitted back to us securely using the link below:\n'
+    body += (
+        f'{portal_url}\n\n'
+        f'Kind regards,\n{getattr(settings, "PRACTICE_NAME", "")}\n'
+        f'{getattr(settings, "PRACTICE_PHONE", "")}'
+    )
+
+    email = EmailMessage(
+        subject=f'{label} Request — {patient.first_name} {patient.last_name}',
+        body=body,
+        from_email=getattr(settings, 'PRACTICE_EMAIL', None) or settings.DEFAULT_FROM_EMAIL,
+        to=[recipient],
+    )
+    email.attach(filename, buffer.read(), 'application/pdf')
+    try:
+        email.send()
+        return JsonResponse({'success': True, 'email': recipient})
+    except Exception as exc:
+        return JsonResponse({'error': str(exc)}, status=500)
+
+
+@login_required
+@require_POST
+def radiology_request_email(request, pk):
+    return _send_request_email(request, pk, 'radiology')
+
+
+@login_required
+@require_POST
+def lab_request_email(request, pk):
+    return _send_request_email(request, pk, 'lab')
+
+
+# ── Doctor review of submitted results (confirm / decline) ────────────────────
+
+@login_required
+def investigations_pending(request):
+    pending = (InvestigationRequest.objects
+               .filter(status='submitted')
+               .select_related('consultation__patient', 'provider')
+               .order_by('-submitted_at'))
+    return render(request, 'consultations/investigations_pending.html', {'pending': pending})
+
+
+@login_required
+def investigation_review(request, pk):
+    inv = get_object_or_404(
+        InvestigationRequest.objects.select_related('consultation__patient', 'provider'), pk=pk)
+    return render(request, 'consultations/investigation_review.html', {'inv': inv})
+
+
+@login_required
+@require_POST
+def investigation_confirm(request, pk):
+    inv = get_object_or_404(InvestigationRequest, pk=pk)
+    # allow the doctor to edit / supply results inline (manual-entry fallback)
+    result_text = request.POST.get('result_text')
+    if result_text is not None:
+        inv.result_text = result_text.strip()
+    upload = request.FILES.get('result_file')
+    if upload:
+        inv.result_file = upload
+    inv.status      = 'confirmed'
+    inv.reviewed_at = timezone.now()
+    inv.save()
+    messages.success(request, f'{inv.get_kind_display()} results confirmed and filed for {inv.consultation.patient}.')
+    return redirect('consultation_detail', pk=inv.consultation_id)
+
+
+@login_required
+@require_POST
+def investigation_decline(request, pk):
+    inv = get_object_or_404(InvestigationRequest, pk=pk)
+    inv.status         = 'declined'
+    inv.decline_reason = request.POST.get('decline_reason', '').strip()
+    inv.reviewed_at    = timezone.now()
+    inv.save(update_fields=['status', 'decline_reason', 'reviewed_at'])
+    messages.info(request, f'{inv.get_kind_display()} results declined — the provider can resubmit.')
+    return redirect('investigations_pending')
+
+
 # ── Standard views ────────────────────────────────────────────────────────────
 
 @login_required
@@ -313,6 +746,35 @@ def suggest_prescriptions(request):
     })
 
 
+# ── Referral providers (lab / radiology practices) ────────────────────────────
+
+@login_required
+def provider_list(request):
+    providers = Provider.objects.all()
+    return render(request, 'consultations/provider_list.html', {'providers': providers})
+
+
+@login_required
+def provider_create(request):
+    form = ProviderForm(request.POST or None)
+    if form.is_valid():
+        provider = form.save()
+        messages.success(request, f'Provider "{provider.name}" added.')
+        return redirect('provider_list')
+    return render(request, 'consultations/provider_form.html', {'form': form, 'title': 'Add Provider'})
+
+
+@login_required
+def provider_edit(request, pk):
+    provider = get_object_or_404(Provider, pk=pk)
+    form = ProviderForm(request.POST or None, instance=provider)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Provider updated.')
+        return redirect('provider_list')
+    return render(request, 'consultations/provider_form.html', {'form': form, 'title': 'Edit Provider'})
+
+
 @login_required
 def consultation_list(request):
     from django.db.models import Q
@@ -350,7 +812,11 @@ def consultation_list(request):
 @login_required
 def consultation_detail(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
-    return render(request, 'consultations/consultation_detail.html', {'consultation': consultation})
+    _sync_investigation_requests(consultation)
+    return render(request, 'consultations/consultation_detail.html', {
+        'consultation': consultation,
+        'providers':    Provider.objects.filter(is_active=True),
+    })
 
 
 @login_required
@@ -408,6 +874,7 @@ def consultation_create(request):
                 status__in=('Checked In', 'With Doctor'),
             ).update(status='Completed')
         _learn_from_consultation(consultation)
+        _sync_investigation_requests(consultation)
         messages.success(request, f'Consultation saved for {consultation.patient}.')
         return redirect('consultation_detail', pk=consultation.pk)
 
@@ -420,6 +887,7 @@ def consultation_edit(request, pk):
     form = ConsultationForm(request.POST or None, instance=consultation)
     if form.is_valid():
         form.save()
+        _sync_investigation_requests(consultation)
         messages.success(request, 'Consultation updated successfully.')
         return redirect('consultation_detail', pk=pk)
     return render(request, 'consultations/consultation_form.html', {'form': form, 'title': 'Edit Consultation'})
@@ -455,6 +923,7 @@ def consultation_review(request, pk):
         review.follow_up_date = request.POST.get('follow_up_date') or None
         review.save()
         _learn_from_consultation(review)
+        _sync_investigation_requests(review)
 
         # Clear the patient from the waiting room queue
         from appointments.models import PendingReview

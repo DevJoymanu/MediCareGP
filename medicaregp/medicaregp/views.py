@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -7,6 +9,24 @@ from appointments.models import Appointment
 from consultations.models import Consultation
 from scripts.models import Document
 from tasks.models import Task
+
+
+# Path to the compiled Medical-Flow React site (built into Django static).
+_WEBSITE_INDEX = settings.BASE_DIR / 'static' / 'website' / 'index.html'
+
+
+def website_home(request):
+    """Serve the public patient website (compiled React SPA) at the site root."""
+    try:
+        html = _WEBSITE_INDEX.read_text(encoding='utf-8')
+    except FileNotFoundError:
+        return HttpResponse(
+            "<h1>Website not built yet</h1>"
+            "<p>Run the gp-website build into <code>static/website/</code>. "
+            "The CRM is at <a href='/app/'>/app/</a>.</p>",
+            status=200,
+        )
+    return HttpResponse(html)
 
 
 @login_required
