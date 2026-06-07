@@ -1,0 +1,225 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: bookings
+    description: Appointment bookings
+  - name: payments
+    description: Payment operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /bookings:
+    post:
+      operationId: createBooking
+      tags: [bookings]
+      summary: Create a booking
+      description: Creates a new pending booking and returns a reference and fee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookingRequest"
+      responses:
+        "201":
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateBookingResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /bookings/{reference}:
+    get:
+      operationId: getBooking
+      tags: [bookings]
+      summary: Get booking by reference
+      parameters:
+        - name: reference
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Booking found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookingResponse"
+        "404":
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /payments/payfast/initiate:
+    post:
+      operationId: initiatePayfastPayment
+      tags: [payments]
+      summary: Initiate a PayFast payment
+      description: Returns signed PayFast form fields for client-side form submission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InitiatePaymentRequest"
+      responses:
+        "200":
+          description: PayFast payment data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InitiatePaymentResponse"
+        "404":
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /payments/payfast/notify:
+    post:
+      operationId: payfastNotify
+      tags: [payments]
+      summary: PayFast ITN webhook
+      description: Handles PayFast Instant Transaction Notification
+      responses:
+        "200":
+          description: Notification processed
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    CreateBookingRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+        phone:
+          type: string
+          minLength: 10
+        email:
+          type: string
+          format: email
+        appointmentType:
+          type: string
+          minLength: 1
+        date:
+          type: string
+          minLength: 1
+        timeSlot:
+          type: string
+          minLength: 1
+      required:
+        - name
+        - phone
+        - email
+        - appointmentType
+        - date
+        - timeSlot
+
+    CreateBookingResponse:
+      type: object
+      properties:
+        reference:
+          type: string
+        fee:
+          type: number
+        amountCents:
+          type: integer
+      required:
+        - reference
+        - fee
+        - amountCents
+
+    BookingResponse:
+      type: object
+      properties:
+        reference:
+          type: string
+        name:
+          type: string
+        appointmentType:
+          type: string
+        appointmentDate:
+          type: string
+        timeSlot:
+          type: string
+        status:
+          type: string
+        fee:
+          type: number
+      required:
+        - reference
+        - name
+        - appointmentType
+        - appointmentDate
+        - timeSlot
+        - status
+        - fee
+
+    InitiatePaymentRequest:
+      type: object
+      properties:
+        reference:
+          type: string
+      required:
+        - reference
+
+    InitiatePaymentResponse:
+      type: object
+      properties:
+        paymentUrl:
+          type: string
+        fields:
+          type: object
+          additionalProperties:
+            type: string
+      required:
+        - paymentUrl
+        - fields
