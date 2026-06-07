@@ -39,4 +39,4 @@ GP practice system for **Dr. Tamuka Chivonivoni** (Django 4.2, Python 3.9, Postg
 - Public JSON endpoints are `@csrf_exempt` + honeypot; keep that pattern. Reuse the UUID-token pattern for new patient-facing surfaces.
 - Templates use inline styles + `crm-*` classes; reusable partials are `_name.html` and `{% include %}`d.
 - Keep React appointment-type labels and `settings.ONLINE_CONSULT_TYPE` in sync.
-- Provide a `git commit -m` message after edits.
+- Provide a `git commit -m` message after edits..
