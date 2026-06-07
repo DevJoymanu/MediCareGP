@@ -25,6 +25,8 @@ from django.conf import settings
 
 # Tiny in-process cache for the metered API result (creds are valid for hours).
 _metered_cache = {'servers': None, 'expires': 0.0}
+# Last metered fetch error (for the /video/turn-test/ diagnostics page).
+_metered_error = None
 
 
 def _stun_only():
@@ -33,22 +35,30 @@ def _stun_only():
 
 def _fetch_metered():
     """Fetch iceServers from metered.ca, cached for TURN_TTL seconds."""
+    global _metered_error
     now = time.time()
     if _metered_cache['servers'] is not None and now < _metered_cache['expires']:
         return _metered_cache['servers']
 
-    url = (f"https://{settings.METERED_DOMAIN}/api/v1/turn/credentials"
+    # METERED_DOMAIN must be a bare host like "myapp.metered.live" — strip any
+    # accidental scheme / trailing slash / path so the API URL is well-formed.
+    domain = settings.METERED_DOMAIN.strip()
+    domain = domain.split('://', 1)[-1].strip('/').split('/', 1)[0]
+    url = (f"https://{domain}/api/v1/turn/credentials"
            f"?apiKey={urllib.parse.quote(settings.METERED_API_KEY)}")
     try:
         req = urllib.request.Request(url, headers={'Accept': 'application/json'})
         with urllib.request.urlopen(req, timeout=6) as resp:
-            servers = json.loads(resp.read().decode('utf-8'))
+            body = resp.read().decode('utf-8')
+            servers = json.loads(body)
         if isinstance(servers, list) and servers:
             _metered_cache['servers'] = servers
             _metered_cache['expires'] = now + max(60, settings.TURN_TTL)
+            _metered_error = None
             return servers
-    except Exception:
-        pass
+        _metered_error = f"metered returned no servers: {body[:200]!r}"
+    except Exception as e:
+        _metered_error = f"{type(e).__name__}: {e}"
     # On failure, reuse a previous good result if we have one, else STUN only.
     return _metered_cache['servers'] or _stun_only()
 
@@ -81,3 +91,39 @@ def build_ice_servers():
             })
 
     return servers
+
+
+def diagnostics():
+    """Server-side view of the ICE config, for the staff TURN-test page.
+
+    Credentials are never included — only which env vars are set, which provider
+    path was taken, the resulting server URLs, and the last fetch error (if any).
+    """
+    servers = build_ice_servers()
+    urls = []
+    for s in servers:
+        u = s.get('urls')
+        urls.extend(u if isinstance(u, list) else [u])
+
+    if settings.METERED_DOMAIN and settings.METERED_API_KEY:
+        provider = 'metered'
+    elif settings.TURN_URLS and settings.TURN_STATIC_AUTH_SECRET:
+        provider = 'coturn-hmac'
+    elif settings.TURN_URLS and settings.TURN_USERNAME:
+        provider = 'static-turn'
+    else:
+        provider = 'stun-only'
+
+    return {
+        'provider': provider,
+        'env': {
+            'METERED_DOMAIN': bool(settings.METERED_DOMAIN),
+            'METERED_API_KEY': bool(settings.METERED_API_KEY),
+            'TURN_URLS': bool(settings.TURN_URLS),
+            'TURN_STATIC_AUTH_SECRET': bool(settings.TURN_STATIC_AUTH_SECRET),
+            'TURN_USERNAME': bool(settings.TURN_USERNAME),
+        },
+        'server_urls': urls,
+        'has_turn': any('turn:' in (u or '') or 'turns:' in (u or '') for u in urls),
+        'metered_error': _metered_error,
+    }

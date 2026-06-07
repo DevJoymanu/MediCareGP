@@ -49,7 +49,10 @@ def turn_test(request):
 
 @login_required
 def turn_test_ice(request):
-    return JsonResponse({'iceServers': turn.build_ice_servers()})
+    return JsonResponse({
+        'iceServers': turn.build_ice_servers(),
+        'diagnostics': turn.diagnostics(),
+    })
 
 
 @login_required
