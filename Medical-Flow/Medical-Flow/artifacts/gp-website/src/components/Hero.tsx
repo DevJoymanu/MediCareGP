@@ -108,7 +108,7 @@ export default function Hero() {
                 size="lg"
                 variant="outline"
                 className="text-base px-8 py-6 rounded-full bg-white/50 backdrop-blur-sm border-2 border-primary/20 hover:bg-primary/5 hover:border-primary/40 transition-all duration-300 transform hover:-translate-y-1 text-primary"
-                onClick={() => window.open("https://wa.me/27847564715", "_blank")}
+                onClick={() => window.open("https://wa.me/27726033299", "_blank")}
                 data-testid="hero-whatsapp-btn"
               >
                 <SiWhatsapp className="mr-2 h-5 w-5 text-green-500" />

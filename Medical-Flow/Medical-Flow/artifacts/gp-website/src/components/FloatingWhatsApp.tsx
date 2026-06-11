@@ -32,7 +32,7 @@ export default function FloatingWhatsApp() {
       className="fixed bottom-6 right-6 z-40 hidden md:block" // Hidden on mobile, sticky bar handles it
     >
       <a
-        href="https://wa.me/27847564715"
+        href="https://wa.me/27726033299"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center justify-center w-16 h-16 bg-[#25D366] hover:bg-[#1EBE5D] text-white rounded-full shadow-lg shadow-green-500/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group relative"

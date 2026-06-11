@@ -109,7 +109,7 @@ export default function MedicalAids() {
           Not sure if your plan is covered?{" "}
           <button
             className="text-primary font-semibold hover:underline underline-offset-2"
-            onClick={() => window.open("https://wa.me/27847564715?text=Hi%2C+I%27d+like+to+check+if+my+medical+aid+is+accepted+at+your+practice.", "_blank")}
+            onClick={() => window.open("https://wa.me/27726033299?text=Hi%2C+I%27d+like+to+check+if+my+medical+aid+is+accepted+at+your+practice.", "_blank")}
             data-testid="btn-check-medical-aid"
           >
             WhatsApp us to confirm

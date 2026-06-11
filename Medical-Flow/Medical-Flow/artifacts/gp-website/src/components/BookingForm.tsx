@@ -26,7 +26,6 @@ const APPOINTMENT_TYPES = [
   "Online Consultation (Video call)",
   "Follow-up",
   "Chronic Care",
-  "Sick Note / Certificate",
   "Other",
 ];
 

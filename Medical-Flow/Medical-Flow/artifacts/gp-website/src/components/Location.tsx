@@ -3,8 +3,8 @@ import { SiWhatsapp } from "react-icons/si";
 import { motion } from "framer-motion";
 import { useInView } from "@/hooks/useInView";
 
-const WHATSAPP = "https://wa.me/27847564715";
-const TEL = "tel:+27847564715";
+const WHATSAPP = "https://wa.me/27726033299";
+const TEL = "tel:+27726033299";
 
 export default function Location() {
   const { ref, isInView } = useInView({ threshold: 0.2 });
@@ -92,7 +92,7 @@ export default function Location() {
                       data-testid="link-phone"
                     >
                       <Phone className="w-4 h-4 flex-shrink-0" />
-                      084 756 4715
+                      072 603 3299
                     </a>
                     <a
                       href={WHATSAPP}
@@ -102,7 +102,7 @@ export default function Location() {
                       data-testid="link-whatsapp"
                     >
                       <SiWhatsapp className="w-4 h-4 flex-shrink-0 text-green-500" />
-                      WhatsApp: 084 756 4715
+                      WhatsApp: 072 603 3299
                     </a>
                   </div>
                 </div>

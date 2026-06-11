@@ -84,15 +84,15 @@ export default function Navbar() {
             {/* Desktop CTAs */}
             <div className="hidden md:flex items-center gap-2">
               <a
-                href="tel:+27847564715"
+                href="tel:+27726033299"
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-foreground/70 hover:text-foreground hover:bg-black/5 transition-all duration-200"
                 data-testid="nav-link-call"
               >
                 <Phone className="w-4 h-4" />
-                084 756 4715
+                072 603 3299
               </a>
               <a
-                href="https://wa.me/27847564715"
+                href="https://wa.me/27726033299"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-green-700 hover:bg-green-50 transition-all duration-200 border border-green-200"
@@ -191,7 +191,7 @@ export default function Navbar() {
               {/* Mobile contact / CTAs */}
               <div className="px-4 pt-2 pb-6 space-y-3 border-t border-black/5 mt-2">
                 <a
-                  href="tel:+27847564715"
+                  href="tel:+27726033299"
                   className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50 text-foreground font-medium hover:bg-gray-100 transition-colors"
                   data-testid="mobile-nav-link-call"
                   onClick={() => setMenuOpen(false)}
@@ -201,12 +201,12 @@ export default function Navbar() {
                   </div>
                   <div>
                     <div className="text-xs text-muted-foreground">Call us</div>
-                    <div className="font-semibold">084 756 4715</div>
+                    <div className="font-semibold">072 603 3299</div>
                   </div>
                 </a>
 
                 <a
-                  href="https://wa.me/27847564715"
+                  href="https://wa.me/27726033299"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 px-4 py-3 rounded-xl bg-green-50 text-green-800 font-medium hover:bg-green-100 transition-colors"

@@ -1,8 +1,8 @@
 import { Heart, MapPin, Phone, Clock } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 
-const WHATSAPP = "https://wa.me/27847564715";
-const TEL = "tel:+27847564715";
+const WHATSAPP = "https://wa.me/27726033299";
+const TEL = "tel:+27726033299";
 
 export default function Footer() {
   return (
@@ -37,7 +37,7 @@ export default function Footer() {
               <li>
                 <a href={TEL} className="flex items-center gap-2 hover:text-white transition-colors" data-testid="footer-link-phone">
                   <Phone className="w-4 h-4 flex-shrink-0" />
-                  084 756 4715
+                  072 603 3299
                 </a>
               </li>
               <li>

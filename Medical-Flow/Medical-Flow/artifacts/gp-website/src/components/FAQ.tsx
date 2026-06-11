@@ -12,10 +12,6 @@ const faqs = [
     answer: "Yes, fully registered with the Health Professions Council of South Africa."
   },
   {
-    question: "Do you issue sick notes?",
-    answer: "Yes, we issue sick notes, medical certificates, and insurance certificates after a thorough medical consultation."
-  },
-  {
     question: "What are your consulting hours?",
     answer: "Monday to Friday 09:30–18:00, Saturday and Sunday 09:30–13:00. Walk-ins welcome subject to availability."
   },
@@ -65,7 +61,7 @@ export default function FAQ() {
         <div className="mt-12 text-center">
           <p className="text-muted-foreground mb-4">Still have questions?</p>
           <a 
-            href="https://wa.me/27847564715" 
+            href="https://wa.me/27726033299" 
             target="_blank" 
             rel="noopener noreferrer"
             className="inline-flex items-center text-primary font-medium hover:underline"

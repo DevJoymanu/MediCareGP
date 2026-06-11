@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { useInView } from "@/hooks/useInView";
-import { Stethoscope, HeartPulse, ShieldCheck, Syringe, FileText, Briefcase, Calendar, ArrowRight, Video } from "lucide-react";
+import { Stethoscope, HeartPulse, ShieldCheck, Syringe, Briefcase, Calendar, ArrowRight, Video } from "lucide-react";
 import { SiWhatsapp } from "react-icons/si";
 
-const WHATSAPP_BASE = "https://wa.me/27847564715?text=";
+const WHATSAPP_BASE = "https://wa.me/27726033299?text=";
 
 // `bookingType` pre-selects the matching option in the booking form when the
 // patient clicks "Book This Service". `waText` is only ever a general enquiry —
@@ -44,13 +44,6 @@ const services = [
     description: "Wound suturing, removal of minor skin lesions, abscess drainage, and dressing changes.",
     bookingType: "Other",
     waText: "Hi, I have a question about Minor Procedures."
-  },
-  {
-    icon: FileText,
-    title: "Sick Notes & Certificates",
-    description: "Valid medical certificates for work or school, provided after a thorough medical assessment.",
-    bookingType: "Sick Note / Certificate",
-    waText: "Hi, I have a question about Sick Notes & Certificates."
   },
   {
     icon: Briefcase,
@@ -176,7 +169,7 @@ export default function Services() {
               Book a General Consultation
             </button>
             <a
-              href="https://wa.me/27847564715?text=Hi%2C+I%27m+not+sure+which+service+I+need+and+would+like+some+advice."
+              href="https://wa.me/27726033299?text=Hi%2C+I%27m+not+sure+which+service+I+need+and+would+like+some+advice."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border-2 border-green-500 text-green-700 font-semibold hover:bg-green-50 hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
