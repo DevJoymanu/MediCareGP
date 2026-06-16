@@ -108,7 +108,18 @@
     }
 
     function buildPeer(iceServers) {
-      const peer = new RTCPeerConnection({ iceServers });
+      // Force TURN relay: on mobile/CGNAT networks a direct (host/srflx) path
+      // can't form, so the call would otherwise hang on "Connecting…". Routing
+      // both peers through the relay (reachable via TLS/443 on virtually any
+      // network) makes calls connect reliably. Cloudflare's 1 TB/mo free tier
+      // easily covers the relayed media. Falls back to all-transports if no TURN
+      // is configured, so STUN-only deployments still work on permissive nets.
+      const hasTurn = (iceServers || []).some(s => {
+        const u = s.urls;
+        return (Array.isArray(u) ? u : [u]).some(x => /^turns?:/.test(x || ''));
+      });
+      const peer = new RTCPeerConnection(
+        hasTurn ? { iceServers, iceTransportPolicy: 'relay' } : { iceServers });
 
       // Perfect negotiation: either side may (re)negotiate; glare is resolved by POLITE.
       peer.onnegotiationneeded = async () => {
