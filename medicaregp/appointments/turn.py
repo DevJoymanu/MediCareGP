@@ -21,6 +21,7 @@ import hashlib
 import hmac
 import json
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -67,6 +68,12 @@ def _fetch_cloudflare():
             _cloudflare_error = None
             return servers
         _cloudflare_error = f"cloudflare returned no iceServers: {body[:200]!r}"
+    except urllib.error.HTTPError as e:
+        try:
+            detail = e.read().decode('utf-8')[:300]
+        except Exception:
+            detail = ''
+        _cloudflare_error = f"HTTP {e.code} {e.reason}: {detail}"
     except Exception as e:
         _cloudflare_error = f"{type(e).__name__}: {e}"
     # On failure, reuse a previous good result if we have one, else STUN only.
@@ -98,6 +105,12 @@ def _fetch_metered():
             _metered_error = None
             return servers
         _metered_error = f"metered returned no servers: {body[:200]!r}"
+    except urllib.error.HTTPError as e:
+        try:
+            detail = e.read().decode('utf-8')[:300]
+        except Exception:
+            detail = ''
+        _metered_error = f"HTTP {e.code} {e.reason}: {detail}"
     except Exception as e:
         _metered_error = f"{type(e).__name__}: {e}"
     # On failure, reuse a previous good result if we have one, else STUN only.
