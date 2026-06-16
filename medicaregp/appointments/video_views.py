@@ -8,7 +8,7 @@ stack. The doctor joins from the CRM (login required); the patient joins via an
 unguessable token link (no login).
 """
 import json
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -70,6 +70,16 @@ def doctor_room(request, pk):
 
 def patient_room(request, patient_token):
     room = get_object_or_404(VideoRoom, patient_token=patient_token)
+    # The patient link is valid until 2 hours after the scheduled appointment.
+    appt = room.appointment
+    start = datetime.combine(appt.date, appt.time)
+    if timezone.is_naive(start):
+        start = timezone.make_aware(start, timezone.get_current_timezone())
+    if timezone.now() > start + timedelta(hours=2):
+        return render(request, 'video/expired.html', {
+            'practice_name': settings.PRACTICE_NAME,
+            'practice_phone': settings.PRACTICE_PHONE,
+        }, status=410)
     return render(request, 'video/room.html',
                   _room_context(room, 'patient', str(room.appointment.patient), settings.PRACTICE_NAME))
 
