@@ -31,27 +31,58 @@
     .label { position: absolute; left: 14px; bottom: 14px; font-size: 12px; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 8px; }
 
     /* ── Doctor: consultation notes alongside the call ──────────────────── */
-    #consultFrame { display: none; }
+    #consultFrame, #layoutBar { display: none; }
     body.role-doctor #consultFrame {
-      display: block; position: fixed; inset: 0; width: 100%; height: 100%;
-      border: 0; background: #fff; z-index: 0;
+      display: block; position: fixed; border: 0; background: #fff; z-index: 0;
     }
-    /* Shrink the video to a draggable corner panel for the doctor. */
     body.role-doctor #stage {
-      inset: auto 16px 16px auto; width: 300px; height: 400px;
-      border-radius: 14px; overflow: hidden; z-index: 50;
+      overflow: hidden; z-index: 50;
       border: 1px solid rgba(255,255,255,0.18); box-shadow: 0 12px 34px rgba(0,0,0,0.5);
+      border-radius: 14px;
     }
-    body.role-doctor #stage.minimised { height: 46px; }
-    body.role-doctor #stage.minimised .videos,
-    body.role-doctor #stage.minimised .controls { display: none; }
-    body.role-doctor .topbar { cursor: move; }
+
+    /* Float — notes full screen, video in a draggable corner (default). */
+    body.role-doctor.layout-float #consultFrame { inset: 0; }
+    body.role-doctor.layout-float #stage { inset: auto 16px 16px auto; width: 300px; height: 400px; }
+    body.role-doctor.layout-float .topbar { cursor: move; }
+    body.role-doctor.layout-float #stage.minimised { height: 46px; }
+    body.role-doctor.layout-float #stage.minimised .videos,
+    body.role-doctor.layout-float #stage.minimised .controls { display: none; }
+
+    /* Split — video pinned to a fixed left column, notes fill the right. */
+    body.role-doctor.layout-split #stage { inset: 0 auto 0 0; width: 360px; height: 100%; border-radius: 0; border: none; box-shadow: none; }
+    body.role-doctor.layout-split #consultFrame { inset: 0 0 0 360px; }
+
+    /* Full — video fills the screen, notes hidden. */
+    body.role-doctor.layout-full #consultFrame { display: none; }
+    body.role-doctor.layout-full #stage { inset: 0; width: 100%; height: 100%; border-radius: 0; border: none; box-shadow: none; }
+
+    /* pipToggle only meaningful in float. */
+    body.role-doctor:not(.layout-float) #pipToggle { display: none; }
     #pipToggle { margin-left: 8px; background: none; border: none; color: #9ca3af; font-size: 16px; cursor: pointer; }
+
+    /* Layout switcher (top-centre). */
+    body.role-doctor #layoutBar {
+      display: flex; gap: 3px; position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+      z-index: 80; background: rgba(17,24,39,0.94); border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px; padding: 4px; box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+    }
+    #layoutBar button {
+      background: transparent; border: none; color: #cbd5e1; font-size: 12px; font-weight: 600;
+      padding: 6px 12px; border-radius: 7px; cursor: pointer;
+    }
+    #layoutBar button:hover { color: #fff; }
+    #layoutBar button.active { background: #2563eb; color: #fff; }
   </style>
 </head>
 <body class="role-{{ role }}">
   {% if role == 'doctor' and consult_url %}
   <iframe id="consultFrame" src="{{ consult_url }}" title="Consultation notes"></iframe>
+  <div id="layoutBar" role="group" aria-label="Layout">
+    <button type="button" data-layout="float" title="Floating video over notes">Float</button>
+    <button type="button" data-layout="split" title="Video and notes side by side">Split</button>
+    <button type="button" data-layout="full" title="Video only">Full</button>
+  </div>
   {% endif %}
 
   <div id="stage">
@@ -268,25 +299,48 @@
 
     window.addEventListener('beforeunload', () => { try { navigator.sendBeacon; send('bye', {}); } catch (e) {} });
 
-    // Doctor: minimise/restore and drag the video panel so it never covers notes.
+    // Doctor: layout switcher (Float / Split / Full) + minimise & drag in float.
     (function () {
+      if (!document.body.classList.contains('role-doctor')) return;
       const stage = document.getElementById('stage');
       const bar = document.getElementById('topbar');
       const toggle = document.getElementById('pipToggle');
-      if (!toggle || !document.body.classList.contains('role-doctor')) return;
+      const layoutBar = document.getElementById('layoutBar');
+      const LAYOUTS = ['float', 'split', 'full'];
 
-      toggle.addEventListener('click', (e) => {
+      function applyLayout(name) {
+        if (!LAYOUTS.includes(name)) name = 'float';
+        LAYOUTS.forEach(l => document.body.classList.toggle('layout-' + l, l === name));
+        // Clear any inline drag/minimise state so the layout's CSS takes over.
+        stage.style.inset = ''; stage.style.left = ''; stage.style.top = '';
+        stage.classList.remove('minimised');
+        if (toggle) toggle.textContent = '▾';
+        if (layoutBar) layoutBar.querySelectorAll('button').forEach(b =>
+          b.classList.toggle('active', b.dataset.layout === name));
+        try { localStorage.setItem('vc_layout', name); } catch (_) {}
+      }
+
+      if (layoutBar) layoutBar.querySelectorAll('button').forEach(b =>
+        b.addEventListener('click', () => applyLayout(b.dataset.layout)));
+
+      let saved = 'float';
+      try { saved = localStorage.getItem('vc_layout') || 'float'; } catch (_) {}
+      applyLayout(saved);
+
+      // Minimise (float only).
+      if (toggle) toggle.addEventListener('click', (e) => {
         e.stopPropagation();
         const min = stage.classList.toggle('minimised');
         toggle.textContent = min ? '▴' : '▾';
       });
 
+      // Drag the floating panel (float only).
       let dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
       bar.addEventListener('pointerdown', (e) => {
-        if (e.target === toggle) return;
+        if (e.target === toggle || !document.body.classList.contains('layout-float')) return;
         dragging = true;
         const r = stage.getBoundingClientRect();
-        stage.style.inset = 'auto';                 // switch to free top/left positioning
+        stage.style.inset = 'auto';
         stage.style.left = r.left + 'px'; stage.style.top = r.top + 'px';
         ox = r.left; oy = r.top; sx = e.clientX; sy = e.clientY;
         try { bar.setPointerCapture(e.pointerId); } catch (_) {}
