@@ -2,13 +2,16 @@
 Builds the WebRTC ICE server list (STUN + optional TURN) for a video call.
 
 Precedence (first configured wins):
-  1. metered.ca API — set METERED_DOMAIN + METERED_API_KEY. We fetch the iceServers
-     (with short-lived TURN credentials) from metered's API and cache them briefly.
-     This is the recommended free path (metered's free tier ~50 GB/month).
-  2. coturn ephemeral HMAC — set TURN_URLS + TURN_STATIC_AUTH_SECRET. We mint
+  1. Cloudflare Realtime TURN — set CLOUDFLARE_TURN_KEY_ID + CLOUDFLARE_TURN_API_TOKEN.
+     We mint short-lived ICE credentials from Cloudflare's API. Recommended free
+     path: 1 TB/month free, no server to run.
+  2. metered.ca API — set METERED_DOMAIN + METERED_API_KEY. We fetch the iceServers
+     (with short-lived TURN credentials) from metered's API and cache them briefly
+     (metered's free tier is only 500 MB/month).
+  3. coturn ephemeral HMAC — set TURN_URLS + TURN_STATIC_AUTH_SECRET. We mint
      short-lived credentials with the standard `use-auth-secret` scheme.
-  3. static TURN — set TURN_URLS + TURN_USERNAME + TURN_CREDENTIAL.
-  4. STUN only (fine on many networks; add TURN for mobile / strict firewalls).
+  4. static TURN — set TURN_URLS + TURN_USERNAME + TURN_CREDENTIAL.
+  5. STUN only (fine on many networks; add TURN for mobile / strict firewalls).
 
 Credentials are generated/fetched per call (served via /video/<room>/ice/), so
 nothing long-lived is baked into the page.
@@ -23,14 +26,51 @@ import urllib.request
 
 from django.conf import settings
 
-# Tiny in-process cache for the metered API result (creds are valid for hours).
+# Tiny in-process caches for fetched provider results (creds are valid for hours).
 _metered_cache = {'servers': None, 'expires': 0.0}
-# Last metered fetch error (for the /video/turn-test/ diagnostics page).
+_cloudflare_cache = {'servers': None, 'expires': 0.0}
+# Last fetch errors (for the /video/turn-test/ diagnostics page).
 _metered_error = None
+_cloudflare_error = None
 
 
 def _stun_only():
     return [{'urls': settings.STUN_URLS}] if settings.STUN_URLS else []
+
+
+def _fetch_cloudflare():
+    """Mint short-lived ICE servers from Cloudflare Realtime TURN, cached briefly."""
+    global _cloudflare_error
+    now = time.time()
+    if _cloudflare_cache['servers'] is not None and now < _cloudflare_cache['expires']:
+        return _cloudflare_cache['servers']
+
+    key_id = settings.CLOUDFLARE_TURN_KEY_ID.strip().split()[0] if settings.CLOUDFLARE_TURN_KEY_ID.strip() else ''
+    url = f"https://rtc.live.cloudflare.com/v1/turn/keys/{key_id}/credentials/generate-ice-servers"
+    # Credentials live for a day; we cache them only for TURN_TTL so a rotated
+    # token is picked up promptly.
+    data = json.dumps({'ttl': 86400}).encode('utf-8')
+    try:
+        req = urllib.request.Request(url, data=data, headers={
+            'Authorization': f'Bearer {settings.CLOUDFLARE_TURN_API_TOKEN.strip()}',
+            'Content-Type': 'application/json',
+        })
+        with urllib.request.urlopen(req, timeout=6) as resp:
+            body = resp.read().decode('utf-8')
+            payload = json.loads(body)
+        ice = payload.get('iceServers')
+        # Cloudflare returns a single iceServers object; the browser wants a list.
+        servers = ice if isinstance(ice, list) else ([ice] if ice else None)
+        if servers:
+            _cloudflare_cache['servers'] = servers
+            _cloudflare_cache['expires'] = now + max(60, settings.TURN_TTL)
+            _cloudflare_error = None
+            return servers
+        _cloudflare_error = f"cloudflare returned no iceServers: {body[:200]!r}"
+    except Exception as e:
+        _cloudflare_error = f"{type(e).__name__}: {e}"
+    # On failure, reuse a previous good result if we have one, else STUN only.
+    return _cloudflare_cache['servers'] or _stun_only()
 
 
 def _fetch_metered():
@@ -74,13 +114,17 @@ def _coturn_hmac():
 
 
 def build_ice_servers():
-    # 1. metered.ca API (returns its own STUN + TURN list).
+    # 1. Cloudflare Realtime TURN (returns its own STUN + TURN list).
+    if settings.CLOUDFLARE_TURN_KEY_ID and settings.CLOUDFLARE_TURN_API_TOKEN:
+        return _fetch_cloudflare()
+
+    # 2. metered.ca API (returns its own STUN + TURN list).
     if settings.METERED_DOMAIN and settings.METERED_API_KEY:
         return _fetch_metered()
 
     servers = _stun_only()
 
-    # 2 / 3. self-managed TURN.
+    # 3 / 4. self-managed TURN.
     if settings.TURN_URLS:
         if settings.TURN_STATIC_AUTH_SECRET:
             servers.append(_coturn_hmac())
@@ -106,7 +150,9 @@ def diagnostics():
         u = s.get('urls')
         urls.extend(u if isinstance(u, list) else [u])
 
-    if settings.METERED_DOMAIN and settings.METERED_API_KEY:
+    if settings.CLOUDFLARE_TURN_KEY_ID and settings.CLOUDFLARE_TURN_API_TOKEN:
+        provider = 'cloudflare'
+    elif settings.METERED_DOMAIN and settings.METERED_API_KEY:
         provider = 'metered'
     elif settings.TURN_URLS and settings.TURN_STATIC_AUTH_SECRET:
         provider = 'coturn-hmac'
@@ -118,6 +164,8 @@ def diagnostics():
     return {
         'provider': provider,
         'env': {
+            'CLOUDFLARE_TURN_KEY_ID': bool(settings.CLOUDFLARE_TURN_KEY_ID),
+            'CLOUDFLARE_TURN_API_TOKEN': bool(settings.CLOUDFLARE_TURN_API_TOKEN),
             'METERED_DOMAIN': bool(settings.METERED_DOMAIN),
             'METERED_API_KEY': bool(settings.METERED_API_KEY),
             'TURN_URLS': bool(settings.TURN_URLS),
@@ -127,4 +175,5 @@ def diagnostics():
         'server_urls': urls,
         'has_turn': any('turn:' in (u or '') or 'turns:' in (u or '') for u in urls),
         'metered_error': _metered_error,
+        'cloudflare_error': _cloudflare_error,
     }

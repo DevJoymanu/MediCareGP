@@ -181,3 +181,11 @@ TURN_TTL = int(os.environ.get('TURN_TTL', '3600'))
 # The app fetches fresh ICE servers + short-lived TURN credentials from their API.
 METERED_DOMAIN  = os.environ.get('METERED_DOMAIN', '')
 METERED_API_KEY = os.environ.get('METERED_API_KEY', '')
+
+# Cloudflare Realtime TURN (recommended — 1 TB/month free, no server to run).
+# Create a TURN key at dash.cloudflare.com → Realtime → TURN, then set:
+#   CLOUDFLARE_TURN_KEY_ID      the Turn Key ID
+#   CLOUDFLARE_TURN_API_TOKEN   the key's API token
+# The app mints short-lived ICE credentials from Cloudflare's API per call.
+CLOUDFLARE_TURN_KEY_ID    = os.environ.get('CLOUDFLARE_TURN_KEY_ID', '')
+CLOUDFLARE_TURN_API_TOKEN = os.environ.get('CLOUDFLARE_TURN_API_TOKEN', '')

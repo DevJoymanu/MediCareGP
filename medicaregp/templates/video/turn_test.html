@@ -52,10 +52,15 @@
       `<strong>Server-side config</strong> (what the running app actually sees)`
       + `<div style="margin-top:8px;">Active provider: <strong>${d.provider}</strong>`
       + ` · TURN in list: <strong>${d.has_turn ? 'yes' : 'no'}</strong></div>`
+      + `<div style="margin-top:6px;">CLOUDFLARE_TURN_KEY_ID ${yn(env.CLOUDFLARE_TURN_KEY_ID)}`
+      + ` · CLOUDFLARE_TURN_API_TOKEN ${yn(env.CLOUDFLARE_TURN_API_TOKEN)}</div>`
       + `<div style="margin-top:6px;">METERED_DOMAIN ${yn(env.METERED_DOMAIN)}`
       + ` · METERED_API_KEY ${yn(env.METERED_API_KEY)}`
       + ` · TURN_URLS ${yn(env.TURN_URLS)}</div>`
       + `<div style="margin-top:6px;">Servers returned to the browser:${urls}</div>`
+      + (d.cloudflare_error
+          ? `<div style="margin-top:8px;color:#b91c1c;">cloudflare fetch error: <code>${d.cloudflare_error}</code></div>`
+          : '')
       + (d.metered_error
           ? `<div style="margin-top:8px;color:#b91c1c;">metered fetch error: <code>${d.metered_error}</code></div>`
           : '');
