@@ -131,7 +131,12 @@ PRACTICE_NAME    = 'Dr. Tamuka Chivonivoni'
 PRACTICE_SUBTITLE = 'General Practitioner'
 PRACTICE_EMAIL   = 'dr.chivonivoni@gpcrm.co.za'
 PRACTICE_PHONE   = '+27 21 555 0100'
-PRACTICE_ADDRESS = '1 Medical Park, Cape Town, 8001'
+PRACTICE_ADDRESS = (
+    'Shop B7, Ekhaya Medical Centre<br/>'
+    'Ekhaya Mall, Kwa-Thema<br/>'
+    'Springs, Gauteng<br/>'
+    'South Africa'
+)
 PRACTICE_REG     = 'HPCSA: MP 0123456'
 VAT_RATE         = 15   # percentage
 
