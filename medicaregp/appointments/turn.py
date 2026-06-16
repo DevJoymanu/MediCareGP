@@ -40,9 +40,10 @@ def _fetch_metered():
     if _metered_cache['servers'] is not None and now < _metered_cache['expires']:
         return _metered_cache['servers']
 
-    # METERED_DOMAIN must be a bare host like "myapp.metered.live" — strip any
-    # accidental scheme / trailing slash / path so the API URL is well-formed.
-    domain = settings.METERED_DOMAIN.strip()
+    # METERED_DOMAIN must be a bare host like "myapp.metered.live". Be forgiving:
+    # take the first whitespace-delimited token (drops any pasted comment), then
+    # strip an accidental scheme / trailing slash / path so the URL is well-formed.
+    domain = settings.METERED_DOMAIN.strip().split()[0] if settings.METERED_DOMAIN.strip() else ''
     domain = domain.split('://', 1)[-1].strip('/').split('/', 1)[0]
     url = (f"https://{domain}/api/v1/turn/credentials"
            f"?apiKey={urllib.parse.quote(settings.METERED_API_KEY)}")
