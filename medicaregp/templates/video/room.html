@@ -41,19 +41,31 @@
       border-radius: 14px;
     }
 
-    /* Float — notes full screen, video in a draggable corner (default).
+    /* Float — notes full screen, video in a draggable, resizable corner panel.
        NB: an <iframe> is a replaced element, so it needs explicit width/height —
-       `inset:0` alone does not stretch it. */
+       `inset:0` alone does not stretch it. Position/size are set inline by JS. */
     body.role-doctor.layout-float #consultFrame { top: 0; left: 0; width: 100%; height: 100%; }
-    body.role-doctor.layout-float #stage { inset: auto 16px 16px auto; width: 300px; height: 400px; }
+    body.role-doctor.layout-float #stage {
+      width: 300px; height: 400px;
+      resize: both; min-width: 220px; min-height: 150px; max-width: 95vw; max-height: 95vh;
+    }
     body.role-doctor.layout-float .topbar { cursor: move; }
-    body.role-doctor.layout-float #stage.minimised { height: 46px; }
+    body.role-doctor.layout-float #stage.minimised { height: 46px !important; resize: none; }
     body.role-doctor.layout-float #stage.minimised .videos,
     body.role-doctor.layout-float #stage.minimised .controls { display: none; }
 
-    /* Split — video pinned to a fixed left column, notes fill the right. */
-    body.role-doctor.layout-split #stage { inset: 0 auto 0 0; width: 360px; height: 100%; border-radius: 0; border: none; box-shadow: none; }
-    body.role-doctor.layout-split #consultFrame { top: 0; left: 360px; width: calc(100% - 360px); height: 100%; }
+    /* Split — video in a left column (width = --split-w, draggable divider). */
+    body.role-doctor.layout-split #stage { inset: 0 auto 0 0; width: var(--split-w, 360px); height: 100%; border-radius: 0; border: none; box-shadow: none; }
+    body.role-doctor.layout-split #consultFrame { top: 0; left: var(--split-w, 360px); width: calc(100% - var(--split-w, 360px)); height: 100%; }
+    #splitDivider { display: none; }
+    body.role-doctor.layout-split #splitDivider {
+      display: block; position: fixed; top: 0; bottom: 0; left: var(--split-w, 360px);
+      width: 12px; margin-left: -6px; cursor: col-resize; z-index: 60; touch-action: none;
+    }
+    body.role-doctor.layout-split #splitDivider::after {
+      content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 4px; height: 48px; border-radius: 3px; background: rgba(148,163,184,0.55);
+    }
 
     /* Full — video fills the screen, notes hidden. */
     body.role-doctor.layout-full #consultFrame { display: none; }
@@ -85,6 +97,7 @@
     <button type="button" data-layout="split" title="Video and notes side by side">Split</button>
     <button type="button" data-layout="full" title="Video only">Full</button>
   </div>
+  <div id="splitDivider" title="Drag to resize"></div>
   {% endif %}
 
   <div id="stage">
@@ -301,33 +314,64 @@
 
     window.addEventListener('beforeunload', () => { try { navigator.sendBeacon; send('bye', {}); } catch (e) {} });
 
-    // Doctor: layout switcher (Float / Split / Full) + minimise & drag in float.
+    // Doctor: layout switcher (Float / Split / Full), resizable + draggable.
     (function () {
       if (!document.body.classList.contains('role-doctor')) return;
       const stage = document.getElementById('stage');
       const bar = document.getElementById('topbar');
       const toggle = document.getElementById('pipToggle');
       const layoutBar = document.getElementById('layoutBar');
+      const divider = document.getElementById('splitDivider');
       const LAYOUTS = ['float', 'split', 'full'];
+
+      const store = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
+      const load  = (k)    => { try { return localStorage.getItem(k); } catch (_) { return null; } };
+
+      // Restore the saved split column width.
+      const savedSplit = load('vc_split_w');
+      if (savedSplit) document.body.style.setProperty('--split-w', savedSplit);
+
+      // Position + size the floating panel from saved values (default bottom-right).
+      function placeFloat() {
+        const w = parseInt(load('vc_float_w')) || 300;
+        const h = parseInt(load('vc_float_h')) || 400;
+        let x = load('vc_float_x'), y = load('vc_float_y');
+        x = (x === null) ? (window.innerWidth  - w - 16) : parseInt(x);
+        y = (y === null) ? (window.innerHeight - h - 16) : parseInt(y);
+        x = Math.max(0, Math.min(x, window.innerWidth  - w));
+        y = Math.max(0, Math.min(y, window.innerHeight - h));
+        stage.style.inset = 'auto';
+        stage.style.width = w + 'px'; stage.style.height = h + 'px';
+        stage.style.left = x + 'px';  stage.style.top = y + 'px';
+      }
 
       function applyLayout(name) {
         if (!LAYOUTS.includes(name)) name = 'float';
         LAYOUTS.forEach(l => document.body.classList.toggle('layout-' + l, l === name));
-        // Clear any inline drag/minimise state so the layout's CSS takes over.
-        stage.style.inset = ''; stage.style.left = ''; stage.style.top = '';
+        // Reset inline state so each layout's CSS controls sizing.
+        ['inset', 'left', 'top', 'width', 'height'].forEach(p => stage.style[p] = '');
         stage.classList.remove('minimised');
         if (toggle) toggle.textContent = '▾';
+        if (name === 'float') placeFloat();
         if (layoutBar) layoutBar.querySelectorAll('button').forEach(b =>
           b.classList.toggle('active', b.dataset.layout === name));
-        try { localStorage.setItem('vc_layout', name); } catch (_) {}
+        store('vc_layout', name);
       }
 
       if (layoutBar) layoutBar.querySelectorAll('button').forEach(b =>
         b.addEventListener('click', () => applyLayout(b.dataset.layout)));
 
-      let saved = 'float';
-      try { saved = localStorage.getItem('vc_layout') || 'float'; } catch (_) {}
-      applyLayout(saved);
+      applyLayout(load('vc_layout') || 'float');
+
+      // Remember the floating panel size as it's resized (corner grip).
+      if (window.ResizeObserver) {
+        new ResizeObserver(() => {
+          if (document.body.classList.contains('layout-float') && !stage.classList.contains('minimised')) {
+            store('vc_float_w', stage.offsetWidth + 'px');
+            store('vc_float_h', stage.offsetHeight + 'px');
+          }
+        }).observe(stage);
+      }
 
       // Minimise (float only).
       if (toggle) toggle.addEventListener('click', (e) => {
@@ -336,7 +380,7 @@
         toggle.textContent = min ? '▴' : '▾';
       });
 
-      // Drag the floating panel (float only).
+      // Drag the floating panel by its title bar (float only).
       let dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
       bar.addEventListener('pointerdown', (e) => {
         if (e.target === toggle || !document.body.classList.contains('layout-float')) return;
@@ -353,7 +397,31 @@
         const ny = Math.max(0, Math.min(oy + (e.clientY - sy), window.innerHeight - stage.offsetHeight));
         stage.style.left = nx + 'px'; stage.style.top = ny + 'px';
       });
-      bar.addEventListener('pointerup', () => { dragging = false; });
+      bar.addEventListener('pointerup', () => {
+        if (!dragging) return;
+        dragging = false;
+        store('vc_float_x', parseInt(stage.style.left) || 0);
+        store('vc_float_y', parseInt(stage.style.top) || 0);
+      });
+
+      // Drag the split divider to resize the video column (split only).
+      if (divider) {
+        let dz = false;
+        divider.addEventListener('pointerdown', (e) => {
+          dz = true; e.preventDefault();
+          try { divider.setPointerCapture(e.pointerId); } catch (_) {}
+        });
+        divider.addEventListener('pointermove', (e) => {
+          if (!dz) return;
+          const w = Math.max(260, Math.min(e.clientX, window.innerWidth - 360));
+          document.body.style.setProperty('--split-w', w + 'px');
+        });
+        divider.addEventListener('pointerup', () => {
+          if (!dz) return;
+          dz = false;
+          store('vc_split_w', getComputedStyle(document.body).getPropertyValue('--split-w').trim() || '360px');
+        });
+      }
     })();
 
     start();
