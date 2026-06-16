@@ -59,6 +59,11 @@ def turn_test_ice(request):
 def doctor_room(request, pk):
     appointment = get_object_or_404(Appointment, pk=pk)
     room, _ = VideoRoom.objects.get_or_create(appointment=appointment)
+    # The doctor opening the room starts a fresh call. Clear any leftover
+    # signaling from a previous call so the patient link stays reusable —
+    # otherwise the new session replays the old offer/ICE/"bye" and never
+    # connects (or shows "the other person left" immediately).
+    room.signals.all().delete()
     return render(request, 'video/room.html',
                   _room_context(room, 'doctor', settings.PRACTICE_NAME, str(appointment.patient)))
 
