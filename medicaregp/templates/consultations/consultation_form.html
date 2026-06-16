@@ -103,6 +103,23 @@
     text-decoration:underline; padding:0;
   }
 
+  /* ── Quick-add test chips (lab / radiology) ── */
+  .quick-add { margin-top:9px; }
+  .quick-add-label {
+    font-size:10px; font-weight:700; color:var(--text-4);
+    text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;
+    display:flex; align-items:center; gap:5px;
+  }
+  .qa-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .qa-chip {
+    padding:4px 11px; border-radius:20px;
+    background:#fff; border:1.5px solid var(--border);
+    font-size:12px; font-weight:600; color:var(--text-2);
+    cursor:pointer; transition:all .12s; user-select:none;
+  }
+  .qa-chip:hover  { border-color:#94a3b8; background:#f8fafc; }
+  .qa-chip.added  { background:#3730a3; border-color:#3730a3; color:#fff; }
+
   /* ── ICD-10 multi-code widget ── */
   .icd10-search-row { position:relative; }
   .icd10-dropdown {
@@ -885,6 +902,68 @@ document.querySelectorAll('[name="assessment"]').forEach(function(textarea) {
   // Close when focus leaves the assessment area entirely
   textarea.addEventListener('blur', function() { setTimeout(closePopup, 200); });
 });
+
+// ══════════════════════════════════════════════════════════════════
+// QUICK-ADD COMMON TESTS (lab / radiology)
+// One-click append/remove of frequently ordered tests — one per line.
+// Attaches to the textareas in BOTH the Quick Notes and SOAP layouts.
+// ══════════════════════════════════════════════════════════════════
+(function () {
+  const LAB_TESTS = ['FBC', 'U&E', 'Creatinine / eGFR', 'LFTs', 'TSH', 'Lipogram',
+    'HbA1c', 'Fasting glucose', 'CRP', 'ESR', 'Urine MC&S', 'PSA',
+    'Ferritin / Iron studies', 'Vitamin D', 'Vitamin B12', 'INR', 'Beta-hCG',
+    'HIV', 'Hepatitis B'];
+  const RAD_EXAMS = ['Chest X-ray PA', 'Abdominal ultrasound', 'Pelvic ultrasound',
+    'Obstetric ultrasound', 'KUB X-ray', 'Lumbar spine X-ray', 'Knee X-ray',
+    'Mammogram', 'Lower-limb Doppler', 'Sinus X-ray'];
+
+  function lines(text) {
+    return text.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+  }
+  function indexOfLine(field, item) {
+    var low = item.toLowerCase();
+    return lines(field.value).findIndex(function (l) { return l.toLowerCase() === low; });
+  }
+  function toggleLine(field, item) {
+    var existing = lines(field.value);
+    var idx = existing.findIndex(function (l) { return l.toLowerCase() === item.toLowerCase(); });
+    if (idx === -1) existing.push(item);
+    else            existing.splice(idx, 1);
+    field.value = existing.join('\n');
+    field.dispatchEvent(new Event('input'));
+  }
+  function buildBar(field, items, icon, label) {
+    var bar = document.createElement('div');
+    bar.className = 'quick-add';
+    bar.innerHTML = '<div class="quick-add-label"><i class="bi ' + icon + '"></i> ' + label + '</div>';
+    var chipWrap = document.createElement('div');
+    chipWrap.className = 'qa-chips';
+    items.forEach(function (item) {
+      var chip = document.createElement('span');
+      chip.className = 'qa-chip';
+      chip.textContent = item;
+      chip.addEventListener('click', function () { toggleLine(field, item); });
+      chipWrap.appendChild(chip);
+    });
+    bar.appendChild(chipWrap);
+    field.insertAdjacentElement('afterend', bar);
+
+    function refresh() {
+      chipWrap.querySelectorAll('.qa-chip').forEach(function (c) {
+        c.classList.toggle('added', indexOfLine(field, c.textContent) !== -1);
+      });
+    }
+    field.addEventListener('input', refresh);
+    refresh();
+  }
+
+  document.querySelectorAll('[name="lab_requests"]').forEach(function (f) {
+    buildBar(f, LAB_TESTS, 'bi-droplet-half', 'Quick add — common tests');
+  });
+  document.querySelectorAll('[name="radiology_requests"]').forEach(function (f) {
+    buildBar(f, RAD_EXAMS, 'bi-image', 'Quick add — common exams');
+  });
+})();
 
 // ── Fix: disable hidden layout fields before submit so they don't override ──
 document.getElementById('consultForm').addEventListener('submit', function () {
