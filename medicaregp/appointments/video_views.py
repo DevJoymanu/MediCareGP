@@ -23,15 +23,16 @@ from . import turn
 from .models import Appointment, VideoRoom, VideoSignal
 
 
-def _room_context(room, role, self_name, peer_name):
+def _room_context(room, role, self_name, peer_name, consult_url=''):
     return {
-        'role':       role,
-        'polite':     role == 'patient',          # perfect-negotiation: patient yields on glare
-        'room_id':    str(room.room_id),
-        'signal_url': reverse('video_signal', args=[room.room_id]),
-        'ice_url':    reverse('video_ice', args=[room.room_id]),
-        'self_name':  self_name,
-        'peer_name':  peer_name,
+        'role':        role,
+        'polite':      role == 'patient',          # perfect-negotiation: patient yields on glare
+        'room_id':     str(room.room_id),
+        'signal_url':  reverse('video_signal', args=[room.room_id]),
+        'ice_url':     reverse('video_ice', args=[room.room_id]),
+        'self_name':   self_name,
+        'peer_name':   peer_name,
+        'consult_url': consult_url,                 # doctor only: embedded notes form
     }
 
 
@@ -64,8 +65,10 @@ def doctor_room(request, pk):
     # otherwise the new session replays the old offer/ICE/"bye" and never
     # connects (or shows "the other person left" immediately).
     room.signals.all().delete()
+    consult_url = f"{reverse('consultation_create')}?appointment_id={appointment.pk}&embed=1"
     return render(request, 'video/room.html',
-                  _room_context(room, 'doctor', settings.PRACTICE_NAME, str(appointment.patient)))
+                  _room_context(room, 'doctor', settings.PRACTICE_NAME,
+                                str(appointment.patient), consult_url=consult_url))
 
 
 def patient_room(request, patient_token):

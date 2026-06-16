@@ -4,6 +4,14 @@
 {% block page_sub %}{{ consultation.patient }} — {{ consultation.date|date:"j F Y" }}{% endblock %}
 
 {% block extra_head %}
+{% if embed %}
+<style>
+  /* Embedded inside the video consultation room — hide the CRM chrome. */
+  .sidebar, .sidebar-overlay, .topbar, .bottom-nav { display: none !important; }
+  .app-main { margin: 0 !important; width: 100% !important; }
+  .main-content { padding: 12px !important; }
+</style>
+{% endif %}
 <style>
   .consult-wrap { max-width:1100px; margin:0 auto; }
 

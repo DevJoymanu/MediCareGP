@@ -88,6 +88,11 @@ if USE_R2:
         AWS_QUERYSTRING_EXPIRE  = int(os.environ.get('R2_SIGNED_URL_EXPIRE', '3600'))
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Allow our own pages to be framed (the doctor's video room embeds the
+# consultation form in an iframe). SAMEORIGIN still blocks external sites.
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'

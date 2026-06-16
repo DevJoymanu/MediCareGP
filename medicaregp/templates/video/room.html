@@ -29,14 +29,37 @@
     .err h2 { font-size: 16px; margin-bottom: 8px; }
     .err p { font-size: 13.5px; color: #9ca3af; }
     .label { position: absolute; left: 14px; bottom: 14px; font-size: 12px; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 8px; }
+
+    /* ── Doctor: consultation notes alongside the call ──────────────────── */
+    #consultFrame { display: none; }
+    body.role-doctor #consultFrame {
+      display: block; position: fixed; inset: 0; width: 100%; height: 100%;
+      border: 0; background: #fff; z-index: 0;
+    }
+    /* Shrink the video to a draggable corner panel for the doctor. */
+    body.role-doctor #stage {
+      inset: auto 16px 16px auto; width: 300px; height: 400px;
+      border-radius: 14px; overflow: hidden; z-index: 50;
+      border: 1px solid rgba(255,255,255,0.18); box-shadow: 0 12px 34px rgba(0,0,0,0.5);
+    }
+    body.role-doctor #stage.minimised { height: 46px; }
+    body.role-doctor #stage.minimised .videos,
+    body.role-doctor #stage.minimised .controls { display: none; }
+    body.role-doctor .topbar { cursor: move; }
+    #pipToggle { margin-left: 8px; background: none; border: none; color: #9ca3af; font-size: 16px; cursor: pointer; }
   </style>
 </head>
-<body>
+<body class="role-{{ role }}">
+  {% if role == 'doctor' and consult_url %}
+  <iframe id="consultFrame" src="{{ consult_url }}" title="Consultation notes"></iframe>
+  {% endif %}
+
   <div id="stage">
-    <div class="topbar">
+    <div class="topbar" id="topbar">
       <span class="dot" id="dot"></span>
       <h1>Video consultation</h1>
       <span class="status" id="status">Starting…</span>
+      {% if role == 'doctor' %}<button id="pipToggle" title="Minimise / restore video">▾</button>{% endif %}
     </div>
 
     <div class="videos">
@@ -244,6 +267,38 @@
     }
 
     window.addEventListener('beforeunload', () => { try { navigator.sendBeacon; send('bye', {}); } catch (e) {} });
+
+    // Doctor: minimise/restore and drag the video panel so it never covers notes.
+    (function () {
+      const stage = document.getElementById('stage');
+      const bar = document.getElementById('topbar');
+      const toggle = document.getElementById('pipToggle');
+      if (!toggle || !document.body.classList.contains('role-doctor')) return;
+
+      toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const min = stage.classList.toggle('minimised');
+        toggle.textContent = min ? '▴' : '▾';
+      });
+
+      let dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+      bar.addEventListener('pointerdown', (e) => {
+        if (e.target === toggle) return;
+        dragging = true;
+        const r = stage.getBoundingClientRect();
+        stage.style.inset = 'auto';                 // switch to free top/left positioning
+        stage.style.left = r.left + 'px'; stage.style.top = r.top + 'px';
+        ox = r.left; oy = r.top; sx = e.clientX; sy = e.clientY;
+        try { bar.setPointerCapture(e.pointerId); } catch (_) {}
+      });
+      bar.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const nx = Math.max(0, Math.min(ox + (e.clientX - sx), window.innerWidth  - stage.offsetWidth));
+        const ny = Math.max(0, Math.min(oy + (e.clientY - sy), window.innerHeight - stage.offsetHeight));
+        stage.style.left = nx + 'px'; stage.style.top = ny + 'px';
+      });
+      bar.addEventListener('pointerup', () => { dragging = false; });
+    })();
 
     start();
   </script>

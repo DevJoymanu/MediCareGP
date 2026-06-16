@@ -8,6 +8,7 @@ from django.core.mail import EmailMessage
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
@@ -816,6 +817,7 @@ def consultation_detail(request, pk):
     return render(request, 'consultations/consultation_detail.html', {
         'consultation': consultation,
         'providers':    Provider.objects.filter(is_active=True),
+        'embed':        request.GET.get('embed'),
     })
 
 
@@ -876,9 +878,13 @@ def consultation_create(request):
         _learn_from_consultation(consultation)
         _sync_investigation_requests(consultation)
         messages.success(request, f'Consultation saved for {consultation.patient}.')
-        return redirect('consultation_detail', pk=consultation.pk)
+        detail = reverse('consultation_detail', args=[consultation.pk])
+        if request.GET.get('embed'):
+            detail += '?embed=1'
+        return redirect(detail)
 
-    return render(request, 'consultations/consultation_form.html', {'form': form, 'title': 'New Consultation'})
+    return render(request, 'consultations/consultation_form.html',
+                  {'form': form, 'title': 'New Consultation', 'embed': request.GET.get('embed')})
 
 
 @login_required
