@@ -55,6 +55,9 @@ def _fetch_cloudflare():
         req = urllib.request.Request(url, data=data, headers={
             'Authorization': f'Bearer {settings.CLOUDFLARE_TURN_API_TOKEN.strip()}',
             'Content-Type': 'application/json',
+            # Cloudflare's edge bot-protection blocks the default Python-urllib
+            # User-Agent with HTTP 403 "error code: 1010" — send a normal one.
+            'User-Agent': 'MediCareGP/1.0 (+https://medicareapp.up.railway.app)',
         })
         with urllib.request.urlopen(req, timeout=6) as resp:
             body = resp.read().decode('utf-8')
