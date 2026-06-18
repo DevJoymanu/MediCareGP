@@ -97,6 +97,13 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Staff session timeout: sign out after 2 hours of inactivity. Because the
+# session is re-saved on every request (SESSION_SAVE_EVERY_REQUEST), the 2-hour
+# window slides forward while the user is active — so an idle session expires,
+# but an in-progress consultation (whose page keeps making requests) stays alive.
+SESSION_COOKIE_AGE = 2 * 60 * 60          # 7200 seconds = 2 hours
+SESSION_SAVE_EVERY_REQUEST = True
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
