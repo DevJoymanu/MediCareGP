@@ -78,7 +78,14 @@
       "PowerShell(Select-String -Path \"d:\\\\downloads\\\\medicaregp_1\\\\extracted_GEMS_Oct2024.txt\" -Pattern \"CO.TRIMOXAZOLE|SEPTRAN|BACTRIM|SEPTRIN\" -CaseSensitive:$false | Select-Object -First 20 | ForEach-Object { $_.Line })",
       "PowerShell(Select-String -Path \"d:\\\\downloads\\\\medicaregp_1\\\\extracted_GEMS_Oct2024.txt\" -Pattern \"TRETINOIN .0[12]\" -CaseSensitive:$false | Select-Object -First 10 | ForEach-Object { $_.Line })",
       "PowerShell(Select-String -Path \"d:\\\\downloads\\\\medicaregp_1\\\\extracted_GEMS_Oct2024.txt\" -Pattern \"^[0-9]+ TRETINOIN \" -CaseSensitive:$false | Select-Object -First 10 | ForEach-Object { $_.Line })",
-      "Bash(python manage.py test --keepdb)"
+      "Bash(python manage.py test --keepdb)",
+      "Bash(python manage.py setup_demo)",
+      "Bash(python manage.py help setup_demo)",
+      "Bash(python -c \"from medicaregp.management.commands.setup_demo import Command; print\\('OK'\\)\")",
+      "Bash(python manage.py showmigrations --list)",
+      "Bash(python manage.py help)",
+      "Bash(python manage.py seed_sa_prescriptions)",
+      "Bash(python -m py_compile medicaregp/management/commands/setup_demo.py)"
     ],
     "additionalDirectories": [
       "d:\\downloads\\medicaregp_1"
