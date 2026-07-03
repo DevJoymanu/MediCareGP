@@ -203,6 +203,10 @@
       <div style="padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
         <div class="section-label">Medical Aid Claim Submissions</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <form method="post" action="{% url 'medaid_submit_claim' invoice.pk %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn-ghost" style="font-size:13px;"><i class="bi bi-cloud-upload"></i> Submit via Gateway</button>
+          </form>
           <a href="{% url 'claim_submit' invoice.pk %}" class="btn-ghost" style="font-size:13px;"><i class="bi bi-send"></i> Log Submission</a>
           <a href="{% url 'edi_export' invoice.pk %}" class="btn-ghost" style="font-size:13px;"><i class="bi bi-download"></i> Export CSV</a>
         </div>

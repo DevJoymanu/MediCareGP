@@ -1,5 +1,25 @@
 from django.contrib import admin
-from .models import Invoice, InvoiceItem, Payment, ClaimSubmission
+from .models import Invoice, InvoiceItem, Payment, ClaimSubmission, TariffCode, TariffRate
+
+
+class TariffRateInline(admin.TabularInline):
+    model = TariffRate
+    extra = 1
+
+
+@admin.register(TariffCode)
+class TariffCodeAdmin(admin.ModelAdmin):
+    list_display  = ['code', 'description', 'category', 'active', 'current_rate']
+    list_filter   = ['category', 'active']
+    search_fields = ['code', 'description']
+    inlines       = [TariffRateInline]
+
+
+@admin.register(TariffRate)
+class TariffRateAdmin(admin.ModelAdmin):
+    list_display = ['tariff', 'effective_from', 'amount']
+    list_filter  = ['effective_from']
+    search_fields = ['tariff__code']
 
 
 class InvoiceItemInline(admin.TabularInline):

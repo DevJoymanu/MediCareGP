@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Tariffs | G.P CRM{% endblock %}
+{% block page_title %}Tariff Catalogue{% endblock %}
+{% block page_sub %}Versioned rates — price changes never alter issued invoices{% endblock %}
+{% block content %}
+<div class="page-body">
+
+  <div style="padding:10px 14px;border-radius:8px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.25);font-size:13px;margin-bottom:16px;">
+    <i class="bi bi-info-circle" style="margin-right:6px;"></i>
+    Rates shown are those in force today ({{ today }}). To change a price, add a <em>new</em> rate row
+    with a later effective date in <a href="/admin/billing/tariffcode/">admin</a> — historical invoices keep
+    the price that applied when they were issued.
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="patient-detail-grid">
+    <div class="crm-card" style="padding:0;overflow-x:auto;">
+      <h3 style="font-size:14px;font-weight:700;padding:14px 14px 0;"><i class="bi bi-heart-pulse" style="margin-right:6px;"></i>Medical tariffs</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="text-align:left;border-bottom:2px solid rgba(0,0,0,0.1);">
+          <th style="padding:10px;">Code</th><th style="padding:10px;">Description</th><th style="padding:10px;">Current rate</th><th style="padding:10px;">Since</th>
+        </tr></thead>
+        <tbody>
+          {% for r in medical %}
+          <tr style="border-bottom:1px solid rgba(0,0,0,0.06);">
+            <td style="padding:10px;font-family:monospace;">{{ r.tariff.code }}</td>
+            <td style="padding:10px;">{{ r.tariff.description }}</td>
+            <td style="padding:10px;font-family:monospace;">{% if r.rate %}R{{ r.rate.amount }}{% else %}—{% endif %}</td>
+            <td style="padding:10px;">{% if r.rate %}{{ r.rate.effective_from }}{% else %}—{% endif %}</td>
+          </tr>
+          {% empty %}<tr><td colspan="4" style="padding:14px;opacity:0.7;">No medical tariffs yet.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="crm-card" style="padding:0;overflow-x:auto;">
+      <h3 style="font-size:14px;font-weight:700;padding:14px 14px 0;"><i class="bi bi-scissors" style="margin-right:6px;"></i>Surgical tariffs</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="text-align:left;border-bottom:2px solid rgba(0,0,0,0.1);">
+          <th style="padding:10px;">Code</th><th style="padding:10px;">Description</th><th style="padding:10px;">Current rate</th><th style="padding:10px;">Since</th>
+        </tr></thead>
+        <tbody>
+          {% for r in surgical %}
+          <tr style="border-bottom:1px solid rgba(0,0,0,0.06);">
+            <td style="padding:10px;font-family:monospace;">{{ r.tariff.code }}</td>
+            <td style="padding:10px;">{{ r.tariff.description }}</td>
+            <td style="padding:10px;font-family:monospace;">{% if r.rate %}R{{ r.rate.amount }}{% else %}—{% endif %}</td>
+            <td style="padding:10px;">{% if r.rate %}{{ r.rate.effective_from }}{% else %}—{% endif %}</td>
+          </tr>
+          {% empty %}<tr><td colspan="4" style="padding:14px;opacity:0.7;">No surgical tariffs yet.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

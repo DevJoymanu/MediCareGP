@@ -97,6 +97,9 @@
         <a href="{% url 'consultation_review' consultation.pk %}" class="btn-primary">
           <i class="bi bi-arrow-repeat"></i> Review
         </a>
+        <a href="{% url 'differential_capture' consultation.pk %}" class="btn-ghost" style="color:#7e22ce;">
+          <i class="bi bi-diagram-3"></i> Provisional Dx
+        </a>
         <a href="{% url 'consultation_print' consultation.pk %}" class="btn-ghost"><i class="bi bi-printer"></i> Print</a>
         <a href="{% url 'consultation_edit' consultation.pk %}" class="btn-ghost"><i class="bi bi-pencil"></i> Edit</a>
         <a href="{% url 'consultation_list' %}" class="btn-ghost"><i class="bi bi-arrow-left"></i> Back</a>

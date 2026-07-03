@@ -181,3 +181,44 @@ class FamilyMember(models.Model):
 
     class Meta:
         ordering = ['name']
+
+
+class MedicalAidPlanConfig(models.Model):
+    """Front-office reference table: how many GP visits a scheme/plan covers
+    per calendar year, and when to start warning. Maintained by reception —
+    no clinical data involved."""
+    scheme_name     = models.CharField(max_length=100, verbose_name='Medical aid scheme')
+    plan_name       = models.CharField(max_length=100, blank=True, default='',
+                                       help_text='Leave blank for a scheme-wide default.')
+    visits_per_year = models.PositiveIntegerField(verbose_name='GP visits covered per year')
+    warn_at         = models.PositiveIntegerField(blank=True, null=True,
+                                                  help_text='Warn once this many visits are used. Default: 80% of the limit.')
+    notes           = models.CharField(max_length=200, blank=True, null=True)
+
+    class Meta:
+        unique_together = [('scheme_name', 'plan_name')]
+        ordering = ['scheme_name', 'plan_name']
+        verbose_name = 'Medical aid plan (visit limits)'
+        verbose_name_plural = 'Medical aid plans (visit limits)'
+
+    def __str__(self):
+        plan = self.plan_name or 'any plan'
+        return f'{self.scheme_name} — {plan}: {self.visits_per_year} visits/yr'
+
+    def warn_threshold(self):
+        if self.warn_at:
+            return self.warn_at
+        return max(1, int(self.visits_per_year * 0.8))
+
+
+class BiometricTemplate(models.Model):
+    """Biometric enrolment for front-office check-in. Only a one-way HASH of
+    the device's template is stored — never a raw fingerprint image. A match
+    exposes the patient's medical-aid details ONLY (see
+    medicaregp.roles.MEDICAL_AID_FIELDS); no clinical data."""
+    patient       = models.OneToOneField(Patient, on_delete=models.CASCADE, related_name='biometric')
+    template_hash = models.CharField(max_length=128, unique=True)
+    enrolled_at   = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Biometric enrolment — {self.patient}'

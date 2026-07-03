@@ -2,7 +2,8 @@ import importlib
 import sys
 
 
-for app_name in ('appointments', 'consultations', 'patients', 'scripts'):
+for app_name in ('appointments', 'consultations', 'patients', 'scripts',
+                 'billing', 'tasks', 'diagnosis', 'medaid'):
     try:
         sys.modules[f'{__name__}.{app_name}'] = importlib.import_module(app_name)
     except ImportError:

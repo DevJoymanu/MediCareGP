@@ -24,7 +24,7 @@ def _get_nappi_data():
             _NAPPI_DATA = json.load(f)
     return _NAPPI_DATA
 
-from .models import Invoice, InvoiceItem, Payment, ClaimSubmission
+from .models import Invoice, InvoiceItem, Payment, ClaimSubmission, TariffCode
 from .forms import (InvoiceForm, InvoiceItemFormSet, SendEmailForm,
                     PaymentForm, ClaimSubmissionForm, ClaimUpdateForm, ERAImportForm)
 from . import bhf as bhf_generator
@@ -442,3 +442,44 @@ def edi_export(request, pk):
     writer.writerow(['VAT (15%)', invoice.vat_amount()])
     writer.writerow(['Total', invoice.total()])
     return response
+
+
+# ── Versioned tariff catalogue ─────────────────────────────────────────────────
+
+@login_required
+def tariff_list(request):
+    """Tariff catalogue, split Medical vs Surgical, with the rate currently in
+    force. Rates are versioned in admin: a price change appends a new
+    TariffRate row — issued invoices keep their snapshotted unit_price."""
+    today = timezone.now().date()
+    tariffs = TariffCode.objects.filter(active=True).prefetch_related('rates')
+    rows = [{'tariff': t, 'rate': t.rate_on(today), 'history': t.rates.all()} for t in tariffs]
+    return render(request, 'billing/tariff_list.html', {
+        'medical':  [r for r in rows if r['tariff'].category == 'Medical'],
+        'surgical': [r for r in rows if r['tariff'].category == 'Surgical'],
+        'today': today,
+    })
+
+
+@login_required
+def tariff_rate_lookup(request):
+    """JSON: rate for a tariff code on a given date (defaults to today) —
+    used by the invoice form to prefill unit_price from the catalogue."""
+    code = request.GET.get('code', '').strip()
+    date_str = request.GET.get('date', '')
+    try:
+        on_date = datetime.date.fromisoformat(date_str) if date_str else timezone.now().date()
+    except ValueError:
+        on_date = timezone.now().date()
+    tariff = TariffCode.objects.filter(code=code, active=True).first()
+    if not tariff:
+        return JsonResponse({'found': False})
+    rate = tariff.rate_on(on_date)
+    return JsonResponse({
+        'found': True,
+        'code': tariff.code,
+        'description': tariff.description,
+        'category': tariff.category,
+        'rate': str(rate.amount) if rate else None,
+        'effective_from': rate.effective_from.isoformat() if rate else None,
+    })

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Provisional Diagnosis — {{ patient }} | G.P CRM{% endblock %}
+{% block page_title %}Provisional Diagnosis{% endblock %}
+{% block page_sub %}Symptom capture — {{ patient }} ({{ patient.get_age }} yrs, {{ patient.get_gender_display }}){% endblock %}
+{% block content %}
+<div class="page-body">
+
+  <div style="padding:10px 14px;border-radius:8px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.25);font-size:13px;margin-bottom:16px;">
+    <i class="bi bi-info-circle" style="margin-right:6px;"></i>
+    Deterministic rule-based decision support — <strong>not</strong> a diagnosis. Output is always
+    <strong>Provisional</strong>. History &amp; working complaints carry {{ history_weight }} of the score;
+    presenting symptoms carry {{ presenting_weight }}.
+  </div>
+
+  <!-- Stored history the engine will cross-check -->
+  <div class="crm-card" style="margin-bottom:16px;padding:14px;">
+    <h3 style="font-size:14px;font-weight:700;margin:0 0 8px;"><i class="bi bi-clock-history" style="margin-right:6px;"></i>Stored history used for cross-check</h3>
+    <div style="font-size:13px;display:flex;gap:18px;flex-wrap:wrap;">
+      <span><strong>Age:</strong> {{ patient.get_age }} yrs</span>
+      <span><strong>Sex:</strong> {{ patient.get_gender_display }}</span>
+      <span><strong>Chronic:</strong> {{ patient.chronic_conditions|default:"None on file" }}</span>
+      <span><strong>Smoking:</strong> {{ patient.smoking_status|default:"—" }}</span>
+      <span><strong>Alcohol:</strong> {{ patient.alcohol_use|default:"—" }}</span>
+    </div>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <input type="text" id="symptom-filter" placeholder="Filter symptoms…"
+           style="width:100%;max-width:420px;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.15);margin-bottom:14px;font-size:13px;">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="patient-detail-grid">
+      <div class="crm-card" style="padding:14px;">
+        <h3 style="font-size:14px;font-weight:700;margin:0 0 4px;">Presenting symptoms &amp; signs (today)</h3>
+        <p style="font-size:12px;opacity:0.7;margin:0 0 10px;">What the patient presents with now — {{ presenting_weight }} of score weight.</p>
+        <div style="max-height:420px;overflow-y:auto;">
+          {% for s in symptoms %}
+          <label class="symptom-row" data-name="{{ s.name|lower }} {{ s.synonyms|default:''|lower }}"
+                 style="display:flex;align-items:center;gap:8px;padding:4px 6px;font-size:13px;border-radius:6px;cursor:pointer;">
+            <input type="checkbox" name="presenting" value="{{ s.id }}">
+            {{ s.name }}{% if s.kind == 'sign' %} <span style="font-size:10px;padding:1px 6px;border-radius:999px;background:rgba(139,92,246,0.15);">sign</span>{% endif %}
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="crm-card" style="padding:14px;">
+        <h3 style="font-size:14px;font-weight:700;margin:0 0 4px;">Working complaints (history / ongoing)</h3>
+        <p style="font-size:12px;opacity:0.7;margin:0 0 10px;">Ongoing or historical complaints — counted in the {{ history_weight }} history bucket.</p>
+        <div style="max-height:420px;overflow-y:auto;">
+          {% for s in symptoms %}
+          <label class="symptom-row" data-name="{{ s.name|lower }} {{ s.synonyms|default:''|lower }}"
+                 style="display:flex;align-items:center;gap:8px;padding:4px 6px;font-size:13px;border-radius:6px;cursor:pointer;">
+            <input type="checkbox" name="working" value="{{ s.id }}">
+            {{ s.name }}
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="crm-card" style="margin-top:16px;padding:14px;">
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">Free-text notes (recorded with the run, not scored)</label>
+      <textarea name="notes" rows="2" style="width:100%;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.15);font-size:13px;"></textarea>
+    </div>
+
+    <div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <button type="submit" class="btn btn-primary" style="padding:10px 22px;border-radius:8px;font-weight:600;">
+        <i class="bi bi-diagram-3" style="margin-right:6px;"></i>Score differential
+      </button>
+      <a href="{% url 'consultation_detail' consultation.pk %}" style="font-size:13px;">Back to consultation</a>
+      <span style="font-size:12px;opacity:0.7;">Tip: select at least {{ min_inputs }} items — the engine will otherwise prompt for more data before trusting the ranking.</span>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Simple client-side filter — cosmetic only; all enforcement is server-side.
+  document.getElementById('symptom-filter').addEventListener('input', function () {
+    var q = this.value.toLowerCase();
+    document.querySelectorAll('.symptom-row').forEach(function (row) {
+      row.style.display = row.dataset.name.indexOf(q) !== -1 ? 'flex' : 'none';
+    });
+  });
+</script>
+{% endblock %}

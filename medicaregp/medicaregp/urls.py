@@ -25,6 +25,8 @@ urlpatterns = [
     path('documents/', include('scripts.urls')),
     path('tasks/', include('tasks.urls')),
     path('billing/', include('billing.urls')),
+    path('diagnosis/', include('diagnosis.urls')),
+    path('medaid/', include('medaid.urls')),
     path('checkin/', include('appointments.checkin_urls')),
     path('results/', include('consultations.portal_urls')),
 

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ patient }} | G.P CRM{% endblock %}
+{% block page_title %}Patient Profile{% endblock %}
+{% block page_sub %}{{ patient }} — {{ patient.file_number|default:"No file number" }} (front-office view){% endblock %}
+{% block content %}
+<div class="page-body">
+
+  <div style="padding:8px 14px;border-radius:8px;background:rgba(0,0,0,0.04);font-size:12px;margin-bottom:16px;opacity:0.8;">
+    <i class="bi bi-shield-lock" style="margin-right:6px;"></i>Front-office view — demographics and medical aid only. Clinical records are restricted to the doctor.
+  </div>
+
+  {% if usage and usage.status != 'ok' %}
+  <div style="padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;
+    {% if usage.status == 'over' %}background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);
+    {% else %}background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.4);{% endif %}">
+    <strong>{% if usage.status == 'over' %}Visit limit reached{% else %}Nearing visit limit{% endif %}</strong>
+    — {{ usage.used }}/{{ usage.limit }} visits used in {{ usage.year }} ({{ usage.plan }}).
+  </div>
+  {% endif %}
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="patient-detail-grid">
+    <div class="crm-card" style="padding:14px;">
+      <h3 style="font-size:14px;font-weight:700;margin:0 0 10px;"><i class="bi bi-person" style="margin-right:6px;"></i>Demographics</h3>
+      <table style="font-size:13px;border-collapse:collapse;width:100%;">
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Name</td><td style="padding:4px 0;font-weight:600;">{{ patient.title|default:"" }} {{ patient }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">File number</td><td style="padding:4px 0;font-family:monospace;">{{ patient.file_number|default:"—" }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Date of birth</td><td style="padding:4px 0;">{{ patient.date_of_birth }} ({{ patient.get_age }} yrs)</td></tr>
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Sex</td><td style="padding:4px 0;">{{ patient.get_gender_display }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">ID</td><td style="padding:4px 0;font-family:monospace;">{{ patient.id_number }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Phone</td><td style="padding:4px 0;">{{ patient.phone }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Email</td><td style="padding:4px 0;">{{ patient.email|default:"—" }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Address</td><td style="padding:4px 0;">{{ patient.address|default:"—" }}</td></tr>
+      </table>
+    </div>
+
+    <div class="crm-card" style="padding:14px;">
+      <h3 style="font-size:14px;font-weight:700;margin:0 0 10px;"><i class="bi bi-shield-check" style="margin-right:6px;"></i>Medical aid</h3>
+      <table style="font-size:13px;border-collapse:collapse;width:100%;">
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Scheme</td><td style="padding:4px 0;font-weight:600;">{{ patient.medical_aid_name|default:"Private / none" }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Plan / option</td><td style="padding:4px 0;">{{ patient.medical_aid_plan|default:"—" }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Member number</td><td style="padding:4px 0;font-family:monospace;">{{ patient.medical_aid_number|default:"—" }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Principal member</td><td style="padding:4px 0;">{{ patient.principal_member_name|default:"—" }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Dependant code</td><td style="padding:4px 0;font-family:monospace;">{{ patient.dependant_code|default:"—" }}</td></tr>
+        {% if usage %}
+        <tr><td style="padding:4px 12px 4px 0;opacity:0.7;">Visits used</td><td style="padding:4px 0;">{{ usage.used }}/{{ usage.limit }} in {{ usage.year }}</td></tr>
+        {% endif %}
+      </table>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="{% url 'medaid_verify_member' patient.pk %}" class="btn" style="font-size:12px;padding:6px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.15);">Verify membership</a>
+        <a href="{% url 'patient_print_all' patient.pk %}" class="btn" style="font-size:12px;padding:6px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.15);"><i class="bi bi-printer" style="margin-right:4px;"></i>Print All</a>
+        <a href="{% url 'patient_edit' patient.pk %}" class="btn" style="font-size:12px;padding:6px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.15);">Edit demographics</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="crm-card" style="padding:14px;margin-top:16px;">
+    <h3 style="font-size:14px;font-weight:700;margin:0 0 10px;"><i class="bi bi-calendar-check" style="margin-right:6px;"></i>Appointments</h3>
+    <table style="font-size:13px;border-collapse:collapse;width:100%;">
+      <thead><tr style="text-align:left;border-bottom:1px solid rgba(0,0,0,0.1);">
+        <th style="padding:6px;">Date</th><th style="padding:6px;">Time</th><th style="padding:6px;">Type</th><th style="padding:6px;">Status</th>
+      </tr></thead>
+      <tbody>
+        {% for a in appointments %}
+        <tr style="border-bottom:1px solid rgba(0,0,0,0.05);">
+          <td style="padding:6px;">{{ a.date }}</td><td style="padding:6px;">{{ a.time }}</td>
+          <td style="padding:6px;">{{ a.reason|default:"—" }}</td><td style="padding:6px;">{{ a.status }}</td>
+        </tr>
+        {% empty %}<tr><td colspan="4" style="padding:10px;opacity:0.7;">No appointments.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Biometric enrolment (front office) -->
+  <div class="crm-card" style="padding:14px;margin-top:16px;max-width:560px;">
+    <h3 style="font-size:14px;font-weight:700;margin:0 0 8px;"><i class="bi bi-fingerprint" style="margin-right:6px;"></i>Biometric enrolment</h3>
+    <form method="post" action="{% url 'biometric_enrol' patient.pk %}" style="display:flex;gap:8px;">
+      {% csrf_token %}
+      <input type="text" name="sample" placeholder="Scan finger to capture template…" autocomplete="off"
+             style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.15);font-size:13px;">
+      <button type="submit" class="btn btn-primary" style="padding:8px 16px;border-radius:8px;font-weight:600;">Enrol</button>
+    </form>
+    <p style="font-size:12px;opacity:0.7;margin:8px 0 0;">Only a one-way hash of the template is stored.</p>
+  </div>
+</div>
+{% endblock %}

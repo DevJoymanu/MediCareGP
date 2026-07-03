@@ -118,3 +118,13 @@ class VitalsForm(forms.ModelForm):
             'blood_glucose':     forms.NumberInput(attrs={'class': INPUT, 'step': '0.1', 'placeholder': 'mmol/L'}),
             'recorded_by':       forms.TextInput(attrs={'class': INPUT}),
         }
+
+
+class ReceptionPatientForm(PatientForm):
+    """Front-office variant of the patient form: clinical fields are
+    EXCLUDED at the form/serializer level (see medicaregp/roles.py), so a
+    crafted POST from a reception account can never write or read them —
+    this is enforcement, not template hiding."""
+    class Meta(PatientForm.Meta):
+        from medicaregp.roles import PATIENT_CLINICAL_FIELDS
+        exclude = PatientForm.Meta.exclude + PATIENT_CLINICAL_FIELDS

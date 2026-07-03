@@ -1,6 +1,6 @@
 from datetime import date, time
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.test import TestCase
 from django.urls import reverse
 
@@ -12,6 +12,8 @@ from patients.models import Patient
 class ConsultationCreateViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='tester', password='secret123')
+        # Consultation views are doctor-only under RBAC (medicaregp/roles.py)
+        self.user.groups.add(Group.objects.get(name='Doctor'))
         self.patient = Patient.objects.create(
             first_name='Thabo',
             last_name='Nkosi',

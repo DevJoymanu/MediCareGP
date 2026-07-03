@@ -4,6 +4,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from medicaregp.roles import doctor_required
 from django.core.mail import EmailMessage
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
@@ -473,19 +474,19 @@ def _request_pdf_response(request, pk, kind):
     return response
 
 
-@login_required
+@doctor_required
 def radiology_request_pdf(request, pk):
     return _request_pdf_response(request, pk, 'radiology')
 
 
-@login_required
+@doctor_required
 def lab_request_pdf(request, pk):
     return _request_pdf_response(request, pk, 'lab')
 
 
 # ── Prepare a request (set provider / history / nappi / deliver-to) ───────────
 
-@login_required
+@doctor_required
 @require_POST
 def prepare_request(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
@@ -573,13 +574,13 @@ def _send_request_email(request, pk, kind):
         return JsonResponse({'error': str(exc)}, status=500)
 
 
-@login_required
+@doctor_required
 @require_POST
 def radiology_request_email(request, pk):
     return _send_request_email(request, pk, 'radiology')
 
 
-@login_required
+@doctor_required
 @require_POST
 def lab_request_email(request, pk):
     return _send_request_email(request, pk, 'lab')
@@ -587,7 +588,7 @@ def lab_request_email(request, pk):
 
 # ── Doctor review of submitted results (confirm / decline) ────────────────────
 
-@login_required
+@doctor_required
 def investigations_pending(request):
     pending = (InvestigationRequest.objects
                .filter(status='submitted')
@@ -596,14 +597,14 @@ def investigations_pending(request):
     return render(request, 'consultations/investigations_pending.html', {'pending': pending})
 
 
-@login_required
+@doctor_required
 def investigation_review(request, pk):
     inv = get_object_or_404(
         InvestigationRequest.objects.select_related('consultation__patient', 'provider'), pk=pk)
     return render(request, 'consultations/investigation_review.html', {'inv': inv})
 
 
-@login_required
+@doctor_required
 @require_POST
 def investigation_confirm(request, pk):
     inv = get_object_or_404(InvestigationRequest, pk=pk)
@@ -621,7 +622,7 @@ def investigation_confirm(request, pk):
     return redirect('consultation_detail', pk=inv.consultation_id)
 
 
-@login_required
+@doctor_required
 @require_POST
 def investigation_decline(request, pk):
     inv = get_object_or_404(InvestigationRequest, pk=pk)
@@ -661,7 +662,7 @@ def search_icd10(request):
     return JsonResponse({'results': results})
 
 
-@login_required
+@doctor_required
 def suggest_prescriptions(request):
     """
     AJAX: given assessment text (and optional selected ICD-10 codes), return
@@ -754,7 +755,7 @@ def provider_edit(request, pk):
     return render(request, 'consultations/provider_form.html', {'form': form, 'title': 'Edit Provider'})
 
 
-@login_required
+@doctor_required
 def consultation_list(request):
     from django.db.models import Q
     q   = request.GET.get('q', '')
@@ -788,7 +789,7 @@ def consultation_list(request):
     })
 
 
-@login_required
+@doctor_required
 def consultation_detail(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
     _sync_investigation_requests(consultation)
@@ -799,7 +800,7 @@ def consultation_detail(request, pk):
     })
 
 
-@login_required
+@doctor_required
 def consultation_create(request):
     initial = {}
     patient_id     = request.GET.get('patient_id')
@@ -865,7 +866,7 @@ def consultation_create(request):
                   {'form': form, 'title': 'New Consultation', 'embed': request.GET.get('embed')})
 
 
-@login_required
+@doctor_required
 def consultation_edit(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
     form = ConsultationForm(request.POST or None, instance=consultation)
@@ -877,7 +878,7 @@ def consultation_edit(request, pk):
     return render(request, 'consultations/consultation_form.html', {'form': form, 'title': 'Edit Consultation'})
 
 
-@login_required
+@doctor_required
 def consultation_delete(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
     if request.method == 'POST':
@@ -888,7 +889,7 @@ def consultation_delete(request, pk):
     return render(request, 'consultations/confirm_delete.html', {'consultation': consultation})
 
 
-@login_required
+@doctor_required
 def consultation_review(request, pk):
     """Start a new review consultation linked to an existing one."""
     original = get_object_or_404(Consultation, pk=pk)
@@ -949,7 +950,7 @@ def consultation_review(request, pk):
     })
 
 
-@login_required
+@doctor_required
 def consultation_print(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
     return render(request, 'consultations/consultation_print.html', {'consultation': consultation})
@@ -957,7 +958,7 @@ def consultation_print(request, pk):
 
 # ── Sick note views ───────────────────────────────────────────────────────────
 
-@login_required
+@doctor_required
 def sick_note_pdf(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk, sick_note_issued=True)
     buffer = _build_sick_note_pdf(consultation)
@@ -968,7 +969,7 @@ def sick_note_pdf(request, pk):
     return response
 
 
-@login_required
+@doctor_required
 def sick_note_email(request, pk):
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)

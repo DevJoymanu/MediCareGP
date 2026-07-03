@@ -12,6 +12,7 @@ INSTALLED_APPS = [
     'django.contrib.admin','django.contrib.auth','django.contrib.contenttypes',
     'django.contrib.sessions','django.contrib.messages','django.contrib.staticfiles',
     'patients','appointments','consultations','scripts','tasks','billing',
+    'diagnosis','medaid',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -137,6 +138,12 @@ CHECKIN_PRACTICE_LNG       = float(os.environ.get('CHECKIN_PRACTICE_LNG', '0'))
 CHECKIN_RADIUS_METRES      = 300
 CHECKIN_OPEN_HOUR          = 7
 CHECKIN_CLOSE_HOUR         = 18
+
+# ── Front office: biometric check-in provider (pluggable) ─────────────────────
+# Dotted path to a patients.biometrics.BiometricProvider implementation.
+# Default is the hash-based simulator; swap for a real fingerprint SDK
+# adapter when hardware is chosen — nothing else changes.
+BIOMETRIC_PROVIDER = os.environ.get('BIOMETRIC_PROVIDER', 'patients.biometrics.HashBiometricProvider')
 
 # ── Lab / radiology results portals ────────────────────────────────────────────
 # Standing portals at /lab/ and /radiology/ where providers log in with a shared

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Patient Record — {{ patient }}</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; color: #111; margin: 32px auto; max-width: 800px; font-size: 13px; }
+  h1 { font-size: 20px; margin: 0 0 2px; }
+  h2 { font-size: 14px; border-bottom: 1.5px solid #111; padding-bottom: 3px; margin: 24px 0 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+  table { border-collapse: collapse; width: 100%; }
+  td, th { padding: 4px 8px 4px 0; vertical-align: top; text-align: left; }
+  th { border-bottom: 1px solid #999; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr + tr td { border-top: 1px solid #eee; }
+  .label { color: #555; width: 180px; }
+  .muted { color: #666; font-size: 11px; }
+  .warn { border: 1.5px solid #b45309; padding: 8px 12px; margin-top: 10px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px double #111; padding-bottom: 10px; }
+  .no-print { margin: 16px 0; }
+  @media print { .no-print { display: none; } body { margin: 0; } }
+</style>
+</head>
+<body>
+
+<div class="no-print">
+  <button onclick="window.print()">🖨 Print</button>
+  <a href="{% url 'patient_detail' patient.pk %}">Back to patient</a>
+</div>
+
+<div class="header">
+  <div>
+    <h1>{{ patient.title|default:"" }} {{ patient }}</h1>
+    <div class="muted">File {{ patient.file_number|default:"—" }} · DOB {{ patient.date_of_birth }} ({{ patient.get_age }} yrs) · {{ patient.get_gender_display }} · ID {{ patient.id_number }}</div>
+  </div>
+  <div style="text-align:right;" class="muted">
+    Dr. Tamuka Chivonivoni — General Practitioner<br>
+    Printed {% now "j F Y H:i" %}<br>
+    {% if not include_clinical %}<strong>FRONT-OFFICE COPY — NO CLINICAL DATA</strong>{% else %}FULL RECORD — CONFIDENTIAL{% endif %}
+  </div>
+</div>
+
+<h2>Demographics &amp; Contact</h2>
+<table>
+  <tr><td class="label">Phone</td><td>{{ patient.phone }}{% if patient.alt_phone %} · {{ patient.alt_phone }}{% endif %}</td></tr>
+  <tr><td class="label">Email</td><td>{{ patient.email|default:"—" }}</td></tr>
+  <tr><td class="label">Residential address</td><td>{{ patient.address|default:"—" }}</td></tr>
+  <tr><td class="label">Occupation</td><td>{{ patient.occupation|default:"—" }}</td></tr>
+  <tr><td class="label">Next of kin</td><td>{{ patient.next_of_kin_name|default:"—" }}{% if patient.next_of_kin_phone %} · {{ patient.next_of_kin_phone }}{% endif %}</td></tr>
+</table>
+
+<h2>Medical Aid</h2>
+<table>
+  <tr><td class="label">Scheme</td><td>{{ patient.medical_aid_name|default:"Private / none" }}</td></tr>
+  <tr><td class="label">Plan / option</td><td>{{ patient.medical_aid_plan|default:"—" }}</td></tr>
+  <tr><td class="label">Member number</td><td>{{ patient.medical_aid_number|default:"—" }}</td></tr>
+  <tr><td class="label">Principal member</td><td>{{ patient.principal_member_name|default:"—" }}{% if patient.principal_member_id %} ({{ patient.principal_member_id }}){% endif %}</td></tr>
+  <tr><td class="label">Dependant code</td><td>{{ patient.dependant_code|default:"—" }}</td></tr>
+</table>
+{% if usage %}
+<div class="warn">Visits used {{ usage.year }}: <strong>{{ usage.used }} of {{ usage.limit }}</strong> ({{ usage.plan }}){% if usage.status == 'over' %} — LIMIT REACHED{% elif usage.status == 'warning' %} — nearing limit{% endif %}</div>
+{% endif %}
+
+<h2>Family Members on File</h2>
+<table>
+  <tr><th>Name</th><th>Sex</th><th>Date of birth</th></tr>
+  {% for m in family_members %}
+  <tr><td>{{ m.name }}</td><td>{{ m.get_gender_display|default:"—" }}</td><td>{{ m.date_of_birth|default:"—" }}</td></tr>
+  {% empty %}<tr><td colspan="3" class="muted">None recorded.</td></tr>{% endfor %}
+</table>
+
+<h2>Appointments</h2>
+<table>
+  <tr><th>Date</th><th>Time</th><th>Reason</th><th>Status</th></tr>
+  {% for a in appointments %}
+  <tr><td>{{ a.date }}</td><td>{{ a.time }}</td><td>{{ a.reason }}</td><td>{{ a.status }}</td></tr>
+  {% empty %}<tr><td colspan="4" class="muted">None recorded.</td></tr>{% endfor %}
+</table>
+
+{% if include_clinical %}
+<h2>Clinical Summary</h2>
+<table>
+  <tr><td class="label">Blood type</td><td>{{ patient.blood_type|default:"—" }}</td></tr>
+  <tr><td class="label">Allergies</td><td>{{ patient.allergies|default:"None recorded" }}</td></tr>
+  <tr><td class="label">Chronic conditions</td><td>{{ patient.chronic_conditions|default:"None recorded" }}</td></tr>
+  <tr><td class="label">Current medication</td><td>{{ patient.current_medication|default:"—" }}</td></tr>
+  <tr><td class="label">Previous surgeries</td><td>{{ patient.previous_surgeries|default:"—" }}</td></tr>
+  <tr><td class="label">Family history</td><td>{{ patient.family_history|default:"—" }}</td></tr>
+  <tr><td class="label">Smoking / alcohol</td><td>{{ patient.smoking_status|default:"—" }} / {{ patient.alcohol_use|default:"—" }}</td></tr>
+</table>
+
+<h2>Vitals History</h2>
+<table>
+  <tr><th>Date</th><th>BP</th><th>Weight</th><th>Recorded by</th></tr>
+  {% for v in vitals %}
+  <tr><td>{{ v.date }}</td><td>{{ v.blood_pressure|default:"—" }}</td><td>{{ v.weight|default:"—" }}{% if v.weight %} kg{% endif %}</td><td>{{ v.recorded_by }}</td></tr>
+  {% empty %}<tr><td colspan="4" class="muted">None recorded.</td></tr>{% endfor %}
+</table>
+
+<h2>Consultations</h2>
+{% for c in consultations %}
+<table style="margin-bottom:14px;">
+  <tr><td class="label">Date</td><td><strong>{{ c.date }}</strong></td></tr>
+  {% if c.chief_complaint %}<tr><td class="label">Reason for visit</td><td>{{ c.chief_complaint }}</td></tr>{% endif %}
+  {% if c.assessment %}<tr><td class="label">Assessment</td><td>{{ c.assessment }}</td></tr>{% endif %}
+  {% if c.icd10_codes_list %}<tr><td class="label">ICD-10</td><td>{% for e in c.icd10_codes_list %}{{ e.code }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>{% endif %}
+  {% if c.plan %}<tr><td class="label">Plan</td><td>{{ c.plan }}</td></tr>{% endif %}
+  {% if c.prescriptions %}<tr><td class="label">Prescriptions</td><td>{{ c.prescriptions }}</td></tr>{% endif %}
+</table>
+{% empty %}<p class="muted">No consultations recorded.</p>{% endfor %}
+{% endif %}
+
+<p class="muted" style="margin-top:28px;border-top:1px solid #999;padding-top:8px;">
+  {% if include_clinical %}Full patient record — confidential medical information. Handle per POPIA.{% else %}Front-office record: demographics, medical aid and appointment data only. Clinical content excluded by role-based access control.{% endif %}
+</p>
+
+</body>
+</html>

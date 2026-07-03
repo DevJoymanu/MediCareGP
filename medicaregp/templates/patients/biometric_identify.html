@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Biometric Check-in | G.P CRM{% endblock %}
+{% block page_title %}Biometric Check-in{% endblock %}
+{% block page_sub %}Identify a patient and pull their medical-aid details — no clinical data{% endblock %}
+{% block content %}
+<div class="page-body">
+
+  <div class="crm-card" style="padding:14px;max-width:560px;margin-bottom:16px;">
+    <form method="post">
+      {% csrf_token %}
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">
+        <i class="bi bi-fingerprint" style="margin-right:6px;"></i>Scanner template / sample
+      </label>
+      <input type="text" name="sample" autofocus autocomplete="off"
+             placeholder="Place finger on scanner (or paste template string)…"
+             style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.15);font-size:13px;">
+      <p style="font-size:12px;opacity:0.7;margin:8px 0 12px;">
+        The sample is hashed and matched against enrolled templates — raw biometrics are never stored.
+      </p>
+      <button type="submit" class="btn btn-primary" style="padding:10px 22px;border-radius:8px;font-weight:600;">Identify</button>
+    </form>
+  </div>
+
+  {% if searched %}
+    {% if match %}
+    <div class="crm-card" style="padding:14px;max-width:560px;">
+      <h3 style="font-size:15px;font-weight:700;margin:0 0 10px;">
+        <i class="bi bi-shield-check" style="margin-right:6px;color:#16a34a;"></i>
+        {{ match.first_name }} {{ match.last_name }}
+        <span style="font-family:monospace;font-size:12px;opacity:0.6;margin-left:8px;">{{ match.file_number|default:"" }}</span>
+      </h3>
+      <table style="font-size:13px;border-collapse:collapse;width:100%;">
+        <tr><td style="padding:5px 12px 5px 0;opacity:0.7;">Scheme</td><td style="padding:5px 0;font-weight:600;">{{ match.medical_aid_name|default:"No medical aid on file" }}</td></tr>
+        <tr><td style="padding:5px 12px 5px 0;opacity:0.7;">Plan / option</td><td style="padding:5px 0;">{{ match.medical_aid_plan|default:"—" }}</td></tr>
+        <tr><td style="padding:5px 12px 5px 0;opacity:0.7;">Member number</td><td style="padding:5px 0;font-family:monospace;">{{ match.medical_aid_number|default:"—" }}</td></tr>
+        <tr><td style="padding:5px 12px 5px 0;opacity:0.7;">Principal member</td><td style="padding:5px 0;">{{ match.principal_member_name|default:"—" }}</td></tr>
+        <tr><td style="padding:5px 12px 5px 0;opacity:0.7;">Dependant code</td><td style="padding:5px 0;font-family:monospace;">{{ match.dependant_code|default:"—" }}</td></tr>
+      </table>
+
+      {% if usage %}
+      <div style="margin-top:12px;padding:10px 12px;border-radius:8px;font-size:13px;
+        {% if usage.status == 'over' %}background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);
+        {% elif usage.status == 'warning' %}background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.4);
+        {% else %}background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);{% endif %}">
+        <strong>
+          {% if usage.status == 'over' %}<i class="bi bi-x-octagon" style="margin-right:6px;"></i>Visit limit reached
+          {% elif usage.status == 'warning' %}<i class="bi bi-exclamation-triangle" style="margin-right:6px;"></i>Nearing visit limit
+          {% else %}<i class="bi bi-check-circle" style="margin-right:6px;"></i>Visits within plan limit{% endif %}
+        </strong>
+        — {{ usage.used }} of {{ usage.limit }} visits used in {{ usage.year }} ({{ usage.plan }}).
+        {% if usage.status != 'ok' %}Consider confirming benefits with the scheme before the visit.{% endif %}
+      </div>
+      {% endif %}
+
+      <div style="margin-top:12px;">
+        <a href="{% url 'patient_detail' patient_pk %}" style="font-size:13px;">Open patient file &raquo;</a>
+      </div>
+    </div>
+    {% else %}
+    <div style="padding:12px 14px;border-radius:8px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);font-size:13px;max-width:560px;">
+      <i class="bi bi-x-circle" style="margin-right:6px;"></i>No enrolled patient matched that sample.
+      Enrol patients from their profile page (Biometric enrolment).
+    </div>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

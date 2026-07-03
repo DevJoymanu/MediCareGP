@@ -7,4 +7,9 @@ urlpatterns = [
     path('<int:pk>/edit/', views.patient_edit, name='patient_edit'),
     path('<int:pk>/delete/', views.patient_delete, name='patient_delete'),
     path('<int:pk>/vitals/', views.vitals_add, name='vitals_add'),
+
+    # Front office
+    path('biometric/', views.biometric_identify, name='biometric_identify'),
+    path('<int:pk>/biometric/enrol/', views.biometric_enrol, name='biometric_enrol'),
+    path('<int:pk>/print-all/', views.patient_print_all, name='patient_print_all'),
 ]

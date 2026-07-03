@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Provisional Diagnosis — {{ patient }} | G.P CRM{% endblock %}
+{% block page_title %}Provisional Diagnosis{% endblock %}
+{% block page_sub %}{{ patient }} — ranked differential (engine v{{ output.engine_version }}, run {{ result.created_at }}){% endblock %}
+{% block content %}
+<div class="page-body">
+
+  <div style="padding:10px 14px;border-radius:8px;background:rgba(234,179,8,0.10);border:1px solid rgba(234,179,8,0.35);font-size:13px;margin-bottom:16px;">
+    <i class="bi bi-exclamation-triangle" style="margin-right:6px;"></i>
+    <strong>{{ output.title }}</strong> — rule-based decision support, never a final diagnosis.
+    Scoring: {{ output.constants.history_weight }} × (working complaints + history factors)
+    + {{ output.constants.presenting_weight }} × presenting symptoms.
+    Bands: High ≥ {{ output.constants.band_high }}, Medium ≥ {{ output.constants.band_medium }}.
+  </div>
+
+  {% if flags %}
+  <div style="padding:10px 14px;border-radius:8px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);font-size:13px;margin-bottom:16px;">
+    <strong><i class="bi bi-flag" style="margin-right:6px;"></i>First-occurrence flags</strong>
+    <ul style="margin:6px 0 0 18px;">
+      {% for f in flags %}<li>{{ f.message }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if output.needs_more_data %}
+  <div style="padding:10px 14px;border-radius:8px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.3);font-size:13px;margin-bottom:16px;">
+    <strong><i class="bi bi-question-circle" style="margin-right:6px;"></i>More data needed</strong>
+    — only {{ output.input_count }} input(s) captured; the engine wants at least a few more
+    symptoms/signs before this ranking should be trusted.
+    <a href="{% url 'differential_capture' consultation.pk %}">Capture more &raquo;</a>
+  </div>
+  {% endif %}
+
+  {% if suggestions %}
+  <div class="crm-card" style="padding:14px;margin-bottom:16px;">
+    <h3 style="font-size:14px;font-weight:700;margin:0 0 8px;"><i class="bi bi-patch-question" style="margin-right:6px;"></i>Worth asking next (discriminating symptoms)</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;">
+      {% for s in suggestions %}
+      <span style="padding:4px 10px;border-radius:999px;background:rgba(59,130,246,0.1);" title="{{ s.hint }}">{{ s.symptom }} <span style="opacity:0.6;">— {{ s.hint }}</span></span>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="crm-card" style="padding:14px;margin-bottom:16px;font-size:13px;">
+    <strong>Inputs:</strong>
+    presenting — {{ presenting_names|join:", "|default:"none" }};
+    working/history — {{ working_names|join:", "|default:"none" }}
+    {% if output.notes %}<br><strong>Notes:</strong> {{ output.notes }}{% endif %}
+  </div>
+
+  <form method="post" action="{% url 'differential_confirm' result.pk %}">
+    {% csrf_token %}
+    <div class="crm-card" style="padding:0;overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="text-align:left;border-bottom:2px solid rgba(0,0,0,0.1);">
+            <th style="padding:10px;">Confirm</th>
+            <th style="padding:10px;">#</th>
+            <th style="padding:10px;">Condition</th>
+            <th style="padding:10px;">ICD-10</th>
+            <th style="padding:10px;">Score</th>
+            <th style="padding:10px;">Likelihood</th>
+            <th style="padding:10px;">Why (contributing factors)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in output.results %}
+          <tr style="border-bottom:1px solid rgba(0,0,0,0.06);vertical-align:top;">
+            <td style="padding:10px;text-align:center;"><input type="checkbox" name="confirm" value="{{ r.condition_id }}"></td>
+            <td style="padding:10px;font-weight:700;">{{ r.rank }}</td>
+            <td style="padding:10px;font-weight:600;">{{ r.condition }}</td>
+            <td style="padding:10px;font-family:monospace;">{{ r.icd10_code }}</td>
+            <td style="padding:10px;font-family:monospace;">{{ r.score }}</td>
+            <td style="padding:10px;">
+              {% if r.band == 'High' %}<span style="padding:2px 10px;border-radius:999px;background:rgba(34,197,94,0.15);color:#15803d;font-weight:600;">High</span>
+              {% elif r.band == 'Medium' %}<span style="padding:2px 10px;border-radius:999px;background:rgba(234,179,8,0.15);color:#a16207;font-weight:600;">Medium</span>
+              {% else %}<span style="padding:2px 10px;border-radius:999px;background:rgba(0,0,0,0.06);font-weight:600;">Low</span>{% endif %}
+            </td>
+            <td style="padding:10px;">
+              {{ r.why }}
+              <details style="margin-top:4px;">
+                <summary style="cursor:pointer;font-size:12px;opacity:0.7;">Score breakdown</summary>
+                <div style="font-family:monospace;font-size:12px;padding:6px 0;">{{ r.breakdown.formula }}</div>
+                {% for f in r.breakdown.history_factors %}
+                  <div style="font-size:12px;{% if f.kind == 'contradicting' %}color:#dc2626;{% else %}color:#15803d;{% endif %}">
+                    {{ f.kind|title }}: {{ f.note|default:f.factor }} ({% if f.delta >= 0 %}+{% endif %}{{ f.delta }})
+                  </div>
+                {% endfor %}
+              </details>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" style="padding:16px;text-align:center;opacity:0.7;">No conditions matched the captured symptoms. Add more inputs or extend the knowledge base in admin.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <button type="submit" class="btn btn-primary" style="padding:10px 22px;border-radius:8px;font-weight:600;">
+        <i class="bi bi-check2-circle" style="margin-right:6px;"></i>Confirm selected as provisional diagnosis
+      </button>
+      <a href="{% url 'differential_capture' consultation.pk %}" style="font-size:13px;">Re-run with different inputs</a>
+      <a href="{% url 'consultation_detail' consultation.pk %}" style="font-size:13px;">Back to consultation</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
