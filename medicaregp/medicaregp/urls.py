@@ -4,6 +4,7 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
+from consultations import portal_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,6 +27,14 @@ urlpatterns = [
     path('billing/', include('billing.urls')),
     path('checkin/', include('appointments.checkin_urls')),
     path('results/', include('consultations.portal_urls')),
+
+    # ── Standing lab / radiology results portals (shared-password) ────────────
+    path('lab/',              portal_views.provider_portal,        {'kind': 'lab'},       name='lab_portal'),
+    path('lab/logout/',       portal_views.provider_portal_logout, {'kind': 'lab'},       name='lab_portal_logout'),
+    path('lab/<int:pk>/',     portal_views.provider_portal_submit, {'kind': 'lab'},       name='lab_portal_submit'),
+    path('radiology/',          portal_views.provider_portal,        {'kind': 'radiology'}, name='radiology_portal'),
+    path('radiology/logout/',   portal_views.provider_portal_logout, {'kind': 'radiology'}, name='radiology_portal_logout'),
+    path('radiology/<int:pk>/', portal_views.provider_portal_submit, {'kind': 'radiology'}, name='radiology_portal_submit'),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCareGP — System Guide</title>
+<style>
+  :root{
+    --teal:#0f766e; --teal-d:#0b554f; --teal-l:#14b8a6;
+    --mint:#ecfdf5; --mint2:#d1fae5;
+    --ink:#0f172a; --slate:#475569; --slate-l:#94a3b8;
+    --line:#e2e8f0; --paper:#ffffff; --bg:#f1f5f9;
+    --amber:#f59e0b; --amber-l:#fef3c7;
+    --blue:#2563eb; --blue-l:#dbeafe;
+    --rose:#e11d48; --rose-l:#ffe4e6;
+    --shadow:0 10px 30px rgba(15,23,42,.08);
+    --shadow-sm:0 2px 8px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:16px;
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:0 28px}
+  h1,h2,h3,h4{line-height:1.2; margin:0}
+  p{margin:.5em 0}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:linear-gradient(135deg,var(--teal) 0%,var(--teal-d) 55%,#072e2a 100%);
+    color:#fff; padding:64px 0 110px; position:relative; overflow:hidden;
+  }
+  .hero .wrap{position:relative; z-index:2}
+  .hero .pulse{position:absolute; inset:0; z-index:1; opacity:.18}
+  .badge{
+    display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.25); padding:7px 15px; border-radius:999px;
+    font-size:13px; font-weight:600; letter-spacing:.3px; backdrop-filter:blur(4px);
+  }
+  .hero h1{font-size:46px; font-weight:800; margin:22px 0 10px; letter-spacing:-1px}
+  .hero .sub{font-size:19px; max-width:620px; color:#d6f5f0}
+  .logo-mark{display:flex; align-items:center; gap:14px; margin-bottom:6px}
+  .logo-mark .ring{
+    width:54px;height:54px;border-radius:15px;background:rgba(255,255,255,.16);
+    display:grid;place-items:center;border:1px solid rgba(255,255,255,.3)
+  }
+  .hero-meta{display:flex; flex-wrap:wrap; gap:10px; margin-top:30px}
+  .hero-meta span{
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+    padding:8px 14px;border-radius:10px;font-size:13.5px;font-weight:500
+  }
+
+  /* ---------- CARDS / SECTIONS ---------- */
+  .deck{margin-top:-70px; position:relative; z-index:3; padding-bottom:60px}
+  .twocol{display:grid; grid-template-columns:1fr 1fr; gap:22px}
+  .card{background:var(--paper); border-radius:18px; box-shadow:var(--shadow); padding:26px 28px; border:1px solid var(--line)}
+  .card.flat{box-shadow:var(--shadow-sm)}
+
+  .sec-title{display:flex; align-items:center; gap:14px; margin:54px 0 6px}
+  .sec-title .num{
+    flex:0 0 auto; width:42px;height:42px;border-radius:12px;
+    background:var(--teal); color:#fff; display:grid;place-items:center;font-weight:800;font-size:18px;
+    box-shadow:0 6px 14px rgba(15,118,110,.35)
+  }
+  .sec-title h2{font-size:27px; font-weight:800; letter-spacing:-.5px}
+  .sec-sub{color:var(--slate); margin:2px 0 18px 56px; font-size:15.5px}
+
+  .eyebrow{text-transform:uppercase; letter-spacing:1.5px; font-size:12px; font-weight:700; color:var(--teal-l)}
+
+  /* ---------- ICONS ---------- */
+  .ico{width:26px;height:26px;flex:0 0 auto}
+  .ico-lg{width:34px;height:34px}
+  .featurehead{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+  .featurehead .chip{
+    width:50px;height:50px;border-radius:14px;display:grid;place-items:center;flex:0 0 auto;
+    background:var(--mint);border:1px solid var(--mint2)
+  }
+  .featurehead h3{font-size:21px;font-weight:800}
+
+  /* ---------- FLOW STEPS ---------- */
+  .flow{display:flex; align-items:stretch; gap:0; margin:20px 0 6px; flex-wrap:wrap}
+  .step{
+    flex:1 1 0; min-width:140px; background:var(--mint); border:1px solid var(--mint2);
+    border-radius:14px; padding:14px 16px; position:relative; margin-right:26px;
+  }
+  .step:last-child{margin-right:0}
+  .step:not(:last-child):after{
+    content:"›"; position:absolute; right:-22px; top:50%; transform:translateY(-50%);
+    font-size:30px; color:var(--teal-l); font-weight:800
+  }
+  .step .n{font-size:12px;font-weight:800;color:var(--teal);letter-spacing:.5px}
+  .step .t{font-weight:700;font-size:14.5px;margin-top:3px}
+  .step .d{font-size:12.5px;color:var(--slate);margin-top:3px}
+
+  /* ---------- MOCK SCREENS ---------- */
+  .mock{border-radius:14px;border:1px solid var(--line);overflow:hidden;box-shadow:var(--shadow-sm);background:#fff;margin-top:18px}
+  .mock .bar{background:#f8fafc;border-bottom:1px solid var(--line);padding:9px 14px;display:flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .mock .bar .tab{margin-left:12px;font-size:12.5px;color:var(--slate);font-weight:600}
+  .mock .body{padding:18px}
+  .mrow{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:9px;background:#fff}
+  .mrow:last-child{margin-bottom:0}
+  .mrow .who{font-weight:700;font-size:14px}
+  .mrow .meta{font-size:12.5px;color:var(--slate)}
+  .pill{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px}
+  .p-blue{background:var(--blue-l);color:var(--blue)}
+  .p-green{background:var(--mint2);color:var(--teal)}
+  .p-amber{background:var(--amber-l);color:#b45309}
+  .p-rose{background:var(--rose-l);color:var(--rose)}
+  .p-grey{background:#e2e8f0;color:var(--slate)}
+  .btn{display:inline-block;background:var(--teal);color:#fff;font-size:12.5px;font-weight:700;padding:6px 13px;border-radius:8px}
+  .btn.ghost{background:#fff;color:var(--teal);border:1px solid var(--teal)}
+
+  ul.clean{list-style:none;padding:0;margin:10px 0}
+  ul.clean li{padding:7px 0 7px 30px;position:relative;font-size:15px}
+  ul.clean li:before{content:"";position:absolute;left:0;top:13px;width:16px;height:16px;border-radius:5px;background:var(--mint2);
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f766e' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-size:12px;background-repeat:no-repeat;background-position:center}
+
+  .tip{display:flex;gap:12px;background:var(--amber-l);border:1px solid #fde68a;border-radius:12px;padding:14px 16px;margin-top:16px}
+  .tip svg{flex:0 0 auto;margin-top:1px}
+  .tip b{color:#92400e}
+  .tip .x{font-size:14px;color:#78350f}
+
+  /* ---------- TWO SIDES DIAGRAM ---------- */
+  .sides{display:grid;grid-template-columns:1fr 70px 1fr;gap:0;align-items:center;margin-top:8px}
+  .sidebox{border-radius:16px;padding:22px;border:1.5px solid}
+  .side-pat{background:var(--blue-l);border-color:#bfdbfe}
+  .side-staff{background:var(--mint);border-color:var(--mint2)}
+  .sidebox h4{font-size:17px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .sidebox ul{margin:0;padding-left:18px;font-size:14px;color:var(--slate)}
+  .sidebox ul li{margin:5px 0}
+  .bridge{display:grid;place-items:center}
+  .bridge .b{width:54px;height:54px;border-radius:50%;background:var(--teal);display:grid;place-items:center;box-shadow:0 8px 18px rgba(15,118,110,.35)}
+
+  /* ---------- TROUBLESHOOT ---------- */
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
+  th{background:var(--teal);color:#fff;text-align:left;padding:12px 16px;font-size:13.5px}
+  td{padding:12px 16px;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:#f8fafc}
+
+  /* ---------- TOC ---------- */
+  .toc{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+  .toc a{display:flex;gap:11px;align-items:center;text-decoration:none;color:var(--ink);
+    border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-weight:600;font-size:14px;background:#fff;transition:.15s}
+  .toc a:hover{border-color:var(--teal-l);box-shadow:var(--shadow-sm);transform:translateY(-1px)}
+  .toc .tn{width:28px;height:28px;border-radius:8px;background:var(--mint);color:var(--teal);display:grid;place-items:center;font-weight:800;font-size:13px;flex:0 0 auto}
+
+  .footer{background:var(--ink);color:#cbd5e1;padding:40px 0;margin-top:60px;font-size:14px}
+  .footer b{color:#fff}
+
+  .lead{font-size:17px;color:var(--slate)}
+  .anchor{scroll-margin-top:20px}
+
+  @media (max-width:760px){
+    .twocol{grid-template-columns:1fr}
+    .sides{grid-template-columns:1fr}
+    .bridge{transform:rotate(90deg);margin:6px 0}
+    .toc{grid-template-columns:1fr}
+    .hero h1{font-size:34px}
+    .step{margin-right:0;margin-bottom:26px}
+    .step:not(:last-child):after{right:50%;top:auto;bottom:-26px;transform:translateX(50%) rotate(90deg)}
+  }
+  @media print{
+    body{background:#fff}
+    .hero{padding-bottom:60px}
+    .deck{margin-top:24px}
+    .card,.mock,table{box-shadow:none}
+    .sec-title{page-break-after:avoid}
+    .card{page-break-inside:avoid}
+    a{color:inherit;text-decoration:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <svg class="pulse" viewBox="0 0 1200 200" preserveAspectRatio="none">
+    <polyline points="0,120 200,120 240,120 270,60 300,170 330,90 360,120 600,120 640,120 670,55 700,175 730,95 760,120 1200,120"
+      fill="none" stroke="#ffffff" stroke-width="3"/>
+  </svg>
+  <div class="wrap">
+    <div class="logo-mark">
+      <div class="ring">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
+          <path d="M3.5 12h4l1-2 2 4 1.5-3 1 1h6.5"/>
+        </svg>
+      </div>
+      <span class="badge">● Practice Management System</span>
+    </div>
+    <h1>MediCareGP</h1>
+    <p class="sub">A friendly, illustrated walkthrough of how the practice system works — for the team of <b style="color:#fff">Dr. Tamuka Chivonivoni</b>. Everything you need to confidently use and support the system, in plain language.</p>
+    <div class="hero-meta">
+      <span>📋 Patients &amp; Records</span>
+      <span>📅 Appointments</span>
+      <span>🎥 Video Consults</span>
+      <span>🧪 Lab &amp; Radiology</span>
+      <span>💳 Billing &amp; Claims</span>
+      <span>🗂️ Documents</span>
+    </div>
+  </div>
+</header>
+
+<div class="deck">
+<div class="wrap">
+
+  <!-- TOC -->
+  <div class="card">
+    <span class="eyebrow">What's inside</span>
+    <h2 style="font-size:22px;margin:6px 0 4px">Jump to any section</h2>
+    <div class="toc">
+      <a href="#overview"><span class="tn">01</span> How it all fits together</a>
+      <a href="#website"><span class="tn">02</span> Website &amp; online booking</a>
+      <a href="#bookings"><span class="tn">03</span> Web bookings inbox</a>
+      <a href="#patients"><span class="tn">04</span> Patient records</a>
+      <a href="#appointments"><span class="tn">05</span> Appointments &amp; waiting room</a>
+      <a href="#checkin"><span class="tn">06</span> Self check-in (QR)</a>
+      <a href="#consults"><span class="tn">07</span> Consultations &amp; notes</a>
+      <a href="#labs"><span class="tn">08</span> Lab &amp; radiology results</a>
+      <a href="#video"><span class="tn">09</span> Video consultations</a>
+      <a href="#billing"><span class="tn">10</span> Billing &amp; claims</a>
+      <a href="#docs"><span class="tn">11</span> Documents</a>
+      <a href="#dash"><span class="tn">12</span> Dashboard &amp; tasks</a>
+      <a href="#day"><span class="tn">★</span> A day in the practice</a>
+      <a href="#help"><span class="tn">?</span> Quick troubleshooting</a>
+      <a href="#know"><span class="tn">!</span> Good to know</a>
+    </div>
+  </div>
+
+  <!-- ============ 01 OVERVIEW ============ -->
+  <div class="sec-title anchor" id="overview"><div class="num">01</div><h2>How it all fits together</h2></div>
+  <p class="sec-sub">One system, two sides — and they're always in sync.</p>
+  <div class="card">
+    <p class="lead" style="margin-top:0">Think of the system as having <b>two sides</b> that share the same information. When reception does something on one side, the doctor sees it instantly on the other.</p>
+    <div class="sides" style="margin-top:18px">
+      <div class="sidebox side-pat">
+        <h4>
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          The patient side
+        </h4>
+        <ul>
+          <li>Browse the website &amp; book online</li>
+          <li>Check themselves in with a QR code</li>
+          <li>Join a video call from a private link</li>
+          <li><b>No login — just a page or a link</b></li>
+        </ul>
+      </div>
+      <div class="bridge">
+        <div class="b">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/><path d="M19 12H5M11 18l-6-6 6-6" opacity=".55"/></svg>
+        </div>
+      </div>
+      <div class="sidebox side-staff">
+        <h4>
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 21h8"/></svg>
+          The practice side
+        </h4>
+        <ul>
+          <li>Reception runs the diary &amp; front desk</li>
+          <li>The doctor writes notes &amp; orders tests</li>
+          <li>Billing, documents, reports</li>
+          <li><b>Login required — staff only</b></li>
+        </ul>
+      </div>
+    </div>
+    <div class="tip">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8h.01"/></svg>
+      <div class="x"><b>One source of truth.</b> Because both sides share the same records, an online booking appears for reception immediately, and a note the doctor writes is available everywhere it's needed. Keep records accurate and everyone benefits.</div>
+    </div>
+  </div>
+
+  <!-- ============ 02 WEBSITE ============ -->
+  <div class="sec-title anchor" id="website"><div class="num">02</div><h2>Website &amp; online booking</h2></div>
+  <p class="sec-sub">Patients book themselves in — the system makes sure no slot is double-booked.</p>
+  <div class="card">
+    <div class="featurehead">
+      <div class="chip">
+        <svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 9h20M7 14h5"/></svg>
+      </div>
+      <div><h3>Online booking</h3><span class="eyebrow">Patient self-service</span></div>
+    </div>
+    <p>A patient visits the website, picks a service, then chooses a day and an <b>available time</b>. They send a request — <b>no payment is taken online</b>; the practice settles payment directly.</p>
+
+    <div class="flow">
+      <div class="step"><div class="n">STEP 1</div><div class="t">Pick a service</div><div class="d">e.g. consultation or video call</div></div>
+      <div class="step"><div class="n">STEP 2</div><div class="t">Choose a free slot</div><div class="d">only open times are shown</div></div>
+      <div class="step"><div class="n">STEP 3</div><div class="t">Send the request</div><div class="d">name, phone, email</div></div>
+      <div class="step"><div class="n">STEP 4</div><div class="t">Reception confirms</div><div class="d">it becomes a real booking</div></div>
+    </div>
+
+    <div class="mock">
+      <div class="bar"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="tab">Book an appointment — choose a time</span></div>
+      <div class="body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <span class="btn ghost">09:30</span>
+          <span class="pill p-grey" style="padding:6px 13px">10:00 · taken</span>
+          <span class="btn ghost">10:30</span>
+          <span class="btn ghost">11:00</span>
+          <span class="pill p-grey" style="padding:6px 13px">11:30 · taken</span>
+          <span class="btn ghost">13:00</span>
+          <span class="btn">13:30 ✓ selected</span>
+        </div>
+        <p style="font-size:13px;color:var(--slate);margin-top:14px;margin-bottom:0">Greyed-out times are already booked. The system checks real appointments <i>and</i> pending requests so two patients can't grab the same slot.</p>
+      </div>
+    </div>
+
+    <div class="tip">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>
+      <div class="x"><b>Remember:</b> a website booking is a <b>request</b>, not a confirmed appointment — it waits in the Web Bookings inbox for reception to confirm.</div>
+    </div>
+  </div>
+
+  <!-- ============ 03 WEB BOOKINGS INBOX ============ -->
+  <div class="sec-title anchor" id="bookings"><div class="num">03</div><h2>The Web Bookings inbox</h2></div>
+  <p class="sec-sub">Where every online request lands for reception to action.</p>
+  <div class="card">
+    <p>Open this through the day. For each request, <b>match the person to a patient</b> (or create a new one), confirm the time, and turn it into a real appointment.</p>
+    <div class="mock">
+      <div class="bar"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="tab">Web Bookings — awaiting confirmation</span></div>
+      <div class="body">
+        <div class="mrow">
+          <div><div class="who">Thandi Mokoena</div><div class="meta">General consultation · Mon 30 Jun, 09:30 · 4 min ago</div></div>
+          <div style="display:flex;gap:8px;align-items:center"><span class="pill p-amber">Requested</span><span class="btn">Confirm</span></div>
+        </div>
+        <div class="mrow">
+          <div><div class="who">James Pillay</div><div class="meta">Online video call · Tue 01 Jul, 13:30 · 22 min ago</div></div>
+          <div style="display:flex;gap:8px;align-items:center"><span class="pill p-amber">Requested</span><span class="btn">Confirm</span></div>
+        </div>
+        <div class="mrow">
+          <div><div class="who">Sara N.</div><div class="meta">General consultation · 1 hr ago</div></div>
+          <div style="display:flex;gap:8px;align-items:center"><span class="pill p-green">Converted</span></div>
+        </div>
+      </div>
+    </div>
+    <ul class="clean">
+      <li>Each request shows <b>how long ago</b> it arrived — confirm promptly so the slot isn't held up.</li>
+      <li>Clear out obvious spam; the system already filters most automated junk.</li>
+    </ul>
+  </div>
+
+  <!-- ============ 04 PATIENTS ============ -->
+  <div class="sec-title anchor" id="patients"><div class="num">04</div><h2>Patient records</h2></div>
+  <p class="sec-sub">The complete file for every patient — kept in one place.</p>
+  <div class="twocol">
+    <div class="card">
+      <div class="featurehead">
+        <div class="chip"><svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round"><path d="M5 3h11l3 3v15H5z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div>
+        <div><h3>What's in a file</h3></div>
+      </div>
+      <ul class="clean">
+        <li>Personal &amp; contact details, account holder, next of kin</li>
+        <li>Medical aid scheme, plan &amp; membership</li>
+        <li>Allergies, chronic conditions, current medication</li>
+        <li>Past surgeries, family history, lifestyle</li>
+        <li>Vitals each visit — and automatic <b>BMI</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="featurehead">
+        <div class="chip"><svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg></div>
+        <div><h3>Use it well</h3></div>
+      </div>
+      <ul class="clean">
+        <li><b>Allergies show as warning banners</b> on appointments — keep them tidy.</li>
+        <li>Each patient gets a <b>file number automatically</b>.</li>
+        <li>If it says a patient already exists, <b>search by ID number</b> — don't make a duplicate.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card flat" style="margin-top:16px">
+    <span class="eyebrow">What you'll see</span>
+    <div class="mock" style="margin-top:8px">
+      <div class="bar"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="tab">Patient · Thandi Mokoena · File GP-0042</span></div>
+      <div class="body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="pill p-rose">⚠ Allergy: Penicillin</span>
+          <span class="pill p-amber">Chronic: Hypertension</span>
+          <span class="pill p-blue">Medical aid: Discovery</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:13px">
+          <div style="background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:10px"><div style="color:var(--slate)">BP</div><b>128 / 82</b></div>
+          <div style="background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:10px"><div style="color:var(--slate)">Weight</div><b>71.4 kg</b></div>
+          <div style="background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:10px"><div style="color:var(--slate)">BMI</div><b>24.6</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 05 APPOINTMENTS ============ -->
+  <div class="sec-title anchor" id="appointments"><div class="num">05</div><h2>Appointments &amp; waiting room</h2></div>
+  <p class="sec-sub">See the whole day at a glance — and where each patient is in their visit.</p>
+  <div class="card">
+    <p>Patients move through a clear journey. The live waiting-room screen updates by itself, so everyone can see what's happening without refreshing.</p>
+    <div class="flow">
+      <div class="step"><div class="n">●</div><div class="t">Scheduled</div><div class="d">booked in the diary</div></div>
+      <div class="step"><div class="n">●</div><div class="t">Checked in</div><div class="d">arrived, waiting</div></div>
+      <div class="step"><div class="n">●</div><div class="t">With doctor</div><div class="d">in the consult</div></div>
+      <div class="step"><div class="n">●</div><div class="t">Completed</div><div class="d">visit finished</div></div>
+    </div>
+    <div class="mock">
+      <div class="bar"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="tab">Waiting room — live</span></div>
+      <div class="body">
+        <div class="mrow"><div><div class="who">Thandi Mokoena</div><div class="meta">09:30 · General consultation</div></div><span class="pill p-blue">With doctor</span></div>
+        <div class="mrow"><div><div class="who">James Pillay</div><div class="meta">10:00 · Walk-in</div></div><span class="pill p-green">Checked in</span></div>
+        <div class="mrow"><div><div class="who">Sara Naidoo</div><div class="meta">10:30 · Follow-up</div></div><span class="pill p-grey">Scheduled</span></div>
+      </div>
+    </div>
+    <ul class="clean">
+      <li>Handles both <b>booked appointments and walk-ins</b>.</li>
+      <li>Use the status buttons to move a patient along so the team stays in sync.</li>
+    </ul>
+  </div>
+
+  <!-- ============ 06 CHECK-IN ============ -->
+  <div class="sec-title anchor" id="checkin"><div class="num">06</div><h2>Self check-in with a QR code</h2></div>
+  <p class="sec-sub">Patients check themselves in — and fill in their details while they wait.</p>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:150px 1fr;gap:24px;align-items:center">
+      <div style="text-align:center">
+        <svg width="120" height="120" viewBox="0 0 120 120" style="border:1px solid var(--line);border-radius:14px;padding:8px;background:#fff">
+          <g fill="#0f172a">
+            <rect x="8" y="8" width="34" height="34"/><rect x="16" y="16" width="18" height="18" fill="#fff"/><rect x="22" y="22" width="6" height="6" fill="#0f172a"/>
+            <rect x="78" y="8" width="34" height="34"/><rect x="86" y="16" width="18" height="18" fill="#fff"/><rect x="92" y="22" width="6" height="6" fill="#0f172a"/>
+            <rect x="8" y="78" width="34" height="34"/><rect x="16" y="86" width="18" height="18" fill="#fff"/><rect x="22" y="92" width="6" height="6" fill="#0f172a"/>
+            <rect x="52" y="8" width="6" height="6"/><rect x="64" y="14" width="6" height="6"/><rect x="52" y="26" width="6" height="6"/><rect x="64" y="32" width="6" height="6"/>
+            <rect x="52" y="52" width="6" height="6"/><rect x="64" y="52" width="6" height="6"/><rect x="78" y="52" width="6" height="6"/><rect x="98" y="58" width="6" height="6"/>
+            <rect x="52" y="64" width="6" height="6"/><rect x="86" y="70" width="6" height="6"/><rect x="98" y="78" width="6" height="6"/><rect x="78" y="86" width="6" height="6"/>
+            <rect x="64" y="98" width="6" height="6"/><rect x="86" y="98" width="6" height="6"/><rect x="98" y="98" width="6" height="6"/>
+          </g>
+        </svg>
+        <div style="font-size:12px;color:var(--slate);margin-top:8px">Scan to check in</div>
+      </div>
+      <div>
+        <p style="margin-top:0">A patient scans the QR code at reception. They give the <b>basics first</b>, then can complete a <b>fuller profile while waiting</b>. Reception sees each check-in come in and accepts it.</p>
+        <div class="flow" style="margin-bottom:0">
+          <div class="step"><div class="n">SCAN</div><div class="t">Quick details</div><div class="d">name, reason, consent</div></div>
+          <div class="step"><div class="n">WAIT</div><div class="t">Full profile</div><div class="d">filled while seated</div></div>
+          <div class="step"><div class="n">DESK</div><div class="t">Reception accepts</div><div class="d">links to the file</div></div>
+        </div>
+      </div>
+    </div>
+    <ul class="clean">
+      <li>Display the check-in QR where patients arrive (poster or tablet).</li>
+      <li>Reception accepts genuine check-ins; old, unfinished ones <b>expire on their own</b> after a couple of hours.</li>
+    </ul>
+  </div>
+
+  <!-- ============ 07 CONSULTATIONS ============ -->
+  <div class="sec-title anchor" id="consults"><div class="num">07</div><h2>Consultations &amp; clinical notes</h2></div>
+  <p class="sec-sub">Where the doctor records the visit and produces forms in a couple of clicks.</p>
+  <div class="card">
+    <p>The doctor records the reason for the visit, findings, diagnosis, treatment plan, prescriptions, diagnosis codes, referrals and follow-up dates — and can instantly produce <b>sick notes</b>, <b>lab requests</b> and <b>radiology requests</b> to print or email.</p>
+    <div class="mock">
+      <div class="bar"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="tab">Consultation · Thandi Mokoena</span></div>
+      <div class="body">
+        <div style="font-size:14px">
+          <div style="margin-bottom:8px"><b>Reason:</b> Sore throat, 3 days</div>
+          <div style="margin-bottom:8px"><b>Assessment:</b> Acute pharyngitis</div>
+          <div style="margin-bottom:12px"><b>Plan:</b> Rest, fluids, paracetamol</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <span class="btn ghost">🧾 Sick note</span>
+            <span class="btn ghost">🧪 Lab request</span>
+            <span class="btn ghost">🩻 Radiology request</span>
+            <span class="btn ghost">🖨️ Print / Email</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="twocol" style="margin-top:16px">
+      <div class="card flat">
+        <h4 style="font-size:15px;margin-bottom:4px">💡 Smart suggestions</h4>
+        <p style="font-size:14px;margin:0;color:var(--slate)">The system can suggest common prescriptions for a condition, and gets better the more it's used.</p>
+      </div>
+      <div class="card flat">
+        <h4 style="font-size:15px;margin-bottom:4px">🔁 Follow-ups</h4>
+        <p style="font-size:14px;margin:0;color:var(--slate)">Set a follow-up date and it appears on the dashboard automatically — nothing forgotten.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 08 LABS ============ -->
+  <div class="sec-title anchor" id="labs"><div class="num">08</div><h2>Lab &amp; radiology results</h2></div>
+  <p class="sec-sub">Tests go out, results come back, the doctor reviews and files them.</p>
+  <div class="card">
+    <div class="flow">
+      <div class="step"><div class="n">ORDER</div><div class="t">Doctor requests tests</div><div class="d">from the consultation</div></div>
+      <div class="step"><div class="n">SUBMIT</div><div class="t">Provider sends results</div><div class="d">via their results page</div></div>
+      <div class="step"><div class="n">REVIEW</div><div class="t">Results queue</div><div class="d">awaiting the doctor</div></div>
+      <div class="step"><div class="n">FILE</div><div class="t">Confirm &amp; file</div><div class="d">saved to the record</div></div>
+    </div>
+    <p>Labs and radiology practices have a <b>simple results page they log into with a shared password</b> — they don't each need a separate account. When they submit, the result lands in a <b>review queue</b> for the doctor to confirm and file, or decline.</p>
+    <div class="mock">
+      <div class="bar"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="tab">Pending results — for review</span></div>
+      <div class="body">
+        <div class="mrow"><div><div class="who">Full blood count — Thandi Mokoena</div><div class="meta">Submitted by PathCare · 12 min ago</div></div><div style="display:flex;gap:8px"><span class="btn ghost">Decline</span><span class="btn">Confirm &amp; file</span></div></div>
+        <div class="mrow"><div><div class="who">Chest X-ray — James Pillay</div><div class="meta">Submitted by Lake Smit · 1 hr ago</div></div><div style="display:flex;gap:8px"><span class="btn ghost">Decline</span><span class="btn">Confirm &amp; file</span></div></div>
+      </div>
+    </div>
+    <ul class="clean">
+      <li>Keep the <b>list of lab/radiology providers up to date</b> so requests go to the right place.</li>
+      <li>Once confirmed, a result is filed to the patient and drops off the pending list.</li>
+    </ul>
+  </div>
+
+  <!-- ============ 09 VIDEO ============ -->
+  <div class="sec-title anchor" id="video"><div class="num">09</div><h2>Video consultations</h2></div>
+  <p class="sec-sub">Built-in video calls — nothing to install for the patient.</p>
+  <div class="card">
+    <p>For online appointments, the doctor joins from the dashboard and the patient joins from a <b>private link reception sends them</b> (e.g. by WhatsApp or email). No app, no third-party service.</p>
+    <div class="mock">
+      <div class="bar"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="tab">Video consultation</span></div>
+      <div class="body" style="padding:0">
+        <div style="position:relative;height:200px;background:linear-gradient(135deg,#1e293b,#334155);border-radius:0">
+          <div style="position:absolute;inset:0;display:grid;place-items:center;color:#94a3b8">
+            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.6"><circle cx="12" cy="9" r="4"/><path d="M4 20c0-3.5 3.5-5.5 8-5.5s8 2 8 5.5"/></svg>
+          </div>
+          <div style="position:absolute;bottom:14px;right:14px;width:88px;height:60px;border-radius:8px;background:#0f172a;border:2px solid #475569;display:grid;place-items:center;color:#64748b;font-size:11px">You</div>
+          <div style="position:absolute;top:12px;left:14px"><span class="pill" style="background:#16a34a;color:#fff">● Connected</span></div>
+          <div style="position:absolute;bottom:14px;left:14px;display:flex;gap:8px">
+            <span class="pill p-grey" style="padding:7px 10px">🎤</span>
+            <span class="pill p-grey" style="padding:7px 10px">🎥</span>
+            <span class="pill" style="background:#e11d48;color:#fff;padding:7px 10px">End call</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="clean">
+      <li>The doctor can choose the on-screen layout (floating, split or full screen) and write notes during the call.</li>
+      <li>Reception copies the patient's join link from the appointment and sends it.</li>
+    </ul>
+    <div class="tip">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      <div class="x"><b>If a call won't connect</b> ("Connecting…" that never finishes), staff can open the built-in <b>connection-test page</b> — it tells you straight away whether the calling service is healthy. Check that before escalating to tech support.</div>
+    </div>
+  </div>
+
+  <!-- ============ 10 BILLING ============ -->
+  <div class="sec-title anchor" id="billing"><div class="num">10</div><h2>Billing &amp; medical-aid claims</h2></div>
+  <p class="sec-sub">Invoices, payments, receipts and claim tracking in one place.</p>
+  <div class="card">
+    <p>Create invoices, record payments, print receipts, and manage medical-aid claims — submitting them and tracking whether they're accepted, rejected or paid, with easy resubmission of rejected ones.</p>
+    <div class="mock">
+      <div class="bar"><span class="dot" style="background:#f87171"></span><span class="dot" style="background:#fbbf24"></span><span class="dot" style="background:#34d399"></span><span class="tab">Invoices</span></div>
+      <div class="body">
+        <div class="mrow"><div><div class="who">INV-1043 · Thandi Mokoena</div><div class="meta">R 620.00 · issued today</div></div><span class="pill p-green">Paid</span></div>
+        <div class="mrow"><div><div class="who">INV-1044 · James Pillay</div><div class="meta">R 480.00 · due in 30 days</div></div><span class="pill p-blue">Sent</span></div>
+        <div class="mrow"><div><div class="who">INV-1041 · Sara Naidoo</div><div class="meta">R 1 020.00 · medical aid claim</div></div><span class="pill p-amber">Awaiting claim</span></div>
+      </div>
+    </div>
+    <ul class="clean">
+      <li>Invoices move through clear statuses — <b>Draft → Sent → Paid</b> — so outstanding amounts are obvious.</li>
+      <li>Receipts are created automatically when you record a payment.</li>
+      <li>The system works out VAT and shows the balance still due.</li>
+    </ul>
+  </div>
+
+  <!-- ============ 11 DOCUMENTS ============ -->
+  <div class="sec-title anchor" id="docs"><div class="num">11</div><h2>Documents</h2></div>
+  <p class="sec-sub">A tidy, searchable filing cabinet for each patient.</p>
+  <div class="card">
+    <p>Store referral letters, consent forms, prescriptions, sick notes, claim forms and more — typed in or attached as a file, filed under the right patient and category.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+      <span class="pill p-blue">📄 Referral letter</span>
+      <span class="pill p-green">✅ Consent form</span>
+      <span class="pill p-amber">💊 Prescription</span>
+      <span class="pill p-rose">🧾 Sick note</span>
+      <span class="pill p-grey">📋 Claim form</span>
+    </div>
+  </div>
+
+  <!-- ============ 12 DASHBOARD ============ -->
+  <div class="sec-title anchor" id="dash"><div class="num">12</div><h2>Dashboard, tasks &amp; reports</h2></div>
+  <p class="sec-sub">Start the day here — it surfaces what needs attention.</p>
+  <div class="twocol">
+    <div class="card">
+      <div class="featurehead"><div class="chip"><svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="11" width="8" height="10" rx="1"/><rect x="3" y="14" width="8" height="7" rx="1"/></svg></div><div><h3>Daily dashboard</h3></div></div>
+      <ul class="clean">
+        <li>Today's appointments</li>
+        <li>Outstanding tasks (High / Medium / Low)</li>
+        <li>Upcoming follow-ups</li>
+        <li>Recently added patients</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="featurehead"><div class="chip"><svg class="ico-lg" viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg></div><div><h3>Simple reports</h3></div></div>
+      <ul class="clean">
+        <li>Appointment trends over time</li>
+        <li>Breakdown of appointment outcomes</li>
+        <li>Most common chronic conditions</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ A DAY ============ -->
+  <div class="sec-title anchor" id="day"><div class="num">★</div><h2>A day in the practice</h2></div>
+  <p class="sec-sub">How the pieces work together from morning to evening.</p>
+  <div class="card">
+    <div style="position:relative;padding-left:8px">
+      <div style="display:grid;gap:14px">
+        <div style="display:flex;gap:14px;align-items:flex-start"><span class="pill p-green" style="min-width:64px;text-align:center">08:30</span><div><b>Reception opens the dashboard</b> — sees today's diary, follow-ups due and any overnight online bookings waiting to confirm.</div></div>
+        <div style="display:flex;gap:14px;align-items:flex-start"><span class="pill p-green" style="min-width:64px;text-align:center">09:15</span><div><b>A patient scans the QR code</b> to check in and fills in their details while they wait. Reception accepts the check-in.</div></div>
+        <div style="display:flex;gap:14px;align-items:flex-start"><span class="pill p-green" style="min-width:64px;text-align:center">09:30</span><div><b>The doctor sees the patient</b>, writes the consultation note, orders a blood test and prints a sick note.</div></div>
+        <div style="display:flex;gap:14px;align-items:flex-start"><span class="pill p-blue" style="min-width:64px;text-align:center">11:00</span><div><b>An online video consultation</b> — the patient joins from the link reception sent; the doctor takes notes during the call.</div></div>
+        <div style="display:flex;gap:14px;align-items:flex-start"><span class="pill p-amber" style="min-width:64px;text-align:center">14:00</span><div><b>The lab submits results</b>, which appear in the review queue. The doctor confirms and files them to the patient.</div></div>
+        <div style="display:flex;gap:14px;align-items:flex-start"><span class="pill p-rose" style="min-width:64px;text-align:center">16:30</span><div><b>Reception bills the day's visits</b>, records payments, prints receipts and submits medical-aid claims.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HELP ============ -->
+  <div class="sec-title anchor" id="help"><div class="num">?</div><h2>Quick troubleshooting</h2></div>
+  <p class="sec-sub">First things to check before raising a ticket.</p>
+  <table>
+    <tr><th style="width:42%">What you see</th><th>First thing to check</th></tr>
+    <tr><td>Video call won't connect</td><td>Open the built-in <b>connection-test page</b> — it shows whether the calling service is healthy.</td></tr>
+    <tr><td>A lab/radiology can't reach their results page</td><td>They use a <b>shared password</b> — confirm they have the right one.</td></tr>
+    <tr><td>A patient says an email didn't arrive</td><td>Flag to tech support — email delivery may need switching on.</td></tr>
+    <tr><td>"I booked online but nothing happened"</td><td>Check the <b>Web Bookings inbox</b> — it's likely waiting there to be confirmed.</td></tr>
+    <tr><td>A patient file won't save (duplicate)</td><td>They probably already exist — <b>search by ID number</b> instead of creating a new one.</td></tr>
+    <tr><td>An online booking didn't set up a video call</td><td>Make sure the chosen service was the <b>online video</b> appointment type.</td></tr>
+    <tr><td>Staff keep getting logged out</td><td>Normal — there's a <b>2-hour inactivity</b> sign-out for security. Just log back in.</td></tr>
+  </table>
+
+  <!-- ============ GOOD TO KNOW ============ -->
+  <div class="sec-title anchor" id="know"><div class="num">!</div><h2>Good to know</h2></div>
+  <div class="twocol">
+    <div class="card flat">
+      <h4 style="margin-bottom:6px">🔐 Patient links are private</h4>
+      <p style="margin:0;color:var(--slate);font-size:14.5px">Video, check-in and results links are meant only for the person they're sent to. Don't post them publicly.</p>
+    </div>
+    <div class="card flat">
+      <h4 style="margin-bottom:6px">💳 No online payment</h4>
+      <p style="margin:0;color:var(--slate);font-size:14.5px">The practice always settles payment directly with the patient — nothing is charged on the website.</p>
+    </div>
+    <div class="card flat">
+      <h4 style="margin-bottom:6px">🔄 Always in sync</h4>
+      <p style="margin:0;color:var(--slate);font-size:14.5px">What reception does is instantly visible to the doctor, and vice versa. Accurate records help everyone.</p>
+    </div>
+    <div class="card flat">
+      <h4 style="margin-bottom:6px">🚪 Two ways in</h4>
+      <p style="margin:0;color:var(--slate);font-size:14.5px">Patients use the public website and links; staff log in to the practice dashboard.</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+    <div>
+      <div style="font-size:17px;color:#fff;font-weight:800;margin-bottom:2px">MediCareGP — System Guide</div>
+      <div>Prepared for the practice team of <b>Dr. Tamuka Chivonivoni</b>.</div>
+    </div>
+    <div style="text-align:right;color:#64748b;font-size:13px">
+      Team onboarding &amp; everyday reference<br>Tip: print this page to PDF to share offline.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

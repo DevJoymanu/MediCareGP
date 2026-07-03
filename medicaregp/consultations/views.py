@@ -282,14 +282,13 @@ def _classify_radiology_items(items):
 
 def _build_request_pdf(consultation, inv, request):
     """Letterheaded lab/radiology request form, mirroring the imaging-request layout.
-    Includes the secure results-portal link + QR code."""
-    import io as _io
-    import qrcode
+    Results are submitted via the standing /lab/ and /radiology/ portals, so no
+    per-patient link or QR is printed on the form the patient carries."""
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.units import mm
     from reportlab.lib import colors
     from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer, HRFlowable,
-                                    Table, TableStyle, Image as RLImage)
+                                    Table, TableStyle)
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 
@@ -454,29 +453,6 @@ def _build_request_pdf(consultation, inv, request):
             body_style))
         story.append(Spacer(1, 4 * mm))
 
-    # ── Results portal link + QR ───────────────────────────────────────────────
-    portal_url = request.build_absolute_uri(f'/results/{inv.token}/')
-    qr_buf = _io.BytesIO()
-    qrcode.make(portal_url).save(qr_buf, format='PNG')
-    qr_buf.seek(0)
-    qr_img = RLImage(qr_buf, width=26 * mm, height=26 * mm)
-
-    portal_cell = Paragraph(
-        "<b>Submit results online</b><br/>"
-        "Scan the QR code or open the secure link below to upload this patient's "
-        "results directly to the requesting practice:<br/>"
-        f"<font color='#7e22ce'>{portal_url}</font>",
-        style('PORT', fontSize=9, fontName='Helvetica', textColor=dark, leading=13))
-    pt = Table([[qr_img, portal_cell]], colWidths=[30 * mm, 144 * mm])
-    pt.setStyle(TableStyle([
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('BOX', (0, 0), (-1, -1), 1, purple),
-        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#faf5ff')),
-        ('TOPPADDING', (0, 0), (-1, -1), 8), ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8), ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-    ]))
-    story.append(pt)
-
     doc.build(story)
     buffer.seek(0)
     return buffer
@@ -560,7 +536,6 @@ def _send_request_email(request, pk, kind):
     buffer = _build_request_pdf(consultation, inv, request)
     label = 'Radiology' if kind == 'radiology' else 'Lab'
     filename = f'{label}_Request_{str(patient).replace(" ", "_")}_{consultation.date}.pdf'
-    portal_url = request.build_absolute_uri(f'/results/{inv.token}/')
 
     body = (
         f'Dear {who},\n\n'
@@ -570,13 +545,16 @@ def _send_request_email(request, pk, kind):
     )
     if kind == 'radiology':
         body += (
-            'Please present this form at the radiology practice. '
-            'The practice can submit results back to us securely using the link on the form:\n'
+            'Please present this form at the radiology practice. The practice submits '
+            'results back to us via our secure radiology portal.\n\n'
         )
     else:
-        body += 'Results can be submitted back to us securely using the link below:\n'
+        lab_portal_url = request.build_absolute_uri(reverse('lab_portal'))
+        body += (
+            'Results can be submitted back to us securely via our lab portal:\n'
+            f'{lab_portal_url}\n\n'
+        )
     body += (
-        f'{portal_url}\n\n'
         f'Kind regards,\n{getattr(settings, "PRACTICE_NAME", "")}\n'
         f'{getattr(settings, "PRACTICE_PHONE", "")}'
     )

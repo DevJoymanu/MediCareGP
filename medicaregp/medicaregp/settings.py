@@ -138,6 +138,13 @@ CHECKIN_RADIUS_METRES      = 300
 CHECKIN_OPEN_HOUR          = 7
 CHECKIN_CLOSE_HOUR         = 18
 
+# ── Lab / radiology results portals ────────────────────────────────────────────
+# Standing portals at /lab/ and /radiology/ where providers log in with a shared
+# password and submit results for outstanding requests. This replaces the old
+# per-request link/QR that used to be printed on the referral form.
+LAB_PORTAL_PASSWORD        = os.environ.get('LAB_PORTAL_PASSWORD', 'lab-results')
+RADIOLOGY_PORTAL_PASSWORD  = os.environ.get('RADIOLOGY_PORTAL_PASSWORD', 'radiology-results')
+
 # ── Practice details (used on invoices & emails) ───────────────────────────────
 PRACTICE_NAME    = 'Dr. Tamuka Chivonivoni'
 PRACTICE_SUBTITLE = 'General Practitioner'

@@ -42,6 +42,9 @@
     .btn { width:100%; background:#7e22ce; color:#fff; border:none; border-radius:11px; padding:14px;
       font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
     .btn:hover { background:#6b21a8; }
+    .back { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:#7e22ce;
+      text-decoration:none; margin-bottom:14px; }
+    .back:hover { text-decoration:underline; }
     .popia { margin-top:16px; font-size:11.5px; color:#94a3b8; text-align:center; display:flex; gap:6px; justify-content:center; align-items:center; }
     .footer { text-align:center; margin-top:18px; font-size:12px; font-weight:700; color:rgba(255,255,255,.7); }
   </style>
@@ -49,6 +52,7 @@
 <body>
 <div class="wrap">
   <div class="card">
+    {% if back_url %}<a class="back" href="{{ back_url }}"><i class="bi bi-arrow-left"></i> Back to all requests</a>{% endif %}
     <div class="brand">SECURE RESULTS SUBMISSION</div>
     <h1>Submit Investigation Results</h1>
     <div class="sub">Requested by {{ practice_name }}</div>

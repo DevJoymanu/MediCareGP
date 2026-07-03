@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ label }} Results Portal — {{ practice_name }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #7e22ce 0%, #6b21a8 50%, #581c87 100%);
+      min-height: 100vh; padding: 24px 16px; color: #1e293b;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .wrap { width: 100%; max-width: 420px; }
+    .card { background: #fff; border-radius: 22px; padding: 34px 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+    .icon { text-align:center; font-size:34px; color:#7e22ce; margin-bottom:8px; }
+    .brand { text-align: center; margin-bottom: 4px; font-size: 12px; font-weight: 700; color: #7e22ce; letter-spacing: .05em; text-transform:uppercase; }
+    h1 { font-size: 22px; font-weight: 900; color: #4c1d95; text-align: center; margin-bottom: 6px; }
+    .sub { text-align: center; font-size: 13px; color: #64748b; margin-bottom: 24px; }
+    label { display:block; font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; }
+    input[type=password] {
+      width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:12px 14px;
+      font-size:15px; font-family:inherit; color:#1e293b; background:#fff;
+    }
+    input[type=password]:focus { outline:none; border-color:#7e22ce; box-shadow:0 0 0 3px rgba(126,34,206,.12); }
+    .error { background:#fee2e2; border:1px solid #fecaca; color:#b91c1c; font-size:13px; border-radius:10px; padding:11px 14px; margin-bottom:18px; }
+    .honeypot { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+    .btn { width:100%; margin-top:20px; background:#7e22ce; color:#fff; border:none; border-radius:11px; padding:14px;
+      font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .btn:hover { background:#6b21a8; }
+    .footer { text-align:center; margin-top:18px; font-size:12px; font-weight:700; color:rgba(255,255,255,.7); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="icon"><i class="bi bi-clipboard2-pulse"></i></div>
+    <div class="brand">{{ label }} Results Portal</div>
+    <h1>{{ practice_name }}</h1>
+    <div class="sub">Enter the portal password to view and submit results for outstanding requests.</div>
+
+    {% if error %}<div class="error"><i class="bi bi-exclamation-circle"></i> {{ error }}</div>{% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="honeypot"><label>Website</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+      <label>Portal password</label>
+      <input type="password" name="password" autofocus autocomplete="current-password" placeholder="••••••••">
+      <button type="submit" class="btn"><i class="bi bi-unlock"></i> Enter Portal</button>
+    </form>
+  </div>
+  <div class="footer">{{ practice_name }}</div>
+</div>
+</body>
+</html>
