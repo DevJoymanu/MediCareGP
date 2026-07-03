@@ -26,9 +26,26 @@ def patient_list(request):
     if q:
         patients = patients.filter(
             Q(id_number__icontains=q) |
-            Q(phone__icontains=q)
+            Q(phone__icontains=q) |
+            Q(first_name__icontains=q) |
+            Q(last_name__icontains=q)
         )
     return render(request, 'patients/patient_list.html', {'patients': patients, 'q': q})
+
+
+@login_required
+def patient_checkin(request):
+    """Simplified check-in view for receptionists."""
+    q = request.GET.get('q', '')
+    patients = _patient_qs(request)
+    if q:
+        patients = patients.filter(
+            Q(id_number__icontains=q) |
+            Q(phone__icontains=q) |
+            Q(first_name__icontains=q) |
+            Q(last_name__icontains=q)
+        )
+    return render(request, 'patients/patient_checkin_simple.html', {'patients': patients, 'q': q})
 
 
 @login_required

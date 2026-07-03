@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}What's Wrong? | GP CRM{% endblock %}
+{% block page_title %}What's Wrong With This Patient?{% endblock %}
+{% block page_sub %}{{ patient }} — Select all symptoms that apply{% endblock %}
+{% block content %}
+<div style="max-width:700px;margin:0 auto;padding:20px;">
+
+  <!-- INFO BOX -->
+  <div style="background:#e0e7ff;border-left:4px solid #3b82f6;padding:16px;border-radius:8px;margin-bottom:30px;">
+    <div style="font-weight:600;color:#1e40af;margin-bottom:4px;">💡 How to use</div>
+    <div style="font-size:13px;color:#3b82f6;">Check all symptoms the patient has RIGHT NOW. The system will suggest likely diagnoses.</div>
+  </div>
+
+  <form method="post" action="{% url 'differential_capture' consultation.pk %}">
+    {% csrf_token %}
+
+    <!-- SYMPTOMS GRID -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:30px;">
+      {% for symptom in symptoms %}
+      <label style="display:flex;align-items:center;gap:12px;padding:12px;background:white;border:2px solid #e5e7eb;border-radius:8px;cursor:pointer;transition:all 0.2s;font-size:14px;">
+        <input type="checkbox" name="presenting" value="{{ symptom.id }}"
+               style="width:20px;height:20px;cursor:pointer;accent-color:#3b82f6;"
+               onchange="this.parentElement.style.borderColor='#3b82f6';this.parentElement.style.backgroundColor='#f0f4ff';">
+        <span style="flex:1;">{{ symptom.name }}</span>
+      </label>
+      {% endfor %}
+    </div>
+
+    <!-- SUBMIT BUTTON -->
+    <button type="submit" style="width:100%;padding:16px;background:#10b981;color:white;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;transition:background 0.2s;">
+      📊 Get Diagnosis Suggestions
+    </button>
+
+    <a href="{% url 'consultation_detail' consultation.pk %}" style="display:block;text-align:center;margin-top:12px;padding:10px;color:#3b82f6;text-decoration:none;font-weight:600;">
+      ← Back
+    </a>
+  </form>
+
+  <!-- TIP -->
+  <div style="background:#fef3c7;border-left:4px solid #f59e0b;padding:16px;border-radius:8px;margin-top:30px;font-size:13px;">
+    <div style="font-weight:600;color:#b45309;margin-bottom:4px;">ℹ️ Tip</div>
+    <div style="color:#92400e;">Select at least 3 symptoms for the best suggestions. If unsure, ask the patient specific questions.</div>
+  </div>
+
+</div>
+{% endblock %}

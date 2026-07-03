@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Diagnosis Suggestions | GP CRM{% endblock %}
+{% block page_title %}Likely Diagnoses{% endblock %}
+{% block page_sub %}Based on the symptoms you selected{% endblock %}
+{% block content %}
+<div style="max-width:700px;margin:0 auto;padding:20px;">
+
+  <!-- TOP 3 SUGGESTIONS -->
+  <h3 style="font-size:14px;text-transform:uppercase;opacity:0.6;margin-bottom:16px;">Top Suggestions</h3>
+
+  {% for result in output.results|slice:":3" %}
+  <form method="post" action="{% url 'differential_confirm' result_pk %}">
+    {% csrf_token %}
+    <input type="hidden" name="confirm" value="{{ result.condition_id }}">
+
+    <div style="background:white;border:2px solid #e5e7eb;border-radius:12px;padding:20px;margin-bottom:16px;transition:all 0.2s;">
+      <!-- RANK & NAME -->
+      <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:12px;">
+        <div style="background:linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);color:white;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;">
+          {{ result.rank }}
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:18px;font-weight:700;margin-bottom:4px;">{{ result.condition }}</div>
+          <div style="font-size:12px;opacity:0.7;">Based on {{ result.breakdown.presenting_matches|length }} matching symptom(s)</div>
+        </div>
+      </div>
+
+      <!-- MATCHING SYMPTOMS -->
+      {% if result.breakdown.presenting_matches %}
+      <div style="background:#f0f4ff;padding:12px;border-radius:8px;margin-bottom:12px;font-size:13px;">
+        <div style="font-weight:600;color:#1e40af;margin-bottom:6px;">✓ Symptoms that match:</div>
+        <div style="color:#3b82f6;">
+          {% for match in result.breakdown.presenting_matches %}
+            • {{ match.symptom }}<br>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- CONFIDENCE BADGE -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        {% if result.band == 'High' %}
+          <span style="background:#d1fae5;color:#065f46;padding:4px 12px;border-radius:6px;font-weight:600;font-size:12px;">
+            🟢 High confidence
+          </span>
+        {% elif result.band == 'Medium' %}
+          <span style="background:#fef3c7;color:#b45309;padding:4px 12px;border-radius:6px;font-weight:600;font-size:12px;">
+            🟡 Medium confidence
+          </span>
+        {% else %}
+          <span style="background:#fee2e2;color:#991b1b;padding:4px 12px;border-radius:6px;font-weight:600;font-size:12px;">
+            🔴 Low confidence
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- CONFIRM BUTTON -->
+      <button type="submit" style="width:100%;padding:12px;background:#10b981;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:background 0.2s;">
+        ✓ Select this diagnosis
+      </button>
+    </div>
+  </form>
+  {% endfor %}
+
+  <!-- NO MATCH MESSAGE -->
+  {% if output.results|length == 0 %}
+  <div style="background:#fee2e2;border-left:4px solid #dc2626;padding:20px;border-radius:8px;text-align:center;">
+    <div style="font-weight:700;color:#991b1b;margin-bottom:8px;">❌ No matching diagnoses</div>
+    <div style="font-size:13px;color:#7f1d1d;margin-bottom:12px;">The symptoms don't match common diagnoses. Consider adding more symptoms or consulting specialist resources.</div>
+    <a href="javascript:history.back()" style="display:inline-block;background:#dc2626;color:white;padding:8px 16px;border-radius:6px;text-decoration:none;font-weight:600;font-size:12px;">
+      ← Try again
+    </a>
+  </div>
+  {% endif %}
+
+  <!-- FOOTER -->
+  <div style="margin-top:30px;text-align:center;opacity:0.6;font-size:12px;">
+    <p>These are <strong>suggestions only</strong>. Your clinical judgment is always the final decision.</p>
+    <a href="{% url 'consultation_detail' consultation_pk %}" style="color:#3b82f6;text-decoration:none;">← Back to patient</a>
+  </div>
+
+</div>
+{% endblock %}

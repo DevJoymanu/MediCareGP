@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Consultation | GP CRM{% endblock %}
+{% block page_title %}Patient Consultation{% endblock %}
+{% block page_sub %}{{ consultation.patient }} — {{ consultation.date|date:"j F Y" }}{% endblock %}
+{% block content %}
+<div style="max-width:800px;margin:0 auto;padding:20px;">
+
+  <!-- PATIENT CARD (Header) -->
+  <div style="background:linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);color:white;padding:20px;border-radius:12px;margin-bottom:30px;">
+    <h2 style="margin:0 0 8px;font-size:24px;font-weight:700;">{{ consultation.patient.first_name }} {{ consultation.patient.last_name }}</h2>
+    <div style="font-size:14px;opacity:0.9;">Age {{ consultation.patient.get_age }} • {{ consultation.patient.get_gender_display }}</div>
+
+    <!-- ALLERGY WARNING -->
+    {% if consultation.patient.allergies %}
+    <div style="background:rgba(255,255,255,0.2);padding:10px 12px;border-radius:6px;margin-top:12px;font-weight:600;">
+      ⚠️ ALLERGIES: {{ consultation.patient.allergies }}
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- VITALS SECTION -->
+  <div style="background:#f9fafb;padding:20px;border-radius:12px;margin-bottom:20px;">
+    <h3 style="margin:0 0 16px;font-size:16px;font-weight:700;">📊 Vitals</h3>
+
+    {% if consultation.weight_kg or consultation.bp_reading %}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        {% if consultation.weight_kg %}
+        <div style="background:white;padding:12px;border-radius:8px;border-left:4px solid #3b82f6;">
+          <div style="font-size:12px;opacity:0.7;margin-bottom:4px;">Weight</div>
+          <div style="font-size:20px;font-weight:700;">{{ consultation.weight_kg }} kg</div>
+        </div>
+        {% endif %}
+
+        {% if consultation.bp_reading %}
+        <div style="background:white;padding:12px;border-radius:8px;border-left:4px solid #ef4444;">
+          <div style="font-size:12px;opacity:0.7;margin-bottom:4px;">Blood Pressure</div>
+          <div style="font-size:20px;font-weight:700;">{{ consultation.bp_reading }}</div>
+        </div>
+        {% endif %}
+      </div>
+    {% else %}
+    <p style="opacity:0.6;font-size:13px;margin:0;">No vitals recorded yet.</p>
+    {% endif %}
+
+    <a href="{% url 'vitals_add' consultation.patient.pk %}" style="display:inline-block;margin-top:12px;padding:8px 14px;background:#3b82f6;color:white;text-decoration:none;border-radius:6px;font-size:12px;font-weight:600;">
+      ➕ Add/Update Vitals
+    </a>
+  </div>
+
+  <!-- CHIEF COMPLAINT -->
+  <div style="background:#f9fafb;padding:20px;border-radius:12px;margin-bottom:20px;">
+    <h3 style="margin:0 0 12px;font-size:16px;font-weight:700;">🤔 Why is the patient here?</h3>
+    {% if consultation.chief_complaint %}
+      <div style="background:white;padding:12px;border-radius:8px;border-left:4px solid #8b5cf6;font-size:14px;">
+        {{ consultation.chief_complaint }}
+      </div>
+    {% else %}
+      <p style="opacity:0.6;font-size:13px;margin:0;">Not recorded yet.</p>
+    {% endif %}
+
+    <a href="{% url 'consultation_edit' consultation.pk %}" style="display:inline-block;margin-top:12px;padding:8px 14px;background:#8b5cf6;color:white;text-decoration:none;border-radius:6px;font-size:12px;font-weight:600;">
+      ✏️ Edit
+    </a>
+  </div>
+
+  <!-- BIG ACTION BUTTON: What's Wrong? -->
+  <a href="{% url 'differential_capture' consultation.pk %}"
+     style="display:block;width:100%;padding:40px;background:linear-gradient(135deg, #10b981 0%, #059669 100%);color:white;text-align:center;text-decoration:none;border-radius:12px;margin-bottom:20px;transition:transform 0.2s,box-shadow 0.2s;font-weight:700;">
+    <div style="font-size:48px;margin-bottom:12px;">🩺</div>
+    <div style="font-size:24px;margin-bottom:8px;">WHAT'S WRONG?</div>
+    <div style="font-size:13px;opacity:0.95;">Get diagnosis suggestions based on symptoms</div>
+  </a>
+
+  <!-- DIAGNOSIS HISTORY -->
+  {% if consultation.differential_results.all %}
+  <div style="background:#f9fafb;padding:20px;border-radius:12px;margin-bottom:20px;">
+    <h3 style="margin:0 0 12px;font-size:16px;font-weight:700;">📋 Diagnoses</h3>
+    {% for result in consultation.differential_results.all %}
+      <div style="background:white;padding:12px;border-radius:8px;border-left:4px solid #10b981;margin-bottom:8px;">
+        <div style="font-weight:600;">{{ result.output.results.0.condition }}</div>
+        <div style="font-size:12px;opacity:0.7;margin-top:4px;">Score: {{ result.output.results.0.score|floatformat:2 }} ({{ result.output.results.0.band }})</div>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- NOTES / ASSESSMENT -->
+  <div style="background:#f9fafb;padding:20px;border-radius:12px;margin-bottom:20px;">
+    <h3 style="margin:0 0 12px;font-size:16px;font-weight:700;">📝 Clinical Notes</h3>
+    {% if consultation.assessment %}
+      <div style="background:white;padding:12px;border-radius:8px;border-left:4px solid #f59e0b;font-size:13px;line-height:1.6;">
+        {{ consultation.assessment }}
+      </div>
+    {% else %}
+      <p style="opacity:0.6;font-size:13px;margin:0;">No assessment recorded yet.</p>
+    {% endif %}
+
+    <a href="{% url 'consultation_edit' consultation.pk %}" style="display:inline-block;margin-top:12px;padding:8px 14px;background:#f59e0b;color:white;text-decoration:none;border-radius:6px;font-size:12px;font-weight:600;">
+      ✏️ Edit
+    </a>
+  </div>
+
+  <!-- FOOTER ACTIONS -->
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <a href="{% url 'consultation_list' %}" style="flex:1;min-width:120px;padding:12px;background:#f3f4f6;color:#374151;border-radius:8px;text-align:center;text-decoration:none;font-weight:600;">
+      ← Back
+    </a>
+    <a href="{% url 'consultation_edit' consultation.pk %}" style="flex:1;min-width:120px;padding:12px;background:#3b82f6;color:white;border-radius:8px;text-align:center;text-decoration:none;font-weight:600;">
+      ✏️ Edit Notes
+    </a>
+    <a href="{% url 'consultation_print' consultation.pk %}" style="flex:1;min-width:120px;padding:12px;background:#8b5cf6;color:white;border-radius:8px;text-align:center;text-decoration:none;font-weight:600;">
+      🖨️ Print
+    </a>
+  </div>
+
+</div>
+{% endblock %}

@@ -73,7 +73,7 @@ def differential_capture(request, consultation_pk):
         )
         return redirect('differential_result', pk=result.pk)
 
-    return render(request, 'diagnosis/differential_capture.html', context)
+    return render(request, 'diagnosis/symptom_checklist_simple.html', context)
 
 
 @doctor_required
@@ -86,9 +86,10 @@ def differential_result(request, pk):
     suggestions = engine.suggest_more_symptoms(result.output, presenting_ids, working_ids)
     selected_names = dict(Symptom.objects.filter(
         id__in=presenting_ids + working_ids).values_list('id', 'name'))
-    return render(request, 'diagnosis/differential_result.html', {
+    return render(request, 'diagnosis/results_simple.html', {
         'result': result,
-        'consultation': result.consultation,
+        'result_pk': result.pk,
+        'consultation_pk': result.consultation.pk,
         'patient': result.patient,
         'output': result.output,
         'flags': result.inputs.get('first_occurrence_flags', []),

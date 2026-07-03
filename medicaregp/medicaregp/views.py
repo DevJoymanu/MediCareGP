@@ -9,6 +9,10 @@ from appointments.models import Appointment
 from consultations.models import Consultation
 from scripts.models import Document
 from tasks.models import Task
+from billing.models import Invoice
+from consultations.models import InvestigationRequest
+from appointments.models import WebBooking
+from medicaregp.roles import is_doctor
 
 
 # Path to the compiled Medical-Flow React site (built into Django static).

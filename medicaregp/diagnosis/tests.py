@@ -194,7 +194,7 @@ class DiagnosisRBACTests(TestCase):
         result = DifferentialResult.objects.latest('created_at')
 
         page = self.client.get(reverse('differential_result', args=[result.pk]))
-        self.assertContains(page, 'Provisional Diagnosis')
+        self.assertContains(page, 'Likely Diagnoses')  # Simplified UI title
         self.assertNotContains(page, 'Final Diagnosis')
 
         top = result.output['results'][0]

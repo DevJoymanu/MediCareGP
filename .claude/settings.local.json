@@ -77,7 +77,8 @@
       "PowerShell(Select-String -Path \"d:\\\\downloads\\\\medicaregp_1\\\\extracted_GEMS_Jan2025.txt\" -Pattern \"CO-TRIMOXAZOLE|COTRIMOXAZOLE|SEPTRAN|BACTRIM|ADCO-SEPTRIN|SEPTRA\" -CaseSensitive:$false | Select-Object -First 20 | ForEach-Object { $_.Line })",
       "PowerShell(Select-String -Path \"d:\\\\downloads\\\\medicaregp_1\\\\extracted_GEMS_Oct2024.txt\" -Pattern \"CO.TRIMOXAZOLE|SEPTRAN|BACTRIM|SEPTRIN\" -CaseSensitive:$false | Select-Object -First 20 | ForEach-Object { $_.Line })",
       "PowerShell(Select-String -Path \"d:\\\\downloads\\\\medicaregp_1\\\\extracted_GEMS_Oct2024.txt\" -Pattern \"TRETINOIN .0[12]\" -CaseSensitive:$false | Select-Object -First 10 | ForEach-Object { $_.Line })",
-      "PowerShell(Select-String -Path \"d:\\\\downloads\\\\medicaregp_1\\\\extracted_GEMS_Oct2024.txt\" -Pattern \"^[0-9]+ TRETINOIN \" -CaseSensitive:$false | Select-Object -First 10 | ForEach-Object { $_.Line })"
+      "PowerShell(Select-String -Path \"d:\\\\downloads\\\\medicaregp_1\\\\extracted_GEMS_Oct2024.txt\" -Pattern \"^[0-9]+ TRETINOIN \" -CaseSensitive:$false | Select-Object -First 10 | ForEach-Object { $_.Line })",
+      "Bash(python manage.py test --keepdb)"
     ],
     "additionalDirectories": [
       "d:\\downloads\\medicaregp_1"
