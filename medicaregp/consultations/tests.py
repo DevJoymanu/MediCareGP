@@ -29,27 +29,57 @@ class ConsultationCreateViewTests(TestCase):
             reason='Follow-up',
         )
 
-    def test_patient_query_prefills_form(self):
+    def test_patient_start_creates_consultation_and_opens_workspace(self):
         self.client.login(username='tester', password='secret123')
 
         response = self.client.get(reverse('consultation_create') + f'?patient_id={self.patient.pk}')
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['form'].initial['patient'], self.patient.pk)
-        self.assertQuerysetEqual(
-            response.context['form'].fields['appointment'].queryset,
-            Appointment.objects.filter(patient=self.patient).order_by('-date', '-time'),
-            transform=lambda x: x,
-        )
+        consultation = Consultation.objects.get(patient=self.patient)
+        self.assertRedirects(response, reverse('diagnosis_workspace', args=[consultation.pk]))
 
-    def test_appointment_query_prefills_patient_and_appointment(self):
+    def test_patient_start_is_idempotent_same_day(self):
+        """Double-clicking Start must not create a second consultation."""
+        self.client.login(username='tester', password='secret123')
+        url = reverse('consultation_create') + f'?patient_id={self.patient.pk}'
+        self.client.get(url)
+        self.client.get(url)
+        self.assertEqual(Consultation.objects.filter(patient=self.patient).count(), 1)
+
+    def test_appointment_start_links_appointment_and_prefills_complaint(self):
+        self.client.login(username='tester', password='secret123')
+        self.appointment.status = 'Checked In'
+        self.appointment.save(update_fields=['status'])
+
+        response = self.client.get(
+            reverse('consultation_create') + f'?appointment_id={self.appointment.pk}')
+
+        consultation = Consultation.objects.get(appointment=self.appointment)
+        self.assertRedirects(response, reverse('diagnosis_workspace', args=[consultation.pk]))
+        self.assertEqual(consultation.patient, self.patient)
+        self.assertEqual(consultation.chief_complaint, 'Follow-up')
+        self.appointment.refresh_from_db()
+        self.assertEqual(self.appointment.status, 'With Doctor')
+
+    def test_no_patient_renders_start_picker(self):
+        self.client.login(username='tester', password='secret123')
+        response = self.client.get(reverse('consultation_create'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Find a patient')
+
+        response = self.client.get(reverse('consultation_create') + '?q=Thabo')
+        self.assertContains(response, 'Thabo')
+
+    def test_start_carries_forward_last_vitals(self):
+        Consultation.objects.create(
+            patient=self.patient, weight_kg='81.5', bp_reading='130/85')
         self.client.login(username='tester', password='secret123')
 
-        response = self.client.get(reverse('consultation_create') + f'?appointment_id={self.appointment.pk}')
+        self.client.get(
+            reverse('consultation_create') + f'?appointment_id={self.appointment.pk}')
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['form'].initial['patient'], self.patient.pk)
-        self.assertEqual(response.context['form'].initial['appointment'], self.appointment.pk)
+        consultation = Consultation.objects.get(appointment=self.appointment)
+        self.assertEqual(str(consultation.weight_kg), '81.5')
+        self.assertEqual(consultation.bp_reading, '130/85')
 
     def test_post_deletes_consultation(self):
         consultation = Consultation.objects.create(

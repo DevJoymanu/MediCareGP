@@ -292,7 +292,17 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 
       <div class="ws-card">
         <details class="ws-details" open>
-          <summary><div class="ws-label"><span class="exp-caret">▶</span> Notes (SOAP)</div></summary>
+          <summary><div class="ws-label"><span class="exp-caret">▶</span> Notes (SOAP) &amp; vitals</div></summary>
+          <div style="display:flex;gap:10px;margin-bottom:10px;">
+            <div class="notes-field" style="flex:0 0 140px;">
+              <label for="vitBp">BP</label>
+              <input class="ws-input" id="vitBp" placeholder="120/80" value="{{ consultation.bp_reading|default:'' }}">
+            </div>
+            <div class="notes-field" style="flex:0 0 140px;">
+              <label for="vitWeight">Weight (kg)</label>
+              <input class="ws-input" id="vitWeight" inputmode="decimal" placeholder="72.5" value="{{ consultation.weight_kg|default:'' }}">
+            </div>
+          </div>
           <div class="notes-grid">
             <div class="notes-field full">
               <label for="soapS">S — Subjective / clinical notes</label>
@@ -740,12 +750,15 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
   $('saveNotesBtn').onclick = () => {
     post(URLS.notes, {
       chief_complaint: $('chiefComplaint').value,
+      bp_reading: $('vitBp').value,
+      weight_kg: $('vitWeight').value,
       subjective: $('soapS').value,
       objective: $('soapO').value,
       assessment: $('soapA').value,
       plan: $('soapP').value,
     }).then(({ ok, data }) => {
-      $('saveStamp').textContent = ok ? '✓ saved ' + data.saved_at : 'save failed';
+      $('saveStamp').textContent = ok ? '✓ saved ' + data.saved_at : (data.error || 'save failed');
+      $('saveStamp').style.color = ok ? '#15803d' : '#b91c1c';
       setTimeout(() => { $('saveStamp').textContent = ''; }, 4000);
     });
   };

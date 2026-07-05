@@ -5,6 +5,7 @@ RBAC: every view is @doctor_required — reception hitting any of these URLs
 gets HTTP 403 (enforced server-side, see medicaregp/roles.py).
 """
 import json
+from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
 from django.http import HttpResponseBadRequest, JsonResponse
@@ -314,6 +315,21 @@ def workspace_confirm(request, consultation_pk):
         result.save(update_fields=['confirmed_at', 'confirmed_dx'])
     consultation.save()
 
+    # Confirming wraps up the visit: complete the linked appointment (same
+    # behaviour the old create-form save had) and feed the Rx learner.
+    from appointments.models import Appointment
+    from consultations.views import _learn_from_consultation
+    apt = consultation.appointment
+    if apt and apt.status in ('Checked In', 'With Doctor'):
+        apt.status = 'Completed'
+        apt.save(update_fields=['status'])
+    else:
+        Appointment.objects.filter(
+            patient=consultation.patient, date=timezone.localdate(),
+            status__in=('Checked In', 'With Doctor'),
+        ).update(status='Completed')
+    _learn_from_consultation(consultation)
+
     return JsonResponse({'ok': True,
                          'redirect': reverse('consultation_detail', args=[consultation.pk])})
 
@@ -321,18 +337,28 @@ def workspace_confirm(request, consultation_pk):
 @doctor_required
 @require_POST
 def workspace_save_notes(request, consultation_pk):
-    """Save the working-area fields (chief complaint + SOAP) in place."""
+    """Save the working-area fields (chief complaint, quick vitals, SOAP)."""
     consultation = get_object_or_404(Consultation, pk=consultation_pk)
     data = _json_body(request)
     if data is None:
         return HttpResponseBadRequest('Invalid JSON body.')
 
-    editable = ['chief_complaint', 'subjective', 'objective', 'assessment', 'plan']
+    editable = ['chief_complaint', 'subjective', 'objective', 'assessment', 'plan', 'bp_reading']
     changed = []
     for field in editable:
         if field in data:
             setattr(consultation, field, (data[field] or '').strip())
             changed.append(field)
+    if 'weight_kg' in data:
+        raw = str(data['weight_kg'] or '').strip()
+        if raw:
+            try:
+                consultation.weight_kg = Decimal(raw)
+            except InvalidOperation:
+                return JsonResponse({'error': f'Invalid weight: {raw}'}, status=400)
+        else:
+            consultation.weight_kg = None
+        changed.append('weight_kg')
     if changed:
         consultation.save(update_fields=changed)
     return JsonResponse({'ok': True, 'saved_at': timezone.localtime().strftime('%H:%M')})

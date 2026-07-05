@@ -366,3 +366,36 @@ class WorkspaceTests(TestCase):
         self.assertEqual(Symptom.objects.get(name='Wheeze').body_region, 'chest')
         self.assertEqual(Symptom.objects.get(name='Fever').body_region, 'general')
         self.assertFalse(Symptom.objects.filter(body_region='').exists())
+
+    # ── Create-flow integration ───────────────────────────────────────────
+    def test_confirm_completes_linked_appointment(self):
+        from datetime import time as dtime
+        from appointments.models import Appointment
+        from django.utils import timezone
+        apt = Appointment.objects.create(
+            patient=self.patient, date=timezone.localdate(), time=dtime(10, 0),
+            reason='Wheeze', status='With Doctor')
+        self.consultation.appointment = apt
+        self.consultation.save()
+
+        run = self._make_run()
+        top = run['output']['results'][0]
+        self._post_json(self.confirm_url, {
+            'result_id': run['result_id'],
+            'promoted': [{'code': top['icd10_code'], 'name': top['condition'], 'source': 'engine'}],
+        })
+        apt.refresh_from_db()
+        self.assertEqual(apt.status, 'Completed')
+
+    def test_notes_save_includes_vitals(self):
+        self.client.force_login(self.doctor)
+        response = self._post_json(self.notes_url, {'bp_reading': '120/80', 'weight_kg': '72.5'})
+        self.assertEqual(response.status_code, 200)
+        self.consultation.refresh_from_db()
+        self.assertEqual(self.consultation.bp_reading, '120/80')
+        self.assertEqual(str(self.consultation.weight_kg), '72.5')
+
+    def test_notes_save_rejects_bad_weight(self):
+        self.client.force_login(self.doctor)
+        response = self._post_json(self.notes_url, {'weight_kg': 'heavy'})
+        self.assertEqual(response.status_code, 400)

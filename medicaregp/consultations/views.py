@@ -840,68 +840,63 @@ def consultation_detail(request, pk):
 
 @doctor_required
 def consultation_create(request):
-    initial = {}
+    """Start a consultation and land straight in the consultation workspace.
+
+    With a known patient (patient_id and/or appointment_id) the Consultation
+    row is created (or today's is reused — idempotent against double-clicks)
+    and the doctor is redirected to the workspace immediately. With no
+    patient, a lightweight picker is shown: today's checked-in queue plus a
+    patient search, each with a one-tap Start button.
+    """
     patient_id     = request.GET.get('patient_id')
     appointment_id = request.GET.get('appointment_id')
 
-    resolved_patient = None
+    apt = Appointment.objects.filter(pk=appointment_id).select_related('patient').first() if appointment_id else None
+    patient = apt.patient if apt else (Patient.objects.filter(pk=patient_id).first() if patient_id else None)
 
-    if appointment_id:
-        apt = Appointment.objects.filter(pk=appointment_id).first()
-        if apt:
-            initial['appointment']    = apt.pk
-            initial['patient']        = apt.patient.pk
-            initial['chief_complaint'] = apt.reason
-            resolved_patient = apt.patient
-            if request.method == 'GET' and apt.status == 'Checked In':
-                apt.status = 'With Doctor'
-                apt.save(update_fields=['status'])
-
-    if patient_id and not resolved_patient:
-        resolved_patient = Patient.objects.filter(pk=patient_id).first()
-        if resolved_patient:
-            initial['patient'] = resolved_patient.pk
-
-    if resolved_patient:
-        last = Consultation.objects.filter(
-            patient=resolved_patient
-        ).order_by('-date').first()
-        if last:
-            if last.weight_kg:
-                initial['weight_kg']  = last.weight_kg
-            if last.bp_reading:
-                initial['bp_reading'] = last.bp_reading
-
-    if request.method == 'POST' and request.POST.get('form_action') == 'reload':
-        selected_patient_id = request.POST.get('patient')
-        if selected_patient_id:
-            return redirect(f"{request.path}?patient_id={selected_patient_id}")
-        return redirect(request.path)
-
-    form = ConsultationForm(request.POST or None, initial=initial)
-    if form.is_valid():
-        consultation = form.save()
+    if patient:
         today = timezone.localdate()
-        if consultation.appointment and consultation.appointment.status in ('Checked In', 'With Doctor'):
-            consultation.appointment.status = 'Completed'
-            consultation.appointment.save(update_fields=['status'])
-        else:
-            # Fallback: complete any checked-in appointment for this patient today
-            Appointment.objects.filter(
-                patient=consultation.patient,
-                date=today,
-                status__in=('Checked In', 'With Doctor'),
-            ).update(status='Completed')
-        _learn_from_consultation(consultation)
-        _sync_investigation_requests(consultation)
-        messages.success(request, f'Consultation saved for {consultation.patient}.')
-        detail = reverse('consultation_detail', args=[consultation.pk])
-        if request.GET.get('embed'):
-            detail += '?embed=1'
-        return redirect(detail)
 
-    return render(request, 'consultations/consultation_form.html',
-                  {'form': form, 'title': 'New Consultation', 'embed': request.GET.get('embed')})
+        # Idempotent start: reuse the consultation already linked to this
+        # appointment, or (patient-only start) today's appointment-less one.
+        if apt:
+            consultation = Consultation.objects.filter(appointment=apt).first()
+        else:
+            consultation = Consultation.objects.filter(
+                patient=patient, date=today, appointment__isnull=True).first()
+
+        if consultation is None:
+            consultation = Consultation(
+                patient=patient, appointment=apt,
+                chief_complaint=(apt.reason if apt else '') or '')
+            # Carry forward last visit's vitals as a starting point.
+            last = Consultation.objects.filter(patient=patient).order_by('-date').first()
+            if last:
+                consultation.weight_kg  = last.weight_kg
+                consultation.bp_reading = last.bp_reading
+            consultation.save()
+
+        if apt and apt.status == 'Checked In':
+            apt.status = 'With Doctor'
+            apt.save(update_fields=['status'])
+
+        return redirect('diagnosis_workspace', consultation_pk=consultation.pk)
+
+    # No patient yet — render the start picker.
+    today = timezone.localdate()
+    waiting = (Appointment.objects.filter(date=today, status__in=('Checked In', 'With Doctor'))
+               .select_related('patient').order_by('time'))
+    q = (request.GET.get('q') or '').strip()
+    results = Patient.objects.none()
+    if q:
+        from django.db.models import Q
+        results = Patient.objects.filter(
+            Q(first_name__icontains=q) | Q(last_name__icontains=q) |
+            Q(id_number__icontains=q) | Q(phone__icontains=q)
+        ).order_by('last_name', 'first_name')[:12]
+    return render(request, 'consultations/consultation_start.html', {
+        'waiting': waiting, 'q': q, 'results': results,
+    })
 
 
 @doctor_required
