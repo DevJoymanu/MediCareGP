@@ -1,0 +1,66 @@
+# GP CRM CI — copy to .github/workflows/ci.yml
+# Gates what reaches main; Railway auto-deploys main after merge.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: medicaregp
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: gpcrm
+          POSTGRES_PASSWORD: gpcrm
+          POSTGRES_DB: gpcrm_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U gpcrm"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Tests run against Postgres (prod parity); local dev stays SQLite.
+      DATABASE_URL: postgresql://gpcrm:gpcrm@localhost:5432/gpcrm_test
+      SECRET_KEY: ci-only-not-a-real-secret
+      DEBUG: 'False'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'   # match production
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r ../requirements.txt
+
+      - name: Django system checks
+        run: python manage.py check
+
+      - name: Missing-migrations gate
+        run: python manage.py makemigrations --check --dry-run
+
+      - name: Run test suite (regression gate)
+        run: python manage.py test --noinput
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: pip-audit
+        # Advisory at first; drop continue-on-error once the baseline is clean.
+        continue-on-error: true
+        run: |
+          pip install pip-audit
+          pip-audit -r requirements.txt
