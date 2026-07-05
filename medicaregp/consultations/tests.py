@@ -64,10 +64,16 @@ class ConsultationCreateViewTests(TestCase):
         self.client.login(username='tester', password='secret123')
         response = self.client.get(reverse('consultation_create'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Find a patient')
+        self.assertContains(response, 'New consultation')
+        self.assertContains(response, 'Linked Appointment')
 
-        response = self.client.get(reverse('consultation_create') + '?q=Thabo')
-        self.assertContains(response, 'Thabo')
+    def test_start_vitals_params_stamp_consultation(self):
+        self.client.login(username='tester', password='secret123')
+        self.client.get(reverse('consultation_create') +
+                        f'?patient_id={self.patient.pk}&wt=70.5&bp=118/76')
+        consultation = Consultation.objects.get(patient=self.patient)
+        self.assertEqual(str(consultation.weight_kg), '70.5')
+        self.assertEqual(consultation.bp_reading, '118/76')
 
     def test_start_carries_forward_last_vitals(self):
         Consultation.objects.create(

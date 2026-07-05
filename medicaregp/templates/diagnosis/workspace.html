@@ -220,6 +220,39 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
     <!-- ── Zone 2: working area ──────────────────────────────────────── -->
     <div>
 
+      <!-- Info bar: patient · linked appointment · quick vitals -->
+      <div class="ws-card">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+          <div class="notes-field ta-wrap" style="flex:1.4;min-width:200px;">
+            <label for="patientSwitch">Patient *</label>
+            <input class="ws-input" id="patientSwitch" autocomplete="off"
+                   placeholder="Search options…" value="{{ patient.first_name }} {{ patient.last_name }}">
+            <div class="ta-drop" id="patientDrop" role="listbox"></div>
+          </div>
+          <div class="notes-field" style="flex:1.6;min-width:220px;">
+            <label for="apptSelect">Linked Appointment <span style="font-weight:400;color:var(--text-4);">optional</span></label>
+            <select class="ws-input" id="apptSelect">
+              <option value="">— none —</option>
+              {% for a in patient_appointments %}
+              <option value="{{ a.pk }}" {% if consultation.appointment_id == a.pk %}selected{% endif %}>
+                {{ a.date|date:"d M Y" }} {{ a.time|time:"H:i" }} — {{ a.reason|truncatechars:40 }} ({{ a.status }})
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="notes-field" style="flex:0 0 96px;">
+            <label for="vitWeight">Wt (kg)</label>
+            <input class="ws-input" id="vitWeight" inputmode="decimal" placeholder="kg"
+                   value="{{ consultation.weight_kg|default:'' }}">
+          </div>
+          <div class="notes-field" style="flex:0 0 110px;">
+            <label for="vitBp">BP (mmHg)</label>
+            <input class="ws-input" id="vitBp" placeholder="120/80"
+                   value="{{ consultation.bp_reading|default:'' }}">
+          </div>
+        </div>
+      </div>
+
       <div class="ws-card">
         <div class="ws-label">Chief complaint</div>
         <input class="ws-input" id="chiefComplaint" placeholder="Reason for visit…"
@@ -292,17 +325,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 
       <div class="ws-card">
         <details class="ws-details" open>
-          <summary><div class="ws-label"><span class="exp-caret">▶</span> Notes (SOAP) &amp; vitals</div></summary>
-          <div style="display:flex;gap:10px;margin-bottom:10px;">
-            <div class="notes-field" style="flex:0 0 140px;">
-              <label for="vitBp">BP</label>
-              <input class="ws-input" id="vitBp" placeholder="120/80" value="{{ consultation.bp_reading|default:'' }}">
-            </div>
-            <div class="notes-field" style="flex:0 0 140px;">
-              <label for="vitWeight">Weight (kg)</label>
-              <input class="ws-input" id="vitWeight" inputmode="decimal" placeholder="72.5" value="{{ consultation.weight_kg|default:'' }}">
-            </div>
-          </div>
+          <summary><div class="ws-label"><span class="exp-caret">▶</span> Notes (SOAP)</div></summary>
           <div class="notes-grid">
             <div class="notes-field full">
               <label for="soapS">S — Subjective / clinical notes</label>
@@ -321,7 +344,53 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
               <textarea class="ws-textarea" id="soapP">{{ consultation.plan|default:'' }}</textarea>
             </div>
           </div>
-          <button class="save-notes" id="saveNotesBtn" type="button"><i class="bi bi-check2"></i> Save notes</button>
+        </details>
+      </div>
+
+      <div class="ws-card">
+        <details class="ws-details" open>
+          <summary><div class="ws-label"><span class="exp-caret">▶</span> Prescriptions, requests &amp; follow-up</div></summary>
+          <div class="notes-grid">
+            <div class="notes-field full">
+              <label for="rxText">℞ Prescriptions <span style="font-weight:400;color:var(--text-4);">— one per line</span></label>
+              <textarea class="ws-textarea" id="rxText">{{ consultation.prescriptions|default:'' }}</textarea>
+            </div>
+            <div class="notes-field">
+              <label for="labReq"><i class="bi bi-droplet-half"></i> Blood / Lab Requests <span style="font-weight:400;color:var(--text-4);">— one per line</span></label>
+              <textarea class="ws-textarea" id="labReq">{{ consultation.lab_requests|default:'' }}</textarea>
+            </div>
+            <div class="notes-field">
+              <label for="radReq"><i class="bi bi-image"></i> Radiology <span style="font-weight:400;color:var(--text-4);">— one per line</span></label>
+              <textarea class="ws-textarea" id="radReq">{{ consultation.radiology_requests|default:'' }}</textarea>
+            </div>
+            <div class="notes-field" style="grid-column:1;">
+              <label for="followUp">Follow-up Date</label>
+              <input class="ws-input" type="date" id="followUp" value="{{ consultation.follow_up_date|date:'Y-m-d' }}">
+            </div>
+          </div>
+
+          <div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--border);">
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-2);cursor:pointer;">
+              <input type="checkbox" id="sickIssued" {% if consultation.sick_note_issued %}checked{% endif %}>
+              <i class="bi bi-file-medical" style="color:var(--text-3);"></i> Issue sick / medical certificate
+            </label>
+            <div id="sickFields" style="display:{% if consultation.sick_note_issued %}flex{% else %}none{% endif %};gap:10px;flex-wrap:wrap;margin-top:10px;">
+              <div class="notes-field" style="flex:0 0 90px;">
+                <label for="sickDays">Days</label>
+                <input class="ws-input" id="sickDays" inputmode="numeric" value="{{ consultation.sick_note_days|default:'' }}">
+              </div>
+              <div class="notes-field" style="flex:0 0 160px;">
+                <label for="sickStart">Start date</label>
+                <input class="ws-input" type="date" id="sickStart" value="{{ consultation.sick_note_start_date|date:'Y-m-d' }}">
+              </div>
+              <div class="notes-field" style="flex:1;min-width:180px;">
+                <label for="sickEmployer">Employer</label>
+                <input class="ws-input" id="sickEmployer" value="{{ consultation.sick_note_employer|default:'' }}">
+              </div>
+            </div>
+          </div>
+
+          <button class="save-notes" id="saveNotesBtn" type="button"><i class="bi bi-check2"></i> Save consultation</button>
           <span class="save-stamp" id="saveStamp"></span>
         </details>
       </div>
@@ -746,22 +815,78 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
       .catch(() => { btn.disabled = false; btn.textContent = 'Confirm provisional'; alert('Network error — try again.'); });
   };
 
-  // ── Notes save ─────────────────────────────────────────────────────────
+  // ── Save consultation (chief complaint, vitals, SOAP, Rx, requests…) ──
   $('saveNotesBtn').onclick = () => {
     post(URLS.notes, {
       chief_complaint: $('chiefComplaint').value,
       bp_reading: $('vitBp').value,
       weight_kg: $('vitWeight').value,
+      appointment_id: $('apptSelect').value || null,
       subjective: $('soapS').value,
       objective: $('soapO').value,
       assessment: $('soapA').value,
       plan: $('soapP').value,
+      prescriptions: $('rxText').value,
+      lab_requests: $('labReq').value,
+      radiology_requests: $('radReq').value,
+      follow_up_date: $('followUp').value,
+      sick_note_issued: $('sickIssued').checked,
+      sick_note_days: $('sickDays').value,
+      sick_note_start_date: $('sickStart').value,
+      sick_note_employer: $('sickEmployer').value,
     }).then(({ ok, data }) => {
       $('saveStamp').textContent = ok ? '✓ saved ' + data.saved_at : (data.error || 'save failed');
       $('saveStamp').style.color = ok ? '#15803d' : '#b91c1c';
       setTimeout(() => { $('saveStamp').textContent = ''; }, 4000);
     });
   };
+
+  // Sick-note fields show only when the certificate box is ticked.
+  $('sickIssued').addEventListener('change', () => {
+    $('sickFields').style.display = $('sickIssued').checked ? 'flex' : 'none';
+  });
+
+  // ── Patient switch (info bar type-ahead) ───────────────────────────────
+  (function () {
+    const input = $('patientSwitch'), drop = $('patientDrop');
+    const original = input.value;
+    let items = [], active = -1, timer = null;
+    function close() { drop.classList.remove('open'); active = -1; }
+    function render() {
+      drop.innerHTML = '';
+      items.forEach((p, i) => {
+        const div = document.createElement('div');
+        div.className = 'ta-item' + (i === active ? ' active' : '');
+        div.innerHTML = escapeHtml(p.label) + '<span class="kind">' + escapeHtml(p.detail) + '</span>';
+        div.onmousedown = e => { e.preventDefault(); pick(p); };
+        drop.appendChild(div);
+      });
+      drop.classList.toggle('open', items.length > 0);
+    }
+    function pick(p) {
+      // Switching patient = open (or start) that patient's consultation.
+      window.location = "{% url 'consultation_create' %}?patient_id=" + p.id;
+    }
+    input.addEventListener('focus', () => input.select());
+    input.addEventListener('input', () => {
+      clearTimeout(timer);
+      const q = input.value.trim();
+      if (q.length < 2) { close(); return; }
+      timer = setTimeout(() => {
+        fetch("{% url 'workspace_patient_search' %}?q=" + encodeURIComponent(q))
+          .then(r => r.json())
+          .then(data => { items = data.results || []; active = items.length ? 0 : -1; render(); });
+      }, 180);
+    });
+    input.addEventListener('keydown', e => {
+      if (!drop.classList.contains('open')) return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, items.length - 1); render(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (items[active]) pick(items[active]); }
+      else if (e.key === 'Escape') { input.value = original; close(); }
+    });
+    input.addEventListener('blur', () => setTimeout(() => { input.value = original; close(); }, 140));
+  })();
 
   // ── Drawer (narrow screens) ────────────────────────────────────────────
   $('drawerTab').onclick = () => panel.classList.toggle('drawer-open');

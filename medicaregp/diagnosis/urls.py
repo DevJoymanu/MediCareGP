@@ -13,4 +13,6 @@ urlpatterns = [
     path('consultation/<int:consultation_pk>/workspace/confirm/', views.workspace_confirm, name='workspace_confirm'),
     path('consultation/<int:consultation_pk>/workspace/notes/', views.workspace_save_notes, name='workspace_save_notes'),
     path('icd10/search/', views.icd10_search, name='icd10_search'),
+    path('patients/search/', views.workspace_patient_search, name='workspace_patient_search'),
+    path('patients/appointments/', views.workspace_patient_appointments, name='workspace_patient_appointments'),
 ]

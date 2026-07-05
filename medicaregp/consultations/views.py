@@ -876,27 +876,31 @@ def consultation_create(request):
                 consultation.bp_reading = last.bp_reading
             consultation.save()
 
+        # Vitals typed on the start picker override the carried-forward ones.
+        wt = (request.GET.get('wt') or '').strip()
+        bp = (request.GET.get('bp') or '').strip()
+        if wt or bp:
+            from decimal import Decimal, InvalidOperation
+            if wt:
+                try:
+                    consultation.weight_kg = Decimal(wt)
+                except InvalidOperation:
+                    pass
+            if bp:
+                consultation.bp_reading = bp[:10]
+            consultation.save(update_fields=['weight_kg', 'bp_reading'])
+
         if apt and apt.status == 'Checked In':
             apt.status = 'With Doctor'
             apt.save(update_fields=['status'])
 
         return redirect('diagnosis_workspace', consultation_pk=consultation.pk)
 
-    # No patient yet — render the start picker.
+    # No patient yet — render the start picker (patient + appointment + vitals bar).
     today = timezone.localdate()
     waiting = (Appointment.objects.filter(date=today, status__in=('Checked In', 'With Doctor'))
                .select_related('patient').order_by('time'))
-    q = (request.GET.get('q') or '').strip()
-    results = Patient.objects.none()
-    if q:
-        from django.db.models import Q
-        results = Patient.objects.filter(
-            Q(first_name__icontains=q) | Q(last_name__icontains=q) |
-            Q(id_number__icontains=q) | Q(phone__icontains=q)
-        ).order_by('last_name', 'first_name')[:12]
-    return render(request, 'consultations/consultation_start.html', {
-        'waiting': waiting, 'q': q, 'results': results,
-    })
+    return render(request, 'consultations/consultation_start.html', {'waiting': waiting})
 
 
 @doctor_required

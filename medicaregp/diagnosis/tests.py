@@ -399,3 +399,85 @@ class WorkspaceTests(TestCase):
         self.client.force_login(self.doctor)
         response = self._post_json(self.notes_url, {'weight_kg': 'heavy'})
         self.assertEqual(response.status_code, 400)
+
+    def test_save_prescriptions_requests_followup_sicknote(self):
+        self.client.force_login(self.doctor)
+        response = self._post_json(self.notes_url, {
+            'prescriptions': 'Amoxicillin 500mg — 1 tds x 5/7',
+            'lab_requests': 'FBC\nU&E',
+            'radiology_requests': 'Chest X-ray',
+            'follow_up_date': '2026-07-20',
+            'sick_note_issued': True,
+            'sick_note_days': '3',
+            'sick_note_start_date': '2026-07-06',
+            'sick_note_employer': 'Acme Mining',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.consultation.refresh_from_db()
+        self.assertIn('Amoxicillin', self.consultation.prescriptions)
+        self.assertEqual(self.consultation.lab_requests, 'FBC\nU&E')
+        self.assertEqual(str(self.consultation.follow_up_date), '2026-07-20')
+        self.assertTrue(self.consultation.sick_note_issued)
+        self.assertEqual(self.consultation.sick_note_days, 3)
+        self.assertEqual(self.consultation.sick_note_employer, 'Acme Mining')
+        # Lab + radiology requests spawn their InvestigationRequest queue rows.
+        from consultations.models import InvestigationRequest
+        kinds = set(InvestigationRequest.objects.filter(
+            consultation=self.consultation).values_list('kind', flat=True))
+        self.assertEqual(kinds, {'lab', 'radiology'})
+
+    def test_save_rejects_bad_followup_date(self):
+        self.client.force_login(self.doctor)
+        response = self._post_json(self.notes_url, {'follow_up_date': 'next tuesday'})
+        self.assertEqual(response.status_code, 400)
+
+    def test_save_links_and_validates_appointment(self):
+        from datetime import time as dtime
+        from django.utils import timezone
+        from appointments.models import Appointment
+        self.client.force_login(self.doctor)
+        mine = Appointment.objects.create(
+            patient=self.patient, date=timezone.localdate(), time=dtime(9, 0), reason='Visit')
+        other_patient = make_patient(id_number='9202025800081', first_name='Naledi')
+        theirs = Appointment.objects.create(
+            patient=other_patient, date=timezone.localdate(), time=dtime(9, 30), reason='Visit')
+
+        response = self._post_json(self.notes_url, {'appointment_id': mine.pk})
+        self.assertEqual(response.status_code, 200)
+        self.consultation.refresh_from_db()
+        self.assertEqual(self.consultation.appointment, mine)
+
+        # Another patient's appointment must be rejected.
+        response = self._post_json(self.notes_url, {'appointment_id': theirs.pk})
+        self.assertEqual(response.status_code, 400)
+
+        # Explicit null unlinks.
+        response = self._post_json(self.notes_url, {'appointment_id': None})
+        self.assertEqual(response.status_code, 200)
+        self.consultation.refresh_from_db()
+        self.assertIsNone(self.consultation.appointment)
+
+    # ── Info-bar endpoints ────────────────────────────────────────────────
+    def test_patient_search_endpoint(self):
+        self.client.force_login(self.doctor)
+        url = reverse('workspace_patient_search')
+        data = self.client.get(url + '?q=thabo').json()
+        self.assertTrue(any(r['id'] == self.patient.pk for r in data['results']))
+        self.assertEqual(self.client.get(url + '?q=t').json()['results'], [])
+
+        self.client.force_login(self.receptionist)
+        self.assertEqual(self.client.get(url + '?q=thabo').status_code, 403)
+
+    def test_patient_appointments_endpoint(self):
+        from datetime import time as dtime
+        from django.utils import timezone
+        from appointments.models import Appointment
+        apt = Appointment.objects.create(
+            patient=self.patient, date=timezone.localdate(), time=dtime(8, 0), reason='Checkup')
+        self.client.force_login(self.doctor)
+        url = reverse('workspace_patient_appointments')
+        data = self.client.get(url + f'?patient_id={self.patient.pk}').json()
+        self.assertTrue(any(r['id'] == apt.pk for r in data['results']))
+
+        self.client.force_login(self.receptionist)
+        self.assertEqual(self.client.get(url + f'?patient_id={self.patient.pk}').status_code, 403)

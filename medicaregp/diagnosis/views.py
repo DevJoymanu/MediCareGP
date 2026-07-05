@@ -17,6 +17,7 @@ from django.views.decorators.http import require_GET, require_POST
 from consultations.icd10_data import ICD10_CODES
 from consultations.models import Consultation
 from medicaregp.roles import doctor_required
+from patients.models import Patient
 
 from . import engine
 from .models import Condition, DifferentialResult, Symptom
@@ -191,6 +192,7 @@ def workspace(request, consultation_pk):
     return render(request, 'diagnosis/workspace.html', {
         'consultation': consultation,
         'patient': patient,
+        'patient_appointments': patient.appointments.order_by('-date', '-time')[:25],
         'visit_number': patient.consultations.count(),
         'allergies': patient.allergies_list(),
         'chronic': patient.chronic_list(),
@@ -334,21 +336,35 @@ def workspace_confirm(request, consultation_pk):
                          'redirect': reverse('consultation_detail', args=[consultation.pk])})
 
 
+def _parse_date(raw):
+    """ISO date string → date | None. Raises ValueError on garbage."""
+    raw = (raw or '').strip()
+    if not raw:
+        return None
+    from datetime import date as date_cls
+    return date_cls.fromisoformat(raw)
+
+
 @doctor_required
 @require_POST
 def workspace_save_notes(request, consultation_pk):
-    """Save the working-area fields (chief complaint, quick vitals, SOAP)."""
-    consultation = get_object_or_404(Consultation, pk=consultation_pk)
+    """Save the working-area fields: chief complaint, quick vitals, SOAP,
+    prescriptions, lab/radiology requests, follow-up and sick note — plus the
+    linked appointment. One endpoint, one Save button."""
+    consultation = get_object_or_404(Consultation.objects.select_related('patient'), pk=consultation_pk)
     data = _json_body(request)
     if data is None:
         return HttpResponseBadRequest('Invalid JSON body.')
 
-    editable = ['chief_complaint', 'subjective', 'objective', 'assessment', 'plan', 'bp_reading']
+    editable = ['chief_complaint', 'subjective', 'objective', 'assessment', 'plan',
+                'bp_reading', 'prescriptions', 'lab_requests', 'radiology_requests',
+                'sick_note_employer']
     changed = []
     for field in editable:
         if field in data:
             setattr(consultation, field, (data[field] or '').strip())
             changed.append(field)
+
     if 'weight_kg' in data:
         raw = str(data['weight_kg'] or '').strip()
         if raw:
@@ -359,9 +375,75 @@ def workspace_save_notes(request, consultation_pk):
         else:
             consultation.weight_kg = None
         changed.append('weight_kg')
+
+    for field in ['follow_up_date', 'sick_note_start_date']:
+        if field in data:
+            try:
+                setattr(consultation, field, _parse_date(data[field]))
+            except ValueError:
+                return JsonResponse({'error': f'Invalid date for {field}.'}, status=400)
+            changed.append(field)
+
+    if 'sick_note_issued' in data:
+        consultation.sick_note_issued = bool(data['sick_note_issued'])
+        changed.append('sick_note_issued')
+    if 'sick_note_days' in data:
+        raw = str(data['sick_note_days'] or '').strip()
+        if raw and not raw.isdigit():
+            return JsonResponse({'error': f'Invalid sick-note days: {raw}'}, status=400)
+        consultation.sick_note_days = int(raw) if raw else None
+        changed.append('sick_note_days')
+
+    if 'appointment_id' in data:
+        apt_id = data['appointment_id']
+        if apt_id in (None, '', 0):
+            consultation.appointment = None
+        else:
+            from appointments.models import Appointment
+            apt = Appointment.objects.filter(pk=apt_id, patient=consultation.patient).first()
+            if apt is None:
+                return JsonResponse({'error': 'That appointment does not belong to this patient.'}, status=400)
+            consultation.appointment = apt
+        changed.append('appointment')
+
     if changed:
         consultation.save(update_fields=changed)
+        if 'lab_requests' in changed or 'radiology_requests' in changed:
+            from consultations.views import _sync_investigation_requests
+            _sync_investigation_requests(consultation)
     return JsonResponse({'ok': True, 'saved_at': timezone.localtime().strftime('%H:%M')})
+
+
+@doctor_required
+@require_GET
+def workspace_patient_search(request):
+    """Type-ahead for the workspace Patient selector."""
+    q = (request.GET.get('q') or '').strip()
+    if len(q) < 2:
+        return JsonResponse({'results': []})
+    from django.db.models import Q
+    matches = (Patient.objects.filter(
+        Q(first_name__icontains=q) | Q(last_name__icontains=q) |
+        Q(id_number__icontains=q) | Q(phone__icontains=q))
+        .order_by('last_name', 'first_name')[:15])
+    return JsonResponse({'results': [
+        {'id': p.pk,
+         'label': f'{p.first_name} {p.last_name}',
+         'detail': f'{p.get_age()}y · {p.get_gender_display()}'
+                   + (f' · {p.medical_aid_name}' if p.medical_aid_name else '')}
+        for p in matches]})
+
+
+@doctor_required
+@require_GET
+def workspace_patient_appointments(request):
+    """A patient's recent appointments for the Linked Appointment selector."""
+    patient = get_object_or_404(Patient, pk=request.GET.get('patient_id'))
+    appointments = patient.appointments.order_by('-date', '-time')[:25]
+    return JsonResponse({'results': [
+        {'id': a.pk,
+         'label': f'{a.date:%d %b %Y} {a.time:%H:%M} — {a.reason} ({a.status})'}
+        for a in appointments]})
 
 
 @doctor_required
