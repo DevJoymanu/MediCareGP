@@ -1,0 +1,99 @@
+{% comment %}
+Frozen diagnosis-reasoning snapshot for a consultation (decision H: collapsible).
+Renders the stored DifferentialResult JSON — NEVER a fresh engine run: the
+knowledge base is admin-editable, so re-computing would show different numbers
+than the doctor saw at the time. Context: diagnosis_snapshot, xc_confirms,
+xc_contras, snapshot_presenting, snapshot_working.
+{% endcomment %}
+{% if diagnosis_snapshot %}
+<style>
+.rs-band { font-size: 10px; font-weight: 700; letter-spacing: .04em; border-radius: 6px; padding: 2px 8px; flex-shrink: 0; }
+.rs-band-high { background: var(--accent, #475569); color: #fff; }
+.rs-band-med  { background: rgba(71,85,105,.14); color: var(--accent, #475569); }
+.rs-band-low  { background: transparent; color: #9ca3af; border: 1px solid #e8ecf1; }
+.rs-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 13px; }
+.rs-code { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px; color: #6b7280; }
+.rs-why { margin: 0 0 4px 22px; }
+.rs-why summary { font-size: 11.5px; color: #9ca3af; cursor: pointer; }
+.rs-why-body { font-size: 12px; color: #6b7280; padding: 4px 0; display: grid; gap: 2px; }
+.rs-why-body .rs-frm { font-family: ui-monospace, Consolas, monospace; font-size: 11px; color: #9ca3af; border-top: 1px dashed #e8ecf1; padding-top: 4px; margin-top: 2px; }
+.rs-xc { font-size: 12.5px; padding: 2px 0; display: flex; gap: 7px; }
+.rs-xc .ic { font-weight: 700; flex-shrink: 0; }
+.rs-meta { font-size: 12px; color: #6b7280; display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; font-variant-numeric: tabular-nums; }
+.rs-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #6b7280; margin: 12px 0 4px; }
+</style>
+<div class="card" style="margin-bottom:14px;padding:0;overflow:hidden;">
+  <details>
+    <summary style="cursor:pointer;padding:14px 20px;display:flex;align-items:center;gap:10px;list-style:none;">
+      <i class="bi bi-diagram-3" style="color:#7e22ce;"></i>
+      <span style="font-weight:700;font-size:14px;">Diagnosis reasoning</span>
+      <span style="font-size:12px;color:var(--text-4);">
+        frozen snapshot · run {{ diagnosis_snapshot.created_at|date:"j M Y H:i" }}
+        {% if diagnosis_snapshot.confirmed_at %}· confirmed {{ diagnosis_snapshot.confirmed_at|date:"H:i" }}{% endif %}
+      </span>
+      <span style="margin-left:auto;font-size:12px;color:var(--text-4);">show ▾</span>
+    </summary>
+    <div style="padding:4px 20px 18px;border-top:1px solid var(--border);">
+
+      <div class="rs-meta" style="margin-top:12px;">
+        <span>Engine v{{ diagnosis_snapshot.engine_version }}</span>
+        <span>History weight {{ diagnosis_snapshot.output.constants.history_weight }} · presenting {{ diagnosis_snapshot.output.constants.presenting_weight }}</span>
+        <span>{{ diagnosis_snapshot.output.input_count }} symptom{{ diagnosis_snapshot.output.input_count|pluralize }}</span>
+        {% if diagnosis_snapshot.created_by %}<span>by {{ diagnosis_snapshot.created_by.get_full_name|default:diagnosis_snapshot.created_by.username }}</span>{% endif %}
+      </div>
+
+      {% if diagnosis_snapshot.confirmed_dx %}
+      <div class="rs-label">Confirmed provisional dx</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        {% for dx in diagnosis_snapshot.confirmed_dx %}
+        <span style="display:inline-flex;align-items:center;gap:6px;background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:6px;padding:3px 9px;font-size:12.5px;">
+          <span class="rs-code" style="color:#5b21b6;font-weight:700;">{{ dx.code }}</span> {{ dx.name }}
+          {% if dx.source == 'manual' %}<span style="font-size:10px;color:#9ca3af;border:1px solid #e8ecf1;border-radius:4px;padding:0 4px;">off-list</span>{% endif %}
+        </span>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if snapshot_presenting or snapshot_working %}
+      <div class="rs-label">Inputs at run time</div>
+      <div style="font-size:12.5px;color:var(--text-3);">
+        {% if snapshot_presenting %}<div><strong>Presenting:</strong> {{ snapshot_presenting|join:', ' }}</div>{% endif %}
+        {% if snapshot_working %}<div><strong>Working:</strong> {{ snapshot_working|join:', ' }}</div>{% endif %}
+        {% if diagnosis_snapshot.inputs.notes %}<div><strong>Notes:</strong> {{ diagnosis_snapshot.inputs.notes }}</div>{% endif %}
+      </div>
+      {% endif %}
+
+      <div class="rs-label">Differential at run time ({{ diagnosis_snapshot.output.title }})</div>
+      {% for r in diagnosis_snapshot.output.results %}
+      <div class="rs-row">
+        <span style="color:var(--text-4);font-size:11px;width:16px;">{{ r.rank }}</span>
+        <span style="font-weight:600;flex:1;">{{ r.condition }} <span class="rs-code">{{ r.icd10_code }}</span></span>
+        <span class="rs-band {% if r.band == 'High' %}rs-band-high{% elif r.band == 'Medium' %}rs-band-med{% else %}rs-band-low{% endif %}">{{ r.band|upper }}</span>
+      </div>
+      <details class="rs-why">
+        <summary>why ▾ (score {{ r.score }})</summary>
+        <div class="rs-why-body">
+          {% for m in r.breakdown.presenting_matches %}<div>presenting: {{ m.symptom }} (+{{ m.weight }})</div>{% endfor %}
+          {% for m in r.breakdown.working_matches %}<div>working: {{ m.symptom }} (+{{ m.weight }})</div>{% endfor %}
+          {% for f in r.breakdown.history_factors %}
+          <div>{% if f.kind == 'confirming' %}✓{% else %}⚠{% endif %} history: {{ f.note|default:f.factor }} ({% if f.delta >= 0 %}+{% endif %}{{ f.delta }})</div>
+          {% endfor %}
+          <div class="rs-frm">{{ r.breakdown.formula }}</div>
+        </div>
+      </details>
+      {% empty %}
+      <div style="font-size:12.5px;color:var(--text-4);font-style:italic;">No conditions matched at run time.</div>
+      {% endfor %}
+
+      <div class="rs-label">History cross-check</div>
+      {% if xc_confirms or xc_contras %}
+        {% for e in xc_confirms %}<div class="rs-xc"><span class="ic" style="color:#15803d;">✓</span>{{ e }}</div>{% endfor %}
+        {% for e in xc_contras %}<div class="rs-xc"><span class="ic" style="color:#b45309;">⚠</span>{{ e }}</div>{% endfor %}
+      {% else %}
+        <div style="font-size:12.5px;color:var(--text-4);font-style:italic;">No stored-history factors fired on this run.</div>
+      {% endif %}
+
+    </div>
+  </details>
+</div>
+{% endif %}

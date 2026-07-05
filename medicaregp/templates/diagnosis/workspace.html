@@ -1,0 +1,782 @@
+{% extends 'base.html' %}
+{% block title %}Consultation — {{ patient }}{% endblock %}
+{% block page_title %}Consultation Workspace{% endblock %}
+{% block page_sub %}{{ patient.first_name }} {{ patient.last_name }} · {{ consultation.date|date:"j M Y" }}{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ── Workspace layout ─────────────────────────────────────────────────── */
+.ws-wrap { padding: 16px; display: flex; flex-direction: column; gap: 12px; max-width: 1600px; }
+.ws-grid { display: grid; grid-template-columns: minmax(0,1fr) 400px; gap: 12px; align-items: start; }
+
+/* Patient header */
+.ws-header { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+             padding: 10px 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; box-shadow: var(--shadow-sm); }
+.ws-header .name { font-weight: 700; font-size: 15px; }
+.ws-header .meta { color: var(--text-3); font-size: 12.5px; display: flex; gap: 14px; flex-wrap: wrap; }
+.ws-header .flags { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+/* Cards & sections */
+.ws-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+           padding: 14px 16px; box-shadow: var(--shadow-sm); }
+.ws-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+            color: var(--text-3); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.ws-card + .ws-card { margin-top: 12px; }
+
+/* Inputs */
+.ws-input, .ws-textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
+             font-size: 13.5px; background: #fbfcfe; color: var(--text-1); }
+.ws-input:focus, .ws-textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+.ws-textarea { resize: vertical; min-height: 56px; }
+
+/* Chips */
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; min-height: 26px; }
+.sym-chip { display: inline-flex; align-items: center; gap: 6px; background: #eef2f7; border: 1px solid var(--border);
+            border-radius: 999px; padding: 3px 6px 3px 11px; font-size: 12.5px; font-weight: 600; color: var(--text-2); }
+.sym-chip .first-flag { color: #b45309; font-size: 11px; font-weight: 700; }
+.sym-chip button { border: none; background: none; cursor: pointer; color: var(--text-4); font-size: 13px;
+                   line-height: 1; padding: 3px; border-radius: 50%; }
+.sym-chip button:hover { color: #b91c1c; background: #fee2e2; }
+.chip-empty { color: var(--text-4); font-size: 12.5px; font-style: italic; padding: 4px 0; }
+
+/* Type-ahead */
+.ta-wrap { position: relative; }
+.ta-drop { position: absolute; z-index: 40; top: calc(100% + 4px); left: 0; right: 0; background: #fff;
+           border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-md);
+           max-height: 280px; overflow-y: auto; display: none; }
+.ta-drop.open { display: block; }
+.ta-item { padding: 8px 12px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.ta-item .kind { font-size: 10.5px; color: var(--text-4); margin-left: auto; }
+.ta-item.active, .ta-item:hover { background: #eef2f7; }
+.ta-item mark { background: none; color: var(--accent); font-weight: 700; }
+
+/* Body map */
+.bodymap-toggle { border: 1px solid var(--border); background: #fff; border-radius: 8px; padding: 8px 12px;
+                  font-size: 13px; font-weight: 600; color: var(--text-2); cursor: pointer; white-space: nowrap; }
+.bodymap-toggle:hover, .bodymap-toggle.on { border-color: var(--accent); color: var(--accent); }
+.bodymap-panel { display: none; margin-top: 10px; border: 1px solid var(--border); border-radius: 10px;
+                 padding: 12px; gap: 16px; background: #fbfcfe; }
+.bodymap-panel.open { display: flex; flex-wrap: wrap; }
+.bodymap-svg { flex: 0 0 130px; }
+.bodymap-svg .bm-region { fill: #dbe3ec; stroke: #b9c4d2; stroke-width: 1; cursor: pointer; transition: fill .12s; }
+.bodymap-svg .bm-region:hover { fill: #b9c9dd; }
+.bodymap-svg .bm-region.sel { fill: var(--accent); stroke: var(--accent); }
+.bm-side { flex: 1; min-width: 220px; }
+.bm-extra-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.bm-extra { border: 1px solid var(--border); background: #fff; border-radius: 999px; padding: 4px 12px;
+            font-size: 12px; font-weight: 600; color: var(--text-3); cursor: pointer; }
+.bm-extra.sel { background: var(--accent); color: #fff; border-color: var(--accent); }
+.bm-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.bm-sym { border: 1px solid var(--border); background: #fff; border-radius: 999px; padding: 4px 12px;
+          font-size: 12.5px; cursor: pointer; color: var(--text-2); }
+.bm-sym:hover { border-color: var(--accent); color: var(--accent); }
+.bm-sym.added { background: #eef2f7; color: var(--text-4); cursor: default; border-style: dashed; }
+.bm-hint { color: var(--text-4); font-size: 12.5px; font-style: italic; }
+
+/* History */
+.hx-line { font-size: 13px; color: var(--text-2); }
+.hx-detail { margin-top: 8px; font-size: 12.5px; color: var(--text-3); display: grid; gap: 4px; }
+details.ws-details > summary { cursor: pointer; list-style: none; }
+details.ws-details > summary::-webkit-details-marker { display: none; }
+details.ws-details > summary .ws-label { margin-bottom: 0; }
+details.ws-details[open] > summary { margin-bottom: 8px; }
+.exp-caret { transition: transform .15s; font-size: 11px; color: var(--text-4); }
+details[open] > summary .exp-caret { transform: rotate(90deg); }
+
+/* ── Differential panel ───────────────────────────────────────────────── */
+.dx-panel { position: sticky; top: 68px; display: flex; flex-direction: column; gap: 0;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm); max-height: calc(100vh - 84px); overflow: hidden; }
+.dx-head { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.dx-head h3 { font-size: 14px; font-weight: 700; margin: 0; }
+.dx-meta { font-size: 11.5px; color: var(--text-4); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.run-btn { margin-left: auto; background: var(--accent); color: #fff; border: none; border-radius: 8px;
+           padding: 8px 18px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.run-btn:hover:not(:disabled) { background: var(--accent-h); }
+.run-btn:disabled { opacity: .45; cursor: not-allowed; }
+.run-btn.pulse { animation: runpulse 1.6s ease-in-out infinite; }
+@keyframes runpulse { 50% { box-shadow: 0 0 0 5px rgba(var(--accent-rgb), .18); } }
+.stale-chip { display: none; font-size: 11px; font-weight: 700; color: #92400e; background: #fef3c7;
+              border-radius: 999px; padding: 2px 9px; }
+.dx-panel.stale .stale-chip { display: inline-block; }
+.dx-panel.stale .dx-list { opacity: .45; }
+
+.dx-scroll { overflow-y: auto; flex: 1; }
+.dx-empty { padding: 28px 16px; text-align: center; color: var(--text-4); font-size: 13px; }
+.dx-empty i { font-size: 22px; display: block; margin-bottom: 6px; }
+
+.dx-list { padding: 6px 8px; }
+.dx-row { border-radius: 10px; padding: 8px 8px 8px 10px; }
+.dx-row:hover { background: #f4f7fb; }
+.dx-row-top { display: flex; align-items: center; gap: 8px; }
+.dx-rank { font-size: 11px; color: var(--text-4); width: 16px; font-variant-numeric: tabular-nums; }
+.dx-name { font-size: 13px; font-weight: 600; flex: 1; min-width: 0; }
+.dx-code { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 11.5px; color: var(--text-3); }
+.dx-promote { border: 1px solid var(--border); background: #fff; color: var(--text-3); border-radius: 7px;
+              width: 24px; height: 24px; cursor: pointer; font-size: 14px; line-height: 1; flex-shrink: 0; }
+.dx-promote:hover { border-color: var(--accent); color: var(--accent); }
+.dx-promote.in-tray { background: var(--accent); border-color: var(--accent); color: #fff; }
+.dx-why { margin: 4px 0 0 24px; }
+.dx-why summary { font-size: 11.5px; color: var(--text-4); cursor: pointer; }
+.dx-why-body { font-size: 12px; color: var(--text-3); padding: 6px 0 2px; display: grid; gap: 3px; }
+.dx-why-body .frm { font-family: ui-monospace, Consolas, monospace; font-size: 11px; color: var(--text-4);
+                    border-top: 1px dashed var(--border); padding-top: 5px; margin-top: 3px; }
+
+/* Band chips: weight/fill, not colour alone. Red is reserved for red-flags. */
+.band { font-size: 10.5px; font-weight: 700; letter-spacing: .04em; border-radius: 6px; padding: 2px 8px;
+        flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.band-high { background: var(--accent); color: #fff; }
+.band-med  { background: rgba(var(--accent-rgb), .14); color: var(--accent); }
+.band-low  { background: transparent; color: var(--text-4); border: 1px solid var(--border); }
+
+.dx-note { margin: 6px 12px; padding: 8px 10px; background: #f8fafc; border: 1px dashed var(--border);
+           border-radius: 8px; font-size: 12px; color: var(--text-3); }
+.dx-suggest { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.dx-suggest button { border: 1px dashed var(--border); background: #fff; border-radius: 999px; padding: 2px 10px;
+                     font-size: 11.5px; color: var(--text-3); cursor: pointer; }
+.dx-suggest button:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Cross-check */
+.xc-section { border-top: 1px solid var(--border); padding: 10px 14px; }
+.xc-item { font-size: 12px; display: flex; gap: 7px; align-items: baseline; padding: 2px 0; }
+.xc-item .xc-ic { flex-shrink: 0; font-weight: 700; }
+.xc-confirm .xc-ic { color: #15803d; }
+.xc-contra  .xc-ic { color: #b45309; }
+.xc-none { font-size: 12px; color: var(--text-4); font-style: italic; }
+
+/* Provisional tray */
+.tray { border-top: 1px solid var(--border); padding: 10px 14px 12px; background: #fbfcfe; }
+.tray-items { display: flex; flex-direction: column; gap: 5px; margin: 6px 0; }
+.tray-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; background: #fff;
+             border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; }
+.tray-item .dx-code { flex-shrink: 0; }
+.tray-item .src { font-size: 10px; color: var(--text-4); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; }
+.tray-item button { margin-left: auto; border: none; background: none; color: var(--text-4); cursor: pointer; }
+.tray-item button:hover { color: #b91c1c; }
+.tray-empty { font-size: 12px; color: var(--text-4); font-style: italic; padding: 4px 0; }
+.confirm-btn { width: 100%; margin-top: 8px; background: var(--accent); color: #fff; border: none; border-radius: 8px;
+               padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.confirm-btn:hover:not(:disabled) { background: var(--accent-h); }
+.confirm-btn:disabled { opacity: .4; cursor: not-allowed; }
+.on-record { font-size: 11.5px; color: var(--text-4); margin-top: 6px; }
+.on-record code { font-family: ui-monospace, Consolas, monospace; }
+
+/* Red-flag / allergy chip (red is reserved for danger) */
+.flag-danger { background: #fee2e2; color: #991b1b; font-size: 11.5px; font-weight: 700;
+               border-radius: 999px; padding: 3px 11px; }
+.flag-first { background: #fef3c7; color: #92400e; font-size: 11.5px; font-weight: 700;
+              border-radius: 999px; padding: 3px 11px; display: none; }
+
+/* Notes save */
+.notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.notes-grid .full { grid-column: 1 / -1; }
+.notes-field label { font-size: 11.5px; font-weight: 600; color: var(--text-3); display: block; margin-bottom: 3px; }
+.save-notes { background: #fff; border: 1px solid var(--accent); color: var(--accent); border-radius: 8px;
+              padding: 7px 16px; font-size: 12.5px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+.save-notes:hover { background: rgba(var(--accent-rgb), .07); }
+.save-stamp { font-size: 11.5px; color: #15803d; margin-left: 10px; }
+
+/* Panel drawer on narrow screens */
+.dx-drawer-tab { display: none; }
+@media (max-width: 1099px) {
+  .ws-grid { grid-template-columns: 1fr; }
+  .dx-panel { position: fixed; top: auto; bottom: 0; left: 0; right: 0; z-index: 60; border-radius: 16px 16px 0 0;
+              max-height: 78vh; transform: translateY(calc(100% - 0px)); transition: transform .22s ease; }
+  .dx-panel.drawer-open { transform: translateY(0); box-shadow: 0 -8px 32px rgba(0,0,0,.18); }
+  .dx-drawer-tab { display: flex; position: fixed; bottom: 70px; right: 14px; z-index: 61; align-items: center; gap: 8px;
+                   background: var(--accent); color: #fff; border: none; border-radius: 999px; padding: 11px 18px;
+                   font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-md); min-height: 44px; }
+  .notes-grid { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ws-wrap">
+
+  <!-- ── Zone 1: patient header ──────────────────────────────────────── -->
+  <div class="ws-header">
+    <div>
+      <div class="name">{{ patient.first_name }} {{ patient.last_name }}</div>
+      <div class="meta">
+        <span>{{ patient.get_age }}y · {{ patient.get_gender_display|default:patient.gender }}</span>
+        {% if patient.medical_aid_name %}<span><i class="bi bi-shield-check"></i> {{ patient.medical_aid_name }}{% if patient.medical_aid_plan %} · {{ patient.medical_aid_plan }}{% endif %}</span>{% endif %}
+        <span>Visit #{{ visit_number }}</span>
+      </div>
+    </div>
+    <div class="flags">
+      <span class="flag-first" id="firstFlagChip">⚑ <span id="firstFlagCount">0</span> first-recorded</span>
+      {% if allergies %}
+      <span class="flag-danger" title="{{ allergies|join:', ' }}">⚠ Allergies: {{ allergies|join:', '|truncatechars:40 }}</span>
+      {% endif %}
+      <a href="{% url 'consultation_detail' consultation.pk %}" class="bodymap-toggle" style="text-decoration:none;">
+        <i class="bi bi-arrow-left"></i> Back to consult
+      </a>
+    </div>
+  </div>
+
+  <div class="ws-grid">
+
+    <!-- ── Zone 2: working area ──────────────────────────────────────── -->
+    <div>
+
+      <div class="ws-card">
+        <div class="ws-label">Chief complaint</div>
+        <input class="ws-input" id="chiefComplaint" placeholder="Reason for visit…"
+               value="{{ consultation.chief_complaint|default:'' }}">
+      </div>
+
+      <div class="ws-card">
+        <div class="ws-label">Presenting symptoms &amp; signs <span style="font-weight:400;text-transform:none;letter-spacing:0;">(today — {{ presenting_weight }} weight)</span></div>
+        <div style="display:flex;gap:8px;">
+          <div class="ta-wrap" style="flex:1;">
+            <input class="ws-input" id="symSearch" placeholder="🔍 Type to search symptoms… (↑↓ + Enter)" autocomplete="off">
+            <div class="ta-drop" id="symDrop" role="listbox"></div>
+          </div>
+          <button class="bodymap-toggle" id="bodymapToggle" type="button"><i class="bi bi-person"></i> Body map</button>
+        </div>
+
+        <div class="bodymap-panel" id="bodymapPanel">
+          <svg class="bodymap-svg" viewBox="0 0 100 220" aria-label="Body map">
+            <circle class="bm-region" data-region="head" cx="50" cy="22" r="15"><title>Head &amp; face</title></circle>
+            <rect class="bm-region" data-region="throat" x="43" y="38" width="14" height="12" rx="4"><title>Throat &amp; neck</title></rect>
+            <path class="bm-region" data-region="chest" d="M30 52 h40 l3 34 h-46 z"><title>Chest &amp; respiratory</title></path>
+            <path class="bm-region" data-region="abdomen" d="M28 88 h44 l-2 26 h-40 z"><title>Abdomen &amp; digestive</title></path>
+            <path class="bm-region" data-region="pelvis" d="M31 116 h38 l-3 18 h-32 z"><title>Pelvis &amp; urinary</title></path>
+            <path class="bm-region" data-region="limbs" d="M27 54 l-11 6 -4 52 8 1 5 -44 z"><title>Limbs, joints &amp; back</title></path>
+            <path class="bm-region" data-region="limbs" d="M73 54 l11 6 4 52 -8 1 -5 -44 z"><title>Limbs, joints &amp; back</title></path>
+            <path class="bm-region" data-region="limbs" d="M34 136 h13 l-2 76 -10 0 z"><title>Limbs, joints &amp; back</title></path>
+            <path class="bm-region" data-region="limbs" d="M53 136 h13 l-1 76 -10 0 z"><title>Limbs, joints &amp; back</title></path>
+          </svg>
+          <div class="bm-side">
+            <div class="bm-extra-btns">
+              <button class="bm-extra" data-region="skin" type="button">Skin</button>
+              <button class="bm-extra" data-region="mental" type="button">Mood &amp; sleep</button>
+              <button class="bm-extra" data-region="general" type="button">General / systemic</button>
+            </div>
+            <div class="bm-list" id="bmList"><span class="bm-hint">Tap a body region (or a category) to see its symptoms.</span></div>
+          </div>
+        </div>
+
+        <div class="chip-row" id="presentingChips"></div>
+      </div>
+
+      <div class="ws-card">
+        <div class="ws-label">Working complaints <span style="font-weight:400;text-transform:none;letter-spacing:0;">(ongoing / from history — {{ history_weight }} weight)</span></div>
+        <div class="ta-wrap">
+          <input class="ws-input" id="workSearch" placeholder="🔍 Add ongoing or historical complaints…" autocomplete="off">
+          <div class="ta-drop" id="workDrop" role="listbox"></div>
+        </div>
+        <div class="chip-row" id="workingChips"></div>
+        <input class="ws-input" id="runNotes" placeholder="Free-text context for this run (recorded with the audit trail)…" style="margin-top:8px;">
+      </div>
+
+      <div class="ws-card">
+        <details class="ws-details">
+          <summary>
+            <div class="ws-label"><span class="exp-caret">▶</span> History (feeds cross-check)
+              <span class="hx-line" style="font-weight:400;text-transform:none;letter-spacing:0;">
+                — {% if chronic %}Chronic: {{ chronic|join:', ' }}{% else %}no chronic conditions{% endif %}{% if prior_codes %} · {{ prior_codes|length }} prior dx{% endif %}
+              </span>
+            </div>
+          </summary>
+          <div class="hx-detail">
+            <div><strong>Chronic:</strong> {{ chronic|join:', '|default:'—' }}</div>
+            <div><strong>Allergies:</strong> {{ allergies|join:', '|default:'—' }}</div>
+            <div><strong>Smoking:</strong> {{ patient.smoking_status|default:'—' }} · <strong>Alcohol:</strong> {{ patient.alcohol_use|default:'—' }}</div>
+            <div><strong>Prior ICD-10:</strong> {% if prior_codes %}{% for c in prior_codes %}<code>{{ c }}</code>{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}—{% endif %}</div>
+            {% if patient.family_history %}<div><strong>Family history:</strong> {{ patient.family_history }}</div>{% endif %}
+          </div>
+        </details>
+      </div>
+
+      <div class="ws-card">
+        <details class="ws-details" open>
+          <summary><div class="ws-label"><span class="exp-caret">▶</span> Notes (SOAP)</div></summary>
+          <div class="notes-grid">
+            <div class="notes-field full">
+              <label for="soapS">S — Subjective / clinical notes</label>
+              <textarea class="ws-textarea" id="soapS">{{ consultation.subjective|default:'' }}</textarea>
+            </div>
+            <div class="notes-field">
+              <label for="soapO">O — Objective (examination)</label>
+              <textarea class="ws-textarea" id="soapO">{{ consultation.objective|default:'' }}</textarea>
+            </div>
+            <div class="notes-field">
+              <label for="soapA">A — Assessment</label>
+              <textarea class="ws-textarea" id="soapA">{{ consultation.assessment|default:'' }}</textarea>
+            </div>
+            <div class="notes-field full">
+              <label for="soapP">P — Plan (treatment)</label>
+              <textarea class="ws-textarea" id="soapP">{{ consultation.plan|default:'' }}</textarea>
+            </div>
+          </div>
+          <button class="save-notes" id="saveNotesBtn" type="button"><i class="bi bi-check2"></i> Save notes</button>
+          <span class="save-stamp" id="saveStamp"></span>
+        </details>
+      </div>
+
+    </div>
+
+    <!-- ── Zone 3: differential panel ─────────────────────────────────── -->
+    <aside class="dx-panel" id="dxPanel" aria-label="Differential diagnosis panel">
+      <div class="dx-head">
+        <div>
+          <h3>Differential <span class="stale-chip">Inputs changed</span></h3>
+          <div class="dx-meta" id="dxMeta">no run yet</div>
+        </div>
+        <button class="run-btn" id="runBtn" type="button" disabled>Run</button>
+      </div>
+
+      <div class="dx-scroll">
+        <div class="dx-empty" id="dxEmpty">
+          <i class="bi bi-clipboard2-pulse"></i>
+          Add symptoms, then <strong>Run</strong>.
+        </div>
+        <div id="dxNote" class="dx-note" style="display:none;"></div>
+        <div class="dx-list" id="dxList"></div>
+
+        <div class="xc-section" id="xcSection" style="display:none;">
+          <div class="ws-label" style="margin-bottom:6px;">History cross-check</div>
+          <div id="xcBody"></div>
+        </div>
+      </div>
+
+      <div class="tray">
+        <div class="ws-label" style="margin-bottom:2px;">Provisional dx <span style="font-weight:400;text-transform:none;">(never final)</span></div>
+        <div class="tray-items" id="trayItems"><div class="tray-empty">Promote from the list above, or add by ICD-10 below.</div></div>
+        <div class="ta-wrap">
+          <input class="ws-input" id="icdSearch" placeholder="＋ Off-list add — search ICD-10…" autocomplete="off" style="font-size:12.5px;padding:6px 10px;">
+          <div class="ta-drop" id="icdDrop" role="listbox" style="bottom:calc(100% + 4px);top:auto;"></div>
+        </div>
+        {% if existing_codes %}
+        <div class="on-record">Already on record: {% for e in existing_codes %}<code>{{ e.code }}</code>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+        {% endif %}
+        <button class="confirm-btn" id="confirmBtn" type="button" disabled>Confirm provisional</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<button class="dx-drawer-tab" id="drawerTab" type="button">
+  <i class="bi bi-clipboard2-pulse"></i> Differential <span id="drawerBadge"></span>
+</button>
+
+{{ symptoms_data|json_script:"kb-symptoms" }}
+{{ first_ids|json_script:"kb-first-ids" }}
+{{ last_run_data|json_script:"kb-last-run" }}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function () {
+  'use strict';
+  const CSRF = '{{ csrf_token }}';
+  const URLS = {
+    run:     "{% url 'workspace_run' consultation.pk %}",
+    confirm: "{% url 'workspace_confirm' consultation.pk %}",
+    notes:   "{% url 'workspace_save_notes' consultation.pk %}",
+    icd10:   "{% url 'icd10_search' %}",
+  };
+
+  const KB       = JSON.parse(document.getElementById('kb-symptoms').textContent);
+  const FIRST    = new Set(JSON.parse(document.getElementById('kb-first-ids').textContent));
+  const LAST_RUN = JSON.parse(document.getElementById('kb-last-run').textContent);
+  const byId = new Map(KB.map(s => [s.id, s]));
+
+  // ── State ──────────────────────────────────────────────────────────────
+  const presenting = new Set();
+  const working    = new Set();
+  let promoted = [];              // [{code, name, source, condition_id}]
+  let lastRun  = null;            // server payload of the run shown in the panel
+  let stale    = false;
+
+  const $ = id => document.getElementById(id);
+  const panel = $('dxPanel');
+
+  function post(url, body) {
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+      body: JSON.stringify(body),
+    }).then(r => r.json().then(data => ({ ok: r.ok, data })));
+  }
+
+  // ── Chips ──────────────────────────────────────────────────────────────
+  function renderChips() {
+    const draw = (set, el, bucket) => {
+      el.innerHTML = '';
+      if (!set.size) {
+        el.innerHTML = '<span class="chip-empty">none added yet</span>';
+      }
+      [...set].map(id => byId.get(id)).filter(Boolean)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach(s => {
+          const chip = document.createElement('span');
+          chip.className = 'sym-chip';
+          chip.innerHTML =
+            (FIRST.has(s.id) ? '<span class="first-flag" title="First recorded for this patient">⚑</span>' : '') +
+            escapeHtml(s.name) +
+            '<button type="button" aria-label="Remove ' + escapeHtml(s.name) + '">✕</button>';
+          chip.querySelector('button').onclick = () => { set.delete(s.id); onInputsChanged(); };
+          el.appendChild(chip);
+        });
+    };
+    draw(presenting, $('presentingChips'), 'presenting');
+    draw(working, $('workingChips'), 'working');
+
+    const firstCount = [...presenting, ...working].filter(id => FIRST.has(id)).length;
+    $('firstFlagChip').style.display = firstCount ? 'inline-block' : 'none';
+    $('firstFlagCount').textContent = firstCount;
+
+    const any = presenting.size + working.size > 0;
+    $('runBtn').disabled = !any;
+    renderBodymapList();  // refresh "added" states
+  }
+
+  function addSymptom(id, bucket) {
+    (bucket === 'working' ? working : presenting).add(id);
+    // one symptom lives in one bucket — presenting wins per engine rules
+    if (bucket === 'presenting') working.delete(id);
+    onInputsChanged();
+  }
+
+  function onInputsChanged() {
+    if (lastRun) { stale = true; panel.classList.add('stale'); $('runBtn').textContent = 'Re-run'; $('runBtn').classList.add('pulse'); }
+    renderChips();
+  }
+
+  // ── Type-ahead (knowledge base) ────────────────────────────────────────
+  function kbMatch(q) {
+    q = q.toLowerCase();
+    const starts = [], contains = [];
+    for (const s of KB) {
+      const hay = s.name.toLowerCase(), syn = (s.synonyms || '').toLowerCase();
+      if (hay.startsWith(q)) starts.push(s);
+      else if (hay.includes(q) || syn.includes(q)) contains.push(s);
+    }
+    return starts.concat(contains).slice(0, 12);
+  }
+
+  function attachTypeahead(inputEl, dropEl, bucket) {
+    let active = -1, items = [];
+    function close() { dropEl.classList.remove('open'); active = -1; }
+    function render() {
+      dropEl.innerHTML = '';
+      items.forEach((s, i) => {
+        const div = document.createElement('div');
+        div.className = 'ta-item' + (i === active ? ' active' : '');
+        div.setAttribute('role', 'option');
+        div.innerHTML = escapeHtml(s.name) +
+          (FIRST.has(s.id) ? ' <span class="first-flag">⚑</span>' : '') +
+          '<span class="kind">' + s.kind + '</span>';
+        div.onmousedown = e => { e.preventDefault(); pick(s); };
+        dropEl.appendChild(div);
+      });
+      dropEl.classList.toggle('open', items.length > 0);
+    }
+    function pick(s) { addSymptom(s.id, bucket); inputEl.value = ''; close(); inputEl.focus(); }
+    inputEl.addEventListener('input', () => {
+      const q = inputEl.value.trim();
+      if (q.length < 1) { close(); return; }
+      items = kbMatch(q); active = items.length ? 0 : -1; render();
+    });
+    inputEl.addEventListener('keydown', e => {
+      if (!dropEl.classList.contains('open')) return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, items.length - 1); render(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (items[active]) pick(items[active]); }
+      else if (e.key === 'Escape') close();
+    });
+    inputEl.addEventListener('blur', () => setTimeout(close, 120));
+  }
+  attachTypeahead($('symSearch'), $('symDrop'), 'presenting');
+  attachTypeahead($('workSearch'), $('workDrop'), 'working');
+
+  // ── Body map ───────────────────────────────────────────────────────────
+  let selectedRegion = null;
+  $('bodymapToggle').onclick = () => {
+    const open = $('bodymapPanel').classList.toggle('open');
+    $('bodymapToggle').classList.toggle('on', open);
+  };
+  document.querySelectorAll('.bm-region, .bm-extra').forEach(el => {
+    el.addEventListener('click', () => {
+      selectedRegion = el.dataset.region;
+      document.querySelectorAll('.bm-region, .bm-extra').forEach(x =>
+        x.classList.toggle('sel', x.dataset.region === selectedRegion));
+      renderBodymapList();
+    });
+  });
+  function renderBodymapList() {
+    const listEl = $('bmList');
+    if (!selectedRegion) return;
+    const syms = KB.filter(s => s.body_region === selectedRegion);
+    listEl.innerHTML = '';
+    if (!syms.length) { listEl.innerHTML = '<span class="bm-hint">No symptoms mapped to this region.</span>'; return; }
+    syms.forEach(s => {
+      const added = presenting.has(s.id) || working.has(s.id);
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'bm-sym' + (added ? ' added' : '');
+      b.textContent = s.name;
+      if (!added) b.onclick = () => addSymptom(s.id, 'presenting');
+      listEl.appendChild(b);
+    });
+  }
+
+  // ── Run / panel ────────────────────────────────────────────────────────
+  $('runBtn').onclick = () => {
+    const btn = $('runBtn');
+    btn.disabled = true; btn.textContent = 'Running…'; btn.classList.remove('pulse');
+    post(URLS.run, {
+      presenting: [...presenting],
+      working: [...working],
+      notes: $('runNotes').value.trim(),
+    }).then(({ ok, data }) => {
+      btn.disabled = false;
+      if (!ok) { btn.textContent = stale ? 'Re-run' : 'Run'; alert(data.error || 'Run failed.'); return; }
+      lastRun = data; stale = false;
+      panel.classList.remove('stale');
+      btn.textContent = 'Re-run';
+      renderPanel();
+    }).catch(() => { btn.disabled = false; btn.textContent = 'Run'; alert('Network error — try again.'); });
+  };
+
+  function bandClass(band) {
+    return band === 'High' ? 'band-high' : band === 'Medium' ? 'band-med' : 'band-low';
+  }
+
+  function renderPanel() {
+    const out = lastRun.output;
+    $('dxEmpty').style.display = 'none';
+    $('dxMeta').textContent = 'last run ' + lastRun.created_at + ' · ' + out.input_count +
+      ' symptom' + (out.input_count === 1 ? '' : 's') + ' · engine v' + out.engine_version;
+
+    // needs-more-data note + suggestions
+    const note = $('dxNote');
+    const weak = out.results.length && out.results.every(r => r.band === 'Low');
+    if (out.needs_more_data || weak || !out.results.length) {
+      let msg = !out.results.length
+        ? 'No conditions matched these inputs — add more symptoms or history.'
+        : weak ? 'Weak signal — every candidate is Low. Consider more history/symptoms.'
+        : 'Fewer than {{ min_inputs }} inputs — more data will sharpen the ranking.';
+      note.innerHTML = msg;
+      const sugg = (lastRun.suggestions || []).filter(s => !presenting.has(s.symptom_id) && !working.has(s.symptom_id));
+      if (sugg.length) {
+        const wrap = document.createElement('div');
+        wrap.className = 'dx-suggest';
+        sugg.forEach(s => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.textContent = '+ ' + s.symptom; b.title = s.hint;
+          b.onclick = () => addSymptom(s.symptom_id, 'presenting');
+          wrap.appendChild(b);
+        });
+        note.appendChild(wrap);
+      }
+      note.style.display = 'block';
+    } else { note.style.display = 'none'; }
+
+    // ranked list
+    const list = $('dxList');
+    list.innerHTML = '';
+    out.results.forEach(r => {
+      const row = document.createElement('div');
+      row.className = 'dx-row';
+      row.innerHTML =
+        '<div class="dx-row-top">' +
+          '<span class="dx-rank">' + r.rank + '</span>' +
+          '<span class="dx-name">' + escapeHtml(r.condition) + ' <span class="dx-code">' + escapeHtml(r.icd10_code) + '</span></span>' +
+          '<span class="band ' + bandClass(r.band) + '">' + r.band.toUpperCase() + '</span>' +
+          '<button class="dx-promote" type="button" title="Promote to provisional dx">＋</button>' +
+        '</div>' +
+        '<details class="dx-why"><summary>why ▾ (score ' + r.score + ')</summary><div class="dx-why-body"></div></details>';
+      const body = row.querySelector('.dx-why-body');
+      const bd = r.breakdown;
+      (bd.presenting_matches || []).forEach(m => body.appendChild(whyLine('presenting', m.symptom + ' (+' + m.weight + ')')));
+      (bd.working_matches || []).forEach(m => body.appendChild(whyLine('working', m.symptom + ' (+' + m.weight + ')')));
+      (bd.history_factors || []).forEach(f => body.appendChild(whyLine(
+        f.kind === 'confirming' ? '✓ history' : '⚠ history',
+        (f.note || f.factor) + ' (' + (f.delta >= 0 ? '+' : '') + f.delta + ')')));
+      const frm = document.createElement('div'); frm.className = 'frm'; frm.textContent = bd.formula;
+      body.appendChild(frm);
+
+      const btn = row.querySelector('.dx-promote');
+      syncPromoteBtn(btn, r.icd10_code);
+      btn.onclick = () => {
+        if (promoted.some(p => p.code === r.icd10_code)) {
+          promoted = promoted.filter(p => p.code !== r.icd10_code);
+        } else {
+          promoted.push({ code: r.icd10_code, name: r.condition, source: 'engine', condition_id: r.condition_id });
+        }
+        renderTray(); renderPromoteBtns();
+      };
+      list.appendChild(row);
+    });
+
+    renderCrossCheck(out);
+    renderTray();
+    updateDrawerBadge(out);
+  }
+
+  function whyLine(label, text) {
+    const d = document.createElement('div');
+    d.textContent = label + ': ' + text;
+    return d;
+  }
+
+  function renderPromoteBtns() {
+    document.querySelectorAll('.dx-row').forEach(row => {
+      const code = row.querySelector('.dx-code').textContent;
+      syncPromoteBtn(row.querySelector('.dx-promote'), code);
+    });
+  }
+  function syncPromoteBtn(btn, code) {
+    const inTray = promoted.some(p => p.code === code);
+    btn.classList.toggle('in-tray', inTray);
+    btn.textContent = inTray ? '✓' : '＋';
+    btn.title = inTray ? 'Remove from provisional dx' : 'Promote to provisional dx';
+  }
+
+  function renderCrossCheck(out) {
+    const seen = new Set(), confirms = [], contras = [];
+    out.results.forEach(r => (r.breakdown.history_factors || []).forEach(f => {
+      const key = f.kind + '|' + (f.note || f.factor) + '|' + r.condition;
+      if (seen.has(key)) return;
+      seen.add(key);
+      const entry = { text: (f.note || f.factor) + ' — ' + r.condition + ' (' + (f.delta >= 0 ? '+' : '') + f.delta + ')' };
+      (f.kind === 'confirming' ? confirms : contras).push(entry);
+    }));
+    const sec = $('xcSection'), body = $('xcBody');
+    body.innerHTML = '';
+    if (!confirms.length && !contras.length) {
+      body.innerHTML = '<div class="xc-none">No stored-history factors fired on this run.</div>';
+    } else {
+      confirms.forEach(e => body.insertAdjacentHTML('beforeend',
+        '<div class="xc-item xc-confirm"><span class="xc-ic">✓</span>' + escapeHtml(e.text) + '</div>'));
+      contras.forEach(e => body.insertAdjacentHTML('beforeend',
+        '<div class="xc-item xc-contra"><span class="xc-ic">⚠</span>' + escapeHtml(e.text) + '</div>'));
+    }
+    sec.style.display = 'block';
+  }
+
+  // ── Provisional tray ───────────────────────────────────────────────────
+  function renderTray() {
+    const el = $('trayItems');
+    el.innerHTML = '';
+    if (!promoted.length) {
+      el.innerHTML = '<div class="tray-empty">Promote from the list above, or add by ICD-10 below.</div>';
+    }
+    promoted.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'tray-item';
+      div.innerHTML = '<span class="dx-code">' + escapeHtml(p.code) + '</span> ' + escapeHtml(p.name) +
+        (p.source === 'manual' ? ' <span class="src">off-list</span>' : '') +
+        '<button type="button" aria-label="Remove">✕</button>';
+      div.querySelector('button').onclick = () => {
+        promoted = promoted.filter(x => x.code !== p.code);
+        renderTray(); renderPromoteBtns();
+      };
+      el.appendChild(div);
+    });
+    $('confirmBtn').disabled = !promoted.length;
+  }
+
+  // Off-list ICD-10 type-ahead (server search — full reference)
+  (function () {
+    const input = $('icdSearch'), drop = $('icdDrop');
+    let items = [], active = -1, timer = null;
+    function close() { drop.classList.remove('open'); active = -1; }
+    function render() {
+      drop.innerHTML = '';
+      items.forEach((r, i) => {
+        const div = document.createElement('div');
+        div.className = 'ta-item' + (i === active ? ' active' : '');
+        div.innerHTML = '<span class="dx-code">' + escapeHtml(r.code) + '</span> ' + escapeHtml(r.description);
+        div.onmousedown = e => { e.preventDefault(); pick(r); };
+        drop.appendChild(div);
+      });
+      drop.classList.toggle('open', items.length > 0);
+    }
+    function pick(r) {
+      if (!promoted.some(p => p.code === r.code)) {
+        promoted.push({ code: r.code, name: r.description, source: 'manual', condition_id: null });
+      }
+      input.value = ''; close(); renderTray(); renderPromoteBtns();
+    }
+    input.addEventListener('input', () => {
+      clearTimeout(timer);
+      const q = input.value.trim();
+      if (q.length < 2) { close(); return; }
+      timer = setTimeout(() => {
+        fetch(URLS.icd10 + '?q=' + encodeURIComponent(q))
+          .then(r => r.json())
+          .then(data => { items = data.results || []; active = items.length ? 0 : -1; render(); });
+      }, 180);
+    });
+    input.addEventListener('keydown', e => {
+      if (!drop.classList.contains('open')) return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, items.length - 1); render(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (items[active]) pick(items[active]); }
+      else if (e.key === 'Escape') close();
+    });
+    input.addEventListener('blur', () => setTimeout(close, 120));
+  })();
+
+  // ── Confirm ────────────────────────────────────────────────────────────
+  $('confirmBtn').onclick = () => {
+    const btn = $('confirmBtn');
+    btn.disabled = true; btn.textContent = 'Confirming…';
+    post(URLS.confirm, { result_id: lastRun ? lastRun.result_id : null, promoted })
+      .then(({ ok, data }) => {
+        if (ok && data.redirect) { window.location = data.redirect; return; }
+        btn.disabled = false; btn.textContent = 'Confirm provisional';
+        alert(data.error || 'Confirm failed.');
+      })
+      .catch(() => { btn.disabled = false; btn.textContent = 'Confirm provisional'; alert('Network error — try again.'); });
+  };
+
+  // ── Notes save ─────────────────────────────────────────────────────────
+  $('saveNotesBtn').onclick = () => {
+    post(URLS.notes, {
+      chief_complaint: $('chiefComplaint').value,
+      subjective: $('soapS').value,
+      objective: $('soapO').value,
+      assessment: $('soapA').value,
+      plan: $('soapP').value,
+    }).then(({ ok, data }) => {
+      $('saveStamp').textContent = ok ? '✓ saved ' + data.saved_at : 'save failed';
+      setTimeout(() => { $('saveStamp').textContent = ''; }, 4000);
+    });
+  };
+
+  // ── Drawer (narrow screens) ────────────────────────────────────────────
+  $('drawerTab').onclick = () => panel.classList.toggle('drawer-open');
+  function updateDrawerBadge(out) {
+    const top = out.results[0];
+    $('drawerBadge').textContent = top ? out.results.length + ' · ' + top.band.toUpperCase() : '';
+  }
+
+  // ── Keyboard: Ctrl+Enter = Run ─────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && !$('runBtn').disabled) $('runBtn').click();
+  });
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  // ── Restore last run (chips + panel) ───────────────────────────────────
+  if (LAST_RUN) {
+    LAST_RUN.inputs.presenting_symptom_ids.forEach(id => { if (byId.has(id)) presenting.add(id); });
+    LAST_RUN.inputs.working_symptom_ids.forEach(id => { if (byId.has(id)) working.add(id); });
+    $('runNotes').value = LAST_RUN.inputs.notes || '';
+    lastRun = LAST_RUN;
+    $('runBtn').textContent = 'Re-run';
+    renderPanel();
+  }
+  renderChips();
+})();
+</script>
+{% endblock %}

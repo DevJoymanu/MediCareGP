@@ -7,13 +7,18 @@ gets HTTP 403 (enforced server-side, see medicaregp/roles.py).
 import json
 
 from django.contrib import messages
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
+from django.views.decorators.http import require_GET, require_POST
 
+from consultations.icd10_data import ICD10_CODES
 from consultations.models import Consultation
 from medicaregp.roles import doctor_required
 
 from . import engine
-from .models import DifferentialResult, Symptom
+from .models import Condition, DifferentialResult, Symptom
 
 
 def _selected_ids(request, field):
@@ -136,3 +141,215 @@ def differential_confirm(request, pk):
     names = ', '.join(f"{r['condition']} ({r['icd10_code']})" for r in chosen)
     messages.success(request, f'Provisional diagnosis confirmed: {names}. ICD-10 codes added to the consultation.')
     return redirect('consultation_detail', pk=consultation.pk)
+
+
+# ── Consultation workspace (single-screen, explicit-Run) ─────────────────────
+
+def _json_body(request):
+    try:
+        return json.loads(request.body.decode('utf-8'))
+    except (ValueError, UnicodeDecodeError):
+        return None
+
+
+def _run_payload(result):
+    """Client-side shape of one engine run (restores the panel on reload)."""
+    return {
+        'result_id': result.pk,
+        'created_at': timezone.localtime(result.created_at).strftime('%H:%M'),
+        'inputs': {
+            'presenting_symptom_ids': result.inputs.get('presenting_symptom_ids', []),
+            'working_symptom_ids': result.inputs.get('working_symptom_ids', []),
+            'notes': result.inputs.get('notes', ''),
+        },
+        'output': result.output,
+        'flags': result.inputs.get('first_occurrence_flags', []),
+    }
+
+
+@doctor_required
+def workspace(request, consultation_pk):
+    """The doctor's consultation workspace: 3-zone single screen — working
+    area (complaint, symptoms, history, SOAP notes) + persistent differential
+    panel. All diagnosis actions happen via the JSON endpoints below."""
+    consultation = get_object_or_404(Consultation.objects.select_related('patient'), pk=consultation_pk)
+    patient = consultation.patient
+
+    symptoms = list(Symptom.objects.filter(active=True)
+                    .order_by('name')
+                    .values('id', 'name', 'kind', 'synonyms', 'body_region'))
+
+    # First-occurrence, precomputed for the whole knowledge base so the client
+    # can badge chips instantly (⚑) without a round-trip per symptom.
+    flags = engine.first_occurrence_flags(
+        patient, [s['id'] for s in symptoms], exclude_consultation=consultation)
+    first_ids = [f['symptom_id'] for f in flags]
+
+    last_run = consultation.differential_results.first()   # newest (Meta ordering)
+
+    return render(request, 'diagnosis/workspace.html', {
+        'consultation': consultation,
+        'patient': patient,
+        'visit_number': patient.consultations.count(),
+        'allergies': patient.allergies_list(),
+        'chronic': patient.chronic_list(),
+        'prior_codes': sorted(engine.prior_icd10_codes(patient)),
+        'existing_codes': consultation.icd10_codes_list,
+        'regions': Symptom.BODY_REGION_CHOICES,
+        'symptoms_data': symptoms,
+        'first_ids': first_ids,
+        'last_run_data': _run_payload(last_run) if last_run else None,
+        'min_inputs': engine.MIN_INPUTS,
+        'history_weight': engine.HISTORY_WEIGHT,
+        'presenting_weight': engine.PRESENTING_WEIGHT,
+    })
+
+
+@doctor_required
+@require_POST
+def workspace_run(request, consultation_pk):
+    """Explicit Run: score the current inputs, store the audit
+    DifferentialResult, return the panel data as JSON."""
+    consultation = get_object_or_404(Consultation.objects.select_related('patient'), pk=consultation_pk)
+    patient = consultation.patient
+
+    data = _json_body(request)
+    if data is None:
+        return HttpResponseBadRequest('Invalid JSON body.')
+
+    presenting_ids = [int(i) for i in data.get('presenting', []) if str(i).isdigit()]
+    working_ids    = [int(i) for i in data.get('working', []) if str(i).isdigit()]
+    notes          = (data.get('notes') or '').strip()
+
+    if not presenting_ids and not working_ids:
+        return JsonResponse({'error': 'Add at least one symptom before running.'}, status=400)
+
+    output = engine.run_differential(patient, presenting_ids, working_ids, notes=notes)
+    flags = engine.first_occurrence_flags(
+        patient, presenting_ids + working_ids, exclude_consultation=consultation)
+
+    result = DifferentialResult.objects.create(
+        consultation=consultation,
+        patient=patient,
+        created_by=request.user,
+        engine_version=engine.ENGINE_VERSION,
+        inputs={
+            'presenting_symptom_ids': sorted(set(presenting_ids)),
+            'working_symptom_ids': sorted(set(working_ids)),
+            'notes': notes,
+            'patient_snapshot': {
+                'age': patient.get_age(),
+                'sex': patient.gender,
+                'chronic_conditions': patient.chronic_list(),
+                'smoking_status': patient.smoking_status or '',
+                'alcohol_use': patient.alcohol_use or '',
+            },
+            'first_occurrence_flags': flags,
+        },
+        output=output,
+    )
+
+    payload = _run_payload(result)
+    payload['suggestions'] = engine.suggest_more_symptoms(output, presenting_ids, working_ids)
+    return JsonResponse(payload)
+
+
+@doctor_required
+@require_POST
+def workspace_confirm(request, consultation_pk):
+    """Confirm the promoted provisional diagnoses: write ICD-10 codes to the
+    consultation and freeze the run as an immutable snapshot (confirmed_at /
+    confirmed_dx). Off-list (manual) codes are validated against ICD10_CODES."""
+    consultation = get_object_or_404(Consultation, pk=consultation_pk)
+
+    data = _json_body(request)
+    if data is None:
+        return HttpResponseBadRequest('Invalid JSON body.')
+
+    promoted = data.get('promoted') or []
+    if not promoted:
+        return JsonResponse({'error': 'Promote at least one diagnosis before confirming.'}, status=400)
+
+    result = None
+    if data.get('result_id'):
+        result = get_object_or_404(
+            DifferentialResult, pk=data['result_id'], consultation=consultation)
+
+    valid_codes = dict(ICD10_CODES)
+    engine_codes = ({r['icd10_code'] for r in result.output.get('results', [])}
+                    if result else set())
+
+    clean = []
+    for item in promoted:
+        code = (item.get('code') or '').strip()
+        name = (item.get('name') or '').strip()
+        source = item.get('source') or 'engine'
+        if not code:
+            return JsonResponse({'error': 'A promoted diagnosis is missing its ICD-10 code.'}, status=400)
+        if source == 'manual':
+            if code not in valid_codes:
+                return JsonResponse({'error': f'Unknown ICD-10 code: {code}'}, status=400)
+            name = name or valid_codes[code]
+        elif code not in engine_codes:
+            return JsonResponse({'error': f'{code} is not in this run’s differential.'}, status=400)
+        clean.append({'code': code, 'name': name, 'source': source})
+
+    existing = consultation.icd10_codes_list
+    existing_codes = {e.get('code') for e in existing}
+    for dx in clean:
+        if dx['code'] not in existing_codes:
+            existing.append({'code': dx['code'], 'description': dx['name']})
+            existing_codes.add(dx['code'])
+    consultation.icd10_code = json.dumps(existing)
+
+    if result:
+        summary = '; '.join(
+            f"{r['rank']}. {r['condition']} ({r['icd10_code']}) — score {r['score']} [{r['band']}]"
+            for r in result.output.get('results', []))
+        consultation.differential_diagnosis = (
+            f"Provisional Diagnosis (engine v{result.engine_version}, "
+            f"history weight {result.output['constants']['history_weight']}): {summary}")
+        result.confirmed_at = timezone.now()
+        result.confirmed_dx = clean
+        result.save(update_fields=['confirmed_at', 'confirmed_dx'])
+    consultation.save()
+
+    return JsonResponse({'ok': True,
+                         'redirect': reverse('consultation_detail', args=[consultation.pk])})
+
+
+@doctor_required
+@require_POST
+def workspace_save_notes(request, consultation_pk):
+    """Save the working-area fields (chief complaint + SOAP) in place."""
+    consultation = get_object_or_404(Consultation, pk=consultation_pk)
+    data = _json_body(request)
+    if data is None:
+        return HttpResponseBadRequest('Invalid JSON body.')
+
+    editable = ['chief_complaint', 'subjective', 'objective', 'assessment', 'plan']
+    changed = []
+    for field in editable:
+        if field in data:
+            setattr(consultation, field, (data[field] or '').strip())
+            changed.append(field)
+    if changed:
+        consultation.save(update_fields=changed)
+    return JsonResponse({'ok': True, 'saved_at': timezone.localtime().strftime('%H:%M')})
+
+
+@doctor_required
+@require_GET
+def icd10_search(request):
+    """Type-ahead for the off-list provisional-dx add: search the full ICD-10
+    reference by code prefix or description substring."""
+    q = (request.GET.get('q') or '').strip().lower()
+    if len(q) < 2:
+        return JsonResponse({'results': []})
+    results = []
+    for code, description in ICD10_CODES:
+        if code.lower().startswith(q) or q in description.lower():
+            results.append({'code': code, 'description': description})
+            if len(results) >= 20:
+                break
+    return JsonResponse({'results': results})

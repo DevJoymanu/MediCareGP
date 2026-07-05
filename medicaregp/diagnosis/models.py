@@ -33,8 +33,21 @@ class Symptom(models.Model):
         ('symptom', 'Symptom (reported)'),
         ('sign',    'Sign (observed)'),
     ]
-    name     = models.CharField(max_length=200, unique=True)
-    kind     = models.CharField(max_length=10, choices=KIND_CHOICES, default='symptom')
+    BODY_REGION_CHOICES = [
+        ('head',    'Head & face'),
+        ('throat',  'Throat & neck'),
+        ('chest',   'Chest & respiratory'),
+        ('abdomen', 'Abdomen & digestive'),
+        ('pelvis',  'Pelvis & urinary'),
+        ('limbs',   'Limbs, joints & back'),
+        ('skin',    'Skin'),
+        ('mental',  'Mood & sleep'),
+        ('general', 'General / systemic'),
+    ]
+    name        = models.CharField(max_length=200, unique=True)
+    kind        = models.CharField(max_length=10, choices=KIND_CHOICES, default='symptom')
+    body_region = models.CharField(max_length=10, choices=BODY_REGION_CHOICES, default='general',
+                                   help_text='Region used by the body-map picker in the consultation workspace.')
     synonyms = models.CharField(max_length=300, blank=True, null=True,
                                 help_text='Comma-separated alternates, e.g. "pyrexia, high temperature"')
     active   = models.BooleanField(default=True)
@@ -108,6 +121,16 @@ class DifferentialResult(models.Model):
     engine_version = models.CharField(max_length=10)
     inputs         = models.JSONField(help_text='Exact engine inputs: presenting/working symptom ids, free-text notes, history snapshot.')
     output         = models.JSONField(help_text='Ranked provisional-diagnosis list with full score breakdowns.')
+
+    # Frozen-snapshot confirmation: set once when the doctor confirms their
+    # provisional dx from this run. The consultation-details view renders THIS
+    # stored output, never a fresh run — the knowledge base is admin-editable,
+    # so re-computing later could silently show different numbers than the
+    # doctor saw (medico-legal problem).
+    confirmed_at = models.DateTimeField(null=True, blank=True)
+    confirmed_dx = models.JSONField(null=True, blank=True,
+                                    help_text='Diagnoses the doctor promoted & confirmed: '
+                                              '[{"code", "name", "source": "engine"|"manual"}].')
 
     class Meta:
         ordering = ['-created_at']

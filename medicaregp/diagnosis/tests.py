@@ -1,4 +1,5 @@
 """Tests for the provisional-diagnosis engine and its RBAC boundary."""
+import json
 import re
 from datetime import date
 
@@ -203,3 +204,165 @@ class DiagnosisRBACTests(TestCase):
         self.consultation.refresh_from_db()
         codes = [e['code'] for e in self.consultation.icd10_codes_list]
         self.assertIn(top['icd10_code'], codes)
+
+
+class WorkspaceTests(TestCase):
+    """The single-screen consultation workspace + its JSON endpoints."""
+
+    def setUp(self):
+        self.patient = make_patient()
+        self.consultation = Consultation.objects.create(patient=self.patient)
+        self.doctor = make_doctor()
+        self.receptionist = make_receptionist()
+        self.ws_url      = reverse('diagnosis_workspace', args=[self.consultation.pk])
+        self.run_url     = reverse('workspace_run', args=[self.consultation.pk])
+        self.confirm_url = reverse('workspace_confirm', args=[self.consultation.pk])
+        self.notes_url   = reverse('workspace_save_notes', args=[self.consultation.pk])
+        self.icd_url     = reverse('icd10_search')
+
+    def _post_json(self, url, payload):
+        return self.client.post(url, json.dumps(payload), content_type='application/json')
+
+    # ── RBAC ──────────────────────────────────────────────────────────────
+    def test_receptionist_gets_403_everywhere(self):
+        self.client.force_login(self.receptionist)
+        self.assertEqual(self.client.get(self.ws_url).status_code, 403)
+        self.assertEqual(self._post_json(self.run_url, {'presenting': []}).status_code, 403)
+        self.assertEqual(self._post_json(self.confirm_url, {'promoted': []}).status_code, 403)
+        self.assertEqual(self._post_json(self.notes_url, {}).status_code, 403)
+        self.assertEqual(self.client.get(self.icd_url + '?q=asthma').status_code, 403)
+
+    def test_anonymous_redirected(self):
+        response = self.client.get(self.ws_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/login/', response.url)
+
+    # ── Workspace page ────────────────────────────────────────────────────
+    def test_workspace_renders_for_doctor(self):
+        self.client.force_login(self.doctor)
+        page = self.client.get(self.ws_url)
+        self.assertEqual(page.status_code, 200)
+        self.assertContains(page, 'Thabo')
+        self.assertContains(page, 'kb-symptoms')          # knowledge base shipped to client
+        self.assertContains(page, 'Confirm provisional')  # never "final"
+        self.assertNotContains(page, 'Final Diagnosis')
+
+    # ── Run endpoint ──────────────────────────────────────────────────────
+    def test_run_creates_audit_result_and_returns_output(self):
+        self.client.force_login(self.doctor)
+        fever = Symptom.objects.get(name='Fever').id
+        cough = Symptom.objects.get(name='Cough').id
+        response = self._post_json(self.run_url, {
+            'presenting': [fever, cough], 'working': [], 'notes': 'workspace run'})
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn('result_id', data)
+        self.assertEqual(data['output']['title'], 'Provisional Diagnosis')
+        result = DifferentialResult.objects.get(pk=data['result_id'])
+        self.assertEqual(result.consultation, self.consultation)
+        self.assertEqual(result.inputs['notes'], 'workspace run')
+        self.assertIsNone(result.confirmed_at)   # runs are unconfirmed by default
+
+    def test_run_with_no_symptoms_is_400(self):
+        self.client.force_login(self.doctor)
+        response = self._post_json(self.run_url, {'presenting': [], 'working': []})
+        self.assertEqual(response.status_code, 400)
+
+    # ── Confirm endpoint: frozen snapshot ─────────────────────────────────
+    def _make_run(self):
+        self.client.force_login(self.doctor)
+        wheeze = Symptom.objects.get(name='Wheeze').id
+        sob = Symptom.objects.get(name='Shortness of breath').id
+        data = self._post_json(self.run_url, {'presenting': [wheeze, sob], 'working': []}).json()
+        return data
+
+    def test_confirm_engine_dx_freezes_snapshot_and_writes_codes(self):
+        run = self._make_run()
+        top = run['output']['results'][0]
+        response = self._post_json(self.confirm_url, {
+            'result_id': run['result_id'],
+            'promoted': [{'code': top['icd10_code'], 'name': top['condition'], 'source': 'engine'}],
+        })
+        self.assertEqual(response.status_code, 200)
+        self.consultation.refresh_from_db()
+        codes = [e['code'] for e in self.consultation.icd10_codes_list]
+        self.assertIn(top['icd10_code'], codes)
+
+        result = DifferentialResult.objects.get(pk=run['result_id'])
+        self.assertIsNotNone(result.confirmed_at)
+        self.assertEqual(result.confirmed_dx[0]['code'], top['icd10_code'])
+        # Snapshot output untouched by confirmation (frozen).
+        self.assertEqual(result.output, run['output'])
+
+    def test_confirm_offlist_manual_code(self):
+        run = self._make_run()
+        response = self._post_json(self.confirm_url, {
+            'result_id': run['result_id'],
+            'promoted': [{'code': 'A01.0', 'name': '', 'source': 'manual'}],
+        })
+        self.assertEqual(response.status_code, 200)
+        self.consultation.refresh_from_db()
+        entry = next(e for e in self.consultation.icd10_codes_list if e['code'] == 'A01.0')
+        self.assertEqual(entry['description'], 'Typhoid fever')   # name from ICD10_CODES
+        result = DifferentialResult.objects.get(pk=run['result_id'])
+        self.assertEqual(result.confirmed_dx[0]['source'], 'manual')
+
+    def test_confirm_rejects_unknown_manual_code(self):
+        run = self._make_run()
+        response = self._post_json(self.confirm_url, {
+            'result_id': run['result_id'],
+            'promoted': [{'code': 'ZZ99.9', 'name': 'Made up', 'source': 'manual'}],
+        })
+        self.assertEqual(response.status_code, 400)
+
+    def test_confirm_rejects_engine_code_not_in_run(self):
+        run = self._make_run()
+        response = self._post_json(self.confirm_url, {
+            'result_id': run['result_id'],
+            'promoted': [{'code': 'A01.0', 'name': 'Typhoid', 'source': 'engine'}],
+        })
+        self.assertEqual(response.status_code, 400)
+
+    def test_confirm_requires_promoted(self):
+        run = self._make_run()
+        response = self._post_json(self.confirm_url, {'result_id': run['result_id'], 'promoted': []})
+        self.assertEqual(response.status_code, 400)
+
+    # ── Details view renders the frozen snapshot ──────────────────────────
+    def test_detail_shows_reasoning_snapshot(self):
+        run = self._make_run()
+        top = run['output']['results'][0]
+        self._post_json(self.confirm_url, {
+            'result_id': run['result_id'],
+            'promoted': [{'code': top['icd10_code'], 'name': top['condition'], 'source': 'engine'}],
+        })
+        page = self.client.get(reverse('consultation_detail', args=[self.consultation.pk]))
+        self.assertContains(page, 'Diagnosis reasoning')
+        self.assertContains(page, 'frozen snapshot')
+        self.assertContains(page, top['icd10_code'])
+
+    # ── Notes save ────────────────────────────────────────────────────────
+    def test_notes_save_updates_fields(self):
+        self.client.force_login(self.doctor)
+        response = self._post_json(self.notes_url, {
+            'chief_complaint': 'Wheezy chest', 'subjective': 'Two days of wheeze', 'plan': 'Salbutamol'})
+        self.assertEqual(response.status_code, 200)
+        self.consultation.refresh_from_db()
+        self.assertEqual(self.consultation.chief_complaint, 'Wheezy chest')
+        self.assertEqual(self.consultation.plan, 'Salbutamol')
+
+    # ── ICD-10 search ─────────────────────────────────────────────────────
+    def test_icd10_search(self):
+        self.client.force_login(self.doctor)
+        data = self.client.get(self.icd_url + '?q=a01').json()
+        self.assertTrue(any(r['code'] == 'A01.0' for r in data['results']))
+        data = self.client.get(self.icd_url + '?q=typhoid').json()
+        self.assertTrue(any('Typhoid' in r['description'] for r in data['results']))
+        self.assertEqual(self.client.get(self.icd_url + '?q=a').json()['results'], [])
+
+    # ── Body regions seeded ───────────────────────────────────────────────
+    def test_body_regions_assigned(self):
+        self.assertEqual(Symptom.objects.get(name='Headache').body_region, 'head')
+        self.assertEqual(Symptom.objects.get(name='Wheeze').body_region, 'chest')
+        self.assertEqual(Symptom.objects.get(name='Fever').body_region, 'general')
+        self.assertFalse(Symptom.objects.filter(body_region='').exists())

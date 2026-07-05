@@ -789,15 +789,53 @@ def consultation_list(request):
     })
 
 
+def _diagnosis_snapshot_context(consultation):
+    """Frozen diagnosis-reasoning snapshot for the details view. Prefers the
+    confirmed run; falls back to the latest. Renders STORED output only —
+    never a fresh engine run (the knowledge base is admin-editable, so
+    re-computing could show different numbers than the doctor saw)."""
+    snapshot = (consultation.differential_results.filter(confirmed_at__isnull=False).first()
+                or consultation.differential_results.first())
+    if snapshot is None:
+        return {'diagnosis_snapshot': None}
+
+    confirms, contras, seen = [], [], set()
+    for r in snapshot.output.get('results', []):
+        for f in r.get('breakdown', {}).get('history_factors', []):
+            label = f.get('note') or f.get('factor') or ''
+            key = (f.get('kind'), label, r.get('condition'))
+            if key in seen:
+                continue
+            seen.add(key)
+            delta = f.get('delta', 0)
+            entry = f"{label} — {r.get('condition')} ({'+' if delta >= 0 else ''}{delta})"
+            (confirms if f.get('kind') == 'confirming' else contras).append(entry)
+
+    from diagnosis.models import Symptom
+    names = dict(Symptom.objects.filter(
+        id__in=snapshot.inputs.get('presenting_symptom_ids', []) +
+               snapshot.inputs.get('working_symptom_ids', [])
+    ).values_list('id', 'name'))
+    return {
+        'diagnosis_snapshot': snapshot,
+        'xc_confirms': confirms,
+        'xc_contras': contras,
+        'snapshot_presenting': [names.get(i, '?') for i in snapshot.inputs.get('presenting_symptom_ids', [])],
+        'snapshot_working': [names.get(i, '?') for i in snapshot.inputs.get('working_symptom_ids', [])],
+    }
+
+
 @doctor_required
 def consultation_detail(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
     _sync_investigation_requests(consultation)
-    return render(request, 'consultations/consultation_detail.html', {
+    context = {
         'consultation': consultation,
         'providers':    Provider.objects.filter(is_active=True),
         'embed':        request.GET.get('embed'),
-    })
+    }
+    context.update(_diagnosis_snapshot_context(consultation))
+    return render(request, 'consultations/consultation_detail.html', context)
 
 
 @doctor_required

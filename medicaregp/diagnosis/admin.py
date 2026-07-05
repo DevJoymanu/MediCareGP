@@ -27,8 +27,9 @@ class ConditionAdmin(admin.ModelAdmin):
 
 @admin.register(Symptom)
 class SymptomAdmin(admin.ModelAdmin):
-    list_display = ['name', 'kind', 'synonyms', 'active']
-    list_filter = ['kind', 'active']
+    list_display = ['name', 'kind', 'body_region', 'synonyms', 'active']
+    list_editable = ['body_region']
+    list_filter = ['kind', 'body_region', 'active']
     search_fields = ['name', 'synonyms']
 
 
@@ -53,9 +54,9 @@ class HistoryModifierRuleAdmin(admin.ModelAdmin):
 @admin.register(DifferentialResult)
 class DifferentialResultAdmin(admin.ModelAdmin):
     """Read-only audit trail of engine runs."""
-    list_display = ['patient', 'consultation', 'engine_version', 'created_by', 'created_at']
+    list_display = ['patient', 'consultation', 'engine_version', 'created_by', 'created_at', 'confirmed_at']
     readonly_fields = ['consultation', 'patient', 'created_by', 'engine_version',
-                       'inputs', 'output', 'created_at']
+                       'inputs', 'output', 'created_at', 'confirmed_at', 'confirmed_dx']
 
     def has_add_permission(self, request):
         return False
