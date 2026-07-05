@@ -793,7 +793,7 @@ def consultation_list(request):
 def consultation_detail(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
     _sync_investigation_requests(consultation)
-    return render(request, 'consultations/consultation_detail_simple.html', {
+    return render(request, 'consultations/consultation_detail.html', {
         'consultation': consultation,
         'providers':    Provider.objects.filter(is_active=True),
         'embed':        request.GET.get('embed'),
