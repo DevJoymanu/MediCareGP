@@ -3,6 +3,7 @@ from datetime import date, time
 from django.contrib.auth.models import Group, User
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from appointments.models import Appointment
 from consultations.models import Consultation
@@ -60,12 +61,28 @@ class ConsultationCreateViewTests(TestCase):
         self.appointment.refresh_from_db()
         self.assertEqual(self.appointment.status, 'With Doctor')
 
-    def test_no_patient_renders_start_picker(self):
+    def test_no_patient_opens_blank_workspace(self):
         self.client.login(username='tester', password='secret123')
         response = self.client.get(reverse('consultation_create'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'New consultation')
-        self.assertContains(response, 'Linked Appointment')
+        self.assertRedirects(response, reverse('diagnosis_workspace_new'))
+
+        page = self.client.get(reverse('diagnosis_workspace_new'))
+        self.assertEqual(page.status_code, 200)
+        self.assertContains(page, 'New consultation')
+        self.assertContains(page, 'Linked Appointment')
+        self.assertContains(page, 'pick a patient first')
+        # No consultation exists until a patient is picked.
+        self.assertFalse(Consultation.objects.exists())
+
+    def test_blank_workspace_shows_waiting_queue(self):
+        self.client.login(username='tester', password='secret123')
+        self.appointment.status = 'Checked In'
+        self.appointment.date = timezone.localdate()
+        self.appointment.save(update_fields=['status', 'date'])
+
+        page = self.client.get(reverse('diagnosis_workspace_new'))
+        self.assertContains(page, 'Waiting now')
+        self.assertContains(page, 'Thabo')
 
     def test_start_vitals_params_stamp_consultation(self):
         self.client.login(username='tester', password='secret123')

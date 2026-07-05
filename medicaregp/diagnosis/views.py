@@ -170,6 +170,23 @@ def _run_payload(result):
 
 
 @doctor_required
+def workspace_new(request):
+    """Blank workspace — no consultation yet. The doctor picks the patient
+    from the info bar (or one-taps the waiting queue); that routes through
+    consultation_create, which starts/reuses the consultation and reloads the
+    workspace with everything preloaded."""
+    from appointments.models import Appointment
+    waiting = (Appointment.objects
+               .filter(date=timezone.localdate(), status__in=('Checked In', 'With Doctor'))
+               .select_related('patient').order_by('time'))
+    return render(request, 'diagnosis/workspace.html', {
+        'consultation': None,
+        'patient': None,
+        'waiting': waiting,
+    })
+
+
+@doctor_required
 def workspace(request, consultation_pk):
     """The doctor's consultation workspace: 3-zone single screen — working
     area (complaint, symptoms, history, SOAP notes) + persistent differential

@@ -845,8 +845,8 @@ def consultation_create(request):
     With a known patient (patient_id and/or appointment_id) the Consultation
     row is created (or today's is reused — idempotent against double-clicks)
     and the doctor is redirected to the workspace immediately. With no
-    patient, a lightweight picker is shown: today's checked-in queue plus a
-    patient search, each with a one-tap Start button.
+    patient, the blank workspace opens: the doctor picks the patient from
+    its info bar and the preloaded consultation appears.
     """
     patient_id     = request.GET.get('patient_id')
     appointment_id = request.GET.get('appointment_id')
@@ -896,11 +896,8 @@ def consultation_create(request):
 
         return redirect('diagnosis_workspace', consultation_pk=consultation.pk)
 
-    # No patient yet — render the start picker (patient + appointment + vitals bar).
-    today = timezone.localdate()
-    waiting = (Appointment.objects.filter(date=today, status__in=('Checked In', 'With Doctor'))
-               .select_related('patient').order_by('time'))
-    return render(request, 'consultations/consultation_start.html', {'waiting': waiting})
+    # No patient yet — open the blank workspace; the doctor picks the patient there.
+    return redirect('diagnosis_workspace_new')
 
 
 @doctor_required

@@ -8,6 +8,7 @@ urlpatterns = [
     path('result/<int:pk>/confirm/', views.differential_confirm, name='differential_confirm'),
 
     # Consultation workspace (single-screen) + its JSON endpoints
+    path('workspace/new/', views.workspace_new, name='diagnosis_workspace_new'),
     path('consultation/<int:consultation_pk>/workspace/', views.workspace, name='diagnosis_workspace'),
     path('consultation/<int:consultation_pk>/workspace/run/', views.workspace_run, name='workspace_run'),
     path('consultation/<int:consultation_pk>/workspace/confirm/', views.workspace_confirm, name='workspace_confirm'),

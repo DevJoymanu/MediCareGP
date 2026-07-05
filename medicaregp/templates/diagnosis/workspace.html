@@ -196,6 +196,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 
   <!-- ── Zone 1: patient header ──────────────────────────────────────── -->
   <div class="ws-header">
+    {% if patient %}
     <div>
       <div class="name">{{ patient.first_name }} {{ patient.last_name }}</div>
       <div class="meta">
@@ -213,6 +214,12 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
         <i class="bi bi-arrow-left"></i> Back to consult
       </a>
     </div>
+    {% else %}
+    <div>
+      <div class="name">New consultation</div>
+      <div class="meta"><span>Select a patient to begin — their history and any of today's notes load automatically.</span></div>
+    </div>
+    {% endif %}
   </div>
 
   <div class="ws-grid">
@@ -225,14 +232,14 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
           <div class="notes-field ta-wrap" style="flex:1.4;min-width:200px;">
             <label for="patientSwitch">Patient *</label>
-            <input class="ws-input" id="patientSwitch" autocomplete="off"
-                   placeholder="Search options…" value="{{ patient.first_name }} {{ patient.last_name }}">
+            <input class="ws-input" id="patientSwitch" autocomplete="off" {% if not patient %}autofocus{% endif %}
+                   placeholder="Search options…" value="{% if patient %}{{ patient.first_name }} {{ patient.last_name }}{% endif %}">
             <div class="ta-drop" id="patientDrop" role="listbox"></div>
           </div>
           <div class="notes-field" style="flex:1.6;min-width:220px;">
             <label for="apptSelect">Linked Appointment <span style="font-weight:400;color:var(--text-4);">optional</span></label>
-            <select class="ws-input" id="apptSelect">
-              <option value="">— none —</option>
+            <select class="ws-input" id="apptSelect" {% if not patient %}disabled{% endif %}>
+              <option value="">{% if patient %}— none —{% else %}— pick a patient first —{% endif %}</option>
               {% for a in patient_appointments %}
               <option value="{{ a.pk }}" {% if consultation.appointment_id == a.pk %}selected{% endif %}>
                 {{ a.date|date:"d M Y" }} {{ a.time|time:"H:i" }} — {{ a.reason|truncatechars:40 }} ({{ a.status }})
@@ -253,6 +260,35 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
         </div>
       </div>
 
+      {% if not consultation %}
+      <!-- Blank-workspace state: everything else unlocks once a patient is picked -->
+      <div class="ws-card" style="text-align:center;padding:34px 20px;color:var(--text-4);">
+        <i class="bi bi-person-plus" style="font-size:26px;display:block;margin-bottom:8px;"></i>
+        <div style="font-size:13.5px;">Search a patient above{% if waiting %} or start from the queue below{% endif %}.<br>
+          Symptoms, differential and notes unlock once the patient is set.</div>
+      </div>
+
+      {% if waiting %}
+      <div class="ws-card">
+        <div class="ws-label"><i class="bi bi-hourglass-split"></i> Waiting now</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          {% for apt in waiting %}
+          <div style="display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:10px;padding:10px 14px;">
+            <div class="avatar av-36 av-1">{{ apt.patient.first_name|first|upper }}{{ apt.patient.last_name|first|upper }}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:13.5px;">{{ apt.patient }}</div>
+              <div style="font-size:12px;color:var(--text-3);">{{ apt.time|time:"H:i" }} · {{ apt.reason|truncatechars:60 }} · <strong>{{ apt.status }}</strong></div>
+            </div>
+            <a href="{% url 'consultation_create' %}?patient_id={{ apt.patient.pk }}&appointment_id={{ apt.pk }}"
+               class="run-btn" style="text-decoration:none;">Start <i class="bi bi-arrow-right"></i></a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% endif %}
+
+      {% if consultation %}
       <div class="ws-card">
         <div class="ws-label">Chief complaint</div>
         <input class="ws-input" id="chiefComplaint" placeholder="Reason for visit…"
@@ -394,9 +430,11 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
           <span class="save-stamp" id="saveStamp"></span>
         </details>
       </div>
+      {% endif %}
 
     </div>
 
+    {% if consultation %}
     <!-- ── Zone 3: differential panel ─────────────────────────────────── -->
     <aside class="dx-panel" id="dxPanel" aria-label="Differential diagnosis panel">
       <div class="dx-head">
@@ -434,9 +472,11 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
         <button class="confirm-btn" id="confirmBtn" type="button" disabled>Confirm provisional</button>
       </div>
     </aside>
+    {% endif %}
   </div>
 </div>
 
+{% if consultation %}
 <button class="dx-drawer-tab" id="drawerTab" type="button">
   <i class="bi bi-clipboard2-pulse"></i> Differential <span id="drawerBadge"></span>
 </button>
@@ -444,9 +484,11 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 {{ symptoms_data|json_script:"kb-symptoms" }}
 {{ first_ids|json_script:"kb-first-ids" }}
 {{ last_run_data|json_script:"kb-last-run" }}
+{% endif %}
 {% endblock %}
 
 {% block extra_scripts %}
+{% if consultation %}
 <script>
 (function () {
   'use strict';
@@ -846,48 +888,6 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
     $('sickFields').style.display = $('sickIssued').checked ? 'flex' : 'none';
   });
 
-  // ── Patient switch (info bar type-ahead) ───────────────────────────────
-  (function () {
-    const input = $('patientSwitch'), drop = $('patientDrop');
-    const original = input.value;
-    let items = [], active = -1, timer = null;
-    function close() { drop.classList.remove('open'); active = -1; }
-    function render() {
-      drop.innerHTML = '';
-      items.forEach((p, i) => {
-        const div = document.createElement('div');
-        div.className = 'ta-item' + (i === active ? ' active' : '');
-        div.innerHTML = escapeHtml(p.label) + '<span class="kind">' + escapeHtml(p.detail) + '</span>';
-        div.onmousedown = e => { e.preventDefault(); pick(p); };
-        drop.appendChild(div);
-      });
-      drop.classList.toggle('open', items.length > 0);
-    }
-    function pick(p) {
-      // Switching patient = open (or start) that patient's consultation.
-      window.location = "{% url 'consultation_create' %}?patient_id=" + p.id;
-    }
-    input.addEventListener('focus', () => input.select());
-    input.addEventListener('input', () => {
-      clearTimeout(timer);
-      const q = input.value.trim();
-      if (q.length < 2) { close(); return; }
-      timer = setTimeout(() => {
-        fetch("{% url 'workspace_patient_search' %}?q=" + encodeURIComponent(q))
-          .then(r => r.json())
-          .then(data => { items = data.results || []; active = items.length ? 0 : -1; render(); });
-      }, 180);
-    });
-    input.addEventListener('keydown', e => {
-      if (!drop.classList.contains('open')) return;
-      if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, items.length - 1); render(); }
-      else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
-      else if (e.key === 'Enter') { e.preventDefault(); if (items[active]) pick(items[active]); }
-      else if (e.key === 'Escape') { input.value = original; close(); }
-    });
-    input.addEventListener('blur', () => setTimeout(() => { input.value = original; close(); }, 140));
-  })();
-
   // ── Drawer (narrow screens) ────────────────────────────────────────────
   $('drawerTab').onclick = () => panel.classList.toggle('drawer-open');
   function updateDrawerBadge(out) {
@@ -915,6 +915,71 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
     renderPanel();
   }
   renderChips();
+})();
+</script>
+{% endif %}
+
+<script>
+// Patient selector (info bar) — active in BOTH modes. Picking a patient
+// routes through consultation_create, which starts (or reuses) their
+// consultation and reloads the workspace with the preloaded data.
+(function () {
+  'use strict';
+  const HAS_CONSULT = {% if consultation %}true{% else %}false{% endif %};
+  const input = document.getElementById('patientSwitch');
+  const drop = document.getElementById('patientDrop');
+  const original = input.value;
+  let items = [], active = -1, timer = null;
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+  function close() { drop.classList.remove('open'); active = -1; }
+  function render() {
+    drop.innerHTML = '';
+    items.forEach((p, i) => {
+      const div = document.createElement('div');
+      div.className = 'ta-item' + (i === active ? ' active' : '');
+      div.innerHTML = esc(p.label) + '<span class="kind">' + esc(p.detail) + '</span>';
+      div.onmousedown = e => { e.preventDefault(); pick(p); };
+      drop.appendChild(div);
+    });
+    drop.classList.toggle('open', items.length > 0);
+  }
+  function pick(p) {
+    const params = new URLSearchParams({ patient_id: p.id });
+    if (!HAS_CONSULT) {
+      // Blank workspace: carry any vitals already typed onto the new consult.
+      const wt = document.getElementById('vitWeight').value.trim();
+      const bp = document.getElementById('vitBp').value.trim();
+      if (wt) params.set('wt', wt);
+      if (bp) params.set('bp', bp);
+    }
+    window.location = "{% url 'consultation_create' %}?" + params.toString();
+  }
+  input.addEventListener('focus', () => input.select());
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+    const q = input.value.trim();
+    if (q.length < 2) { close(); return; }
+    timer = setTimeout(() => {
+      fetch("{% url 'workspace_patient_search' %}?q=" + encodeURIComponent(q))
+        .then(r => r.json())
+        .then(data => { items = data.results || []; active = items.length ? 0 : -1; render(); });
+    }, 180);
+  });
+  input.addEventListener('keydown', e => {
+    if (!drop.classList.contains('open')) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); active = Math.min(active + 1, items.length - 1); render(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
+    else if (e.key === 'Enter') { e.preventDefault(); if (items[active]) pick(items[active]); }
+    else if (e.key === 'Escape') { input.value = original; close(); }
+  });
+  input.addEventListener('blur', () => setTimeout(() => {
+    if (HAS_CONSULT) input.value = original;   // blank mode keeps the typed text
+    close();
+  }, 140));
 })();
 </script>
 {% endblock %}
