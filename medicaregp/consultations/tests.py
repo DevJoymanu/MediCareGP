@@ -69,8 +69,13 @@ class ConsultationCreateViewTests(TestCase):
         page = self.client.get(reverse('diagnosis_workspace_new'))
         self.assertEqual(page.status_code, 200)
         self.assertContains(page, 'New consultation')
-        self.assertContains(page, 'Linked Appointment')
         self.assertContains(page, 'pick a patient first')
+        # The ENTIRE workspace renders before a patient is selected — locked.
+        self.assertContains(page, 'Chief complaint')
+        self.assertContains(page, 'Presenting symptoms')
+        self.assertContains(page, 'Differential')
+        self.assertContains(page, 'Prescriptions')
+        self.assertContains(page, 'ws-locked')
         # No consultation exists until a patient is picked.
         self.assertFalse(Consultation.objects.exists())
 

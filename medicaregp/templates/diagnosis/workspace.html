@@ -176,6 +176,9 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 .save-notes:hover { background: rgba(var(--accent-rgb), .07); }
 .save-stamp { font-size: 11.5px; color: #15803d; margin-left: 10px; }
 
+/* Blank mode: full workspace rendered but inert until a patient is picked */
+.ws-locked { opacity: .55; pointer-events: none; user-select: none; }
+
 /* Panel drawer on narrow screens */
 .dx-drawer-tab { display: none; }
 @media (max-width: 1099px) {
@@ -260,17 +263,9 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
         </div>
       </div>
 
-      {% if not consultation %}
-      <!-- Blank-workspace state: everything else unlocks once a patient is picked -->
-      <div class="ws-card" style="text-align:center;padding:34px 20px;color:var(--text-4);">
-        <i class="bi bi-person-plus" style="font-size:26px;display:block;margin-bottom:8px;"></i>
-        <div style="font-size:13.5px;">Search a patient above{% if waiting %} or start from the queue below{% endif %}.<br>
-          Symptoms, differential and notes unlock once the patient is set.</div>
-      </div>
-
-      {% if waiting %}
+      {% if not consultation and waiting %}
       <div class="ws-card">
-        <div class="ws-label"><i class="bi bi-hourglass-split"></i> Waiting now</div>
+        <div class="ws-label"><i class="bi bi-hourglass-split"></i> Waiting now — one tap to start</div>
         <div style="display:flex;flex-direction:column;gap:8px;">
           {% for apt in waiting %}
           <div style="display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:10px;padding:10px 14px;">
@@ -286,9 +281,9 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
         </div>
       </div>
       {% endif %}
-      {% endif %}
 
-      {% if consultation %}
+      <!-- Everything below is fully rendered in both modes; locked until a patient is set -->
+      <div {% if not consultation %}class="ws-locked" aria-disabled="true"{% endif %}>
       <div class="ws-card">
         <div class="ws-label">Chief complaint</div>
         <input class="ws-input" id="chiefComplaint" placeholder="Reason for visit…"
@@ -327,7 +322,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
           </div>
         </div>
 
-        <div class="chip-row" id="presentingChips"></div>
+        <div class="chip-row" id="presentingChips"><span class="chip-empty">none added yet</span></div>
       </div>
 
       <div class="ws-card">
@@ -336,7 +331,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
           <input class="ws-input" id="workSearch" placeholder="🔍 Add ongoing or historical complaints…" autocomplete="off">
           <div class="ta-drop" id="workDrop" role="listbox"></div>
         </div>
-        <div class="chip-row" id="workingChips"></div>
+        <div class="chip-row" id="workingChips"><span class="chip-empty">none added yet</span></div>
         <input class="ws-input" id="runNotes" placeholder="Free-text context for this run (recorded with the audit trail)…" style="margin-top:8px;">
       </div>
 
@@ -430,13 +425,12 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
           <span class="save-stamp" id="saveStamp"></span>
         </details>
       </div>
-      {% endif %}
+      </div><!-- /lock wrapper -->
 
     </div>
 
-    {% if consultation %}
     <!-- ── Zone 3: differential panel ─────────────────────────────────── -->
-    <aside class="dx-panel" id="dxPanel" aria-label="Differential diagnosis panel">
+    <aside class="dx-panel {% if not consultation %}ws-locked{% endif %}" id="dxPanel" aria-label="Differential diagnosis panel">
       <div class="dx-head">
         <div>
           <h3>Differential <span class="stale-chip">Inputs changed</span></h3>
@@ -448,7 +442,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
       <div class="dx-scroll">
         <div class="dx-empty" id="dxEmpty">
           <i class="bi bi-clipboard2-pulse"></i>
-          Add symptoms, then <strong>Run</strong>.
+          {% if consultation %}Add symptoms, then <strong>Run</strong>.{% else %}Select a patient, add symptoms, then <strong>Run</strong>.{% endif %}
         </div>
         <div id="dxNote" class="dx-note" style="display:none;"></div>
         <div class="dx-list" id="dxList"></div>
@@ -472,7 +466,6 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
         <button class="confirm-btn" id="confirmBtn" type="button" disabled>Confirm provisional</button>
       </div>
     </aside>
-    {% endif %}
   </div>
 </div>
 
