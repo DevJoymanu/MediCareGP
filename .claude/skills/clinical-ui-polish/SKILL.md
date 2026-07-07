@@ -12,7 +12,7 @@ The CRM is a **dense clinical power tool** used all day by a doctor and a recept
 - Inline styles in templates are idiomatic here for one-off layout; shared patterns get a class
 - Vanilla JS + `fetch`; server JSON endpoints; HTTP polling where live data is needed (waiting room 5s, video signaling)
 
-Work WITH these conventions. A PR that introduces a CSS framework, jQuery, or a second design language is wrong even if it looks good.
+Work WITH these conventions. A PR that introduces a CSS framework, jQuery, or an ad-hoc second design language is wrong even if it looks good. (One sanctioned exception: the **Aetheris** glass theme — see the `aetheris-design-system` skill — may be applied deliberately to a whole page via its `.aetheris` root class; a page is one theme or the other, never a mix.)
 
 ## Design tokens (already defined in main.css — reuse, never redefine)
 
