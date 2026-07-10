@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Consultation | G.P CRM{% endblock %}
 {% block page_title %}Consultation Record{% endblock %}
 {% block page_sub %}{{ consultation.patient }} — {{ consultation.date|date:"j F Y" }}{% endblock %}
@@ -12,92 +13,191 @@
   .main-content { padding: 12px !important; }
 </style>
 {% endif %}
+<link rel="stylesheet" href="{% static 'css/aetheris.css' %}">
 <style>
-  .consult-wrap { max-width:1100px; margin:0 auto; }
+  /* ══ Aetheris consultation record — matches the consultation workspace ══ */
+  .consult-page { padding: 16px; border-radius: 16px; font-size: 13.5px; line-height: 1.55; }
+  .consult-wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
 
-  .consult-panels {
-    display:grid; grid-template-columns:1fr 360px; gap:14px;
-    margin-bottom:14px;
-  }
-  .panel {
-    background:#fff; border:1px solid var(--border); border-radius:14px;
-    overflow:hidden;
-  }
-  .panel-header {
-    display:flex; align-items:center; gap:8px;
-    padding:12px 18px; border-bottom:1px solid var(--border);
-    font-size:11px; font-weight:700; text-transform:uppercase;
-    letter-spacing:.07em; color:var(--text-3); background:#f9fafb;
-  }
-  .panel-body { padding:18px; }
+  /* HUD header: identity + actions (same language as the workspace) */
+  .cd-hud { background: var(--a-glass-bg); -webkit-backdrop-filter: blur(var(--a-glass-blur));
+            backdrop-filter: blur(var(--a-glass-blur)); border: 1px solid var(--a-glass-border);
+            border-radius: var(--a-radius-full); box-shadow: var(--a-glass-shadow);
+            padding: 12px 16px 12px 18px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .cd-hud .avatar { width: 46px; height: 46px; border-radius: 50%; flex: none; color: #fff;
+            font-weight: 700; font-size: 15px; display: grid; place-items: center;
+            background: linear-gradient(145deg, #1495cd, var(--a-primary)); }
+  .cd-hud .nm { font-size: 18px; font-weight: 600; letter-spacing: -.01em; line-height: 1.2; }
+  .cd-hud .sub { font-size: 12px; color: var(--a-on-surface-variant); margin-top: 1px; }
+  .cd-hud .actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
 
-  .panel-notes .panel-header { color:#3730a3; background:#eef2ff; border-color:#c7d2fe; }
-  .panel-rx    .panel-header { color:#15803d; background:#f0fdf4; border-color:#bbf7d0; }
-  .rx-symbol { font-size:18px; font-weight:900; font-style:italic; color:#15803d; line-height:1; }
+  .consult-page .btn-primary { background: var(--a-primary); color: #fff; border: none;
+            border-radius: var(--a-radius-full); padding: 9px 20px; font-size: 12.5px; font-weight: 600;
+            font-family: var(--a-font-label); letter-spacing: .03em; display: inline-flex;
+            align-items: center; gap: 7px; text-decoration: none; cursor: pointer;
+            box-shadow: 0 6px 24px -6px rgba(0,101,145,.45); transition: box-shadow .2s, transform .12s; }
+  .consult-page .btn-primary:hover { box-shadow: 0 8px 30px -6px rgba(var(--a-accent-rgb), .5); }
+  .consult-page .btn-primary:active { transform: scale(.98); }
+  .consult-page .btn-ghost { border: 1px solid var(--a-glass-border); background: var(--a-surface-lowest);
+            color: var(--a-on-surface-variant); border-radius: var(--a-radius-full); padding: 8px 16px;
+            font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px;
+            text-decoration: none; cursor: pointer; transition: box-shadow .2s, color .15s; }
+  .consult-page .btn-ghost:hover { color: var(--a-primary); box-shadow: 0 0 0 3px rgba(var(--a-accent-rgb), .15); }
+  .consult-page a:focus-visible, .consult-page button:focus-visible {
+            outline: 2px solid var(--a-accent); outline-offset: 2px; }
 
-  .note-text { font-size:14px; color:var(--text-1); white-space:pre-line; line-height:1.75; }
-  .rx-text   { font-size:13.5px; color:#166534; white-space:pre-line; line-height:1.9; }
-  .inv-text  { font-size:13px; color:var(--text-2); white-space:pre-line; line-height:1.8; }
+  /* Follow-up chip in the header */
+  .fu-chip { padding: 8px 16px; border-radius: var(--a-radius-full); text-align: center; flex: none;
+             background: rgba(var(--a-accent-rgb), .10); border: 1px solid rgba(var(--a-accent-rgb), .25); }
+  .fu-chip .fc-k { font-size: 9.5px; font-weight: 700; color: var(--a-primary);
+             text-transform: uppercase; letter-spacing: .06em; }
+  .fu-chip .fc-v { font-size: 13px; font-weight: 650; color: var(--a-primary);
+             font-variant-numeric: tabular-nums; }
 
-  .section-chip {
-    font-size:10px; font-weight:700; text-transform:uppercase;
-    letter-spacing:.06em; color:var(--text-4); margin:14px 0 6px;
-  }
-  .inv-block { margin-top:14px; padding-top:14px; border-top:1px dashed var(--border); }
+  /* Review-chain notices */
+  .chain-note { display: flex; align-items: center; gap: 10px; padding: 11px 16px; flex-wrap: wrap;
+             border-radius: var(--a-radius); font-size: 13px; }
+  .chain-note.of { background: rgba(var(--a-accent-rgb), .08); color: var(--a-primary);
+             border: 1px solid rgba(var(--a-accent-rgb), .22); }
+  .chain-note.of a { font-weight: 700; color: var(--a-primary); }
+  .chain-note.by { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+  .chain-note.by a { font-weight: 700; color: #15803d; }
 
-  .vitals-strip {
-    display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;
-  }
-  .vital-chip {
-    display:flex; align-items:center; gap:6px;
-    padding:7px 14px; border-radius:20px;
-    background:#f8fafc; border:1px solid var(--border);
-    font-size:13px; font-weight:600; color:var(--text-1);
-  }
-  .vital-chip .vc-label { font-size:10px; font-weight:700; color:var(--text-4); margin-right:2px; text-transform:uppercase; }
+  /* Vitals strip (pill chips, as in the workspace header) */
+  .vitals-strip { display: flex; gap: 10px; flex-wrap: wrap; }
+  .vital-chip { display: flex; align-items: center; gap: 6px; padding: 7px 16px;
+             border-radius: var(--a-radius-full); background: var(--a-surface-lowest);
+             border: 1px solid var(--a-glass-border); font-size: 13px; font-weight: 600;
+             color: var(--a-on-surface); font-variant-numeric: tabular-nums; }
+  .vital-chip .vc-label { font-size: 9.5px; font-weight: 700; color: var(--a-outline);
+             margin-right: 2px; text-transform: uppercase; letter-spacing: .06em; }
 
-  .footer-strip {
-    background:#fff; border:1px solid var(--border); border-radius:14px;
-    padding:16px 20px; margin-bottom:14px;
-    display:flex; gap:16px; flex-wrap:wrap; align-items:center;
-  }
-  .footer-chip { display:flex; flex-direction:column; gap:2px; }
-  .footer-chip .fc-label { font-size:10px; font-weight:700; color:var(--text-4); text-transform:uppercase; letter-spacing:.05em; }
-  .footer-chip .fc-val   { font-size:13px; font-weight:600; color:var(--text-1); }
+  /* Glass panels */
+  .consult-panels { display: grid; grid-template-columns: 1fr 360px; gap: 14px; }
+  .panel, .glass-card { background: var(--a-glass-bg); -webkit-backdrop-filter: blur(var(--a-glass-blur));
+             backdrop-filter: blur(var(--a-glass-blur)); border: 1px solid var(--a-glass-border);
+             border-radius: var(--a-radius-md); box-shadow: var(--a-glass-shadow); overflow: hidden; }
+  .panel-header { display: flex; align-items: center; gap: 8px; padding: 12px 18px;
+             border-bottom: 1px solid var(--a-glass-border);
+             font: 500 11px/1.4 var(--a-font-label); font-weight: 700; text-transform: uppercase;
+             letter-spacing: .07em; color: var(--a-primary); }
+  .panel-body { padding: 18px; }
 
-  /* Sick note */
-  .sn-card { background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 100%); border:1.5px solid #c4b5fd; border-radius:14px; padding:22px 24px; margin-bottom:14px; }
-  .sn-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
-  .sn-title { font-size:13px; font-weight:700; color:#5b21b6; text-transform:uppercase; letter-spacing:.06em; display:flex; align-items:center; gap:8px; }
-  .sn-period { background:#7e22ce; color:#fff; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:700; display:inline-block; }
-  .sn-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:16px; }
-  .sn-field { background:rgba(255,255,255,.7); border-radius:8px; padding:10px 12px; }
-  .sn-label { font-size:10px; font-weight:700; color:#7c3aed; text-transform:uppercase; letter-spacing:.05em; margin-bottom:3px; }
-  .sn-value { font-size:13px; font-weight:700; color:#1e293b; }
-  .sn-actions { display:flex; gap:10px; flex-wrap:wrap; }
-  .btn-download { display:inline-flex; align-items:center; gap:7px; padding:10px 18px; background:#7e22ce; color:#fff; border:none; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none; cursor:pointer; }
-  .btn-download:hover { background:#6b21a8; }
+  .panel-rx .panel-header { color: #15803d; }
+  .rx-symbol { font-size: 18px; font-weight: 900; font-style: italic; color: #15803d; line-height: 1; }
 
-  @media (max-width:760px) {
-    .consult-panels { grid-template-columns:1fr; }
+  .note-text { font-size: 14px; color: var(--a-on-surface); white-space: pre-line; line-height: 1.75; }
+  .rx-text   { font-size: 13.5px; color: #166534; white-space: pre-line; line-height: 1.9; }
+  .inv-text  { font-size: 13px; color: var(--a-on-surface-variant); white-space: pre-line; line-height: 1.8; }
+  .muted-empty { color: var(--a-outline); font-size: 13px; font-style: italic; }
+
+  .section-chip { font: 700 10px/1.4 var(--a-font-label); text-transform: uppercase;
+             letter-spacing: .06em; color: var(--a-outline); margin: 14px 0 6px; }
+  .inv-block { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--a-outline-variant); }
+
+  .review-box { margin-bottom: 14px; padding: 12px 14px; border-radius: var(--a-radius);
+             background: rgba(96,99,238,.08); border: 1px solid rgba(96,99,238,.25); }
+  .review-box .rb-label { font: 700 10px/1.4 var(--a-font-label); color: var(--a-secondary);
+             text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px;
+             display: flex; align-items: center; gap: 5px; }
+  .review-box .note-text { color: var(--a-secondary); }
+
+  /* Investigations */
+  .inv-card { border: 1px solid var(--a-glass-border); border-radius: var(--a-radius);
+             padding: 14px 16px; background: var(--a-surface-lowest); }
+  .status-pill { font-size: 11px; font-weight: 700; padding: 3px 12px; border-radius: var(--a-radius-full); }
+  .st-ok       { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+  .st-warn     { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; }
+  .st-bad      { background: var(--a-error-container); color: var(--a-on-error-container); }
+  .st-idle     { background: var(--a-surface-low); color: var(--a-outline); border: 1px solid var(--a-outline-variant); }
+
+  .result-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--a-radius);
+             padding: 11px 14px; margin-bottom: 10px; }
+
+  .consult-page .crm-input, .consult-page .crm-select {
+             width: 100%; border: 1px solid rgba(0,101,145,.12); border-radius: var(--a-radius);
+             padding: 8px 12px; font-size: 13px; font-family: var(--a-font-body); font-weight: 400;
+             background: var(--a-surface-lowest); color: var(--a-on-surface); }
+  .consult-page .crm-input:focus, .consult-page .crm-select:focus {
+             outline: none; border-color: rgba(var(--a-accent-rgb), .35);
+             box-shadow: 0 0 0 3px rgba(var(--a-accent-rgb), .18); }
+
+  /* Footer strip: ICD-10 + referral */
+  .footer-strip { background: var(--a-glass-bg); -webkit-backdrop-filter: blur(var(--a-glass-blur));
+             backdrop-filter: blur(var(--a-glass-blur)); border: 1px solid var(--a-glass-border);
+             border-radius: var(--a-radius-md); box-shadow: var(--a-glass-shadow);
+             padding: 16px 20px; display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .footer-chip { display: flex; flex-direction: column; gap: 2px; }
+  .footer-chip .fc-label { font: 700 10px/1.4 var(--a-font-label); color: var(--a-outline);
+             text-transform: uppercase; letter-spacing: .05em; }
+  .footer-chip .fc-val   { font-size: 13px; font-weight: 600; color: var(--a-on-surface); }
+  .icd-chip { display: inline-flex; align-items: center; gap: 6px;
+             background: rgba(var(--a-accent-rgb), .10); border: 1px solid rgba(var(--a-accent-rgb), .25);
+             border-radius: var(--a-radius-full); padding: 4px 12px; font-size: 12px; }
+  .icd-chip .code { font-family: ui-monospace, Consolas, monospace; font-weight: 700;
+             color: var(--a-primary); }
+  .icd-chip .desc { color: var(--a-on-surface-variant); font-size: 11px; }
+
+  /* Sick note — Aetheris secondary (violet) */
+  .sn-card { background: rgba(96,99,238,.07); border: 1px solid rgba(96,99,238,.30);
+             border-radius: var(--a-radius-md); padding: 22px 24px;
+             box-shadow: var(--a-glass-shadow); }
+  .sn-header { display: flex; align-items: center; justify-content: space-between;
+             flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+  .sn-title { font: 700 13px/1.4 var(--a-font-label); color: var(--a-secondary);
+             text-transform: uppercase; letter-spacing: .06em; display: flex; align-items: center; gap: 8px; }
+  .sn-period { background: var(--a-secondary); color: #fff; border-radius: var(--a-radius-full);
+             padding: 8px 18px; font-size: 13px; font-weight: 700; display: inline-block;
+             font-variant-numeric: tabular-nums; }
+  .sn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+             gap: 12px; margin-bottom: 16px; }
+  .sn-field { background: var(--a-surface-lowest); border: 1px solid var(--a-glass-border);
+             border-radius: var(--a-radius); padding: 10px 12px; }
+  .sn-label { font: 700 10px/1.4 var(--a-font-label); color: var(--a-secondary);
+             text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px; }
+  .sn-value { font-size: 13px; font-weight: 700; color: var(--a-on-surface); }
+  .sn-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-download { display: inline-flex; align-items: center; gap: 7px; padding: 10px 20px;
+             background: var(--a-secondary); color: #fff; border: none;
+             border-radius: var(--a-radius-full); font-size: 13px; font-weight: 700;
+             text-decoration: none; cursor: pointer; transition: box-shadow .2s; }
+  .btn-download:hover { box-shadow: 0 8px 24px rgba(96,99,238,.35); }
+
+  .detail-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .consult-page .btn-danger-link { color: var(--a-error) !important; }
+
+  @media (max-width: 760px) {
+    .consult-panels { grid-template-columns: 1fr; }
+    .cd-hud { border-radius: var(--a-radius-md); }
+    .cd-hud .actions { margin-left: 0; }
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="page-body">
+<div class="aetheris a-legible consult-page">
   <div class="consult-wrap">
 
-    <div class="page-header">
-      <div>
-        <h1>Consultation Record</h1>
-        <p style="margin:0;color:var(--text-3);font-size:13px;">{{ consultation.patient }} — {{ consultation.date|date:"l, j F Y" }}</p>
+    <!-- HUD header: identity + actions -->
+    <div class="cd-hud">
+      <div class="avatar">
+        {{ consultation.patient.first_name|first|upper }}{{ consultation.patient.last_name|first|upper }}
       </div>
-      <div style="display:flex;gap:8px;">
+      <div>
+        <div class="nm">{{ consultation.patient }}</div>
+        <div class="sub">{{ consultation.date|date:"l, j F Y" }} · Consultation record</div>
+      </div>
+      {% if consultation.follow_up_date %}
+      <div class="fu-chip">
+        <div class="fc-k">Follow-up</div>
+        <div class="fc-v">{{ consultation.follow_up_date|date:"j M Y" }}</div>
+      </div>
+      {% endif %}
+      <div class="actions">
         <a href="{% url 'consultation_review' consultation.pk %}" class="btn-primary">
           <i class="bi bi-arrow-repeat"></i> Review
         </a>
-        <a href="{% url 'diagnosis_workspace' consultation.pk %}" class="btn-ghost" style="color:#7e22ce;">
+        <a href="{% url 'diagnosis_workspace' consultation.pk %}" class="btn-ghost">
           <i class="bi bi-diagram-3"></i> Workspace
         </a>
         <a href="{% url 'consultation_print' consultation.pk %}" class="btn-ghost"><i class="bi bi-printer"></i> Print</a>
@@ -108,46 +208,23 @@
 
     <!-- Review chain notice -->
     {% if consultation.reviewed_consultation %}
-    <div style="display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:10px;background:#eff6ff;border:1px solid #bfdbfe;margin-bottom:14px;font-size:13px;color:#1d4ed8;">
+    <div class="chain-note of">
       <i class="bi bi-arrow-repeat" style="flex-shrink:0;"></i>
       This is a review of the consultation from
-      <a href="{% url 'consultation_detail' consultation.reviewed_consultation.pk %}"
-         style="font-weight:700;color:#1d4ed8;text-decoration:underline;">
+      <a href="{% url 'consultation_detail' consultation.reviewed_consultation.pk %}">
         {{ consultation.reviewed_consultation.date|date:"j F Y" }}
       </a>
     </div>
     {% endif %}
     {% if consultation.reviews.exists %}
-    <div style="display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:10px;background:#f0fdf4;border:1px solid #bbf7d0;margin-bottom:14px;font-size:13px;color:#15803d;">
+    <div class="chain-note by">
       <i class="bi bi-arrow-repeat" style="flex-shrink:0;"></i>
       This consultation has been reviewed —
       {% for r in consultation.reviews.all %}
-        <a href="{% url 'consultation_detail' r.pk %}"
-           style="font-weight:700;color:#15803d;text-decoration:underline;">
-          {{ r.date|date:"j F Y" }}
-        </a>{% if not forloop.last %}, {% endif %}
+        <a href="{% url 'consultation_detail' r.pk %}">{{ r.date|date:"j F Y" }}</a>{% if not forloop.last %}, {% endif %}
       {% endfor %}
     </div>
     {% endif %}
-
-    <!-- Patient header -->
-    <div class="card" style="margin-bottom:14px;padding:16px 20px;">
-      <div style="display:flex;gap:14px;align-items:center;">
-        <div class="avatar av-62 av-1">
-          {{ consultation.patient.first_name|first|upper }}{{ consultation.patient.last_name|first|upper }}
-        </div>
-        <div style="flex:1;">
-          <h2 class="brand-heading" style="font-size:18px;margin:0 0 2px;">{{ consultation.patient }}</h2>
-          <div style="font-size:13px;color:var(--text-3);">{{ consultation.date|date:"l, j F Y" }}</div>
-        </div>
-        {% if consultation.follow_up_date %}
-        <div style="padding:9px 14px;border-radius:11px;background:#eff6ff;border:1px solid #bfdbfe;text-align:center;flex-shrink:0;">
-          <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;">Follow-up</div>
-          <div style="font-size:13px;font-weight:700;color:#1e40af;">{{ consultation.follow_up_date|date:"j M Y" }}</div>
-        </div>
-        {% endif %}
-      </div>
-    </div>
 
     <!-- Vitals strip -->
     {% if consultation.weight_kg or consultation.bp_reading or consultation.chief_complaint %}
@@ -159,7 +236,7 @@
       <div class="vital-chip"><span class="vc-label">BP</span>{{ consultation.bp_reading }} mmHg</div>
       {% endif %}
       {% if consultation.chief_complaint %}
-      <div class="vital-chip" style="background:#fafafa;"><span class="vc-label">Reason</span>{{ consultation.chief_complaint }}</div>
+      <div class="vital-chip"><span class="vc-label">Reason</span>{{ consultation.chief_complaint }}</div>
       {% endif %}
     </div>
     {% endif %}
@@ -172,23 +249,21 @@
         <div class="panel-header"><i class="bi bi-pencil-square"></i> Clinical Notes</div>
         <div class="panel-body">
           {% if consultation.review %}
-          <div style="margin-bottom:14px;padding:12px 14px;border-radius:10px;background:#f5f3ff;border:1px solid #ddd6fe;">
-            <div style="font-size:10px;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:flex;align-items:center;gap:5px;">
-              <i class="bi bi-arrow-repeat"></i> Review — progress since last visit
-            </div>
-            <div class="note-text" style="color:#4c1d95;">{{ consultation.review }}</div>
+          <div class="review-box">
+            <div class="rb-label"><i class="bi bi-arrow-repeat"></i> Review — progress since last visit</div>
+            <div class="note-text">{{ consultation.review }}</div>
           </div>
           {% endif %}
 
           {% if consultation.subjective %}
           <div class="note-text">{{ consultation.subjective }}</div>
           {% else %}
-          <div style="color:var(--text-4);font-size:13px;font-style:italic;">No clinical notes recorded.</div>
+          <div class="muted-empty">No clinical notes recorded.</div>
           {% endif %}
 
           {% if consultation.assessment %}
           <div class="section-chip" style="margin-top:18px;">Assessment / Diagnosis</div>
-          <div class="note-text" style="font-weight:500;color:#1e293b;">{{ consultation.assessment }}</div>
+          <div class="note-text" style="font-weight:500;">{{ consultation.assessment }}</div>
           {% endif %}
 
           {% if consultation.objective %}
@@ -215,7 +290,7 @@
           {% if consultation.prescriptions %}
           <div class="rx-text">{{ consultation.prescriptions }}</div>
           {% else %}
-          <div style="color:var(--text-4);font-size:13px;font-style:italic;">No prescriptions.</div>
+          <div class="muted-empty">No prescriptions.</div>
           {% endif %}
 
           {% if consultation.lab_requests %}
@@ -238,42 +313,42 @@
 
     <!-- ── Investigations & results ─────────────────────────────────────── -->
     {% if consultation.investigation_requests.all %}
-    <div class="card" style="margin-bottom:14px;padding:0;overflow:hidden;">
-      <div class="panel-header" style="color:#3730a3;background:#eef2ff;border-bottom:1px solid #c7d2fe;">
+    <div class="glass-card">
+      <div class="panel-header">
         <i class="bi bi-clipboard2-pulse"></i> Investigations &amp; Results
       </div>
       <div style="padding:16px 18px;display:flex;flex-direction:column;gap:14px;">
         {% for inv in consultation.investigation_requests.all %}
-        <div style="border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
+        <div class="inv-card">
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
             <span style="font-weight:700;font-size:14px;">
               <i class="bi bi-{% if inv.kind == 'radiology' %}image{% else %}droplet-half{% endif %}"></i>
               {{ inv.get_kind_display }}
             </span>
             {% if inv.status == 'confirmed' %}
-              <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">✓ Confirmed &amp; filed</span>
+              <span class="status-pill st-ok">✓ Confirmed &amp; filed</span>
             {% elif inv.status == 'submitted' %}
-              <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fef9c3;color:#854d0e;border:1px solid #fde68a;">Results submitted</span>
+              <span class="status-pill st-warn">Results submitted</span>
             {% elif inv.status == 'declined' %}
-              <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:#fee2e2;color:#b91c1c;border:1px solid #fecaca;">Declined</span>
+              <span class="status-pill st-bad">Declined</span>
             {% else %}
-              <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:#f1f5f9;color:#64748b;border:1px solid var(--border);">Awaiting results</span>
+              <span class="status-pill st-idle">Awaiting results</span>
             {% endif %}
-            {% if inv.provider %}<span style="font-size:12px;color:var(--text-3);margin-left:auto;">→ {{ inv.provider.name }}</span>{% endif %}
+            {% if inv.provider %}<span style="font-size:12px;color:var(--a-on-surface-variant);margin-left:auto;">→ {{ inv.provider.name }}</span>{% endif %}
           </div>
 
           <div class="inv-text" style="margin-bottom:10px;">{{ inv.requested_items }}</div>
 
           {% if inv.status == 'confirmed' %}
-          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:11px 14px;margin-bottom:10px;">
-            <div style="font-size:10px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;">Result</div>
+          <div class="result-box">
+            <div style="font:700 10px/1.4 var(--a-font-label);color:#15803d;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;">Result</div>
             {% if inv.result_text %}<div style="font-size:13px;color:#166534;white-space:pre-line;line-height:1.6;">{{ inv.result_text }}</div>{% endif %}
             {% if inv.result_file %}<a href="{{ inv.result_file.url }}" target="_blank" style="font-size:12.5px;color:#15803d;font-weight:600;display:inline-block;margin-top:6px;"><i class="bi bi-paperclip"></i> {{ inv.result_filename }}</a>{% endif %}
           </div>
           {% elif inv.status == 'submitted' %}
           <a href="{% url 'investigation_review' inv.pk %}" class="btn-primary" style="margin-bottom:10px;"><i class="bi bi-eye"></i> Review submitted result</a>
           {% elif inv.status == 'declined' %}
-          <div style="font-size:12.5px;color:#b91c1c;margin-bottom:10px;">Returned to provider{% if inv.decline_reason %}: {{ inv.decline_reason }}{% endif %}. They can resubmit via the link.</div>
+          <div style="font-size:12.5px;color:var(--a-on-error-container);margin-bottom:10px;">Returned to provider{% if inv.decline_reason %}: {{ inv.decline_reason }}{% endif %}. They can resubmit via the link.</div>
           {% endif %}
 
           <!-- Actions -->
@@ -286,7 +361,7 @@
           </div>
 
           <!-- Prepare / edit request -->
-          <form method="post" action="{% url 'prepare_request' consultation.pk %}" id="prep-{{ inv.pk }}" style="display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--border);">
+          <form method="post" action="{% url 'prepare_request' consultation.pk %}" id="prep-{{ inv.pk }}" style="display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--a-outline-variant);">
             {% csrf_token %}
             <input type="hidden" name="kind" value="{{ inv.kind }}">
             <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
@@ -339,9 +414,9 @@
         <span class="fc-label">ICD-10</span>
         <span style="display:flex;flex-wrap:wrap;gap:5px;">
           {% for item in consultation.icd10_codes_list %}
-          <span title="{{ item.description }}" style="display:inline-flex;align-items:center;gap:5px;background:#eef2ff;border:1.5px solid #c7d2fe;border-radius:6px;padding:3px 8px;font-size:12px;">
-            <span style="font-family:monospace;font-weight:700;color:#3730a3;">{{ item.code }}</span>
-            <span style="color:#4338ca;font-size:11px;">{{ item.description|truncatechars:50 }}</span>
+          <span class="icd-chip" title="{{ item.description }}">
+            <span class="code">{{ item.code }}</span>
+            <span class="desc">{{ item.description|truncatechars:50 }}</span>
           </span>
           {% endfor %}
         </span>
@@ -397,7 +472,7 @@
     <div class="detail-actions">
       <a href="{% url 'consultation_print' consultation.pk %}" class="btn-primary"><i class="bi bi-printer"></i> Print Record</a>
       <a href="{% url 'consultation_edit' consultation.pk %}" class="btn-ghost"><i class="bi bi-pencil"></i> Edit</a>
-      <a href="{% url 'consultation_delete' consultation.pk %}" class="btn-ghost" style="color:#ef4444;margin-left:auto;"><i class="bi bi-trash"></i> Delete</a>
+      <a href="{% url 'consultation_delete' consultation.pk %}" class="btn-ghost btn-danger-link" style="margin-left:auto;"><i class="bi bi-trash"></i> Delete</a>
     </div>
 
   </div>

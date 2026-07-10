@@ -4,36 +4,55 @@ Renders the stored DifferentialResult JSON — NEVER a fresh engine run: the
 knowledge base is admin-editable, so re-computing would show different numbers
 than the doctor saw at the time. Context: diagnosis_snapshot, xc_confirms,
 xc_contras, snapshot_presenting, snapshot_working.
+
+Styled with Aetheris tokens — this partial renders inside the themed
+consultation detail page (its only include site), under the .aetheris root.
 {% endcomment %}
 {% if diagnosis_snapshot %}
 <style>
-.rs-band { font-size: 10px; font-weight: 700; letter-spacing: .04em; border-radius: 6px; padding: 2px 8px; flex-shrink: 0; }
-.rs-band-high { background: var(--accent, #475569); color: #fff; }
-.rs-band-med  { background: rgba(71,85,105,.14); color: var(--accent, #475569); }
-.rs-band-low  { background: transparent; color: #9ca3af; border: 1px solid #e8ecf1; }
+.rs-panel { background: var(--a-glass-bg); -webkit-backdrop-filter: blur(var(--a-glass-blur));
+            backdrop-filter: blur(var(--a-glass-blur)); border: 1px solid var(--a-glass-border);
+            border-radius: var(--a-radius-md); box-shadow: var(--a-glass-shadow); overflow: hidden; }
+.rs-band { font-size: 10px; font-weight: 700; letter-spacing: .05em;
+           border-radius: var(--a-radius-full); padding: 3px 10px; flex-shrink: 0;
+           font-variant-numeric: tabular-nums; }
+.rs-band-high { background: var(--a-primary); color: #fff; }
+.rs-band-med  { background: rgba(0,101,145,.12); color: var(--a-primary); }
+.rs-band-low  { background: transparent; color: var(--a-outline); border: 1px solid var(--a-outline-variant); }
 .rs-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 13px; }
-.rs-code { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px; color: #6b7280; }
+.rs-code { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px; color: var(--a-on-surface-variant); }
 .rs-why { margin: 0 0 4px 22px; }
-.rs-why summary { font-size: 11.5px; color: #9ca3af; cursor: pointer; }
-.rs-why-body { font-size: 12px; color: #6b7280; padding: 4px 0; display: grid; gap: 2px; }
-.rs-why-body .rs-frm { font-family: ui-monospace, Consolas, monospace; font-size: 11px; color: #9ca3af; border-top: 1px dashed #e8ecf1; padding-top: 4px; margin-top: 2px; }
+.rs-why summary { font-size: 11.5px; color: var(--a-outline); cursor: pointer; }
+.rs-why-body { font-size: 12px; color: var(--a-on-surface-variant); padding: 4px 0; display: grid; gap: 2px; }
+.rs-why-body .rs-frm { font-family: ui-monospace, Consolas, monospace; font-size: 11px;
+           color: var(--a-outline); border-top: 1px dashed var(--a-outline-variant);
+           padding-top: 4px; margin-top: 2px; }
 .rs-xc { font-size: 12.5px; padding: 2px 0; display: flex; gap: 7px; }
 .rs-xc .ic { font-weight: 700; flex-shrink: 0; }
-.rs-meta { font-size: 12px; color: #6b7280; display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; font-variant-numeric: tabular-nums; }
-.rs-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #6b7280; margin: 12px 0 4px; }
+.rs-meta { font-size: 12px; color: var(--a-on-surface-variant); display: flex; flex-wrap: wrap;
+           gap: 12px; margin-bottom: 10px; font-variant-numeric: tabular-nums; }
+.rs-label { font: 700 11px/1.4 var(--a-font-label); letter-spacing: .06em;
+           text-transform: uppercase; color: var(--a-outline); margin: 12px 0 4px; }
+.rs-dx-chip { display: inline-flex; align-items: center; gap: 6px;
+           background: rgba(96,99,238,.08); border: 1px solid rgba(96,99,238,.30);
+           border-radius: var(--a-radius-full); padding: 4px 12px; font-size: 12.5px; }
+.rs-dx-chip .rs-code { color: var(--a-secondary); font-weight: 700; }
+.rs-offlist { font-size: 10px; color: var(--a-outline); border: 1px solid var(--a-outline-variant);
+           border-radius: var(--a-radius-full); padding: 0 6px; }
+.rs-empty { font-size: 12.5px; color: var(--a-outline); font-style: italic; }
 </style>
-<div class="card" style="margin-bottom:14px;padding:0;overflow:hidden;">
+<div class="rs-panel">
   <details>
     <summary style="cursor:pointer;padding:14px 20px;display:flex;align-items:center;gap:10px;list-style:none;">
-      <i class="bi bi-diagram-3" style="color:#7e22ce;"></i>
+      <i class="bi bi-diagram-3" style="color:var(--a-secondary);"></i>
       <span style="font-weight:700;font-size:14px;">Diagnosis reasoning</span>
-      <span style="font-size:12px;color:var(--text-4);">
+      <span style="font-size:12px;color:var(--a-outline);">
         frozen snapshot · run {{ diagnosis_snapshot.created_at|date:"j M Y H:i" }}
         {% if diagnosis_snapshot.confirmed_at %}· confirmed {{ diagnosis_snapshot.confirmed_at|date:"H:i" }}{% endif %}
       </span>
-      <span style="margin-left:auto;font-size:12px;color:var(--text-4);">show ▾</span>
+      <span style="margin-left:auto;font-size:12px;color:var(--a-outline);">show ▾</span>
     </summary>
-    <div style="padding:4px 20px 18px;border-top:1px solid var(--border);">
+    <div style="padding:4px 20px 18px;border-top:1px solid var(--a-glass-border);">
 
       <div class="rs-meta" style="margin-top:12px;">
         <span>Engine v{{ diagnosis_snapshot.engine_version }}</span>
@@ -46,9 +65,9 @@ xc_contras, snapshot_presenting, snapshot_working.
       <div class="rs-label">Confirmed provisional dx</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
         {% for dx in diagnosis_snapshot.confirmed_dx %}
-        <span style="display:inline-flex;align-items:center;gap:6px;background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:6px;padding:3px 9px;font-size:12.5px;">
-          <span class="rs-code" style="color:#5b21b6;font-weight:700;">{{ dx.code }}</span> {{ dx.name }}
-          {% if dx.source == 'manual' %}<span style="font-size:10px;color:#9ca3af;border:1px solid #e8ecf1;border-radius:4px;padding:0 4px;">off-list</span>{% endif %}
+        <span class="rs-dx-chip">
+          <span class="rs-code">{{ dx.code }}</span> {{ dx.name }}
+          {% if dx.source == 'manual' %}<span class="rs-offlist">off-list</span>{% endif %}
         </span>
         {% endfor %}
       </div>
@@ -56,7 +75,7 @@ xc_contras, snapshot_presenting, snapshot_working.
 
       {% if snapshot_presenting or snapshot_working %}
       <div class="rs-label">Inputs at run time</div>
-      <div style="font-size:12.5px;color:var(--text-3);">
+      <div style="font-size:12.5px;color:var(--a-on-surface-variant);">
         {% if snapshot_presenting %}<div><strong>Presenting:</strong> {{ snapshot_presenting|join:', ' }}</div>{% endif %}
         {% if snapshot_working %}<div><strong>Working:</strong> {{ snapshot_working|join:', ' }}</div>{% endif %}
         {% if diagnosis_snapshot.inputs.notes %}<div><strong>Notes:</strong> {{ diagnosis_snapshot.inputs.notes }}</div>{% endif %}
@@ -66,7 +85,7 @@ xc_contras, snapshot_presenting, snapshot_working.
       <div class="rs-label">Differential at run time ({{ diagnosis_snapshot.output.title }})</div>
       {% for r in diagnosis_snapshot.output.results %}
       <div class="rs-row">
-        <span style="color:var(--text-4);font-size:11px;width:16px;">{{ r.rank }}</span>
+        <span style="color:var(--a-outline);font-size:11px;width:16px;font-variant-numeric:tabular-nums;">{{ r.rank }}</span>
         <span style="font-weight:600;flex:1;">{{ r.condition }} <span class="rs-code">{{ r.icd10_code }}</span></span>
         <span class="rs-band {% if r.band == 'High' %}rs-band-high{% elif r.band == 'Medium' %}rs-band-med{% else %}rs-band-low{% endif %}">{{ r.band|upper }}</span>
       </div>
@@ -82,15 +101,15 @@ xc_contras, snapshot_presenting, snapshot_working.
         </div>
       </details>
       {% empty %}
-      <div style="font-size:12.5px;color:var(--text-4);font-style:italic;">No conditions matched at run time.</div>
+      <div class="rs-empty">No conditions matched at run time.</div>
       {% endfor %}
 
       <div class="rs-label">History cross-check</div>
       {% if xc_confirms or xc_contras %}
         {% for e in xc_confirms %}<div class="rs-xc"><span class="ic" style="color:#15803d;">✓</span>{{ e }}</div>{% endfor %}
-        {% for e in xc_contras %}<div class="rs-xc"><span class="ic" style="color:#b45309;">⚠</span>{{ e }}</div>{% endfor %}
+        {% for e in xc_contras %}<div class="rs-xc"><span class="ic" style="color:#92400e;">⚠</span>{{ e }}</div>{% endfor %}
       {% else %}
-        <div style="font-size:12.5px;color:var(--text-4);font-style:italic;">No stored-history factors fired on this run.</div>
+        <div class="rs-empty">No stored-history factors fired on this run.</div>
       {% endif %}
 
     </div>

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Consultations | G.P CRM{% endblock %}
 {% block page_title %}Consultations{% endblock %}
 {% block page_sub %}Clinical records &amp; reviews{% endblock %}
@@ -31,10 +32,46 @@
     border-radius:6px; padding:2px 8px; white-space:nowrap;
   }
 </style>
+<link rel="stylesheet" href="{% static 'css/aetheris.css' %}">
+<style>
+  /* ══ Aetheris overlay — glass cards, pill tabs/buttons; semantics kept. ══ */
+  .aetheris.clist-aeth { padding: 16px; border-radius: 16px; }
+  .aetheris .card { background: var(--a-glass-bg); -webkit-backdrop-filter: blur(var(--a-glass-blur));
+    backdrop-filter: blur(var(--a-glass-blur)); border: 1px solid var(--a-glass-border);
+    border-radius: var(--a-radius-md); box-shadow: var(--a-glass-shadow); }
+  .aetheris .filter-tab { border-radius: var(--a-radius-full);
+    border: 1px solid var(--a-glass-border); background: var(--a-surface-lowest);
+    color: var(--a-on-surface-variant); font-family: var(--a-font-label); }
+  .aetheris .filter-tab:hover { border-color: rgba(var(--a-accent-rgb), .35); color: var(--a-primary); }
+  .aetheris .filter-tab.active { background: var(--a-primary); border-color: var(--a-primary); color: #fff; }
+  .aetheris .filter-tab:not(.active) .count { background: var(--a-surface-container);
+    color: var(--a-on-surface-variant); }
+  .aetheris .review-badge { color: var(--a-secondary); background: rgba(96,99,238,.08);
+    border-color: rgba(96,99,238,.30); border-radius: var(--a-radius-full); }
+  .aetheris .crm-input { border: 1px solid rgba(0,101,145,.12); border-radius: var(--a-radius-full);
+    background: var(--a-surface-lowest); color: var(--a-on-surface);
+    font-family: var(--a-font-body); font-weight: 400; }
+  .aetheris .crm-input:focus { outline: none; border-color: rgba(var(--a-accent-rgb), .35);
+    box-shadow: 0 0 0 3px rgba(var(--a-accent-rgb), .18); }
+  .aetheris .btn-primary { background: var(--a-primary); color: #fff; border: none;
+    border-radius: var(--a-radius-full); box-shadow: 0 6px 24px -6px rgba(0,101,145,.45); }
+  .aetheris .btn-primary:hover { background: var(--a-primary);
+    box-shadow: 0 8px 30px -6px rgba(var(--a-accent-rgb), .5); }
+  .aetheris .btn-ghost { border: 1px solid var(--a-glass-border); background: var(--a-surface-lowest);
+    color: var(--a-on-surface-variant); border-radius: var(--a-radius-full); }
+  .aetheris .btn-ghost:hover { color: var(--a-primary);
+    box-shadow: 0 0 0 3px rgba(var(--a-accent-rgb), .15); }
+  .aetheris .crm-table th { background: var(--a-surface-low); color: var(--a-on-surface-variant);
+    border-bottom: 1px solid var(--a-glass-border); font-family: var(--a-font-label); }
+  .aetheris .crm-table td { border-bottom: 1px solid var(--a-glass-border); }
+  .aetheris .crm-table tbody tr:hover td { background: var(--a-surface-low); }
+  /* Follow-up emphasis retints from the CRM slate to the theme primary */
+  .aetheris td[style*="var(--accent)"] { color: var(--a-primary) !important; }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="page-body">
+<div class="page-body aetheris a-legible clist-aeth">
   <div class="page-header">
     <div>
       <h1>Consultations</h1>
