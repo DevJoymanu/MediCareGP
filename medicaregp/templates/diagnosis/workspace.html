@@ -16,27 +16,22 @@
 .ws-wrap { display: flex; flex-direction: column; gap: 14px; max-width: 1600px; }
 .ws-grid { display: grid; grid-template-columns: minmax(0,1fr) 400px; gap: 16px; align-items: start; }
 
-/* ── ⓘ info buttons + tooltips ─────────────────────────────────────────── */
-.info { position: relative; width: 18px; height: 18px; border-radius: 50%; flex: none;
+/* ── ⓘ info buttons + tooltip ──────────────────────────────────────────────
+   One shared fixed-position tooltip (positioned by JS) so text is never
+   clipped by panel overflow, the sticky header, or the viewport edge. */
+.info { width: 20px; height: 20px; border-radius: 50%; flex: none;
         border: 1px solid var(--a-outline-variant); background: transparent; color: var(--a-outline);
-        font: italic 700 10px/1 Georgia, serif; cursor: help;
+        font: italic 700 11px/1 Georgia, serif; cursor: help;
         display: inline-grid; place-items: center; vertical-align: middle;
         transition: color .15s, border-color .15s, box-shadow .2s; }
 .info:hover, .info:focus-visible { color: var(--a-primary); border-color: var(--a-accent);
         outline: none; box-shadow: 0 0 0 3px rgba(var(--a-accent-rgb), .18); }
-.info::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 9px); left: 50%;
-        transform: translateX(-50%); background: var(--a-on-surface); color: var(--a-surface);
-        padding: 8px 12px; border-radius: 9px; font: 400 11.5px/1.45 var(--a-font-body);
-        width: max-content; max-width: 250px; text-align: left; text-transform: none;
-        letter-spacing: 0; opacity: 0; pointer-events: none; transition: opacity .15s; z-index: 80;
-        box-shadow: 0 6px 24px rgba(11,28,48,.3); }
-.info::before { content: ""; position: absolute; bottom: calc(100% + 4px); left: 50%;
-        transform: translateX(-50%); border: 5px solid transparent;
-        border-top-color: var(--a-on-surface); opacity: 0; transition: opacity .15s; z-index: 80; }
-.info:hover::after, .info:focus-visible::after,
-.info:hover::before, .info:focus-visible::before { opacity: 1; }
-.info.tl::after { left: auto; right: -6px; transform: none; }
-.info.tl::before { left: auto; right: 0; transform: none; }
+.ws-info-tip { position: fixed; z-index: 1000; background: #0b1c30; color: #f8f9ff;
+        padding: 10px 13px; border-radius: 10px; font: 400 12.5px/1.5 var(--a-font-body, system-ui);
+        max-width: 300px; text-align: left; text-transform: none; letter-spacing: 0;
+        box-shadow: 0 8px 28px rgba(11,28,48,.35); pointer-events: none;
+        opacity: 0; transition: opacity .12s; }
+.ws-info-tip.show { opacity: 1; }
 
 /* ── HUD patient header (glass pill) ───────────────────────────────────── */
 .ws-header { background: var(--a-glass-bg); -webkit-backdrop-filter: blur(var(--a-glass-blur));
@@ -1173,11 +1168,58 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 {% endif %}
 
 <script>
-// ⓘ info buttons live inside <summary> and <label> elements — swallow the
-// click so tooltips never toggle sections or move focus to the field.
-document.querySelectorAll('.info').forEach(function (b) {
-  b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); });
-});
+// ⓘ info tooltips — one shared fixed-position element so the text always
+// renders fully: never clipped by the differential panel's overflow, the
+// sticky header, or the viewport edges. Flips below the button when there
+// is no room above, and clamps horizontally. Tap toggles it (touch).
+(function () {
+  'use strict';
+  const tip = document.createElement('div');
+  tip.className = 'ws-info-tip';
+  tip.setAttribute('role', 'tooltip');
+  tip.id = 'wsInfoTip';
+  document.body.appendChild(tip);
+  let current = null;
+
+  function show(btn) {
+    if (current) current.removeAttribute('aria-describedby');
+    current = btn;
+    btn.setAttribute('aria-describedby', 'wsInfoTip');
+    tip.textContent = btn.dataset.tip || '';
+    tip.classList.add('show');
+    // Measure, then place: prefer above the button, flip below if cramped.
+    tip.style.left = '0px'; tip.style.top = '0px';
+    const r = btn.getBoundingClientRect();
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    let left = r.left + r.width / 2 - tw / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+    let top = r.top - th - 9;
+    if (top < 8) top = r.bottom + 9;                      // no room above → below
+    top = Math.min(top, window.innerHeight - th - 8);     // never past the bottom
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+  function hide() {
+    if (current) current.removeAttribute('aria-describedby');
+    current = null; tip.classList.remove('show');
+  }
+
+  document.querySelectorAll('.info').forEach(function (b) {
+    b.addEventListener('mouseenter', function () { show(b); });
+    b.addEventListener('mouseleave', hide);
+    b.addEventListener('focus', function () { show(b); });
+    b.addEventListener('blur', hide);
+    // Inside <summary>/<label>: swallow the click so it never toggles the
+    // section or moves focus to the field. On touch, the tap toggles the tip.
+    b.addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation();
+      current === b ? hide() : show(b);
+    });
+  });
+  window.addEventListener('scroll', hide, true);   // any pane scrolling
+  window.addEventListener('resize', hide);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
+})();
 </script>
 
 <script>
