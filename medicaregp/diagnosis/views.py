@@ -476,30 +476,30 @@ _COMPLAINT_STOPWORDS = {
 }
 
 
-@doctor_required
-@require_GET
-def workspace_complaint_check(request, consultation_pk):
-    """Live 'first occurrence?' check for the chief complaint.
+def complaint_history(consultation, text):
+    """Word-overlap match of a complaint against the patient's previous
+    consultations. Answers "has this patient presented with this before?"
+    Shared by the workspace's live check and the consultation detail page.
 
-    Word-overlap match against the patient's previous consultations so the
-    doctor sees, while typing, whether this presentation is new for this
-    patient or a repeat — and what it was coded as last time.
+    Returns {'checked', 'first_time', 'matches': [{date, complaint, codes}], 'total'}.
     """
-    consultation = get_object_or_404(
-        Consultation.objects.select_related('patient'), pk=consultation_pk)
-    q = (request.GET.get('q') or '').strip().lower()
-
     import re
+    q = (text or '').strip().lower()
     tokens = [t for t in re.findall(r'[a-z]+', q)
               if len(t) >= 3 and t not in _COMPLAINT_STOPWORDS]
     if not tokens:
-        return JsonResponse({'checked': False, 'first_time': None, 'matches': [], 'total': 0})
+        return {'checked': False, 'first_time': None, 'matches': [], 'total': 0}
 
     matches, total = [], 0
+    # Only visits BEFORE this consultation — viewing an old record must answer
+    # "was this a first occurrence AT THE TIME?", not against later visits.
+    # date is auto_now_add, so same-day records tiebreak on pk (creation order).
+    from django.db.models import Q
     previous = (Consultation.objects
                 .filter(patient=consultation.patient)
-                .exclude(pk=consultation.pk)
-                .order_by('-date')[:200])
+                .filter(Q(date__lt=consultation.date) |
+                        Q(date=consultation.date, pk__lt=consultation.pk))
+                .order_by('-date', '-pk')[:200])
     for past in previous:
         hay = (past.chief_complaint or '').lower()
         if not hay or not any(t in hay for t in tokens):
@@ -511,12 +511,26 @@ def workspace_complaint_check(request, consultation_pk):
                 'complaint': (past.chief_complaint or '')[:80],
                 'codes': [e.get('code') for e in past.icd10_codes_list if e.get('code')],
             })
-    return JsonResponse({
+    return {
         'checked': True,
         'first_time': total == 0,
         'matches': matches,
         'total': total,
-    })
+    }
+
+
+@doctor_required
+@require_GET
+def workspace_complaint_check(request, consultation_pk):
+    """Live 'first occurrence?' check for the chief complaint.
+
+    Word-overlap match against the patient's previous consultations so the
+    doctor sees, while typing, whether this presentation is new for this
+    patient or a repeat — and what it was coded as last time.
+    """
+    consultation = get_object_or_404(
+        Consultation.objects.select_related('patient'), pk=consultation_pk)
+    return JsonResponse(complaint_history(consultation, request.GET.get('q')))
 
 
 @doctor_required

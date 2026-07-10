@@ -521,3 +521,12 @@ class ComplaintCheckTests(TestCase):
     def test_reception_is_denied(self):
         self.client.force_login(self.receptionist)
         self.assertEqual(self.client.get(self.url + '?q=cough').status_code, 403)
+
+    def test_detail_page_shows_complaint_recurrence(self):
+        """The detail page surfaces the same first-occurrence answer the
+        workspace shows live, plus the prior visit's codes."""
+        response = self.client.get(reverse('consultation_detail', args=[self.current.pk]))
+        self.assertContains(response, 'Seen before')
+        self.assertContains(response, 'J20.9')
+        response = self.client.get(reverse('consultation_detail', args=[self.prior.pk]))
+        self.assertContains(response, 'First time')

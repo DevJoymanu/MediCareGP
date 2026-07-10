@@ -829,10 +829,20 @@ def _diagnosis_snapshot_context(consultation):
 def consultation_detail(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
     _sync_investigation_requests(consultation)
+    from diagnosis.views import complaint_history
+    patient = consultation.patient
     context = {
         'consultation': consultation,
         'providers':    Provider.objects.filter(is_active=True),
         'embed':        request.GET.get('embed'),
+        # Workspace-parity context: what the doctor saw while creating this.
+        'allergies':    patient.allergies_list(),
+        # Visit number as of THIS consultation, not the running total.
+        # (date is auto_now_add; same-day records tiebreak on pk.)
+        'visit_number': patient.consultations.filter(
+            Q(date__lt=consultation.date) |
+            Q(date=consultation.date, pk__lte=consultation.pk)).count(),
+        'complaint_history': complaint_history(consultation, consultation.chief_complaint),
     }
     context.update(_diagnosis_snapshot_context(consultation))
     return render(request, 'consultations/consultation_detail.html', context)
