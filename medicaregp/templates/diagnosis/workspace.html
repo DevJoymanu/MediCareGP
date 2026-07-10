@@ -1,217 +1,350 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Consultation — {{ patient }}{% endblock %}
 {% block page_title %}Consultation Workspace{% endblock %}
 {% block page_sub %}{{ patient.first_name }} {{ patient.last_name }} · {{ consultation.date|date:"j M Y" }}{% endblock %}
 
 {% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/aetheris.css' %}">
 <style>
-/* ── Workspace layout ─────────────────────────────────────────────────── */
-.ws-wrap { padding: 16px; display: flex; flex-direction: column; gap: 12px; max-width: 1600px; }
-.ws-grid { display: grid; grid-template-columns: minmax(0,1fr) 400px; gap: 12px; align-items: start; }
+/* ══ Aetheris workspace — glass panels, pill controls, numbered flow ══
+   Theme tokens come from aetheris.css (.aetheris root). This page opts in
+   with high-legibility mode on (dense clinical data). All JS hooks keep
+   their original ids/classes. */
+.ws-page { padding: 16px; border-radius: 16px; min-height: calc(100vh - 120px);
+           font-size: 13.5px; line-height: 1.55; }
+.ws-wrap { display: flex; flex-direction: column; gap: 14px; max-width: 1600px; }
+.ws-grid { display: grid; grid-template-columns: minmax(0,1fr) 400px; gap: 16px; align-items: start; }
 
-/* Patient header */
-.ws-header { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
-             padding: 10px 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; box-shadow: var(--shadow-sm); }
-.ws-header .name { font-weight: 700; font-size: 15px; }
-.ws-header .meta { color: var(--text-3); font-size: 12.5px; display: flex; gap: 14px; flex-wrap: wrap; }
-.ws-header .flags { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+/* ── ⓘ info buttons + tooltips ─────────────────────────────────────────── */
+.info { position: relative; width: 18px; height: 18px; border-radius: 50%; flex: none;
+        border: 1px solid var(--a-outline-variant); background: transparent; color: var(--a-outline);
+        font: italic 700 10px/1 Georgia, serif; cursor: help;
+        display: inline-grid; place-items: center; vertical-align: middle;
+        transition: color .15s, border-color .15s, box-shadow .2s; }
+.info:hover, .info:focus-visible { color: var(--a-primary); border-color: var(--a-accent);
+        outline: none; box-shadow: 0 0 0 3px rgba(var(--a-accent-rgb), .18); }
+.info::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 9px); left: 50%;
+        transform: translateX(-50%); background: var(--a-on-surface); color: var(--a-surface);
+        padding: 8px 12px; border-radius: 9px; font: 400 11.5px/1.45 var(--a-font-body);
+        width: max-content; max-width: 250px; text-align: left; text-transform: none;
+        letter-spacing: 0; opacity: 0; pointer-events: none; transition: opacity .15s; z-index: 80;
+        box-shadow: 0 6px 24px rgba(11,28,48,.3); }
+.info::before { content: ""; position: absolute; bottom: calc(100% + 4px); left: 50%;
+        transform: translateX(-50%); border: 5px solid transparent;
+        border-top-color: var(--a-on-surface); opacity: 0; transition: opacity .15s; z-index: 80; }
+.info:hover::after, .info:focus-visible::after,
+.info:hover::before, .info:focus-visible::before { opacity: 1; }
+.info.tl::after { left: auto; right: -6px; transform: none; }
+.info.tl::before { left: auto; right: 0; transform: none; }
 
-/* Cards & sections */
-.ws-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
-           padding: 14px 16px; box-shadow: var(--shadow-sm); }
-.ws-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-            color: var(--text-3); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-.ws-card + .ws-card { margin-top: 12px; }
+/* ── HUD patient header (glass pill) ───────────────────────────────────── */
+.ws-header { background: var(--a-glass-bg); -webkit-backdrop-filter: blur(var(--a-glass-blur));
+             backdrop-filter: blur(var(--a-glass-blur)); border: 1px solid var(--a-glass-border);
+             border-radius: var(--a-radius-full); box-shadow: var(--a-glass-shadow);
+             padding: 10px 16px 10px 20px; display: flex; align-items: center; gap: 16px;
+             flex-wrap: wrap; position: sticky; top: 8px; z-index: 40; }
+.ws-header .name { font-weight: 600; font-size: 17px; letter-spacing: -.01em; }
+.ws-header .meta { color: var(--a-on-surface-variant); font-size: 12px; display: flex;
+                   gap: 13px; flex-wrap: wrap; }
+.ws-header .meta b { color: var(--a-primary); font-weight: 600; }
+.ws-header .flags { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
-/* Inputs */
-.ws-input, .ws-textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
-             font-size: 13.5px; background: #fbfcfe; color: var(--text-1); }
-.ws-input:focus, .ws-textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
-.ws-textarea { resize: vertical; min-height: 56px; }
+/* ── Chart tabs (glass segmented pill) ─────────────────────────────────── */
+.ws-tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--a-radius-full);
+           background: var(--a-glass-bg); -webkit-backdrop-filter: blur(var(--a-glass-blur));
+           backdrop-filter: blur(var(--a-glass-blur)); border: 1px solid var(--a-glass-border);
+           align-self: flex-start; }
+.ws-tabs a, .ws-tabs span { border: none; font-size: 12.5px; font-weight: 500;
+           font-family: var(--a-font-label); letter-spacing: .03em; color: var(--a-on-surface-variant);
+           padding: 8px 20px; border-radius: var(--a-radius-full); text-decoration: none;
+           transition: color .15s, background .15s; }
+.ws-tabs a:hover { color: var(--a-primary); background: rgba(var(--a-accent-rgb), .08); }
+.ws-tabs .on { color: #fff; background: var(--a-primary); }
+.ws-tabs a:focus-visible { outline: 2px solid var(--a-accent); outline-offset: -2px; }
 
-/* Chips */
-.chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; min-height: 26px; }
-.sym-chip { display: inline-flex; align-items: center; gap: 6px; background: #eef2f7; border: 1px solid var(--border);
-            border-radius: 999px; padding: 3px 6px 3px 11px; font-size: 12.5px; font-weight: 600; color: var(--text-2); }
-.sym-chip .first-flag { color: #b45309; font-size: 11px; font-weight: 700; }
-.sym-chip button { border: none; background: none; cursor: pointer; color: var(--text-4); font-size: 13px;
-                   line-height: 1; padding: 3px; border-radius: 50%; }
-.sym-chip button:hover { color: #b91c1c; background: #fee2e2; }
-.chip-empty { color: var(--text-4); font-size: 12.5px; font-style: italic; padding: 4px 0; }
+/* ── Glass cards & numbered section labels ─────────────────────────────── */
+.ws-card { background: var(--a-glass-bg); -webkit-backdrop-filter: blur(var(--a-glass-blur));
+           backdrop-filter: blur(var(--a-glass-blur)); border: 1px solid var(--a-glass-border);
+           border-radius: var(--a-radius-md); padding: 16px 20px; box-shadow: var(--a-glass-shadow); }
+.ws-card + .ws-card { margin-top: 14px; }
+.ws-label { font: 500 11px/1.4 var(--a-font-label); letter-spacing: .07em; text-transform: uppercase;
+            color: var(--a-on-surface-variant); margin-bottom: 10px; display: flex;
+            align-items: center; gap: 8px; }
+.ws-label .n { width: 22px; height: 22px; border-radius: 50%; background: var(--a-primary);
+            color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center;
+            flex: none; font-variant-numeric: tabular-nums; font-style: normal; }
+.ws-label .n.sub { background: var(--a-outline); }
+.ws-label .hint { font-weight: 400; text-transform: none; letter-spacing: .02em; color: var(--a-outline); }
 
-/* Type-ahead */
+/* ── Inputs: pill text inputs, rounded textareas ───────────────────────── */
+.ws-input { width: 100%; border: 1px solid rgba(0,101,145,.12); border-radius: var(--a-radius-full);
+            padding: 9px 16px; font-size: 13.5px; font-family: var(--a-font-body); font-weight: 400;
+            background: var(--a-surface-lowest); color: var(--a-on-surface);
+            transition: border-color .15s, box-shadow .2s; }
+select.ws-input { border-radius: var(--a-radius); }
+.ws-textarea { width: 100%; border: 1px solid rgba(0,101,145,.12); border-radius: var(--a-radius);
+            padding: 9px 13px; font-size: 13.5px; font-family: var(--a-font-body); font-weight: 400;
+            background: var(--a-surface-lowest); color: var(--a-on-surface); resize: vertical;
+            min-height: 56px; line-height: 1.5; transition: border-color .15s, box-shadow .2s; }
+.ws-input:focus, .ws-textarea:focus { outline: none; border-color: rgba(var(--a-accent-rgb), .35);
+            box-shadow: 0 0 0 3px rgba(var(--a-accent-rgb), .18); }
+.ws-input::placeholder { color: var(--a-outline); }
+
+/* ── Symptom chips (electric tint pills) ───────────────────────────────── */
+.chip-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; min-height: 26px; }
+.sym-chip { display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(var(--a-accent-rgb), .10); border: 1px solid rgba(var(--a-accent-rgb), .25);
+            border-radius: var(--a-radius-full); padding: 4px 7px 4px 13px; font-size: 12.5px;
+            font-weight: 500; color: var(--a-primary); }
+.sym-chip .first-flag { color: #92400e; font-size: 11px; font-weight: 700; }
+.sym-chip button { border: none; background: none; cursor: pointer; color: var(--a-outline);
+                   font-size: 12px; line-height: 1; padding: 3px 5px; border-radius: 50%; }
+.sym-chip button:hover { color: var(--a-on-error-container); background: var(--a-error-container); }
+.chip-empty { color: var(--a-outline); font-size: 12.5px; font-style: italic; padding: 4px 0; }
+
+/* ── Type-ahead dropdowns ──────────────────────────────────────────────── */
 .ta-wrap { position: relative; }
-.ta-drop { position: absolute; z-index: 40; top: calc(100% + 4px); left: 0; right: 0; background: #fff;
-           border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-md);
+.ta-drop { position: absolute; z-index: 70; top: calc(100% + 4px); left: 0; right: 0;
+           background: var(--a-surface-lowest); border: 1px solid var(--a-glass-border);
+           border-radius: var(--a-radius); box-shadow: 0 12px 32px rgba(11,28,48,.14);
            max-height: 280px; overflow-y: auto; display: none; }
 .ta-drop.open { display: block; }
-.ta-item { padding: 8px 12px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-.ta-item .kind { font-size: 10.5px; color: var(--text-4); margin-left: auto; }
-.ta-item.active, .ta-item:hover { background: #eef2f7; }
-.ta-item mark { background: none; color: var(--accent); font-weight: 700; }
+.ta-item { padding: 8px 14px; font-size: 13px; cursor: pointer; display: flex;
+           align-items: center; gap: 8px; }
+.ta-item .kind { font-size: 10.5px; color: var(--a-outline); margin-left: auto; }
+.ta-item.active, .ta-item:hover { background: var(--a-surface-low); }
+.ta-item mark { background: none; color: var(--a-primary); font-weight: 700; }
 
-/* Body map */
-.bodymap-toggle { border: 1px solid var(--border); background: #fff; border-radius: 8px; padding: 8px 12px;
-                  font-size: 13px; font-weight: 600; color: var(--text-2); cursor: pointer; white-space: nowrap; }
-.bodymap-toggle:hover, .bodymap-toggle.on { border-color: var(--accent); color: var(--accent); }
-.bodymap-panel { display: none; margin-top: 10px; border: 1px solid var(--border); border-radius: 10px;
-                 padding: 12px; gap: 16px; background: #fbfcfe; }
+/* ── Body map ──────────────────────────────────────────────────────────── */
+.bodymap-toggle { border: 1px solid rgba(0,101,145,.15); background: var(--a-surface-lowest);
+                  border-radius: var(--a-radius-full); padding: 8px 16px; font-size: 13px;
+                  font-weight: 500; font-family: var(--a-font-label); color: var(--a-on-surface-variant);
+                  cursor: pointer; white-space: nowrap; transition: color .15s, box-shadow .2s; }
+.bodymap-toggle:hover, .bodymap-toggle.on { color: var(--a-primary);
+                  box-shadow: 0 0 0 3px rgba(var(--a-accent-rgb), .15); }
+.bodymap-panel { display: none; margin-top: 10px; border: 1px solid var(--a-glass-border);
+                 border-radius: var(--a-radius); padding: 12px; gap: 16px;
+                 background: var(--a-surface-low); }
 .bodymap-panel.open { display: flex; flex-wrap: wrap; }
 .bodymap-svg { flex: 0 0 130px; }
-.bodymap-svg .bm-region { fill: #dbe3ec; stroke: #b9c4d2; stroke-width: 1; cursor: pointer; transition: fill .12s; }
-.bodymap-svg .bm-region:hover { fill: #b9c9dd; }
-.bodymap-svg .bm-region.sel { fill: var(--accent); stroke: var(--accent); }
+.bodymap-svg .bm-region { fill: var(--a-surface-highest); stroke: var(--a-outline-variant);
+                 stroke-width: 1; cursor: pointer; transition: fill .12s; }
+.bodymap-svg .bm-region:hover { fill: rgba(var(--a-accent-rgb), .35); }
+.bodymap-svg .bm-region.sel { fill: var(--a-primary); stroke: var(--a-primary); }
 .bm-side { flex: 1; min-width: 220px; }
 .bm-extra-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-.bm-extra { border: 1px solid var(--border); background: #fff; border-radius: 999px; padding: 4px 12px;
-            font-size: 12px; font-weight: 600; color: var(--text-3); cursor: pointer; }
-.bm-extra.sel { background: var(--accent); color: #fff; border-color: var(--accent); }
+.bm-extra { border: 1px solid var(--a-outline-variant); background: var(--a-surface-lowest);
+            border-radius: var(--a-radius-full); padding: 4px 12px; font-size: 12px;
+            font-weight: 500; color: var(--a-on-surface-variant); cursor: pointer; }
+.bm-extra.sel { background: var(--a-primary); color: #fff; border-color: var(--a-primary); }
 .bm-list { display: flex; flex-wrap: wrap; gap: 6px; }
-.bm-sym { border: 1px solid var(--border); background: #fff; border-radius: 999px; padding: 4px 12px;
-          font-size: 12.5px; cursor: pointer; color: var(--text-2); }
-.bm-sym:hover { border-color: var(--accent); color: var(--accent); }
-.bm-sym.added { background: #eef2f7; color: var(--text-4); cursor: default; border-style: dashed; }
-.bm-hint { color: var(--text-4); font-size: 12.5px; font-style: italic; }
+.bm-sym { border: 1px solid var(--a-outline-variant); background: var(--a-surface-lowest);
+          border-radius: var(--a-radius-full); padding: 4px 12px; font-size: 12.5px;
+          cursor: pointer; color: var(--a-on-surface-variant); }
+.bm-sym:hover { border-color: var(--a-accent); color: var(--a-primary); }
+.bm-sym.added { background: var(--a-surface-low); color: var(--a-outline); cursor: default;
+          border-style: dashed; }
+.bm-hint { color: var(--a-outline); font-size: 12.5px; font-style: italic; }
 
-/* History */
-.hx-line { font-size: 13px; color: var(--text-2); }
-.hx-detail { margin-top: 8px; font-size: 12.5px; color: var(--text-3); display: grid; gap: 4px; }
+/* ── History / expanders ───────────────────────────────────────────────── */
+.hx-line { font-size: 13px; color: var(--a-on-surface-variant); }
+.hx-detail { margin-top: 8px; font-size: 12.5px; color: var(--a-on-surface-variant);
+             display: grid; gap: 4px; }
+.hx-detail code { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px;
+             background: var(--a-surface); border: 1px solid var(--a-glass-border);
+             border-radius: 5px; padding: 0 6px; }
 details.ws-details > summary { cursor: pointer; list-style: none; }
 details.ws-details > summary::-webkit-details-marker { display: none; }
 details.ws-details > summary .ws-label { margin-bottom: 0; }
-details.ws-details[open] > summary { margin-bottom: 8px; }
-.exp-caret { transition: transform .15s; font-size: 11px; color: var(--text-4); }
+details.ws-details[open] > summary { margin-bottom: 10px; }
+.exp-caret { transition: transform .15s; font-size: 11px; color: var(--a-outline); }
 details[open] > summary .exp-caret { transform: rotate(90deg); }
 
-/* ── Differential panel ───────────────────────────────────────────────── */
+/* ── Differential panel (glass instrument) ─────────────────────────────── */
 .dx-panel { position: sticky; top: 68px; display: flex; flex-direction: column; gap: 0;
-            background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm);
-            box-shadow: var(--shadow-sm); max-height: calc(100vh - 84px); overflow: hidden; }
-.dx-head { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-.dx-head h3 { font-size: 14px; font-weight: 700; margin: 0; }
-.dx-meta { font-size: 11.5px; color: var(--text-4); margin-top: 2px; font-variant-numeric: tabular-nums; }
-.run-btn { margin-left: auto; background: var(--accent); color: #fff; border: none; border-radius: 8px;
-           padding: 8px 18px; font-size: 13px; font-weight: 700; cursor: pointer; }
-.run-btn:hover:not(:disabled) { background: var(--accent-h); }
+            background: var(--a-glass-bg); -webkit-backdrop-filter: blur(var(--a-glass-blur));
+            backdrop-filter: blur(var(--a-glass-blur)); border: 1px solid var(--a-glass-border);
+            border-radius: var(--a-radius-md); box-shadow: var(--a-glass-shadow);
+            max-height: calc(100vh - 84px); overflow: hidden; }
+.dx-head { padding: 14px 16px 10px; border-bottom: 1px solid var(--a-glass-border);
+           display: flex; align-items: center; gap: 10px; }
+.dx-head h3 { font-size: 14.5px; font-weight: 600; letter-spacing: -.01em; margin: 0;
+           display: flex; align-items: center; gap: 8px; }
+.dx-meta { font-size: 11px; color: var(--a-outline); margin-top: 2px;
+           font-variant-numeric: tabular-nums; }
+.run-btn { margin-left: auto; background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff;
+           border: none; border-radius: var(--a-radius-full); padding: 9px 22px; font-size: 13px;
+           font-weight: 600; font-family: var(--a-font-label); letter-spacing: .03em;
+           cursor: pointer; transition: box-shadow .2s, transform .15s; }
+.run-btn:hover:not(:disabled) { box-shadow: 0 8px 25px rgba(var(--a-accent-rgb), .35); }
+.run-btn:active { transform: scale(.96); }
 .run-btn:disabled { opacity: .45; cursor: not-allowed; }
 .run-btn.pulse { animation: runpulse 1.6s ease-in-out infinite; }
-@keyframes runpulse { 50% { box-shadow: 0 0 0 5px rgba(var(--accent-rgb), .18); } }
-.stale-chip { display: none; font-size: 11px; font-weight: 700; color: #92400e; background: #fef3c7;
-              border-radius: 999px; padding: 2px 9px; }
+@keyframes runpulse { 50% { box-shadow: 0 0 0 5px rgba(var(--a-accent-rgb), .25); } }
+.stale-chip { display: none; font-size: 11px; font-weight: 700; color: #92400e;
+              background: #fef3c7; border-radius: var(--a-radius-full); padding: 2px 9px; }
 .dx-panel.stale .stale-chip { display: inline-block; }
 .dx-panel.stale .dx-list { opacity: .45; }
 
 .dx-scroll { overflow-y: auto; flex: 1; }
-.dx-empty { padding: 28px 16px; text-align: center; color: var(--text-4); font-size: 13px; }
+.dx-empty { padding: 28px 16px; text-align: center; color: var(--a-outline); font-size: 13px; }
 .dx-empty i { font-size: 22px; display: block; margin-bottom: 6px; }
 
-.dx-list { padding: 6px 8px; }
-.dx-row { border-radius: 10px; padding: 8px 8px 8px 10px; }
-.dx-row:hover { background: #f4f7fb; }
+.dx-list { padding: 8px 10px; }
+.dx-row { background: var(--a-surface-lowest); border: 1px solid var(--a-glass-border);
+          border-radius: var(--a-radius); padding: 9px 11px; margin-bottom: 7px; }
 .dx-row-top { display: flex; align-items: center; gap: 8px; }
-.dx-rank { font-size: 11px; color: var(--text-4); width: 16px; font-variant-numeric: tabular-nums; }
+.dx-rank { font-size: 11px; color: var(--a-outline); width: 16px;
+           font-variant-numeric: tabular-nums; }
 .dx-name { font-size: 13px; font-weight: 600; flex: 1; min-width: 0; }
-.dx-code { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 11.5px; color: var(--text-3); }
-.dx-promote { border: 1px solid var(--border); background: #fff; color: var(--text-3); border-radius: 7px;
-              width: 24px; height: 24px; cursor: pointer; font-size: 14px; line-height: 1; flex-shrink: 0; }
-.dx-promote:hover { border-color: var(--accent); color: var(--accent); }
-.dx-promote.in-tray { background: var(--accent); border-color: var(--accent); color: #fff; }
+.dx-code { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 11.5px;
+           color: var(--a-on-surface-variant); }
+.dx-promote { border: 1.5px solid var(--a-outline-variant); background: var(--a-surface-lowest);
+              color: var(--a-on-surface-variant); border-radius: 50%; width: 26px; height: 26px;
+              cursor: pointer; font-size: 14px; line-height: 1; flex-shrink: 0;
+              transition: border-color .15s, color .15s; }
+.dx-promote:hover { border-color: var(--a-accent); color: var(--a-primary); }
+.dx-promote.in-tray { background: var(--a-primary); border-color: var(--a-primary); color: #fff; }
+.scorebar { height: 3px; border-radius: 2px; background: var(--a-surface-container);
+            margin: 5px 0 0 24px; overflow: hidden; }
+.scorebar i { display: block; height: 100%; background: var(--a-accent); border-radius: 2px; }
 .dx-why { margin: 4px 0 0 24px; }
-.dx-why summary { font-size: 11.5px; color: var(--text-4); cursor: pointer; }
-.dx-why-body { font-size: 12px; color: var(--text-3); padding: 6px 0 2px; display: grid; gap: 3px; }
-.dx-why-body .frm { font-family: ui-monospace, Consolas, monospace; font-size: 11px; color: var(--text-4);
-                    border-top: 1px dashed var(--border); padding-top: 5px; margin-top: 3px; }
+.dx-why summary { font-size: 11.5px; color: var(--a-outline); cursor: pointer; }
+.dx-why-body { font-size: 12px; color: var(--a-on-surface-variant); padding: 6px 0 2px;
+               display: grid; gap: 3px; }
+.dx-why-body .frm { font-family: ui-monospace, Consolas, monospace; font-size: 11px;
+                    color: var(--a-outline); border-top: 1px dashed var(--a-outline-variant);
+                    padding-top: 5px; margin-top: 3px; }
 
-/* Band chips: weight/fill, not colour alone. Red is reserved for red-flags. */
-.band { font-size: 10.5px; font-weight: 700; letter-spacing: .04em; border-radius: 6px; padding: 2px 8px;
-        flex-shrink: 0; font-variant-numeric: tabular-nums; }
-.band-high { background: var(--accent); color: #fff; }
-.band-med  { background: rgba(var(--accent-rgb), .14); color: var(--accent); }
-.band-low  { background: transparent; color: var(--text-4); border: 1px solid var(--border); }
+/* Band chips: fill-weight carries meaning, never hue alone. */
+.band { font-size: 10px; font-weight: 700; letter-spacing: .05em;
+        border-radius: var(--a-radius-full); padding: 3px 10px; flex-shrink: 0;
+        font-variant-numeric: tabular-nums; }
+.band-high { background: var(--a-primary); color: #fff; }
+.band-med  { background: rgba(0,101,145,.12); color: var(--a-primary); }
+.band-low  { background: transparent; color: var(--a-outline);
+             border: 1px solid var(--a-outline-variant); }
 
-.dx-note { margin: 6px 12px; padding: 8px 10px; background: #f8fafc; border: 1px dashed var(--border);
-           border-radius: 8px; font-size: 12px; color: var(--text-3); }
+.dx-note { margin: 6px 12px; padding: 8px 11px; background: var(--a-surface-low);
+           border: 1px dashed var(--a-outline-variant); border-radius: var(--a-radius);
+           font-size: 12px; color: var(--a-on-surface-variant); }
 .dx-suggest { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
-.dx-suggest button { border: 1px dashed var(--border); background: #fff; border-radius: 999px; padding: 2px 10px;
-                     font-size: 11.5px; color: var(--text-3); cursor: pointer; }
-.dx-suggest button:hover { border-color: var(--accent); color: var(--accent); }
+.dx-suggest button { border: 1px dashed var(--a-outline-variant); background: var(--a-surface-lowest);
+                     border-radius: var(--a-radius-full); padding: 2px 11px; font-size: 11.5px;
+                     color: var(--a-on-surface-variant); cursor: pointer; }
+.dx-suggest button:hover { border-color: var(--a-accent); color: var(--a-primary); }
 
 /* Cross-check */
-.xc-section { border-top: 1px solid var(--border); padding: 10px 14px; }
+.xc-section { margin: 2px 10px 10px; background: rgba(var(--a-accent-rgb), .06);
+              border-radius: var(--a-radius); padding: 10px 14px; }
 .xc-item { font-size: 12px; display: flex; gap: 7px; align-items: baseline; padding: 2px 0; }
 .xc-item .xc-ic { flex-shrink: 0; font-weight: 700; }
 .xc-confirm .xc-ic { color: #15803d; }
-.xc-contra  .xc-ic { color: #b45309; }
-.xc-none { font-size: 12px; color: var(--text-4); font-style: italic; }
+.xc-contra  .xc-ic { color: #92400e; }
+.xc-none { font-size: 12px; color: var(--a-outline); font-style: italic; }
 
 /* Provisional tray */
-.tray { border-top: 1px solid var(--border); padding: 10px 14px 12px; background: #fbfcfe; }
+.tray { border-top: 1px solid var(--a-glass-border); padding: 11px 14px 14px; }
 .tray-items { display: flex; flex-direction: column; gap: 5px; margin: 6px 0; }
-.tray-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; background: #fff;
-             border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; }
+.tray-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px;
+             background: var(--a-surface-lowest); border: 1px solid var(--a-glass-border);
+             border-radius: var(--a-radius-full); padding: 6px 14px; }
 .tray-item .dx-code { flex-shrink: 0; }
-.tray-item .src { font-size: 10px; color: var(--text-4); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; }
-.tray-item button { margin-left: auto; border: none; background: none; color: var(--text-4); cursor: pointer; }
-.tray-item button:hover { color: #b91c1c; }
-.tray-empty { font-size: 12px; color: var(--text-4); font-style: italic; padding: 4px 0; }
-.confirm-btn { width: 100%; margin-top: 8px; background: var(--accent); color: #fff; border: none; border-radius: 8px;
-               padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer; }
-.confirm-btn:hover:not(:disabled) { background: var(--accent-h); }
-.confirm-btn:disabled { opacity: .4; cursor: not-allowed; }
-.on-record { font-size: 11.5px; color: var(--text-4); margin-top: 6px; }
+.tray-item .src { font-size: 10px; color: var(--a-outline); border: 1px solid var(--a-outline-variant);
+             border-radius: var(--a-radius-full); padding: 0 6px; }
+.tray-item button { margin-left: auto; border: none; background: none; color: var(--a-outline);
+             cursor: pointer; }
+.tray-item button:hover { color: var(--a-on-error-container); }
+.tray-empty { font-size: 12px; color: var(--a-outline); font-style: italic; padding: 4px 0; }
+.confirm-btn { width: 100%; margin-top: 8px; background: var(--a-primary); color: #fff;
+               border: none; border-radius: var(--a-radius-full); padding: 11px; font-size: 13px;
+               font-weight: 600; font-family: var(--a-font-label); letter-spacing: .03em;
+               cursor: pointer; box-shadow: 0 6px 24px -6px rgba(0,101,145,.45);
+               transition: box-shadow .2s, transform .12s; }
+.confirm-btn:hover:not(:disabled) { box-shadow: 0 8px 30px -6px rgba(var(--a-accent-rgb), .5); }
+.confirm-btn:active { transform: scale(.99); }
+.confirm-btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+.on-record { font-size: 11.5px; color: var(--a-outline); margin-top: 6px; }
 .on-record code { font-family: ui-monospace, Consolas, monospace; }
 
-/* Red-flag / allergy chip (red is reserved for danger) */
-.flag-danger { background: #fee2e2; color: #991b1b; font-size: 11.5px; font-weight: 700;
-               border-radius: 999px; padding: 3px 11px; }
+/* Danger / first-occurrence chips (error stays untinted & instant) */
+.flag-danger { background: var(--a-error-container); color: var(--a-on-error-container);
+               font-size: 11.5px; font-weight: 700; border-radius: var(--a-radius-full);
+               padding: 5px 13px; }
 .flag-first { background: #fef3c7; color: #92400e; font-size: 11.5px; font-weight: 700;
-              border-radius: 999px; padding: 3px 11px; display: none; }
+              border-radius: var(--a-radius-full); padding: 5px 12px; display: none; }
 
-/* Notes save */
-.notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+/* ── Notes / save row ──────────────────────────────────────────────────── */
+.notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .notes-grid .full { grid-column: 1 / -1; }
-.notes-field label { font-size: 11.5px; font-weight: 600; color: var(--text-3); display: block; margin-bottom: 3px; }
-.save-notes { background: #fff; border: 1px solid var(--accent); color: var(--accent); border-radius: 8px;
-              padding: 7px 16px; font-size: 12.5px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-.save-notes:hover { background: rgba(var(--accent-rgb), .07); }
-.save-stamp { font-size: 11.5px; color: #15803d; margin-left: 10px; }
+.notes-field label { font: 500 11px/1.4 var(--a-font-label); letter-spacing: .06em;
+                     text-transform: uppercase; color: var(--a-on-surface-variant);
+                     display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.save-row { display: flex; align-items: center; gap: 14px; margin-top: 14px; padding-top: 13px;
+            border-top: 1px solid var(--a-glass-border); }
+.sig { font-size: 12px; color: var(--a-on-surface-variant); font-weight: 600; }
+.sig small { font-size: 10.5px; color: var(--a-outline); display: block; font-weight: 400; }
+.save-notes { margin-left: auto; background: var(--a-primary); color: #fff; border: none;
+              border-radius: var(--a-radius-full); padding: 11px 26px; font-size: 13px;
+              font-weight: 600; font-family: var(--a-font-label); letter-spacing: .03em;
+              cursor: pointer; box-shadow: 0 6px 24px -6px rgba(0,101,145,.45);
+              transition: box-shadow .2s, transform .12s; }
+.save-notes:hover { box-shadow: 0 8px 30px -6px rgba(var(--a-accent-rgb), .5); }
+.save-notes:active { transform: scale(.98); }
+.save-stamp { font-size: 11.5px; color: #15803d; }
 
 /* Blank mode: full workspace rendered but inert until a patient is picked */
 .ws-locked { opacity: .55; pointer-events: none; user-select: none; }
 
-/* Panel drawer on narrow screens */
+/* Focus visibility for keyboard users on all pill controls */
+.ws-page button:focus-visible, .ws-page a:focus-visible {
+  outline: 2px solid var(--a-accent); outline-offset: 2px; }
+
+/* ── Panel drawer on narrow screens ────────────────────────────────────── */
 .dx-drawer-tab { display: none; }
 @media (max-width: 1099px) {
   .ws-grid { grid-template-columns: 1fr; }
-  .dx-panel { position: fixed; top: auto; bottom: 0; left: 0; right: 0; z-index: 60; border-radius: 16px 16px 0 0;
-              max-height: 78vh; transform: translateY(calc(100% - 0px)); transition: transform .22s ease; }
-  .dx-panel.drawer-open { transform: translateY(0); box-shadow: 0 -8px 32px rgba(0,0,0,.18); }
-  .dx-drawer-tab { display: flex; position: fixed; bottom: 70px; right: 14px; z-index: 61; align-items: center; gap: 8px;
-                   background: var(--accent); color: #fff; border: none; border-radius: 999px; padding: 11px 18px;
-                   font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-md); min-height: 44px; }
+  .dx-panel { position: fixed; top: auto; bottom: 0; left: 0; right: 0; z-index: 60;
+              border-radius: 20px 20px 0 0; max-height: 78vh;
+              transform: translateY(calc(100% - 0px)); transition: transform .22s ease; }
+  .dx-panel.drawer-open { transform: translateY(0); box-shadow: 0 -8px 32px rgba(11,28,48,.18); }
+  .dx-drawer-tab { display: flex; position: fixed; bottom: 70px; right: 14px; z-index: 61;
+                   align-items: center; gap: 8px; background: var(--a-primary); color: #fff;
+                   border: none; border-radius: var(--a-radius-full); padding: 11px 18px;
+                   font-size: 13px; font-weight: 600; font-family: var(--a-font-label);
+                   cursor: pointer; box-shadow: 0 8px 25px rgba(0,101,145,.35); min-height: 44px; }
   .notes-grid { grid-template-columns: 1fr; }
+  .ws-header { border-radius: var(--a-radius-md); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .run-btn.pulse { animation: none; }
+  .info, .ws-input, .ws-textarea, .dx-promote { transition: none; }
 }
 </style>
 {% endblock %}
 
 {% block content %}
+<div class="aetheris a-legible ws-page">
 <div class="ws-wrap">
 
-  <!-- ── Zone 1: patient header ──────────────────────────────────────── -->
+  <!-- ── Zone 1: HUD patient header ──────────────────────────────────── -->
   <div class="ws-header">
     {% if patient %}
     <div>
       <div class="name">{{ patient.first_name }} {{ patient.last_name }}</div>
       <div class="meta">
-        <span>{{ patient.get_age }}y · {{ patient.get_gender_display|default:patient.gender }}</span>
+        <span><b>{{ patient.get_age }}y</b> · {{ patient.get_gender_display|default:patient.gender }}</span>
         {% if patient.medical_aid_name %}<span><i class="bi bi-shield-check"></i> {{ patient.medical_aid_name }}{% if patient.medical_aid_plan %} · {{ patient.medical_aid_plan }}{% endif %}</span>{% endif %}
-        <span>Visit #{{ visit_number }}</span>
+        <span>Visit <b>#{{ visit_number }}</b> · {{ consultation.date|date:"D j M Y" }}</span>
       </div>
     </div>
     <div class="flags">
       <span class="flag-first" id="firstFlagChip">⚑ <span id="firstFlagCount">0</span> first-recorded</span>
+      <button class="info" type="button" data-tip="Symptoms never seen before for this patient are flagged ⚑. First occurrences often deserve extra attention." aria-label="About first-recorded flags">i</button>
       {% if allergies %}
       <span class="flag-danger" title="{{ allergies|join:', ' }}">⚠ Allergies: {{ allergies|join:', '|truncatechars:40 }}</span>
+      <button class="info tl" type="button" data-tip="Allergies from the patient record. Always visible during a consultation — check before prescribing." aria-label="About the allergy banner">i</button>
       {% endif %}
       <a href="{% url 'consultation_detail' consultation.pk %}" class="bodymap-toggle" style="text-decoration:none;">
         <i class="bi bi-arrow-left"></i> Back to consult
@@ -225,6 +358,16 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
     {% endif %}
   </div>
 
+  {% if patient %}
+  <!-- ── Chart tabs ──────────────────────────────────────────────────── -->
+  <nav class="ws-tabs" aria-label="Patient chart sections">
+    <span class="on">Consultation</span>
+    <a href="{% url 'patient_detail' patient.pk %}">Patient record</a>
+    <a href="{% url 'document_list' %}?q={{ patient.last_name|urlencode }}">Documents</a>
+    <a href="{% url 'invoice_list' %}?q={{ patient.last_name|urlencode }}">Billing</a>
+  </nav>
+  {% endif %}
+
   <div class="ws-grid">
 
     <!-- ── Zone 2: working area ──────────────────────────────────────── -->
@@ -234,13 +377,14 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
       <div class="ws-card">
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
           <div class="notes-field ta-wrap" style="flex:1.4;min-width:200px;">
-            <label for="patientSwitch">Patient *</label>
+            <label for="patientSwitch">Patient *
+              <button class="info" type="button" data-tip="Pick who this consultation is for. Their history, allergies and any of today's notes load automatically." aria-label="About patient selection">i</button></label>
             <input class="ws-input" id="patientSwitch" autocomplete="off" {% if not patient %}autofocus{% endif %}
                    placeholder="Search options…" value="{% if patient %}{{ patient.first_name }} {{ patient.last_name }}{% endif %}">
             <div class="ta-drop" id="patientDrop" role="listbox"></div>
           </div>
           <div class="notes-field" style="flex:1.6;min-width:220px;">
-            <label for="apptSelect">Linked Appointment <span style="font-weight:400;color:var(--text-4);">optional</span></label>
+            <label for="apptSelect">Linked Appointment <span style="font-weight:400;color:var(--a-outline);text-transform:none;">optional</span></label>
             <select class="ws-input" id="apptSelect" {% if not patient %}disabled{% endif %}>
               <option value="">{% if patient %}— none —{% else %}— pick a patient first —{% endif %}</option>
               {% for a in patient_appointments %}
@@ -256,7 +400,8 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
                    value="{{ consultation.weight_kg|default:'' }}">
           </div>
           <div class="notes-field" style="flex:0 0 110px;">
-            <label for="vitBp">BP (mmHg)</label>
+            <label for="vitBp">BP (mmHg)
+              <button class="info" type="button" data-tip="Weight and BP carry forward from the last visit as a starting point — overtype to update. They save with this consultation." aria-label="About vitals">i</button></label>
             <input class="ws-input" id="vitBp" placeholder="120/80"
                    value="{{ consultation.bp_reading|default:'' }}">
           </div>
@@ -264,15 +409,15 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
       </div>
 
       {% if not consultation and waiting %}
-      <div class="ws-card">
+      <div class="ws-card" style="margin-top:14px;">
         <div class="ws-label"><i class="bi bi-hourglass-split"></i> Waiting now — one tap to start</div>
         <div style="display:flex;flex-direction:column;gap:8px;">
           {% for apt in waiting %}
-          <div style="display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:10px;padding:10px 14px;">
+          <div style="display:flex;align-items:center;gap:12px;border:1px solid var(--a-glass-border);border-radius:var(--a-radius);padding:10px 14px;background:var(--a-surface-lowest);">
             <div class="avatar av-36 av-1">{{ apt.patient.first_name|first|upper }}{{ apt.patient.last_name|first|upper }}</div>
             <div style="flex:1;min-width:0;">
-              <div style="font-weight:700;font-size:13.5px;">{{ apt.patient }}</div>
-              <div style="font-size:12px;color:var(--text-3);">{{ apt.time|time:"H:i" }} · {{ apt.reason|truncatechars:60 }} · <strong>{{ apt.status }}</strong></div>
+              <div style="font-weight:600;font-size:13.5px;">{{ apt.patient }}</div>
+              <div style="font-size:12px;color:var(--a-on-surface-variant);">{{ apt.time|time:"H:i" }} · {{ apt.reason|truncatechars:60 }} · <strong>{{ apt.status }}</strong></div>
             </div>
             <a href="{% url 'consultation_create' %}?patient_id={{ apt.patient.pk }}&appointment_id={{ apt.pk }}"
                class="run-btn" style="text-decoration:none;">Start <i class="bi bi-arrow-right"></i></a>
@@ -284,14 +429,17 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 
       <!-- Everything below is fully rendered in both modes; locked until a patient is set -->
       <div {% if not consultation %}class="ws-locked" aria-disabled="true"{% endif %}>
-      <div class="ws-card">
-        <div class="ws-label">Chief complaint</div>
+      <div class="ws-card" style="margin-top:14px;">
+        <div class="ws-label"><span class="n">1</span> Chief complaint
+          <button class="info" type="button" data-tip="The patient's reason for the visit, in their own words. Pre-filled from the appointment reason when one is linked." aria-label="About chief complaint">i</button></div>
         <input class="ws-input" id="chiefComplaint" placeholder="Reason for visit…"
                value="{{ consultation.chief_complaint|default:'' }}">
       </div>
 
       <div class="ws-card">
-        <div class="ws-label">Presenting symptoms &amp; signs <span style="font-weight:400;text-transform:none;letter-spacing:0;">(today — {{ presenting_weight }} weight)</span></div>
+        <div class="ws-label"><span class="n">2</span> Presenting symptoms &amp; signs
+          <span class="hint">(today — {{ presenting_weight }} weight)</span>
+          <button class="info" type="button" data-tip="Symptoms observed or reported today. These carry full weight in the differential ranking. Search the knowledge base or pick from the body map." aria-label="About presenting symptoms">i</button></div>
         <div style="display:flex;gap:8px;">
           <div class="ta-wrap" style="flex:1;">
             <input class="ws-input" id="symSearch" placeholder="🔍 Type to search symptoms… (↑↓ + Enter)" autocomplete="off">
@@ -323,10 +471,10 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
         </div>
 
         <div class="chip-row" id="presentingChips"><span class="chip-empty">none added yet</span></div>
-      </div>
 
-      <div class="ws-card">
-        <div class="ws-label">Working complaints <span style="font-weight:400;text-transform:none;letter-spacing:0;">(ongoing / from history — {{ history_weight }} weight)</span></div>
+        <div class="ws-label" style="margin-top:16px;"><span class="n sub">＋</span> Working complaints
+          <span class="hint">(ongoing / from history — {{ history_weight }} weight)</span>
+          <button class="info" type="button" data-tip="Ongoing or historical complaints. These count at reduced weight so today's picture leads the ranking." aria-label="About working complaints">i</button></div>
         <div class="ta-wrap">
           <input class="ws-input" id="workSearch" placeholder="🔍 Add ongoing or historical complaints…" autocomplete="off">
           <div class="ta-drop" id="workDrop" role="listbox"></div>
@@ -338,10 +486,11 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
       <div class="ws-card">
         <details class="ws-details">
           <summary>
-            <div class="ws-label"><span class="exp-caret">▶</span> History (feeds cross-check)
-              <span class="hx-line" style="font-weight:400;text-transform:none;letter-spacing:0;">
+            <div class="ws-label"><span class="exp-caret">▶</span> <span class="n">3</span> History (feeds cross-check)
+              <span class="hx-line hint" style="font-weight:400;">
                 — {% if chronic %}Chronic: {{ chronic|join:', ' }}{% else %}no chronic conditions{% endif %}{% if prior_codes %} · {{ prior_codes|length }} prior dx{% endif %}
               </span>
+              <button class="info" type="button" data-tip="Chronic conditions, lifestyle and prior diagnoses from the patient record. The engine uses these to confirm or contradict candidates — see the cross-check in the Differential panel." aria-label="About history">i</button>
             </div>
           </summary>
           <div class="hx-detail">
@@ -356,7 +505,8 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 
       <div class="ws-card">
         <details class="ws-details" open>
-          <summary><div class="ws-label"><span class="exp-caret">▶</span> Notes (SOAP)</div></summary>
+          <summary><div class="ws-label"><span class="exp-caret">▶</span> <span class="n">4</span> Notes (SOAP)
+            <button class="info" type="button" data-tip="Subjective, Objective, Assessment, Plan. The assessment here is your clinical narrative — the coded diagnosis lives in the Differential panel." aria-label="About SOAP notes">i</button></div></summary>
           <div class="notes-grid">
             <div class="notes-field full">
               <label for="soapS">S — Subjective / clinical notes</label>
@@ -380,30 +530,36 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 
       <div class="ws-card">
         <details class="ws-details" open>
-          <summary><div class="ws-label"><span class="exp-caret">▶</span> Prescriptions, requests &amp; follow-up</div></summary>
+          <summary><div class="ws-label"><span class="exp-caret">▶</span> <span class="n">5</span> Prescriptions, requests &amp; follow-up
+            <button class="info" type="button" data-tip="Prescriptions print with the consultation. Lab and radiology requests create investigation requests that flow to the provider portals and return to the Pending Results queue." aria-label="About prescriptions and requests">i</button></div></summary>
           <div class="notes-grid">
             <div class="notes-field full">
-              <label for="rxText">℞ Prescriptions <span style="font-weight:400;color:var(--text-4);">— one per line</span></label>
+              <label for="rxText">℞ Prescriptions <span style="font-weight:400;color:var(--a-outline);text-transform:none;">— one per line</span>
+                <button class="info" type="button" data-tip="One item per line: drug, strength, dose, duration. Check against the allergy banner above before prescribing." aria-label="About prescriptions">i</button></label>
               <textarea class="ws-textarea" id="rxText">{{ consultation.prescriptions|default:'' }}</textarea>
             </div>
             <div class="notes-field">
-              <label for="labReq"><i class="bi bi-droplet-half"></i> Blood / Lab Requests <span style="font-weight:400;color:var(--text-4);">— one per line</span></label>
+              <label for="labReq"><i class="bi bi-droplet-half"></i> Blood / Lab Requests <span style="font-weight:400;color:var(--a-outline);text-transform:none;">— one per line</span>
+                <button class="info" type="button" data-tip="One test per line. Creates a lab investigation request — results come back via the lab portal." aria-label="About lab requests">i</button></label>
               <textarea class="ws-textarea" id="labReq">{{ consultation.lab_requests|default:'' }}</textarea>
             </div>
             <div class="notes-field">
-              <label for="radReq"><i class="bi bi-image"></i> Radiology <span style="font-weight:400;color:var(--text-4);">— one per line</span></label>
+              <label for="radReq"><i class="bi bi-image"></i> Radiology <span style="font-weight:400;color:var(--a-outline);text-transform:none;">— one per line</span>
+                <button class="info" type="button" data-tip="One study per line. The patient presents the referral form at the radiology provider." aria-label="About radiology requests">i</button></label>
               <textarea class="ws-textarea" id="radReq">{{ consultation.radiology_requests|default:'' }}</textarea>
             </div>
             <div class="notes-field" style="grid-column:1;">
-              <label for="followUp">Follow-up Date</label>
+              <label for="followUp">Follow-up Date
+                <button class="info" type="button" data-tip="Creates a follow-up reminder and shows on the dashboard." aria-label="About follow-up">i</button></label>
               <input class="ws-input" type="date" id="followUp" value="{{ consultation.follow_up_date|date:'Y-m-d' }}">
             </div>
           </div>
 
-          <div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--border);">
-            <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-2);cursor:pointer;">
+          <div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--a-outline-variant);">
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--a-on-surface-variant);cursor:pointer;">
               <input type="checkbox" id="sickIssued" {% if consultation.sick_note_issued %}checked{% endif %}>
-              <i class="bi bi-file-medical" style="color:var(--text-3);"></i> Issue sick / medical certificate
+              <i class="bi bi-file-medical" style="color:var(--a-on-surface-variant);"></i> Issue sick / medical certificate
+              <button class="info" type="button" data-tip="Issues a printable medical certificate (PDF) with days, start date and employer." aria-label="About sick certificate">i</button>
             </label>
             <div id="sickFields" style="display:{% if consultation.sick_note_issued %}flex{% else %}none{% endif %};gap:10px;flex-wrap:wrap;margin-top:10px;">
               <div class="notes-field" style="flex:0 0 90px;">
@@ -421,8 +577,11 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
             </div>
           </div>
 
-          <button class="save-notes" id="saveNotesBtn" type="button"><i class="bi bi-check2"></i> Save consultation</button>
-          <span class="save-stamp" id="saveStamp"></span>
+          <div class="save-row">
+            <div class="sig">{{ request.user.get_full_name|default:request.user.username }}<small>Consultation record · {{ consultation.date|date:"j M Y"|default:"today" }}</small></div>
+            <span class="save-stamp" id="saveStamp"></span>
+            <button class="save-notes" id="saveNotesBtn" type="button"><i class="bi bi-check2"></i> Save consultation</button>
+          </div>
         </details>
       </div>
       </div><!-- /lock wrapper -->
@@ -433,7 +592,9 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
     <aside class="dx-panel {% if not consultation %}ws-locked{% endif %}" id="dxPanel" aria-label="Differential diagnosis panel">
       <div class="dx-head">
         <div>
-          <h3>Differential <span class="stale-chip">Inputs changed</span></h3>
+          <h3>Differential
+            <button class="info" type="button" data-tip="Decision support, not a diagnosis. Ranks candidate conditions from your symptom inputs and the patient's history. Every run is recorded with an audit trail." aria-label="About the differential engine">i</button>
+            <span class="stale-chip">Inputs changed</span></h3>
           <div class="dx-meta" id="dxMeta">no run yet</div>
         </div>
         <button class="run-btn" id="runBtn" type="button" disabled>Run</button>
@@ -448,16 +609,18 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
         <div class="dx-list" id="dxList"></div>
 
         <div class="xc-section" id="xcSection" style="display:none;">
-          <div class="ws-label" style="margin-bottom:6px;">History cross-check</div>
+          <div class="ws-label" style="margin-bottom:6px;">History cross-check
+            <button class="info tl" type="button" data-tip="Stored history that confirms (✓) or contradicts (⚠) candidates. Runs automatically with every ranking." aria-label="About the cross-check">i</button></div>
           <div id="xcBody"></div>
         </div>
       </div>
 
       <div class="tray">
-        <div class="ws-label" style="margin-bottom:2px;">Provisional dx <span style="font-weight:400;text-transform:none;">(never final)</span></div>
+        <div class="ws-label" style="margin-bottom:2px;">Provisional dx <span class="hint">(never final)</span>
+          <button class="info tl" type="button" data-tip="Diagnoses you promote here save to the consultation as provisional ICD-10 codes when you confirm. The engine never finalises a diagnosis — you do." aria-label="About provisional diagnoses">i</button></div>
         <div class="tray-items" id="trayItems"><div class="tray-empty">Promote from the list above, or add by ICD-10 below.</div></div>
         <div class="ta-wrap">
-          <input class="ws-input" id="icdSearch" placeholder="＋ Off-list add — search ICD-10…" autocomplete="off" style="font-size:12.5px;padding:6px 10px;">
+          <input class="ws-input" id="icdSearch" placeholder="＋ Off-list add — search ICD-10…" autocomplete="off" style="font-size:12.5px;padding:7px 14px;">
           <div class="ta-drop" id="icdDrop" role="listbox" style="bottom:calc(100% + 4px);top:auto;"></div>
         </div>
         {% if existing_codes %}
@@ -478,6 +641,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 {{ first_ids|json_script:"kb-first-ids" }}
 {{ last_run_data|json_script:"kb-last-run" }}
 {% endif %}
+</div><!-- /.aetheris -->
 {% endblock %}
 
 {% block extra_scripts %}
@@ -693,9 +857,11 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
     // ranked list
     const list = $('dxList');
     list.innerHTML = '';
+    const topScore = out.results.length ? Math.max(out.results[0].score, 0.0001) : 1;
     out.results.forEach(r => {
       const row = document.createElement('div');
       row.className = 'dx-row';
+      const pct = Math.max(4, Math.min(100, Math.round((r.score / topScore) * 100)));
       row.innerHTML =
         '<div class="dx-row-top">' +
           '<span class="dx-rank">' + r.rank + '</span>' +
@@ -703,6 +869,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
           '<span class="band ' + bandClass(r.band) + '">' + r.band.toUpperCase() + '</span>' +
           '<button class="dx-promote" type="button" title="Promote to provisional dx">＋</button>' +
         '</div>' +
+        '<div class="scorebar"><i style="width:' + pct + '%"></i></div>' +
         '<details class="dx-why"><summary>why ▾ (score ' + r.score + ')</summary><div class="dx-why-body"></div></details>';
       const body = row.querySelector('.dx-why-body');
       const bd = r.breakdown;
@@ -911,6 +1078,14 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 })();
 </script>
 {% endif %}
+
+<script>
+// ⓘ info buttons live inside <summary> and <label> elements — swallow the
+// click so tooltips never toggle sections or move focus to the field.
+document.querySelectorAll('.info').forEach(function (b) {
+  b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); });
+});
+</script>
 
 <script>
 // Patient selector (info bar) — active in BOTH modes. Picking a patient

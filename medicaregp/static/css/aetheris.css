@@ -1,0 +1,284 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Aetheris Clinical — theme stylesheet
+   Glassmorphic sci-fi-medical language ported from the Stitch/MediFlow
+   export to framework-neutral CSS. Scope: everything activates under a
+   root `.aetheris` class so this theme can never bleed into pages that
+   use the default CRM look.
+
+   Usage:
+     <link rel="stylesheet" href=".../aetheris.css">
+     <body class="aetheris">            ← theme on
+     <body class="aetheris a-legible">  ← high-legibility mode
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Geist:wght@400;500;600&display=swap');
+
+.aetheris {
+  /* ── Color tokens (Material-3 style, verbatim from source) ─────────── */
+  --a-surface:                 #f8f9ff;   /* page background            */
+  --a-surface-lowest:          #ffffff;
+  --a-surface-low:             #eff4ff;
+  --a-surface-container:       #e5eeff;
+  --a-surface-highest:         #d3e4fe;
+  --a-on-surface:              #0b1c30;
+  --a-on-surface-variant:      #3e4850;
+  --a-outline:                 #6e7881;
+  --a-outline-variant:         #bec8d2;
+
+  --a-primary:                 #006591;   /* semantic primary            */
+  --a-surface-tint:            #006591;
+  --a-on-primary:              #ffffff;
+  --a-inverse-primary:         #89ceff;
+  --a-accent:                  #0ea5e9;   /* electric highlight: glow, data, active */
+  --a-accent-rgb:              14, 165, 233;
+
+  --a-secondary:               #4648d4;
+  --a-secondary-container:     #6063ee;
+  --a-tertiary:                #576065;
+
+  --a-error:                   #ba1a1a;
+  --a-error-container:         #ffdad6;
+  --a-on-error-container:      #93000a;
+
+  /* ── Type roles ─────────────────────────────────────────────────────── */
+  --a-font-body:  'Inter', system-ui, sans-serif;
+  --a-font-label: 'Geist', 'Inter', system-ui, sans-serif;
+  --a-body-weight: 300;                    /* a-legible raises to 400     */
+  --a-data-weight: 400;                    /* dense clinical data minimum */
+
+  /* ── Radius scale ───────────────────────────────────────────────────── */
+  --a-radius-sm:   .5rem;
+  --a-radius:      1rem;
+  --a-radius-md:   1.5rem;
+  --a-radius-lg:   2rem;
+  --a-radius-xl:   3rem;
+  --a-radius-full: 9999px;
+
+  /* ── Rhythm ─────────────────────────────────────────────────────────── */
+  --a-gap:          24px;                  /* between elements            */
+  --a-pad:          32px;                  /* container padding           */
+  --a-section-gap:  64px;
+  --a-max-width:    1440px;
+
+  /* ── Glass parameters (a-legible / fallbacks override these) ───────── */
+  --a-glass-bg:        rgba(248, 249, 255, 0.85);
+  --a-glass-border:    rgba(0, 101, 145, 0.10);
+  --a-glass-blur:      24px;
+  --a-glass-shadow:    0 40px 60px -15px rgba(var(--a-accent-rgb), 0.08);
+  --a-hud-bg:          rgba(255, 255, 255, 0.60);
+  --a-hud-blur:        12px;
+  --a-neon-text:       0 0 10px rgba(var(--a-accent-rgb), 0.40);
+
+  /* ── Base canvas ────────────────────────────────────────────────────── */
+  background: radial-gradient(circle at top right, #e0f2ff, #f8f9ff 40%);
+  background-attachment: fixed;
+  color: var(--a-on-surface);
+  font-family: var(--a-font-body);
+  font-weight: var(--a-body-weight);
+  font-size: 16px;                          /* body-md */
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+}
+
+/* ── Type roles ──────────────────────────────────────────────────────── */
+.aetheris .a-display-lg  { font: 300 48px/1.15 var(--a-font-body); letter-spacing: 0.005em; }
+.aetheris .a-headline-lg { font: 400 32px/1.25 var(--a-font-body); letter-spacing: 0.005em; }
+.aetheris .a-headline-md { font: 400 24px/1.3  var(--a-font-body); }
+.aetheris .a-body-lg     { font-size: 18px; font-weight: var(--a-body-weight); line-height: 1.7; }
+.aetheris .a-body-md     { font-size: 16px; font-weight: var(--a-body-weight); line-height: 1.7; }
+.aetheris .a-label-md    { font: 500 14px/1.4 var(--a-font-label); letter-spacing: 0.05em; }
+.aetheris .a-label-sm    { font: 500 12px/1.4 var(--a-font-label); letter-spacing: 0.05em; text-transform: uppercase; }
+/* Dense clinical data never drops below 400 — apply to tables/records. */
+.aetheris .a-data, .aetheris table { font-weight: var(--a-data-weight); }
+
+/* ── Signature surfaces ──────────────────────────────────────────────── */
+.aetheris .glass-panel {
+  background: var(--a-glass-bg);
+  -webkit-backdrop-filter: blur(var(--a-glass-blur));
+  backdrop-filter: blur(var(--a-glass-blur));
+  border: 1px solid var(--a-glass-border);
+  border-radius: var(--a-radius-xl);
+  box-shadow: var(--a-glass-shadow);
+  padding: var(--a-pad);
+}
+
+.aetheris .hud-header {
+  background: var(--a-hud-bg);
+  -webkit-backdrop-filter: blur(var(--a-hud-blur));
+  backdrop-filter: blur(var(--a-hud-blur));
+  border-bottom: 1px solid rgba(0, 101, 145, 0.08);
+  position: sticky; top: 0; z-index: 50;
+  padding: 16px var(--a-pad);
+}
+
+.aetheris .neon-glow { text-shadow: var(--a-neon-text); }
+
+.aetheris .input-glow:focus {
+  box-shadow: 0 0 15px rgba(var(--a-accent-rgb), 0.15);
+  border-color: rgba(var(--a-accent-rgb), 0.30);
+  outline: none;
+}
+
+/* ── Buttons (pills; interaction timing rules live in clinical-ui-polish) */
+.aetheris .a-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  border-radius: var(--a-radius-full);
+  padding: 12px 28px;
+  font: 500 14px/1 var(--a-font-label); letter-spacing: 0.05em;
+  cursor: pointer; border: 1px solid transparent;
+  transition: box-shadow .2s ease, transform .15s ease, background .2s ease;
+}
+.aetheris .a-btn:active { transform: scale(.95); }
+.aetheris .a-btn:focus-visible { outline: 2px solid var(--a-accent); outline-offset: 2px; }
+
+.aetheris .a-btn-primary {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: var(--a-on-primary);
+}
+.aetheris .a-btn-primary:hover { box-shadow: 0 8px 25px rgba(var(--a-accent-rgb), 0.35); }
+
+.aetheris .a-btn-ghost {
+  background: rgba(255, 255, 255, 0.45);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-color: rgba(0, 101, 145, 0.15);
+  color: var(--a-primary);
+}
+.aetheris .a-btn-ghost:hover { background: rgba(255, 255, 255, 0.75); }
+
+.aetheris .a-btn-danger { background: var(--a-error); color: #fff; }
+/* NO glow/gradient on danger — error stays instantly legible, untinted. */
+
+/* ── Chips / tags ────────────────────────────────────────────────────── */
+.aetheris .a-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  border-radius: var(--a-radius-full);
+  padding: 5px 14px;
+  background: rgba(var(--a-accent-rgb), 0.10);
+  color: var(--a-primary);
+  font: 500 12px/1.4 var(--a-font-label); letter-spacing: 0.05em;
+}
+.aetheris .a-chip-active {
+  background: rgba(var(--a-accent-rgb), 0.14);
+  box-shadow: 0 0 12px rgba(var(--a-accent-rgb), 0.25);
+  border: 1px solid rgba(var(--a-accent-rgb), 0.35);   /* border, not glow, carries state */
+}
+.aetheris .a-chip-error { background: var(--a-error-container); color: var(--a-on-error-container); }
+
+/* ── Inputs: translucent pill + floating label ───────────────────────── */
+.aetheris .a-field { position: relative; }
+.aetheris .a-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(0, 101, 145, 0.12);
+  border-radius: var(--a-radius-full);
+  padding: 14px 22px;
+  font: 400 15px/1.4 var(--a-font-body);
+  color: var(--a-on-surface);
+  transition: background .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.aetheris .a-input:focus {
+  background: rgba(255, 255, 255, 0.92);   /* gains opacity on focus */
+  box-shadow: 0 0 15px rgba(var(--a-accent-rgb), 0.15);
+  border-color: rgba(var(--a-accent-rgb), 0.30);
+  outline: none;
+}
+.aetheris .a-field > label {
+  position: absolute; left: 22px; top: 50%; transform: translateY(-50%);
+  color: var(--a-on-surface-variant);
+  font: 400 15px/1 var(--a-font-body);
+  pointer-events: none; transition: all .18s ease;
+  padding: 0 6px;
+}
+.aetheris .a-input:focus + label,
+.aetheris .a-input:not(:placeholder-shown) + label {
+  top: 0; font-size: 12px; font-weight: 500;
+  font-family: var(--a-font-label); letter-spacing: 0.05em;
+  color: var(--a-primary);
+  background: var(--a-surface);
+  border-radius: var(--a-radius-sm);
+}
+
+/* ── Lists: whitespace + type shifts, no divider lines ───────────────── */
+.aetheris .a-list { display: flex; flex-direction: column; gap: 4px; }
+.aetheris .a-list-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 20px;
+  border-radius: var(--a-radius-md);
+  transition: background .15s ease;
+}
+.aetheris .a-list-item:hover {
+  background: rgba(255, 255, 255, 0.65);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* ── Sidebar / nav: fixed glass panel ────────────────────────────────── */
+.aetheris .a-nav {
+  position: fixed; inset: 0 auto 0 0; width: 260px;
+  background: rgba(248, 249, 255, 0.75);
+  -webkit-backdrop-filter: blur(var(--a-glass-blur));
+  backdrop-filter: blur(var(--a-glass-blur));
+  border-right: 1px solid rgba(0, 101, 145, 0.08);
+  padding: var(--a-pad) 16px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.aetheris .a-nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 18px;
+  border-radius: var(--a-radius-full);
+  color: var(--a-on-surface-variant);
+  font: 500 14px/1.4 var(--a-font-label); letter-spacing: 0.03em;
+  text-decoration: none;
+  transition: background .15s ease, box-shadow .2s ease;
+}
+.aetheris .a-nav-item:hover { background: rgba(255, 255, 255, 0.6); }
+.aetheris .a-nav-item.active {
+  background: rgba(var(--a-accent-rgb), 0.10);
+  color: var(--a-primary);
+  box-shadow: 0 0 18px rgba(var(--a-accent-rgb), 0.20);
+  border: 1px solid rgba(var(--a-accent-rgb), 0.20);   /* state readable without the glow */
+}
+
+/* ── Data viz: thin electric lines, glow decorative ──────────────────── */
+.aetheris .a-viz-line  { stroke: var(--a-accent); stroke-width: 2; fill: none;
+                         filter: drop-shadow(0 0 6px rgba(var(--a-accent-rgb), 0.45)); }
+.aetheris .a-viz-line2 { stroke: var(--a-secondary-container); stroke-width: 2; fill: none; }
+.aetheris .a-viz-grid  { stroke: var(--a-outline-variant); stroke-width: 1; opacity: .4; }
+.aetheris .a-viz-value { font: 300 32px/1 var(--a-font-body); color: var(--a-primary); }
+
+/* ═══ High-legibility mode — clarity wins ═════════════════════════════
+   Also the automatic behavior when blur is unsupported or the user asks
+   the OS for reduced transparency. */
+.aetheris.a-legible {
+  --a-body-weight: 400;
+  --a-glass-bg:     rgba(248, 249, 255, 0.96);
+  --a-hud-bg:       rgba(255, 255, 255, 0.94);
+  --a-glass-border: rgba(0, 101, 145, 0.25);
+  --a-neon-text:    none;
+}
+.aetheris.a-legible .neon-glow { text-shadow: none; }
+.aetheris.a-legible .a-viz-line { filter: none; }
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .aetheris {
+    --a-glass-bg: rgba(248, 249, 255, 0.97);
+    --a-hud-bg:   rgba(255, 255, 255, 0.96);
+    --a-glass-border: rgba(0, 101, 145, 0.22);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .aetheris {
+    --a-glass-bg: #f8f9ff;
+    --a-hud-bg:   #ffffff;
+    --a-glass-blur: 0px;
+    --a-hud-blur:   0px;
+    --a-glass-border: rgba(0, 101, 145, 0.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aetheris .a-btn, .aetheris .a-input, .aetheris .a-nav-item,
+  .aetheris .a-list-item, .aetheris .a-field > label { transition: none; }
+}
