@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load static %}
 {% block title %}Review Consultation | G.P CRM{% endblock %}
 {% block page_title %}Review Consultation{% endblock %}
 {% block page_sub %}{{ original.patient }} — reviewing visit of {{ original.date|date:"j F Y" }}{% endblock %}
@@ -115,55 +114,10 @@
     .col-previous { border-right:none; border-bottom:2px solid var(--border); }
   }
 </style>
-<link rel="stylesheet" href="{% static 'css/aetheris.css' %}">
-<style>
-  /* ══ Aetheris overlay — glass surfaces, pill controls; the previous-vs-today
-     semantics (neutral past / green today) are kept. ══ */
-  .aetheris.review-aeth { padding: 16px; border-radius: 16px; }
-  .aetheris .review-topbar, .aetheris .review-footer, .aetheris .compare-grid {
-    background: var(--a-glass-bg); -webkit-backdrop-filter: blur(var(--a-glass-blur));
-    backdrop-filter: blur(var(--a-glass-blur)); border: 1px solid var(--a-glass-border);
-    border-radius: var(--a-radius-md); box-shadow: var(--a-glass-shadow);
-  }
-  .aetheris .col-previous { background: var(--a-surface-low); border-right-color: var(--a-glass-border); }
-  .aetheris .col-previous .col-header { background: var(--a-surface-container);
-    border-bottom-color: var(--a-glass-border); }
-  .aetheris .col-previous .col-header .title { color: var(--a-on-surface-variant);
-    font-family: var(--a-font-label); }
-  .aetheris .col-previous .col-header .date-badge { background: var(--a-outline);
-    border-radius: var(--a-radius-full); }
-  .aetheris .col-review { background: transparent; }
-  .aetheris .col-review .col-header .title { font-family: var(--a-font-label); }
-  .aetheris .col-review .col-header .today-badge { border-radius: var(--a-radius-full); }
-  .aetheris .compare-cell.shaded { background: var(--a-surface-low); }
-  .aetheris .compare-cell.white  { background: transparent; }
-  .aetheris .field-label { color: var(--a-outline); font-family: var(--a-font-label); }
-  .aetheris .field-value { color: var(--a-on-surface); }
-  .aetheris .vitals-label { color: var(--a-on-surface-variant); font-family: var(--a-font-label); }
-  .aetheris .patient-badge .name { color: var(--a-on-surface); }
-  .aetheris .patient-badge .sub  { color: var(--a-on-surface-variant); }
-
-  .aetheris .crm-input, .aetheris textarea.crm-input {
-    border: 1px solid rgba(0,101,145,.12); border-radius: var(--a-radius);
-    background: var(--a-surface-lowest); color: var(--a-on-surface);
-    font-family: var(--a-font-body); font-weight: 400;
-  }
-  .aetheris .crm-input:focus { outline: none; border-color: rgba(var(--a-accent-rgb), .35);
-    box-shadow: 0 0 0 3px rgba(var(--a-accent-rgb), .18); }
-
-  .aetheris .btn-primary { background: var(--a-primary); color: #fff; border: none;
-    border-radius: var(--a-radius-full); box-shadow: 0 6px 24px -6px rgba(0,101,145,.45); }
-  .aetheris .btn-primary:hover { background: var(--a-primary);
-    box-shadow: 0 8px 30px -6px rgba(var(--a-accent-rgb), .5); }
-  .aetheris .btn-ghost { border: 1px solid var(--a-glass-border); background: var(--a-surface-lowest);
-    color: var(--a-on-surface-variant); border-radius: var(--a-radius-full); }
-  .aetheris .btn-ghost:hover { color: var(--a-primary);
-    box-shadow: 0 0 0 3px rgba(var(--a-accent-rgb), .15); }
-</style>
 {% endblock %}
 
 {% block content %}
-<div class="page-body aetheris a-legible review-aeth">
+<div class="page-body">
   <div class="review-wrap">
 
     <div class="page-header" style="margin-bottom:16px;">
