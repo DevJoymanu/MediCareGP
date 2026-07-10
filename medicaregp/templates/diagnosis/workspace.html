@@ -1,41 +1,18 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Consultation — {{ patient }}{% endblock %}
 {% block page_title %}Consultation Workspace{% endblock %}
 {% block page_sub %}{{ patient.first_name }} {{ patient.last_name }} · {{ consultation.date|date:"j M Y" }}{% endblock %}
 
 {% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/aetheris.css' %}">
 <style>
-/* ══ Consultation workspace — numbered flow, pill controls, house palette ══
-   The layout was designed against Aetheris token names; this block maps
-   them onto the default CRM tokens from main.css, so the page wears the
-   standard app color scheme. All JS hooks keep their original ids/classes. */
-.ws-page {
-  --a-primary: var(--accent);
-  --a-accent: var(--accent);
-  --a-accent-rgb: var(--accent-rgb);
-  --a-glass-bg: var(--card-bg);
-  --a-glass-blur: 0px;
-  --a-glass-border: var(--border);
-  --a-glass-shadow: var(--shadow-sm);
-  --a-radius-full: 999px;
-  --a-radius-md: var(--radius);
-  --a-radius: var(--radius-sm);
-  --a-font-body: 'DM Sans', sans-serif;
-  --a-font-label: 'DM Sans', sans-serif;
-  --a-on-surface: var(--text-1);
-  --a-on-surface-variant: var(--text-3);
-  --a-outline: var(--text-4);
-  --a-outline-variant: var(--border);
-  --a-surface: var(--bg);
-  --a-surface-lowest: #ffffff;
-  --a-surface-low: #f4f7fb;
-  --a-surface-container: #eef2f7;
-  --a-surface-highest: #dbe3ec;
-  --a-error-container: #fee2e2;
-  --a-on-error-container: #991b1b;
-  padding: 16px; min-height: calc(100vh - 120px);
-  font-size: 13.5px; line-height: 1.55; color: var(--text-1);
-}
+/* ══ Aetheris workspace — glass panels, pill controls, numbered flow ══
+   Theme tokens come from aetheris.css (.aetheris root). This page opts in
+   with high-legibility mode on (dense clinical data). All JS hooks keep
+   their original ids/classes. */
+.ws-page { padding: 16px; border-radius: 16px; min-height: calc(100vh - 120px);
+           font-size: 13.5px; line-height: 1.55; }
 .ws-wrap { display: flex; flex-direction: column; gap: 14px; max-width: 1600px; }
 .ws-grid { display: grid; grid-template-columns: minmax(0,1fr) 400px; gap: 16px; align-items: start; }
 
@@ -96,12 +73,12 @@
 .ws-label .hint { font-weight: 400; text-transform: none; letter-spacing: .02em; color: var(--a-outline); }
 
 /* ── Inputs: pill text inputs, rounded textareas ───────────────────────── */
-.ws-input { width: 100%; border: 1px solid var(--border); border-radius: var(--a-radius-full);
+.ws-input { width: 100%; border: 1px solid rgba(0,101,145,.12); border-radius: var(--a-radius-full);
             padding: 9px 16px; font-size: 13.5px; font-family: var(--a-font-body); font-weight: 400;
             background: var(--a-surface-lowest); color: var(--a-on-surface);
             transition: border-color .15s, box-shadow .2s; }
 select.ws-input { border-radius: var(--a-radius); }
-.ws-textarea { width: 100%; border: 1px solid var(--border); border-radius: var(--a-radius);
+.ws-textarea { width: 100%; border: 1px solid rgba(0,101,145,.12); border-radius: var(--a-radius);
             padding: 9px 13px; font-size: 13.5px; font-family: var(--a-font-body); font-weight: 400;
             background: var(--a-surface-lowest); color: var(--a-on-surface); resize: vertical;
             min-height: 56px; line-height: 1.5; transition: border-color .15s, box-shadow .2s; }
@@ -135,7 +112,7 @@ select.ws-input { border-radius: var(--a-radius); }
 .ta-item mark { background: none; color: var(--a-primary); font-weight: 700; }
 
 /* ── Body map ──────────────────────────────────────────────────────────── */
-.bodymap-toggle { border: 1px solid var(--border); background: var(--a-surface-lowest);
+.bodymap-toggle { border: 1px solid rgba(0,101,145,.15); background: var(--a-surface-lowest);
                   border-radius: var(--a-radius-full); padding: 8px 16px; font-size: 13px;
                   font-weight: 500; font-family: var(--a-font-label); color: var(--a-on-surface-variant);
                   cursor: pointer; white-space: nowrap; transition: color .15s, box-shadow .2s; }
@@ -191,11 +168,11 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
            display: flex; align-items: center; gap: 8px; }
 .dx-meta { font-size: 11px; color: var(--a-outline); margin-top: 2px;
            font-variant-numeric: tabular-nums; }
-.run-btn { margin-left: auto; background: var(--accent); color: #fff;
+.run-btn { margin-left: auto; background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff;
            border: none; border-radius: var(--a-radius-full); padding: 9px 22px; font-size: 13px;
            font-weight: 600; font-family: var(--a-font-label); letter-spacing: .03em;
            cursor: pointer; transition: box-shadow .2s, transform .15s; }
-.run-btn:hover:not(:disabled) { background: var(--accent-h); }
+.run-btn:hover:not(:disabled) { box-shadow: 0 8px 25px rgba(var(--a-accent-rgb), .35); }
 .run-btn:active { transform: scale(.96); }
 .run-btn:disabled { opacity: .45; cursor: not-allowed; }
 .run-btn.pulse { animation: runpulse 1.6s ease-in-out infinite; }
@@ -240,7 +217,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
         border-radius: var(--a-radius-full); padding: 3px 10px; flex-shrink: 0;
         font-variant-numeric: tabular-nums; }
 .band-high { background: var(--a-primary); color: #fff; }
-.band-med  { background: rgba(var(--accent-rgb),.14); color: var(--a-primary); }
+.band-med  { background: rgba(0,101,145,.12); color: var(--a-primary); }
 .band-low  { background: transparent; color: var(--a-outline);
              border: 1px solid var(--a-outline-variant); }
 
@@ -278,7 +255,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 .confirm-btn { width: 100%; margin-top: 8px; background: var(--a-primary); color: #fff;
                border: none; border-radius: var(--a-radius-full); padding: 11px; font-size: 13px;
                font-weight: 600; font-family: var(--a-font-label); letter-spacing: .03em;
-               cursor: pointer; box-shadow: 0 4px 14px -4px rgba(var(--accent-rgb),.4);
+               cursor: pointer; box-shadow: 0 6px 24px -6px rgba(0,101,145,.45);
                transition: box-shadow .2s, transform .12s; }
 .confirm-btn:hover:not(:disabled) { box-shadow: 0 8px 30px -6px rgba(var(--a-accent-rgb), .5); }
 .confirm-btn:active { transform: scale(.99); }
@@ -306,7 +283,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 .save-notes { margin-left: auto; background: var(--a-primary); color: #fff; border: none;
               border-radius: var(--a-radius-full); padding: 11px 26px; font-size: 13px;
               font-weight: 600; font-family: var(--a-font-label); letter-spacing: .03em;
-              cursor: pointer; box-shadow: 0 4px 14px -4px rgba(var(--accent-rgb),.4);
+              cursor: pointer; box-shadow: 0 6px 24px -6px rgba(0,101,145,.45);
               transition: box-shadow .2s, transform .12s; }
 .save-notes:hover { box-shadow: 0 8px 30px -6px rgba(var(--a-accent-rgb), .5); }
 .save-notes:active { transform: scale(.98); }
@@ -344,7 +321,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
                    align-items: center; gap: 8px; background: var(--a-primary); color: #fff;
                    border: none; border-radius: var(--a-radius-full); padding: 11px 18px;
                    font-size: 13px; font-weight: 600; font-family: var(--a-font-label);
-                   cursor: pointer; box-shadow: var(--shadow-md); min-height: 44px; }
+                   cursor: pointer; box-shadow: 0 8px 25px rgba(0,101,145,.35); min-height: 44px; }
   .notes-grid { grid-template-columns: 1fr; }
   .ws-header { border-radius: var(--a-radius-md); }
 }
@@ -356,7 +333,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 {% endblock %}
 
 {% block content %}
-<div class="ws-page">
+<div class="aetheris a-legible ws-page">
 <div class="ws-wrap">
 
   <!-- ── Zone 1: HUD patient header ──────────────────────────────────── -->
@@ -673,7 +650,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 {{ first_ids|json_script:"kb-first-ids" }}
 {{ last_run_data|json_script:"kb-last-run" }}
 {% endif %}
-</div><!-- /.ws-page -->
+</div><!-- /.aetheris -->
 {% endblock %}
 
 {% block extra_scripts %}
