@@ -467,6 +467,58 @@ def workspace_patient_appointments(request):
         for a in appointments]})
 
 
+# Small words that carry no clinical signal when matching complaints.
+_COMPLAINT_STOPWORDS = {
+    'and', 'the', 'for', 'with', 'without', 'of', 'a', 'an', 'on', 'in', 'to',
+    'my', 'has', 'had', 'have', 'been', 'since', 'ago', 'day', 'days', 'week',
+    'weeks', 'month', 'months', 'year', 'years', 'last', 'this', 'that',
+    'few', 'some', 'about', 'now', 'today', 'yesterday',
+}
+
+
+@doctor_required
+@require_GET
+def workspace_complaint_check(request, consultation_pk):
+    """Live 'first occurrence?' check for the chief complaint.
+
+    Word-overlap match against the patient's previous consultations so the
+    doctor sees, while typing, whether this presentation is new for this
+    patient or a repeat — and what it was coded as last time.
+    """
+    consultation = get_object_or_404(
+        Consultation.objects.select_related('patient'), pk=consultation_pk)
+    q = (request.GET.get('q') or '').strip().lower()
+
+    import re
+    tokens = [t for t in re.findall(r'[a-z]+', q)
+              if len(t) >= 3 and t not in _COMPLAINT_STOPWORDS]
+    if not tokens:
+        return JsonResponse({'checked': False, 'first_time': None, 'matches': [], 'total': 0})
+
+    matches, total = [], 0
+    previous = (Consultation.objects
+                .filter(patient=consultation.patient)
+                .exclude(pk=consultation.pk)
+                .order_by('-date')[:200])
+    for past in previous:
+        hay = (past.chief_complaint or '').lower()
+        if not hay or not any(t in hay for t in tokens):
+            continue
+        total += 1
+        if len(matches) < 3:
+            matches.append({
+                'date': past.date.strftime('%d %b %Y'),
+                'complaint': (past.chief_complaint or '')[:80],
+                'codes': [e.get('code') for e in past.icd10_codes_list if e.get('code')],
+            })
+    return JsonResponse({
+        'checked': True,
+        'first_time': total == 0,
+        'matches': matches,
+        'total': total,
+    })
+
+
 @doctor_required
 @require_GET
 def icd10_search(request):

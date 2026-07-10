@@ -294,6 +294,19 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
 .save-notes:active { transform: scale(.98); }
 .save-stamp { font-size: 11.5px; color: #15803d; }
 
+/* ── Chief-complaint live check ────────────────────────────────────────── */
+.cc-status { margin-top: 8px; border-radius: var(--a-radius); padding: 8px 13px;
+             font-size: 12.5px; line-height: 1.5; display: flex; gap: 8px;
+             align-items: baseline; }
+.cc-status .cc-ic { flex: none; font-weight: 700; }
+.cc-status.cc-first { background: #fef3c7; color: #92400e; }
+.cc-status.cc-seen  { background: rgba(var(--a-accent-rgb), .08); color: var(--a-on-surface-variant); }
+.cc-status.cc-seen b { color: var(--a-primary); font-weight: 600; }
+.cc-status.cc-seen code { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px;
+             background: var(--a-surface-lowest); border: 1px solid var(--a-glass-border);
+             border-radius: 5px; padding: 0 5px; }
+.cc-status.cc-pending { background: var(--a-surface-low); color: var(--a-outline); }
+
 /* Blank mode: full workspace rendered but inert until a patient is picked */
 .ws-locked { opacity: .55; pointer-events: none; user-select: none; }
 
@@ -431,9 +444,10 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
       <div {% if not consultation %}class="ws-locked" aria-disabled="true"{% endif %}>
       <div class="ws-card" style="margin-top:14px;">
         <div class="ws-label"><span class="n">1</span> Chief complaint
-          <button class="info" type="button" data-tip="The patient's reason for the visit, in their own words. Pre-filled from the appointment reason when one is linked." aria-label="About chief complaint">i</button></div>
+          <button class="info" type="button" data-tip="The patient's reason for the visit, in their own words. Pre-filled from the appointment reason when one is linked. Below the field, a live check tells you whether this patient has presented with a similar complaint before." aria-label="About chief complaint">i</button></div>
         <input class="ws-input" id="chiefComplaint" placeholder="Reason for visit…"
                value="{{ consultation.chief_complaint|default:'' }}">
+        <div class="cc-status" id="ccStatus" role="status" aria-live="polite" style="display:none;"></div>
       </div>
 
       <div class="ws-card">
@@ -593,8 +607,8 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
       <div class="dx-head">
         <div>
           <h3>Differential
-            <button class="info" type="button" data-tip="Decision support, not a diagnosis. Ranks candidate conditions from your symptom inputs and the patient's history. Every run is recorded with an audit trail." aria-label="About the differential engine">i</button>
-            <span class="stale-chip">Inputs changed</span></h3>
+            <button class="info" type="button" data-tip="Decision support, not a diagnosis. Ranks candidate conditions from your symptoms and the patient's history, updating live about a second after you stop editing. Every run is recorded with an audit trail." aria-label="About the differential engine">i</button>
+            <span class="stale-chip">Updating…</span></h3>
           <div class="dx-meta" id="dxMeta">no run yet</div>
         </div>
         <button class="run-btn" id="runBtn" type="button" disabled>Run</button>
@@ -603,7 +617,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
       <div class="dx-scroll">
         <div class="dx-empty" id="dxEmpty">
           <i class="bi bi-clipboard2-pulse"></i>
-          {% if consultation %}Add symptoms, then <strong>Run</strong>.{% else %}Select a patient, add symptoms, then <strong>Run</strong>.{% endif %}
+          {% if consultation %}Add symptoms — the ranking appears and updates live.{% else %}Select a patient, then add symptoms — the ranking updates live.{% endif %}
         </div>
         <div id="dxNote" class="dx-note" style="display:none;"></div>
         <div class="dx-list" id="dxList"></div>
@@ -655,6 +669,7 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
     confirm: "{% url 'workspace_confirm' consultation.pk %}",
     notes:   "{% url 'workspace_save_notes' consultation.pk %}",
     icd10:   "{% url 'icd10_search' %}",
+    ccCheck: "{% url 'workspace_complaint_check' consultation.pk %}",
   };
 
   const KB       = JSON.parse(document.getElementById('kb-symptoms').textContent);
@@ -668,6 +683,11 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
   let promoted = [];              // [{code, name, source, condition_id}]
   let lastRun  = null;            // server payload of the run shown in the panel
   let stale    = false;
+  // Live mode: the panel re-runs itself ~0.8s after inputs settle. The
+  // recompute is always visible (stale chip → "updating…"), never silent.
+  let autoTimer     = null;
+  let runSeq        = 0;          // ignore out-of-order responses
+  let inputsVersion = 0;          // detect changes made while a run is in flight
 
   const $ = id => document.getElementById(id);
   const panel = $('dxPanel');
@@ -720,8 +740,14 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
   }
 
   function onInputsChanged() {
-    if (lastRun) { stale = true; panel.classList.add('stale'); $('runBtn').textContent = 'Re-run'; $('runBtn').classList.add('pulse'); }
+    inputsVersion++;
+    if (lastRun) { stale = true; panel.classList.add('stale'); $('runBtn').textContent = 'Re-run'; }
     renderChips();
+    // Live update: debounce so a burst of chip taps costs one run, not five.
+    clearTimeout(autoTimer);
+    if (presenting.size + working.size > 0) {
+      autoTimer = setTimeout(runEngine, 800);
+    }
   }
 
   // ── Type-ahead (knowledge base) ────────────────────────────────────────
@@ -803,22 +829,48 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
   }
 
   // ── Run / panel ────────────────────────────────────────────────────────
-  $('runBtn').onclick = () => {
+  // One engine entry point serves both the live auto-update and the manual
+  // button. Responses are sequenced: a slow response for an older input set
+  // never overwrites a newer ranking, and edits made mid-flight trigger one
+  // follow-up run so the panel always converges on current inputs.
+  function runEngine() {
+    if (presenting.size + working.size === 0) return;
+    clearTimeout(autoTimer);
     const btn = $('runBtn');
+    const mySeq = ++runSeq;
+    const myVersion = inputsVersion;
     btn.disabled = true; btn.textContent = 'Running…'; btn.classList.remove('pulse');
+    $('dxMeta').textContent = 'updating…';
     post(URLS.run, {
       presenting: [...presenting],
       working: [...working],
       notes: $('runNotes').value.trim(),
     }).then(({ ok, data }) => {
-      btn.disabled = false;
-      if (!ok) { btn.textContent = stale ? 'Re-run' : 'Run'; alert(data.error || 'Run failed.'); return; }
-      lastRun = data; stale = false;
-      panel.classList.remove('stale');
+      if (mySeq !== runSeq) return;              // superseded by a newer run
+      btn.disabled = presenting.size + working.size === 0;
+      if (!ok) {
+        btn.textContent = stale ? 'Re-run' : 'Run';
+        $('dxMeta').textContent = (data && data.error) || 'Run failed — try again.';
+        return;
+      }
+      lastRun = data;
       btn.textContent = 'Re-run';
+      if (inputsVersion !== myVersion) {
+        // Inputs moved while we were in flight — render, then catch up.
+        renderPanel();
+        autoTimer = setTimeout(runEngine, 400);
+        return;
+      }
+      stale = false;
+      panel.classList.remove('stale');
       renderPanel();
-    }).catch(() => { btn.disabled = false; btn.textContent = 'Run'; alert('Network error — try again.'); });
-  };
+    }).catch(() => {
+      if (mySeq !== runSeq) return;
+      btn.disabled = false; btn.textContent = stale ? 'Re-run' : 'Run';
+      $('dxMeta').textContent = 'Network error — will retry on next change.';
+    });
+  }
+  $('runBtn').onclick = runEngine;
 
   function bandClass(band) {
     return band === 'High' ? 'band-high' : band === 'Medium' ? 'band-med' : 'band-low';
@@ -1047,6 +1099,47 @@ details[open] > summary .exp-caret { transform: rotate(90deg); }
   $('sickIssued').addEventListener('change', () => {
     $('sickFields').style.display = $('sickIssued').checked ? 'flex' : 'none';
   });
+
+  // ── Chief-complaint live check: first occurrence for this patient? ────
+  // Debounced against past consultations; answers "has this patient
+  // presented with a similar complaint before?" while the doctor types.
+  (function () {
+    const input = $('chiefComplaint'), box = $('ccStatus');
+    let timer = null, seq = 0;
+
+    function render(data) {
+      if (!data.checked) { box.style.display = 'none'; return; }
+      box.style.display = 'flex';
+      if (data.first_time) {
+        box.className = 'cc-status cc-first';
+        box.innerHTML = '<span class="cc-ic">⚑</span><span><strong>First time</strong> — ' +
+          'no previous visit with a similar complaint on record.</span>';
+        return;
+      }
+      box.className = 'cc-status cc-seen';
+      let html = '<span class="cc-ic">↺</span><span><b>Seen before</b> — ' + data.total +
+        ' previous visit' + (data.total === 1 ? '' : 's') + ' with a similar complaint.';
+      data.matches.forEach(m => {
+        html += '<br>' + escapeHtml(m.date) + ' — “' + escapeHtml(m.complaint) + '”' +
+          (m.codes.length ? ' · ' + m.codes.map(c => '<code>' + escapeHtml(c) + '</code>').join(' ') : '');
+      });
+      html += '</span>';
+      box.innerHTML = html;
+    }
+
+    function check() {
+      const q = input.value.trim();
+      if (!q) { box.style.display = 'none'; return; }
+      const mySeq = ++seq;
+      fetch(URLS.ccCheck + '?q=' + encodeURIComponent(q))
+        .then(r => r.json())
+        .then(data => { if (mySeq === seq) render(data); })
+        .catch(() => { /* transient — next keystroke retries */ });
+    }
+
+    input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(check, 500); });
+    if (input.value.trim()) check();   // pre-filled complaint checks on load
+  })();
 
   // ── Drawer (narrow screens) ────────────────────────────────────────────
   $('drawerTab').onclick = () => panel.classList.toggle('drawer-open');

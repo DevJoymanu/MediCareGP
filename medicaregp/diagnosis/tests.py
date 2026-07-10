@@ -481,3 +481,43 @@ class WorkspaceTests(TestCase):
 
         self.client.force_login(self.receptionist)
         self.assertEqual(self.client.get(url + f'?patient_id={self.patient.pk}').status_code, 403)
+
+
+class ComplaintCheckTests(TestCase):
+    """Live 'first occurrence?' check on the chief complaint."""
+
+    def setUp(self):
+        self.doctor = make_doctor()
+        self.receptionist = make_receptionist()
+        self.patient = make_patient()
+        self.prior = Consultation.objects.create(
+            patient=self.patient, date=date(2026, 3, 14),
+            chief_complaint='Cough and fever for three days',
+            icd10_code=json.dumps([{'code': 'J20.9', 'description': 'Acute bronchitis'}]))
+        self.current = Consultation.objects.create(
+            patient=self.patient, date=date(2026, 7, 10),
+            chief_complaint='Productive cough, 5 days')
+        self.url = reverse('workspace_complaint_check', args=[self.current.pk])
+        self.client.force_login(self.doctor)
+
+    def test_repeat_complaint_reports_prior_visit_and_codes(self):
+        data = self.client.get(self.url + '?q=productive cough').json()
+        self.assertTrue(data['checked'])
+        self.assertFalse(data['first_time'])
+        self.assertEqual(data['total'], 1)
+        self.assertIn('J20.9', data['matches'][0]['codes'])
+
+    def test_new_complaint_is_first_time(self):
+        data = self.client.get(self.url + '?q=left knee swelling').json()
+        self.assertTrue(data['checked'])
+        self.assertTrue(data['first_time'])
+        self.assertEqual(data['matches'], [])
+
+    def test_stopword_only_query_is_not_checked(self):
+        data = self.client.get(self.url + '?q=for the last few').json()
+        self.assertFalse(data['checked'])
+        self.assertIsNone(data['first_time'])
+
+    def test_reception_is_denied(self):
+        self.client.force_login(self.receptionist)
+        self.assertEqual(self.client.get(self.url + '?q=cough').status_code, 403)
